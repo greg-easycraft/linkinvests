@@ -10,7 +10,7 @@ L'application vise à identifier et qualifier des opportunités immobilières "o
 
 Cette section concerne la source initiale des données permettant d'identifier les successions potentielles.
 
-* **Source de Données :** Fichiers CSV de l'**LINC** (Liste des décès).
+* **Source de Données :** Fichiers CSV de l'**INSEE** (Liste des décès).
 * **Périmètre :** Données sur l'intégralité de la France.
 * **Règle d'Ingestion :** Les données récupérées doivent être filtrées pour ne conserver que les décès de personnes de **plus de 50 ans**.
 * **Périodes Filtrables :** Le système doit permettre d'appliquer des filtres basés sur des périodes glissantes de **3, 6, 8, 24 ou 36 mois**.
@@ -94,3 +94,12 @@ Cette section concerne l'identification des biens en vente sur le marché classi
 ## Résumé du Périmètre
 
 L'application se concentre sur l'agrégation et la cartographie des données de **Décès/Successions**, **Liquidations Professionnelles**, **Enchères** et **Annonces/Passoires Thermiques**, en excluant initialement les Dettes et les Divorces. Le livrable de la V1 est d'abord axé sur la partie **sourcing opérationnel** et la **préparation au contact des mairies**.
+
+*** 
+
+## Limitations additionnelles
+Pour chaque section, nous ne traiterons qu'une seule source de données dans la v1. (Ex: annonces immo - uniquement leboncoin)
+
+## Questions & Clarifications
+- Les passoires thermiques ont-elles une valeur sans croisement avec les annonces immo ? (ex: DPE réalisé dans les 3 derniers mois avec note F ou G)
+- Les annonces immo ont-elles une valeur sans croisement avec les passoires thermiques ? (ce ne sont pas des biens off-market...)
