@@ -1,0 +1,26 @@
+{
+  "name": "linkinvest",
+  "version": "1.0.0",
+  "description": "Real estate scraper for leboncoin.fr",
+  "main": "dist/scraper.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "scrape": "node dist/scraper.js",
+    "start": "pnpm build && pnpm scrape",
+    "typecheck": "tsc --noEmit",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["scraper", "leboncoin", "real-estate"],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.18.0",
+  "dependencies": {
+    "csv-writer": "^1.6.0",
+    "playwright": "^1.48.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2"
+  }
+}
