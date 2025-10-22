@@ -1,26 +1,27 @@
 {
   "name": "linkinvest",
   "version": "1.0.0",
-  "description": "Real estate scraper for leboncoin.fr",
-  "main": "dist/scraper.js",
+  "description": "Real estate investment platform - Monorepo",
+  "private": true,
   "type": "module",
-  "scripts": {
-    "build": "tsc",
-    "scrape": "node dist/scraper.js",
-    "start": "pnpm build && pnpm scrape",
-    "typecheck": "tsc --noEmit",
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "packageManager": "pnpm@10.18.0",
+  "engines": {
+    "node": ">=20.0.0"
   },
-  "keywords": ["scraper", "leboncoin", "real-estate"],
+  "scripts": {
+    "build": "pnpm --filter './packages/*' build",
+    "lint": "pnpm --filter './packages/*' lint",
+    "test": "pnpm --filter './packages/*' test",
+    "typecheck": "pnpm --filter './packages/*' typecheck",
+    "dev": "pnpm --filter './packages/*' dev"
+  },
+  "keywords": ["real-estate", "investment", "monorepo"],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@10.18.0",
-  "dependencies": {
-    "csv-writer": "^1.6.0",
-    "playwright": "^1.48.0"
-  },
   "devDependencies": {
     "@types/node": "^22.10.2",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "eslint": "^9.17.0",
+    "prettier": "^3.4.2"
   }
 }

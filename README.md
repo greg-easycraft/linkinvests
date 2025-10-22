@@ -1,152 +1,206 @@
-# Leboncoin Real Estate Scraper
+# LinkInvest
 
-A TypeScript-based web scraper using Playwright to extract real estate listings from leboncoin.fr in the Somme department (80).
-
-## Features
-
-- Scrapes real estate listings from leboncoin.fr
-- Filters by department (default: 80 - Somme)
-- Retrieves listings from the last 7 days
-- Extracts comprehensive listing information:
-  - Basic info: title, price, location, description, publication date, URL
-  - Property details: surface area, rooms, property type, energy rating
-  - Seller information: name and type (professional/individual)
-- Exports data to CSV format
-- Includes rate limiting to avoid being blocked
-- Handles pagination (up to 3 pages by default)
-
-## Prerequisites
-
-- Node.js 18 or higher
-- pnpm (specified package manager)
-
-## Installation
-
-1. Install dependencies:
-```bash
-pnpm install
-```
-
-2. Install Playwright browsers:
-```bash
-pnpm exec playwright install chromium
-```
-
-## Usage
-
-### Build and run the scraper:
-
-```bash
-pnpm start
-```
-
-This will:
-1. Compile the TypeScript code
-2. Run the scraper
-3. Generate a `leboncoin_listings.csv` file with the results
-
-### Run individual commands:
-
-Build only:
-```bash
-pnpm build
-```
-
-Scrape only (after building):
-```bash
-pnpm scrape
-```
-
-## Configuration
-
-You can modify the scraper configuration in `src/scraper.ts`:
-
-```typescript
-const DEFAULT_CONFIG: ScraperConfig = {
-  department: '80',        // Department code (80 = Somme)
-  daysBack: 7,            // Number of days to look back
-  headless: true,         // Run browser in headless mode
-  outputFile: 'leboncoin_listings.csv',  // Output filename
-};
-```
-
-## Output
-
-The scraper generates a CSV file with the following columns:
-
-- Title
-- Price
-- Location
-- Description
-- Publication Date
-- URL
-- Surface Area
-- Rooms
-- Property Type
-- Energy Rating
-- Seller Name
-- Seller Type
-
-## Rate Limiting
-
-The scraper includes built-in delays:
-- 1-2 seconds between individual listings
-- 2-3 seconds between pages
-- Slowmo 100ms for browser actions
-
-This helps avoid detection and being blocked by the website.
-
-## Limitations
-
-- Currently scrapes up to 3 pages of results (configurable in code)
-- Date filtering relies on French date formats
-- Some listings may not have all fields available
-- Seller information may not always be publicly accessible
+Real estate investment platform - PNPM Monorepo
 
 ## Project Structure
 
 ```
 linkinvest/
-├── src/
-│   ├── scraper.ts           # Main scraper logic
-│   ├── types.ts             # TypeScript type definitions
-│   └── utils/
-│       └── csv-writer.ts    # CSV export utility
-├── dist/                     # Compiled JavaScript (generated)
-├── package.json
-├── tsconfig.json
-└── README.md
+├── packages/
+│   ├── eslint-config/      # Shared ESLint configuration
+│   ├── shared/             # Shared TypeScript types and utilities (no build step)
+│   ├── db/                 # Drizzle ORM schemas for PostgreSQL (no build step)
+│   ├── frontend/           # Next.js application with Tailwind CSS
+│   └── sourcing-worker/    # NestJS worker application
+├── specs/                  # Project specifications
+├── pnpm-workspace.yaml     # PNPM workspace configuration
+├── tsconfig.base.json      # Base TypeScript configuration
+├── .prettierrc.json        # Prettier configuration
+└── package.json            # Root package with workspace scripts
 ```
 
-## Troubleshooting
+## Technology Stack
 
-### Playwright installation issues
+- **Package Manager**: PNPM with workspaces
+- **Node.js**: >=20.0.0 (LTS)
+- **TypeScript**: 5.7+
+- **Frontend**: Next.js 15 with React 19, Tailwind CSS
+- **Backend Worker**: NestJS 11
+- **Database**: PostgreSQL with Drizzle ORM
+- **Testing**: Jest
+- **Linting**: ESLint with Prettier, TypeScript ESLint, and import sorting
 
-If you encounter issues with Playwright, try:
+## Packages
+
+### @repo/eslint-config
+
+Shared ESLint configuration used across all packages. Includes:
+- TypeScript ESLint
+- Prettier integration
+- Import sorting rules
+
+### @repo/shared
+
+Pure TypeScript utility types and shared code. No build step - exports raw TypeScript files.
+
+**Usage:**
+```typescript
+import type { Result, Nullable } from '@repo/shared';
+```
+
+### @repo/db
+
+Drizzle ORM package with PostgreSQL schemas. No build step - exports raw TypeScript files.
+
+**Configuration**: `packages/db/drizzle.config.ts`
+
+**Available scripts:**
 ```bash
-pnpm exec playwright install --with-deps chromium
+pnpm --filter @repo/db db:generate  # Generate migrations
+pnpm --filter @repo/db db:migrate   # Run migrations
+pnpm --filter @repo/db db:push      # Push schema to database
+pnpm --filter @repo/db db:studio    # Open Drizzle Studio
 ```
 
-### Scraper getting blocked
+**Environment variables** (see `packages/db/.env.example`):
+- `DB_HOST`
+- `DB_PORT`
+- `DB_USER`
+- `DB_PASSWORD`
+- `DB_NAME`
 
-If the scraper is being blocked:
-1. Increase delays in `src/scraper.ts`
-2. Run in non-headless mode (set `headless: false`)
-3. Reduce the number of pages scraped
+### @repo/frontend
 
-### No listings found
+Next.js 15 application with App Router, TypeScript, and Tailwind CSS.
 
-Make sure:
-1. The department code is correct (80 for Somme)
-2. There are active listings in the last 7 days
-3. Check the leboncoin.fr website structure hasn't changed
+**Import alias**: `~/` points to `src/`
 
-## Legal Notice
+**Key features:**
+- Server Components by default
+- Tailwind CSS for styling
+- Imports `@repo/shared` and `@repo/db`
 
-This scraper is for educational purposes. Always respect:
-- Leboncoin's terms of service
-- robots.txt directives
-- Rate limiting and reasonable usage
-- Personal data protection regulations (GDPR)
+**Scripts:**
+```bash
+pnpm --filter @repo/frontend dev        # Start dev server
+pnpm --filter @repo/frontend build      # Build for production
+pnpm --filter @repo/frontend start      # Start production server
+pnpm --filter @repo/frontend lint       # Run ESLint
+pnpm --filter @repo/frontend typecheck  # Run TypeScript checks
+```
 
-Use responsibly and consider using official APIs when available.
+### @repo/sourcing-worker
+
+NestJS 11 worker application for real estate sourcing tasks.
+
+**Import alias**: `~/` points to `src/`
+
+**Key features:**
+- Uses `@repo/db` for database access
+- Uses `@repo/shared` for common types
+- Jest configured for unit and e2e tests
+
+**Scripts:**
+```bash
+pnpm --filter @repo/sourcing-worker dev         # Start in watch mode
+pnpm --filter @repo/sourcing-worker build       # Build for production
+pnpm --filter @repo/sourcing-worker start:prod  # Start production server
+pnpm --filter @repo/sourcing-worker test        # Run unit tests
+pnpm --filter @repo/sourcing-worker test:e2e    # Run e2e tests
+pnpm --filter @repo/sourcing-worker test:cov    # Run tests with coverage
+```
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js >= 20.0.0
+- PNPM >= 10.18.0
+- PostgreSQL (for database)
+
+### Installation
+
+```bash
+# Install all dependencies
+pnpm install
+```
+
+### Development
+
+```bash
+# Run all packages in dev mode
+pnpm dev
+
+# Or run specific packages
+pnpm --filter @repo/frontend dev
+pnpm --filter @repo/sourcing-worker dev
+```
+
+### Building
+
+```bash
+# Build all packages
+pnpm build
+
+# Build specific package
+pnpm --filter @repo/frontend build
+```
+
+### Type Checking
+
+```bash
+# Type check all packages
+pnpm typecheck
+```
+
+### Linting
+
+```bash
+# Lint all packages
+pnpm lint
+```
+
+### Testing
+
+```bash
+# Run tests across all packages
+pnpm test
+```
+
+## Workspace Scripts
+
+All scripts run across applicable packages in the workspace:
+
+- `pnpm build` - Build all packages
+- `pnpm dev` - Start all packages in development mode
+- `pnpm lint` - Lint all packages
+- `pnpm typecheck` - Type check all packages
+- `pnpm test` - Run tests across all packages
+
+## Adding New Dependencies
+
+```bash
+# Add to root (workspace-wide dev dependencies)
+pnpm add -D <package> -w
+
+# Add to specific package
+pnpm --filter @repo/frontend add <package>
+pnpm --filter @repo/sourcing-worker add <package>
+
+# Add workspace dependency
+# In package.json, use: "@repo/shared": "workspace:*"
+```
+
+## Configuration Files
+
+- **TypeScript**: `tsconfig.base.json` (base) → Each package extends this
+- **ESLint**: `packages/eslint-config/` → Shared across packages
+- **Prettier**: `.prettierrc.json` (root)
+- **PNPM**: `pnpm-workspace.yaml`
+
+## Notes
+
+- Both `@repo/shared` and `@repo/db` export raw TypeScript files (no build step)
+- Consuming packages (frontend/sourcing-worker) handle transpilation
+- Import aliases use `~/` for local imports in frontend and sourcing-worker
+- The frontend uses `transpilePackages` in `next.config.ts` for workspace dependencies

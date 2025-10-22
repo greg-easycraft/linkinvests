@@ -1,7 +1,3 @@
-Je reprends la transcription pour structurer les spécifications fonctionnelles selon les sections demandées.
-
-***
-
 # Spécifications Fonctionnelles de l'Application de Sourcing Immobilier
 
 L'application vise à identifier et qualifier des opportunités immobilières "off-market" en agrégeant et croisant différentes sources de données à l'échelle nationale.
@@ -99,7 +95,3 @@ L'application se concentre sur l'agrégation et la cartographie des données de 
 
 ## Limitations additionnelles
 Pour chaque section, nous ne traiterons qu'une seule source de données dans la v1. (Ex: annonces immo - uniquement leboncoin)
-
-## Questions & Clarifications
-- Les passoires thermiques ont-elles une valeur sans croisement avec les annonces immo ? (ex: DPE réalisé dans les 3 derniers mois avec note F ou G)
-- Les annonces immo ont-elles une valeur sans croisement avec les passoires thermiques ? (ce ne sont pas des biens off-market...)

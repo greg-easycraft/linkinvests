@@ -1,9 +1,13 @@
 # Dependencies
 node_modules/
-pnpm-lock.yaml
+.pnp
+.pnp.*
 
 # Build output
 dist/
+build/
+.next/
+out/
 
 # CSV output files
 *.csv
@@ -11,6 +15,17 @@ dist/
 # Environment variables
 .env
 .env.local
+.env*.local
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Testing
+coverage/
+test-results/
+playwright-report/
+playwright/.cache/
 
 # IDE
 .vscode/
@@ -22,7 +37,13 @@ dist/
 .DS_Store
 Thumbs.db
 
-# Playwright
-playwright-report/
-test-results/
-playwright/.cache/
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Database
+drizzle/
+*.db
+*.db-journal
