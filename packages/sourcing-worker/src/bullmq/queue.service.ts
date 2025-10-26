@@ -3,6 +3,8 @@ import { Queue } from 'bullmq';
 import {
   SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE,
   SOURCE_COMPANY_BUILDINGS_QUEUE,
+  type FailingCompaniesJobData,
+  type CompanyBuildingsJobData,
 } from '~/domains/failing-companies';
 
 @Injectable()
@@ -16,24 +18,10 @@ export class QueueService {
     private readonly companyBuildingsQueue: Queue,
   ) {}
 
-  async sourceFailingCompanies(): Promise<string> {
+  async sourceFailingCompanies(data: FailingCompaniesJobData): Promise<string> {
     const job = await this.failingCompaniesQueue.add(
       'source-failing-companies',
-      {},
-      {
-        removeOnComplete: 100,
-        removeOnFail: 100,
-      },
-    );
-
-    this.logger.log(`Enqueued failing companies job: ${job.id}`);
-    return job.id as string;
-  }
-
-  async sourceCompanyBuildings(sourceFile: string): Promise<string> {
-    const job = await this.companyBuildingsQueue.add(
-      'source-company-buildings',
-      { sourceFile },
+      data,
       {
         removeOnComplete: 100,
         removeOnFail: 100,
@@ -41,7 +29,23 @@ export class QueueService {
     );
 
     this.logger.log(
-      `Enqueued company buildings job: ${job.id} with sourceFile: ${sourceFile}`,
+      `Enqueued failing companies job: ${job.id} for department ${data.departmentId} since ${data.sinceDate}`,
+    );
+    return job.id as string;
+  }
+
+  async sourceCompanyBuildings(data: CompanyBuildingsJobData): Promise<string> {
+    const job = await this.companyBuildingsQueue.add(
+      'source-company-buildings',
+      data,
+      {
+        removeOnComplete: 100,
+        removeOnFail: 100,
+      },
+    );
+
+    this.logger.log(
+      `Enqueued company buildings job: ${job.id} with sourceFile: ${data.sourceFile}`,
     );
     return job.id as string;
   }

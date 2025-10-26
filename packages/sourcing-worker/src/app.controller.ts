@@ -16,9 +16,29 @@ export class AppController {
 
   @Post('jobs/failing-companies')
   @HttpCode(HttpStatus.ACCEPTED)
-  async enqueueFailingCompanies() {
+  async enqueueFailingCompanies(
+    @Body('departmentId') departmentId: number,
+    @Body('sinceDate') sinceDate: string,
+  ) {
     try {
-      const jobId = await this.queueService.sourceFailingCompanies();
+      if (!departmentId) {
+        return {
+          success: false,
+          error: 'departmentId is required',
+        };
+      }
+
+      if (!sinceDate) {
+        return {
+          success: false,
+          error: 'sinceDate is required (format: YYYY-MM-DD)',
+        };
+      }
+
+      const jobId = await this.queueService.sourceFailingCompanies({
+        departmentId,
+        sinceDate,
+      });
       return {
         success: true,
         jobId,
@@ -44,7 +64,9 @@ export class AppController {
         };
       }
 
-      const jobId = await this.queueService.sourceCompanyBuildings(sourceFile);
+      const jobId = await this.queueService.sourceCompanyBuildings({
+        sourceFile,
+      });
       return {
         success: true,
         jobId,

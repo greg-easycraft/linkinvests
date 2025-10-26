@@ -3,6 +3,7 @@ import { Worker, Job } from 'bullmq';
 import {
   FailingCompaniesProcessor,
   SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE,
+  type FailingCompaniesJobData,
 } from '~/domains/failing-companies';
 
 @Injectable()
@@ -19,11 +20,16 @@ export class FailingCompaniesWorker implements OnModuleInit {
 
     this.worker = new Worker(
       SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE,
-      async (job: Job) => {
-        this.logger.log(`Processing job ${job.id}`);
+      async (job: Job<FailingCompaniesJobData>) => {
+        this.logger.log(
+          `Processing job ${job.id} for department ${job.data.departmentId} since ${job.data.sinceDate}`,
+        );
 
         try {
-          await this.failingCompaniesProcessor.process();
+          await this.failingCompaniesProcessor.process(
+            job.data.departmentId,
+            job.data.sinceDate,
+          );
           this.logger.log(`Job ${job.id} completed successfully`);
         } catch (error) {
           const err = error as Error;

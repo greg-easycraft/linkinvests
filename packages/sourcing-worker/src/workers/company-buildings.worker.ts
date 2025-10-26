@@ -3,11 +3,8 @@ import { Worker, Job } from 'bullmq';
 import {
   CompanyBuildingsProcessor,
   SOURCE_COMPANY_BUILDINGS_QUEUE,
+  type CompanyBuildingsJobData,
 } from '~/domains/failing-companies';
-
-interface CompanyBuildingsJobData {
-  sourceFile: string;
-}
 
 @Injectable()
 export class CompanyBuildingsWorker implements OnModuleInit {

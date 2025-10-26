@@ -33,8 +33,30 @@ services:
       retries: 3
     restart: unless-stopped
 
+  localstack:
+    image: localstack/localstack:s3-latest
+    container_name: linkinvest-localstack
+    ports:
+      - '4566:4566' # LocalStack Gateway
+    environment:
+      - DEBUG=1
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - AWS_DEFAULT_REGION=eu-west-3
+    volumes:
+      - localstack-data:/tmp/localstack
+      - /var/run/docker.sock:/var/run/docker.sock
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:4566/_localstack/health']
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    restart: unless-stopped
+
 volumes:
   redis-data:
     driver: local
   postgres-data:
+    driver: local
+  localstack-data:
     driver: local
