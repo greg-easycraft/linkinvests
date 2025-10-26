@@ -23,26 +23,86 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+NestJS worker service for real estate sourcing with BullMQ job queue integration.
+
+## Features
+
+- BullMQ-based job queue system
+- Redis integration for queue backend
+- PostgreSQL database with Drizzle ORM
+- Bull Board dashboard for queue monitoring
+- Two job queues:
+  - `SOURCE_FAILING_COMPANIES_REQUESTED` - Process sourcing of failing companies
+  - `SOURCE_COMPANY_BUILDINGS` - Process sourcing of company buildings from files
+
+## Prerequisites
+
+- Node.js 18+
+- pnpm
+- Docker & Docker Compose (for Redis and PostgreSQL)
 
 ## Project setup
 
+1. Install dependencies:
 ```bash
 $ pnpm install
+```
+
+2. Create a `.env` file based on `.env.example`:
+```bash
+$ cp ../../.env.example .env
+```
+
+3. Start Docker services (Redis & PostgreSQL):
+```bash
+$ docker-compose up -d
+```
+
+## Environment Variables
+
+```env
+REDIS_URL=redis://localhost:6379
+DATABASE_URL=postgresql://linkinvest:linkinvest@localhost:5432/linkinvest
+PORT=8080
 ```
 
 ## Compile and run the project
 
 ```bash
 # development
-$ pnpm run start
+$ pnpm run dev
 
 # watch mode
 $ pnpm run start:dev
 
 # production mode
+$ pnpm run build
 $ pnpm run start:prod
 ```
+
+## API Endpoints
+
+### Enqueue Jobs
+
+- `POST /jobs/failing-companies` - Enqueue a job to source failing companies
+- `POST /jobs/company-buildings` - Enqueue a job to source company buildings
+  ```json
+  {
+    "sourceFile": "path/to/file.csv"
+  }
+  ```
+
+### Bull Board Dashboard
+
+Access the queue monitoring dashboard at: `http://localhost:8080/admin/queues`
+
+## Architecture
+
+- `src/database/` - Database module with Drizzle ORM
+- `src/bullmq/` - BullMQ module with queue providers and service
+- `src/workers/` - Worker services that process jobs
+- `src/app.controller.ts` - REST endpoints for enqueueing jobs
+- `src/main.ts` - Application bootstrap with Bull Board integration
 
 ## Run tests
 
