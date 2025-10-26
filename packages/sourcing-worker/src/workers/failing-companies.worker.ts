@@ -1,13 +1,11 @@
 import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { Worker, Job } from 'bullmq';
 import Redis from 'ioredis';
-import { NodePgDatabase } from 'drizzle-orm/node-postgres';
-import { domainSchema } from '@repo/db';
 import {
   REDIS_CONNECTION,
   SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE,
 } from '../bullmq/bullmq.module';
-import { DATABASE_CONNECTION } from '../database/database.module';
+import { FailingCompaniesProcessor } from '../domains/failing-companies/processors/failing-companies.processor';
 
 @Injectable()
 export class FailingCompaniesWorker implements OnModuleInit {
@@ -17,9 +15,7 @@ export class FailingCompaniesWorker implements OnModuleInit {
   constructor(
     @Inject(REDIS_CONNECTION)
     private readonly connection: Redis,
-    @Inject(DATABASE_CONNECTION)
-    // @ts-expect-error - db will be used when business logic is implemented
-    private readonly db: NodePgDatabase<typeof domainSchema>,
+    private readonly failingCompaniesProcessor: FailingCompaniesProcessor,
   ) {}
 
   onModuleInit() {
@@ -29,12 +25,7 @@ export class FailingCompaniesWorker implements OnModuleInit {
         this.logger.log(`Processing job ${job.id}`);
 
         try {
-          // TODO: Implement business logic for sourcing failing companies
-          // This is where you would:
-          // 1. Fetch data from external sources
-          // 2. Process and transform the data
-          // 3. Store in database using this.db
-
+          await this.failingCompaniesProcessor.process();
           this.logger.log(`Job ${job.id} completed successfully`);
         } catch (error) {
           const err = error as Error;

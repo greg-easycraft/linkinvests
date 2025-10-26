@@ -1,16 +1,41 @@
-import { pgTable, text, timestamp, integer, serial, varchar, doublePrecision } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, integer, serial, varchar, doublePrecision, pgEnum, date } from "drizzle-orm/pg-core";
+
+export enum OpportunityType {
+    SUCCESSION = "succession",
+    LIQUIDATION = "liquidation",
+    PASSOIRE_THERMIQUE = "passoire_thermique",
+    ANNONCE_IMMO = "annonce_immo",
+    ENCHERE = "enchere",
+    DIVORCE = "divorce",
+}
+
+const opportunityType = pgEnum("opportunity_type", Object.values(OpportunityType) as [string, ...string[]]);
 
 export const opportunities = pgTable("opportunity", {
     id: serial("id").primaryKey(),
     label: varchar("name").notNull(),
     zipCode: integer("zip_code").notNull(),
+    department: integer("department").notNull(),
     latitude: doublePrecision("latitude").notNull(),
     longitude: doublePrecision("longitude").notNull(),
-    type: text("type").notNull(),
+    type: opportunityType("type").notNull(),
     status: text("status").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
         .defaultNow()
         .$onUpdate(() => /* @__PURE__ */ new Date())
         .notNull(),
+});
+
+
+
+
+// Sourcing Tables
+export const sourcingRuns = pgTable("sourcing_run", {
+    id: serial("id").primaryKey(),
+    status: text("status").notNull(),
+    opportunityType: opportunityType("opportunity_type").notNull(),
+    department: integer("department").notNull(),
+    syncDate: date("sync_date").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
 });
