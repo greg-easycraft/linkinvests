@@ -1,12 +1,14 @@
 import { Controller, Get, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
 import { AppService } from './app.service';
 import { QueueService } from './bullmq/queue.service';
+import { FailingCompaniesCron } from './domains/failing-companies/cron';
 
 @Controller()
 export class AppController {
   constructor(
     private readonly appService: AppService,
     private readonly queueService: QueueService,
+    private readonly failingCompaniesCron: FailingCompaniesCron,
   ) {}
 
   @Get()
@@ -71,6 +73,24 @@ export class AppController {
         success: true,
         jobId,
         message: 'Job enqueued successfully',
+      };
+    } catch (error) {
+      const err = error as Error;
+      return {
+        success: false,
+        error: err.message,
+      };
+    }
+  }
+
+  @Post('cron/test-failing-companies')
+  @HttpCode(HttpStatus.ACCEPTED)
+  async testFailingCompaniesCron() {
+    try {
+      await this.failingCompaniesCron.handleDailyFailingCompanies();
+      return {
+        success: true,
+        message: 'Cron job triggered manually',
       };
     } catch (error) {
       const err = error as Error;

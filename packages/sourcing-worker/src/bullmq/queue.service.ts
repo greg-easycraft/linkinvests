@@ -28,10 +28,14 @@ export class QueueService {
       },
     );
 
+    if (!job.id) {
+      throw new Error('Failed to enqueue job: job.id is undefined');
+    }
+
     this.logger.log(
       `Enqueued failing companies job: ${job.id} for department ${data.departmentId} since ${data.sinceDate}`,
     );
-    return job.id as string;
+    return job.id;
   }
 
   async sourceCompanyBuildings(data: CompanyBuildingsJobData): Promise<string> {
@@ -44,9 +48,13 @@ export class QueueService {
       },
     );
 
+    if (!job.id) {
+      throw new Error('Failed to enqueue job: job.id is undefined');
+    }
+
     this.logger.log(
       `Enqueued company buildings job: ${job.id} with sourceFile: ${data.sourceFile}`,
     );
-    return job.id as string;
+    return job.id;
   }
 }

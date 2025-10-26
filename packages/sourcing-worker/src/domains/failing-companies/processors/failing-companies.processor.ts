@@ -66,15 +66,13 @@ export class FailingCompaniesProcessor {
    */
   private buildApiUrl(departmentId: number, sinceDate: string): string {
     const baseUrl =
-      'https://bodacc-datadila.opendatasoft.com/api/records/1.0/export/';
+      'https://bodacc-datadila.opendatasoft.com/api/explore/v2.1/catalog/datasets/annonces-commerciales/exports/csv';
 
     const params = new URLSearchParams({
-      dataset: 'annonces-commerciales',
-      q: `familleavis:collective AND numerodepartement:${departmentId} AND dateparution>=${sinceDate}`,
-      rows: '-1', // Get all records
-      format: 'csv',
-      fields:
-        'numerodepartement,departement_nom_officiel,familleavis_lib,typeavis_lib,dateparution,denomination,ville,cp,listepersonnes,jugement',
+      where: `familleavis:"collective" AND numerodepartement:${departmentId} AND dateparution>="${sinceDate}"`,
+      limit: '-1', // Get all records
+      select:
+        'numerodepartement,departement_nom_officiel,familleavis_lib,typeavis_lib,dateparution,commercant,ville,cp,listepersonnes,jugement',
     });
 
     return `${baseUrl}?${params.toString()}`;
