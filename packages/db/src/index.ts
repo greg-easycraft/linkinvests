@@ -1,2 +1,3 @@
 // Main entry point for @repo/db
-export * from './schema';
+export * as authSchema from './schema/auth.schema';
+export * as domainSchema from './schema/domain.schema';

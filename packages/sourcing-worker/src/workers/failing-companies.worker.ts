@@ -1,11 +1,9 @@
-import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { Worker, Job } from 'bullmq';
-import Redis from 'ioredis';
 import {
-  REDIS_CONNECTION,
+  FailingCompaniesProcessor,
   SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE,
-} from '../bullmq/bullmq.module';
-import { FailingCompaniesProcessor } from '../domains/failing-companies/processors/failing-companies.processor';
+} from '~/domains/failing-companies';
 
 @Injectable()
 export class FailingCompaniesWorker implements OnModuleInit {
@@ -13,12 +11,12 @@ export class FailingCompaniesWorker implements OnModuleInit {
   private worker!: Worker;
 
   constructor(
-    @Inject(REDIS_CONNECTION)
-    private readonly connection: Redis,
     private readonly failingCompaniesProcessor: FailingCompaniesProcessor,
   ) {}
 
   onModuleInit() {
+    const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
+
     this.worker = new Worker(
       SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE,
       async (job: Job) => {
@@ -34,7 +32,10 @@ export class FailingCompaniesWorker implements OnModuleInit {
         }
       },
       {
-        connection: this.connection,
+        connection: {
+          host: new URL(redisUrl).hostname,
+          port: parseInt(new URL(redisUrl).port || '6379'),
+        },
       },
     );
 

@@ -4,7 +4,7 @@ import { setupBullBoard } from './bullmq/bull-board.setup';
 import {
   SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE,
   SOURCE_COMPANY_BUILDINGS_QUEUE,
-} from './bullmq/bullmq.module';
+} from '~/domains/failing-companies';
 import { Queue } from 'bullmq';
 import { Logger } from '@nestjs/common';
 

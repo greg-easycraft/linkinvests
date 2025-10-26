@@ -1,11 +1,9 @@
-import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { Worker, Job } from 'bullmq';
-import Redis from 'ioredis';
 import {
-  REDIS_CONNECTION,
+  CompanyBuildingsProcessor,
   SOURCE_COMPANY_BUILDINGS_QUEUE,
-} from '../bullmq/bullmq.module';
-import { CompanyBuildingsProcessor } from '../domains/failing-companies/processors/company-buildings.processor';
+} from '~/domains/failing-companies';
 
 interface CompanyBuildingsJobData {
   sourceFile: string;
@@ -17,12 +15,12 @@ export class CompanyBuildingsWorker implements OnModuleInit {
   private worker!: Worker;
 
   constructor(
-    @Inject(REDIS_CONNECTION)
-    private readonly connection: Redis,
     private readonly companyBuildingsProcessor: CompanyBuildingsProcessor,
   ) {}
 
   onModuleInit() {
+    const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
+
     this.worker = new Worker(
       SOURCE_COMPANY_BUILDINGS_QUEUE,
       async (job: Job<CompanyBuildingsJobData>) => {
@@ -40,7 +38,10 @@ export class CompanyBuildingsWorker implements OnModuleInit {
         }
       },
       {
-        connection: this.connection,
+        connection: {
+          host: new URL(redisUrl).hostname,
+          port: parseInt(new URL(redisUrl).port || '6379'),
+        },
       },
     );
 

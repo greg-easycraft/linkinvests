@@ -18,9 +18,8 @@ export class DatabaseModule implements OnModuleDestroy {
       throw new Error('DATABASE_URL environment variable is not set');
     }
 
-    const client = postgres({
+    const client = postgres(databaseUrl, {
       max: 10,
-      url: databaseUrl,
     });
     DatabaseModule.client = client;
 

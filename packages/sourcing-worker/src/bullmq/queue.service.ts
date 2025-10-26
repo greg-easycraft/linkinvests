@@ -3,7 +3,7 @@ import { Queue } from 'bullmq';
 import {
   SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE,
   SOURCE_COMPANY_BUILDINGS_QUEUE,
-} from './bullmq.module';
+} from '~/domains/failing-companies';
 
 @Injectable()
 export class QueueService {
