@@ -1,19 +1,13 @@
 import { pgTable, text, timestamp, integer, serial, varchar, doublePrecision, pgEnum, date } from "drizzle-orm/pg-core";
-
-export enum OpportunityType {
-    SUCCESSION = "succession",
-    LIQUIDATION = "liquidation",
-    PASSOIRE_THERMIQUE = "passoire_thermique",
-    ANNONCE_IMMO = "annonce_immo",
-    ENCHERE = "enchere",
-    DIVORCE = "divorce",
-}
+import { OpportunityType } from "@repo/shared";
 
 const opportunityType = pgEnum("opportunity_type", Object.values(OpportunityType) as [string, ...string[]]);
 
 export const opportunities = pgTable("opportunity", {
     id: serial("id").primaryKey(),
     label: varchar("name").notNull(),
+    siret: varchar("siret", { length: 14 }),
+    address: text("address"),
     zipCode: integer("zip_code").notNull(),
     department: integer("department").notNull(),
     latitude: doublePrecision("latitude").notNull(),

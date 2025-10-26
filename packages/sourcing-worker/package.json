@@ -33,6 +33,7 @@
     "@repo/db": "workspace:*",
     "@repo/shared": "workspace:*",
     "bullmq": "^5.61.2",
+    "csv-parse": "^6.1.0",
     "drizzle-orm": "^0.38.4",
     "ioredis": "^5.8.2",
     "postgres": "^3.4.7",
