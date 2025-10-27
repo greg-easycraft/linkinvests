@@ -44,6 +44,5 @@ yarn-debug.log*
 yarn-error.log*
 
 # Database
-drizzle/
 *.db
 *.db-journal

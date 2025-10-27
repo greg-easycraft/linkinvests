@@ -93,7 +93,7 @@ export class EnergySievesProcessor extends WorkerHost {
             department: opp.department,
             latitude: opp.latitude,
             longitude: opp.longitude,
-            type: OpportunityType.PASSOIRE_THERMIQUE,
+            type: OpportunityType.ENERGY_SIEVE,
             status: 'pending_review',
             opportunityDate: opp.opportunityDate || null,
           }));
