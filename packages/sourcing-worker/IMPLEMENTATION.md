@@ -20,7 +20,7 @@ Implement BullMQ-based job queue system with Drizzle ORM database integration fo
 ### 2. Create Database Module
 - [ ] Create `src/database/database.module.ts`
 - [ ] Set up Drizzle connection to PostgreSQL using `pg` driver
-- [ ] Import `domainSchema` from `@repo/db`
+- [ ] Import `domainSchema` from `@linkinvest/db`
 - [ ] Create `DATABASE_CONNECTION` provider with Drizzle instance
 - [ ] Export as global module for DI throughout the app
 - [ ] Configure to use `DATABASE_URL` environment variable

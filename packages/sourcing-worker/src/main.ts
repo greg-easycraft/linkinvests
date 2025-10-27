@@ -1,29 +1,10 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { setupBullBoard } from './bullmq/bull-board.setup';
-import {
-  SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE,
-  SOURCE_COMPANY_BUILDINGS_QUEUE,
-} from '~/domains/failing-companies';
-import { Queue } from 'bullmq';
 import { Logger } from '@nestjs/common';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
   const app = await NestFactory.create(AppModule);
-
-  // Get queue instances for Bull Board
-  const failingCompaniesQueue = app.get<Queue>(
-    SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE,
-  );
-  const companyBuildingsQueue = app.get<Queue>(SOURCE_COMPANY_BUILDINGS_QUEUE);
-
-  // Setup Bull Board dashboard
-  const bullBoardRouter = setupBullBoard(
-    failingCompaniesQueue,
-    companyBuildingsQueue,
-  );
-  app.use('/admin/queues', bullBoardRouter);
 
   // Enable graceful shutdown
   app.enableShutdownHooks();

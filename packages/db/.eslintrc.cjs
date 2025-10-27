@@ -1,5 +1,5 @@
 module.exports = {
-  extends: ['@repo/eslint-config'],
+  extends: ['@linkinvest/eslint-config'],
   parserOptions: {
     project: './tsconfig.json',
     tsconfigRootDir: __dirname,

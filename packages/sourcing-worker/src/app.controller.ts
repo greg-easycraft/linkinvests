@@ -1,20 +1,19 @@
-import { Controller, Get, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
-import { AppService } from './app.service';
-import { QueueService } from './bullmq/queue.service';
-import { FailingCompaniesCron } from './domains/failing-companies/cron';
+import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
+import {
+  SOURCE_COMPANY_BUILDINGS_QUEUE,
+  SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE,
+} from '@linkinvest/shared';
+import { Queue } from 'bullmq';
+import { InjectQueue } from '@nestjs/bullmq';
 
 @Controller()
 export class AppController {
   constructor(
-    private readonly appService: AppService,
-    private readonly queueService: QueueService,
-    private readonly failingCompaniesCron: FailingCompaniesCron,
+    @InjectQueue(SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE)
+    private readonly failingCompaniesQueue: Queue,
+    @InjectQueue(SOURCE_COMPANY_BUILDINGS_QUEUE)
+    private readonly companyBuildingsQueue: Queue,
   ) {}
-
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
-  }
 
   @Post('jobs/failing-companies')
   @HttpCode(HttpStatus.ACCEPTED)
@@ -37,10 +36,18 @@ export class AppController {
         };
       }
 
-      const jobId = await this.queueService.sourceFailingCompanies({
-        departmentId,
-        sinceDate,
-      });
+      const { id: jobId } = await this.failingCompaniesQueue.add(
+        'source-failing-companies',
+        {
+          departmentId,
+          sinceDate,
+        },
+        {
+          removeOnComplete: 100,
+          removeOnFail: 100,
+        },
+      );
+
       return {
         success: true,
         jobId,
@@ -66,9 +73,17 @@ export class AppController {
         };
       }
 
-      const jobId = await this.queueService.sourceCompanyBuildings({
-        sourceFile,
-      });
+      const { id: jobId } = await this.companyBuildingsQueue.add(
+        'source-company-buildings',
+        {
+          sourceFile,
+        },
+        {
+          removeOnComplete: 100,
+          removeOnFail: 100,
+        },
+      );
+
       return {
         success: true,
         jobId,
@@ -83,21 +98,21 @@ export class AppController {
     }
   }
 
-  @Post('cron/test-failing-companies')
-  @HttpCode(HttpStatus.ACCEPTED)
-  async testFailingCompaniesCron() {
-    try {
-      await this.failingCompaniesCron.handleDailyFailingCompanies();
-      return {
-        success: true,
-        message: 'Cron job triggered manually',
-      };
-    } catch (error) {
-      const err = error as Error;
-      return {
-        success: false,
-        error: err.message,
-      };
-    }
-  }
+  // @Post('cron/test-failing-companies')
+  // @HttpCode(HttpStatus.ACCEPTED)
+  // async testFailingCompaniesCron() {
+  //   try {
+  //     await this.failingCompaniesCron.handleDailyFailingCompanies();
+  //     return {
+  //       success: true,
+  //       message: 'Cron job triggered manually',
+  //     };
+  //   } catch (error) {
+  //     const err = error as Error;
+  //     return {
+  //       success: false,
+  //       error: err.message,
+  //     };
+  //   }
+  // }
 }

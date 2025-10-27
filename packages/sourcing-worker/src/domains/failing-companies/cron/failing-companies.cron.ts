@@ -1,12 +1,17 @@
+import { SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE } from '@linkinvest/shared';
+import { InjectQueue } from '@nestjs/bullmq';
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { QueueService } from '~/bullmq/queue.service';
+import { Queue } from 'bullmq';
 
 @Injectable()
 export class FailingCompaniesCron {
   private readonly logger = new Logger(FailingCompaniesCron.name);
 
-  constructor(private readonly queueService: QueueService) {}
+  constructor(
+    @InjectQueue(SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE)
+    private readonly queue: Queue,
+  ) {}
 
   /**
    * Cron job that runs daily at 1:00 AM to fetch failing companies
@@ -34,15 +39,22 @@ export class FailingCompaniesCron {
       );
 
       // Enqueue jobs for all departments (1-95)
-      const jobPromises: Promise<string | null>[] = [];
+      const jobPromises: Promise<unknown>[] = [];
       const departments = Array.from({ length: 95 }, (_, i) => i + 1);
       for (const departmentId of departments) {
-        const promise = this.queueService
-          .sourceFailingCompanies({
-            departmentId,
-            sinceDate,
-          })
-          .then((jobId: string) => {
+        const promise = this.queue
+          .add(
+            'source-failing-companies',
+            {
+              departmentId,
+              sinceDate,
+            },
+            {
+              removeOnComplete: 100,
+              removeOnFail: 100,
+            },
+          )
+          .then(({ id: jobId }) => {
             this.logger.debug(
               `Enqueued job ${jobId} for department ${departmentId}`,
             );

@@ -1,16 +1,20 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { S3Service } from '~/storage';
-import { SOURCE_COMPANY_BUILDINGS_QUEUE } from '../constants';
 import { Queue } from 'bullmq';
 import { request } from 'undici';
+import { InjectQueue, Processor } from '@nestjs/bullmq';
+import {
+  SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE,
+  SOURCE_COMPANY_BUILDINGS_QUEUE,
+} from '@linkinvest/shared';
 
-@Injectable()
+@Processor(SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE)
 export class FailingCompaniesProcessor {
   private readonly logger = new Logger(FailingCompaniesProcessor.name);
 
   constructor(
     private readonly s3Service: S3Service,
-    @Inject(SOURCE_COMPANY_BUILDINGS_QUEUE)
+    @InjectQueue(SOURCE_COMPANY_BUILDINGS_QUEUE)
     private readonly companyBuildingsQueue: Queue,
   ) {}
 

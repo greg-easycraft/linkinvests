@@ -1,5 +1,5 @@
 import { pgTable, text, timestamp, integer, serial, varchar, doublePrecision, pgEnum, date } from "drizzle-orm/pg-core";
-import { OpportunityType } from "@repo/shared";
+import { OpportunityType } from "@linkinvest/shared";
 
 const opportunityType = pgEnum("opportunity_type", Object.values(OpportunityType) as [string, ...string[]]);
 
