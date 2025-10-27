@@ -104,17 +104,21 @@ export class CsvParserService {
       const personnesData = JSON.parse(
         row.listepersonnes,
       ) as ListePersonnesData[];
-
+      console.log(personnesData);
       // listepersonnes can be an array or a single object
       const personnes = Array.isArray(personnesData)
         ? personnesData
         : [personnesData];
 
-      // Find the first entry with a numeroIdentification
-      for (const personne of personnes) {
-        if (personne.numeroIdentification) {
-          const siren = personne.numeroIdentification.replace(/\s/g, ''); // Remove any spaces
-
+      // Find the first entry with a numeroImmatriculation.numeroIdentification
+      for (const { personne } of personnes) {
+        if (personne?.numeroImmatriculation?.numeroIdentification) {
+          const siren =
+            personne.numeroImmatriculation.numeroIdentification.replace(
+              /\s/g,
+              '',
+            ); // Remove any spaces
+          console.log(siren);
           // Validate SIREN format (9 digits)
           if (/^\d{9}$/.test(siren)) {
             return siren;

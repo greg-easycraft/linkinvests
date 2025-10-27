@@ -11,8 +11,12 @@ export interface FailingCompanyCsvRow {
   jugement: string;
 }
 
-export interface ListePersonnesData {
+export interface NumeroImmatriculation {
   numeroIdentification: string; // SIREN (9 digits)
+}
+
+export interface ListePersonnesData {
+  numeroImmatriculation?: NumeroImmatriculation;
   denomination?: string;
   activite?: string;
   nomPatronymique?: string;

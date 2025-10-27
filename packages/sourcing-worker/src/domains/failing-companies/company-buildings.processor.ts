@@ -14,10 +14,15 @@ import {
 } from '@linkinvest/shared';
 import type { Etablissement } from './types/recherche-entreprises.types';
 import type { CompanyEstablishment, FailingCompanyCsvRow } from './types/failing-companies.types';
-import { Processor } from '@nestjs/bullmq';
+import { Processor, WorkerHost } from '@nestjs/bullmq';
+import type { Job } from 'bullmq';
+
+interface CompanyBuildingsJobData {
+  sourceFile: string;
+}
 
 @Processor(SOURCE_COMPANY_BUILDINGS_QUEUE)
-export class CompanyBuildingsProcessor {
+export class CompanyBuildingsProcessor extends WorkerHost {
   private readonly logger = new Logger(CompanyBuildingsProcessor.name);
 
   constructor(
@@ -27,9 +32,12 @@ export class CompanyBuildingsProcessor {
     private readonly csvParserService: CsvParserService,
     private readonly rechercheEntreprisesApi: RechercheEntreprisesApiService,
     private readonly geocodingApi: GeocodingApiService,
-  ) {}
+  ) {
+    super();
+  }
 
-  async process(sourceFile: string): Promise<void> {
+  async process(job: Job<CompanyBuildingsJobData>): Promise<void> {
+    const { sourceFile } = job.data;
     const startTime = Date.now();
     this.logger.log(
       `Starting to process company buildings from: ${sourceFile}`,

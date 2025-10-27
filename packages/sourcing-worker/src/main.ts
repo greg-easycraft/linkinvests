@@ -13,7 +13,6 @@ async function bootstrap() {
   await app.listen(port);
 
   logger.log(`Application is running on: http://localhost:${port}`);
-  logger.log(`Bull Board dashboard: http://localhost:${port}/admin/queues`);
 }
 
 bootstrap().catch((err) => console.error(err));

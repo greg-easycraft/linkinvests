@@ -1,24 +1,32 @@
 import { Logger } from '@nestjs/common';
 import { S3Service } from '~/storage';
-import { Queue } from 'bullmq';
+import { Queue, Job } from 'bullmq';
 import { request } from 'undici';
-import { InjectQueue, Processor } from '@nestjs/bullmq';
+import { InjectQueue, Processor, WorkerHost } from '@nestjs/bullmq';
 import {
   SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE,
   SOURCE_COMPANY_BUILDINGS_QUEUE,
 } from '@linkinvest/shared';
 
+interface FailingCompaniesJobData {
+  departmentId: number;
+  sinceDate: string;
+}
+
 @Processor(SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE)
-export class FailingCompaniesProcessor {
+export class FailingCompaniesProcessor extends WorkerHost {
   private readonly logger = new Logger(FailingCompaniesProcessor.name);
 
   constructor(
     private readonly s3Service: S3Service,
     @InjectQueue(SOURCE_COMPANY_BUILDINGS_QUEUE)
     private readonly companyBuildingsQueue: Queue,
-  ) {}
+  ) {
+    super();
+  }
 
-  async process(departmentId: number, sinceDate: string): Promise<void> {
+  async process(job: Job<FailingCompaniesJobData>): Promise<void> {
+    const { departmentId, sinceDate } = job.data;
     this.logger.log(
       `Starting to process failing companies for department ${departmentId} since ${sinceDate}`,
     );

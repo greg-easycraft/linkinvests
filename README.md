@@ -32,23 +32,23 @@ linkinvest/
 
 ## Packages
 
-### @repo/eslint-config
+### @linkinvest/eslint-config
 
 Shared ESLint configuration used across all packages. Includes:
 - TypeScript ESLint
 - Prettier integration
 - Import sorting rules
 
-### @repo/shared
+### @linkinvest/shared
 
 Pure TypeScript utility types and shared code. No build step - exports raw TypeScript files.
 
 **Usage:**
 ```typescript
-import type { Result, Nullable } from '@repo/shared';
+import type { Result, Nullable } from '@linkinvest/shared';
 ```
 
-### @repo/db
+### @linkinvest/db
 
 Drizzle ORM package with PostgreSQL schemas. No build step - exports raw TypeScript files.
 
@@ -56,10 +56,10 @@ Drizzle ORM package with PostgreSQL schemas. No build step - exports raw TypeScr
 
 **Available scripts:**
 ```bash
-pnpm --filter @repo/db db:generate  # Generate migrations
-pnpm --filter @repo/db db:migrate   # Run migrations
-pnpm --filter @repo/db db:push      # Push schema to database
-pnpm --filter @repo/db db:studio    # Open Drizzle Studio
+pnpm --filter @linkinvest/db db:generate  # Generate migrations
+pnpm --filter @linkinvest/db db:migrate   # Run migrations
+pnpm --filter @linkinvest/db db:push      # Push schema to database
+pnpm --filter @linkinvest/db db:studio    # Open Drizzle Studio
 ```
 
 **Environment variables** (see `packages/db/.env.example`):
@@ -69,7 +69,7 @@ pnpm --filter @repo/db db:studio    # Open Drizzle Studio
 - `DB_PASSWORD`
 - `DB_NAME`
 
-### @repo/frontend
+### @linkinvest/frontend
 
 Next.js 15 application with App Router, TypeScript, and Tailwind CSS.
 
@@ -78,36 +78,36 @@ Next.js 15 application with App Router, TypeScript, and Tailwind CSS.
 **Key features:**
 - Server Components by default
 - Tailwind CSS for styling
-- Imports `@repo/shared` and `@repo/db`
+- Imports `@linkinvest/shared` and `@linkinvest/db`
 
 **Scripts:**
 ```bash
-pnpm --filter @repo/frontend dev        # Start dev server
-pnpm --filter @repo/frontend build      # Build for production
-pnpm --filter @repo/frontend start      # Start production server
-pnpm --filter @repo/frontend lint       # Run ESLint
-pnpm --filter @repo/frontend typecheck  # Run TypeScript checks
+pnpm --filter @linkinvest/frontend dev        # Start dev server
+pnpm --filter @linkinvest/frontend build      # Build for production
+pnpm --filter @linkinvest/frontend start      # Start production server
+pnpm --filter @linkinvest/frontend lint       # Run ESLint
+pnpm --filter @linkinvest/frontend typecheck  # Run TypeScript checks
 ```
 
-### @repo/sourcing-worker
+### @linkinvest/sourcing-worker
 
 NestJS 11 worker application for real estate sourcing tasks.
 
 **Import alias**: `~/` points to `src/`
 
 **Key features:**
-- Uses `@repo/db` for database access
-- Uses `@repo/shared` for common types
+- Uses `@linkinvest/db` for database access
+- Uses `@linkinvest/shared` for common types
 - Jest configured for unit and e2e tests
 
 **Scripts:**
 ```bash
-pnpm --filter @repo/sourcing-worker dev         # Start in watch mode
-pnpm --filter @repo/sourcing-worker build       # Build for production
-pnpm --filter @repo/sourcing-worker start:prod  # Start production server
-pnpm --filter @repo/sourcing-worker test        # Run unit tests
-pnpm --filter @repo/sourcing-worker test:e2e    # Run e2e tests
-pnpm --filter @repo/sourcing-worker test:cov    # Run tests with coverage
+pnpm --filter @linkinvest/sourcing-worker dev         # Start in watch mode
+pnpm --filter @linkinvest/sourcing-worker build       # Build for production
+pnpm --filter @linkinvest/sourcing-worker start:prod  # Start production server
+pnpm --filter @linkinvest/sourcing-worker test        # Run unit tests
+pnpm --filter @linkinvest/sourcing-worker test:e2e    # Run e2e tests
+pnpm --filter @linkinvest/sourcing-worker test:cov    # Run tests with coverage
 ```
 
 ## Getting Started
@@ -132,8 +132,8 @@ pnpm install
 pnpm dev
 
 # Or run specific packages
-pnpm --filter @repo/frontend dev
-pnpm --filter @repo/sourcing-worker dev
+pnpm --filter @linkinvest/frontend dev
+pnpm --filter @linkinvest/sourcing-worker dev
 ```
 
 ### Building
@@ -143,7 +143,7 @@ pnpm --filter @repo/sourcing-worker dev
 pnpm build
 
 # Build specific package
-pnpm --filter @repo/frontend build
+pnpm --filter @linkinvest/frontend build
 ```
 
 ### Type Checking
@@ -184,11 +184,11 @@ All scripts run across applicable packages in the workspace:
 pnpm add -D <package> -w
 
 # Add to specific package
-pnpm --filter @repo/frontend add <package>
-pnpm --filter @repo/sourcing-worker add <package>
+pnpm --filter @linkinvest/frontend add <package>
+pnpm --filter @linkinvest/sourcing-worker add <package>
 
 # Add workspace dependency
-# In package.json, use: "@repo/shared": "workspace:*"
+# In package.json, use: "@linkinvest/shared": "workspace:*"
 ```
 
 ## Configuration Files
@@ -200,7 +200,7 @@ pnpm --filter @repo/sourcing-worker add <package>
 
 ## Notes
 
-- Both `@repo/shared` and `@repo/db` export raw TypeScript files (no build step)
+- Both `@linkinvest/shared` and `@linkinvest/db` export raw TypeScript files (no build step)
 - Consuming packages (frontend/sourcing-worker) handle transpilation
 - Import aliases use `~/` for local imports in frontend and sourcing-worker
 - The frontend uses `transpilePackages` in `next.config.ts` for workspace dependencies

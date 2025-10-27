@@ -21,48 +21,48 @@ pnpm build
 
 ```bash
 # Development mode
-pnpm --filter @repo/frontend dev
+pnpm --filter @linkinvest/frontend dev
 # Open http://localhost:3000
 
 # Production build
-pnpm --filter @repo/frontend build
-pnpm --filter @repo/frontend start
+pnpm --filter @linkinvest/frontend build
+pnpm --filter @linkinvest/frontend start
 ```
 
 ### Sourcing Worker (NestJS)
 
 ```bash
 # Development mode (with hot reload)
-pnpm --filter @repo/sourcing-worker dev
+pnpm --filter @linkinvest/sourcing-worker dev
 # Server runs on http://localhost:3000 by default
 
 # Production
-pnpm --filter @repo/sourcing-worker build
-pnpm --filter @repo/sourcing-worker start:prod
+pnpm --filter @linkinvest/sourcing-worker build
+pnpm --filter @linkinvest/sourcing-worker start:prod
 ```
 
 ### Run Both Simultaneously
 
 ```bash
 # In separate terminals
-pnpm --filter @repo/frontend dev
-pnpm --filter @repo/sourcing-worker dev
+pnpm --filter @linkinvest/frontend dev
+pnpm --filter @linkinvest/sourcing-worker dev
 ```
 
 ## Database Management
 
 ```bash
 # Generate migration from schema changes
-pnpm --filter @repo/db db:generate
+pnpm --filter @linkinvest/db db:generate
 
 # Apply migrations to database
-pnpm --filter @repo/db db:migrate
+pnpm --filter @linkinvest/db db:migrate
 
 # Push schema directly (dev only)
-pnpm --filter @repo/db db:push
+pnpm --filter @linkinvest/db db:push
 
 # Open Drizzle Studio (database GUI)
-pnpm --filter @repo/db db:studio
+pnpm --filter @linkinvest/db db:studio
 ```
 
 ## Common Tasks
@@ -73,27 +73,27 @@ pnpm --filter @repo/db db:studio
 2. Export your new type
 3. Use it in frontend or sourcing-worker:
    ```typescript
-   import type { YourType } from '@repo/shared';
+   import type { YourType } from '@linkinvest/shared';
    ```
 
 ### Add a new database table
 
 1. Create schema in `packages/db/src/schema/`
 2. Export it from `packages/db/src/schema/index.ts`
-3. Generate migration: `pnpm --filter @repo/db db:generate`
-4. Apply migration: `pnpm --filter @repo/db db:migrate`
+3. Generate migration: `pnpm --filter @linkinvest/db db:generate`
+4. Apply migration: `pnpm --filter @linkinvest/db db:migrate`
 
 ### Add a dependency to a package
 
 ```bash
 # To frontend
-pnpm --filter @repo/frontend add <package-name>
+pnpm --filter @linkinvest/frontend add <package-name>
 
 # To sourcing-worker
-pnpm --filter @repo/sourcing-worker add <package-name>
+pnpm --filter @linkinvest/sourcing-worker add <package-name>
 
 # Development dependency
-pnpm --filter @repo/frontend add -D <package-name>
+pnpm --filter @linkinvest/frontend add -D <package-name>
 ```
 
 ### Run tests
@@ -103,9 +103,9 @@ pnpm --filter @repo/frontend add -D <package-name>
 pnpm test
 
 # Specific package
-pnpm --filter @repo/sourcing-worker test
-pnpm --filter @repo/sourcing-worker test:e2e
-pnpm --filter @repo/sourcing-worker test:cov
+pnpm --filter @linkinvest/sourcing-worker test
+pnpm --filter @linkinvest/sourcing-worker test:e2e
+pnpm --filter @linkinvest/sourcing-worker test:cov
 ```
 
 ## Troubleshooting
@@ -130,10 +130,10 @@ pnpm --filter @repo/sourcing-worker test:cov
 
 ## Development Workflow
 
-1. **Start with types**: Add shared types to `@repo/shared`
-2. **Define schema**: Add database tables in `@repo/db`
-3. **Backend logic**: Implement in `@repo/sourcing-worker`
-4. **Frontend UI**: Build interface in `@repo/frontend`
+1. **Start with types**: Add shared types to `@linkinvest/shared`
+2. **Define schema**: Add database tables in `@linkinvest/db`
+3. **Backend logic**: Implement in `@linkinvest/sourcing-worker`
+4. **Frontend UI**: Build interface in `@linkinvest/frontend`
 5. **Test**: Write and run tests
 6. **Commit**: Stage and commit your changes
 

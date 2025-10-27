@@ -70,14 +70,14 @@ We'll use the `"packageManager": "pnpm@latest"` key to enforce PNPM. We'll also 
 
 ### 3\. Package-Specific Details
 
-#### A. `@repo/shared` (Utility Types)
+#### A. `@linkinvest/shared` (Utility Types)
 
 Since you want **no build step**, this package will rely on consumers (like Next.js and NestJS) setting their `tsconfig.json` `moduleResolution` correctly (usually `node` or `bundler` in newer configs) to import the `.ts` files directly.
 
   * **`package.json` snippet:**
     ```json
     {
-      "name": "@repo/shared",
+      "name": "@linkinvest/shared",
       "version": "1.0.0",
       "type": "module", // Good practice for modern TS export
       "main": "./index.ts", // Point to the main entry file
@@ -87,7 +87,7 @@ Since you want **no build step**, this package will rely on consumers (like Next
     ```
   * **Consumption:** Both `frontend` and `sourcing-worker` will list it under `devDependencies` in their respective `package.json` files to get type checking and auto-completion.
 
-#### B. `@repo/db` (Drizzle Schemas)
+#### B. `@linkinvest/db` (Drizzle Schemas)
 
 This package will hold your Drizzle setup for **PostgreSQL** and export **only the schemas**.
 
@@ -95,7 +95,7 @@ This package will hold your Drizzle setup for **PostgreSQL** and export **only t
   * **`package.json` snippet:**
     ```json
     {
-      "name": "@repo/db",
+      "name": "@linkinvest/db",
       "version": "1.0.0",
       "type": "module",
       "dependencies": {
@@ -106,15 +106,15 @@ This package will hold your Drizzle setup for **PostgreSQL** and export **only t
       "files": ["src/**/*"]
     }
     ```
-  * **Migration Management:** Since the **`sourcing-worker`** manages DB interaction and the **`db`** package contains everything, you should place the **Drizzle configuration** (`drizzle.config.ts`) and **migration scripts** inside the **`db`** package. The `sourcing-worker` will depend on `@repo/db` and execute the migrations/queries using the exported schemas.
+  * **Migration Management:** Since the **`sourcing-worker`** manages DB interaction and the **`db`** package contains everything, you should place the **Drizzle configuration** (`drizzle.config.ts`) and **migration scripts** inside the **`db`** package. The `sourcing-worker` will depend on `@linkinvest/db` and execute the migrations/queries using the exported schemas.
 
-#### C. `@repo/frontend` (Next.js + Tailwind/ShadCN)
+#### C. `@linkinvest/frontend` (Next.js + Tailwind/ShadCN)
 
-  * **Dependencies:** `next`, `react`, `react-dom`, `@repo/shared`, `@repo/db`.
+  * **Dependencies:** `next`, `react`, `react-dom`, `@linkinvest/shared`, `@linkinvest/db`.
   * **Dev Dependencies:** `tailwindcss`, `@types/react`, etc.
   * **Next Configuration:** Configure `tailwind.config.js` to reference files in the `packages/frontend` directory and potentially the `packages/shared` directory (if you use shared components/utilities).
 
-#### D. `@repo/sourcing-worker` (NestJS + Message Queue)
+#### D. `@linkinvest/sourcing-worker` (NestJS + Message Queue)
 
-  * **Dependencies:** `@nestjs/common`, etc., plus `@repo/shared` and `@repo/db`.
+  * **Dependencies:** `@nestjs/common`, etc., plus `@linkinvest/shared` and `@linkinvest/db`.
   * **Testing:** Will use **Jest** configured in its own scope, potentially inheriting settings from the root if you add a root Jest configuration later.

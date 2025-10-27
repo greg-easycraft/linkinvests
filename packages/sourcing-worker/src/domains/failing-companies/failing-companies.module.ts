@@ -6,6 +6,8 @@ import { CsvParserService } from './services/csv-parser.service';
 import { RechercheEntreprisesApiService } from './services/recherche-entreprises-api.service';
 import { GeocodingApiService } from './services/geocoding-api.service';
 import { BullModule } from '@nestjs/bullmq';
+import { BullBoardModule } from '@bull-board/nestjs';
+import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import {
   SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE,
   SOURCE_COMPANY_BUILDINGS_QUEUE,
@@ -26,6 +28,14 @@ const redisConnection = {
       name: SOURCE_COMPANY_BUILDINGS_QUEUE,
       connection: redisConnection,
     }),
+    BullBoardModule.forFeature({
+      name: SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE,
+      adapter: BullMQAdapter,
+    }),
+    BullBoardModule.forFeature({
+      name: SOURCE_COMPANY_BUILDINGS_QUEUE,
+      adapter: BullMQAdapter,
+    }),
   ],
   providers: [
     FailingCompaniesProcessor,
@@ -35,5 +45,6 @@ const redisConnection = {
     RechercheEntreprisesApiService,
     GeocodingApiService,
   ],
+  exports: [BullModule],
 })
 export class FailingCompaniesModule {}
