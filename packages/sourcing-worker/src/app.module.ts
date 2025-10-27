@@ -6,6 +6,7 @@ import { DatabaseModule } from './database';
 import { S3Module } from './storage';
 import { BullModule } from '@nestjs/bullmq';
 import { FailingCompaniesModule } from './domains/failing-companies';
+import { EnergySievesModule } from './domains/energy-sieves';
 import { BullBoardModule } from '@bull-board/nestjs';
 import { ExpressAdapter } from '@bull-board/express';
 import basicAuth from 'express-basic-auth';
@@ -33,6 +34,7 @@ import basicAuth from 'express-basic-auth';
       }),
     }),
     FailingCompaniesModule,
+    EnergySievesModule,
   ],
   controllers: [AppController],
 })

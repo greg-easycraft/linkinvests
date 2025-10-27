@@ -33,4 +33,5 @@ export interface CompanyEstablishment {
   department: number;
   latitude: number;
   longitude: number;
+  opportunityDate: string; // Date de parution from CSV
 }

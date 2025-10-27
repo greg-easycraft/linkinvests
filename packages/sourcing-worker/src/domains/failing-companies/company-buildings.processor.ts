@@ -96,6 +96,7 @@ export class CompanyBuildingsProcessor extends WorkerHost {
           for (const etablissement of establishments) {
             const transformed = await this.transformEstablishment(
               etablissement,
+              row.dateparution, // Pass the parution date from CSV
               stats,
             );
             if (transformed) {
@@ -137,6 +138,7 @@ export class CompanyBuildingsProcessor extends WorkerHost {
           longitude: est.longitude,
           type: OpportunityType.LIQUIDATION,
           status: 'pending_review',
+          opportunityDate: est.opportunityDate || null,
         }));
 
         await this.db
@@ -234,6 +236,7 @@ export class CompanyBuildingsProcessor extends WorkerHost {
    */
   private async transformEstablishment(
     etablissement: Etablissement,
+    opportunityDate: string,
     stats: any,
   ): Promise<CompanyEstablishment | null> {
     try {
@@ -274,6 +277,7 @@ export class CompanyBuildingsProcessor extends WorkerHost {
         department,
         latitude,
         longitude,
+        opportunityDate,
       };
     } catch (error) {
       this.logger.error(
