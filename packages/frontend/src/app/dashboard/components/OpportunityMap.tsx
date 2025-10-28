@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
+import { X } from "lucide-react";
 import type { Opportunity } from "~/server/domains/opportunities/repositories/IOpportunityRepository";
 import { OpportunityType } from "@linkinvest/shared";
 
@@ -16,6 +17,8 @@ interface OpportunityMapProps {
     east: number;
     west: number;
   }) => void;
+  isLimited?: boolean;
+  total?: number;
 }
 
 const TYPE_COLORS: Record<OpportunityType, string> = {
@@ -41,11 +44,14 @@ export function OpportunityMap({
   selectedId,
   onSelect,
   onBoundsChange,
+  isLimited = false,
+  total = 0,
 }: OpportunityMapProps): React.ReactElement {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const markersRef = useRef<mapboxgl.Marker[]>([]);
   const [mapLoaded, setMapLoaded] = useState(false);
+  const [isDisclaimerVisible, setIsDisclaimerVisible] = useState(true);
 
   // Initialize map
   useEffect(() => {
@@ -158,9 +164,45 @@ export function OpportunityMap({
     <div className="relative w-full h-full">
       <div ref={mapContainer} className="w-full h-full min-h-[600px] rounded-lg" />
 
+      {/* Disclaimer for limited results */}
+      {isLimited && isDisclaimerVisible && (
+        <div className="absolute top-4 left-4 right-4 bg-amber-500 text-white p-4 rounded-lg shadow-lg max-w-md">
+          <div className="flex items-start gap-3">
+            <svg
+              className="w-6 h-6 flex-shrink-0 mt-0.5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              />
+            </svg>
+            <div className="flex-1">
+              <div className="font-semibold mb-1 font-heading">Affichage limité</div>
+              <div className="text-sm">
+                {total} opportunités correspondent à vos critères, mais seules les 500
+                premières sont affichées. Veuillez affiner vos filtres pour voir des
+                résultats plus précis.
+              </div>
+            </div>
+            <button
+              onClick={() => setIsDisclaimerVisible(false)}
+              className="flex-shrink-0 hover:opacity-80 transition-opacity"
+              aria-label="Fermer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Legend */}
-      <div className="absolute top-4 right-4 bg-white p-4 rounded-lg shadow-lg">
-        <div className="text-sm font-semibold mb-2">Types d'opportunités</div>
+      <div className="absolute bottom-4 right-4 bg-white p-4 rounded-lg shadow-lg">
+        <div className="text-sm font-semibold mb-2 font-heading">Types d'opportunités</div>
         <div className="space-y-1">
           {Object.entries(TYPE_COLORS).map(([type, color]) => (
             <div key={type} className="flex items-center gap-2 text-xs">

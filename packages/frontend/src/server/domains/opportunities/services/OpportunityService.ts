@@ -9,7 +9,15 @@ export interface OpportunityListResult {
   totalPages: number;
 }
 
+export interface OpportunityMapResult {
+  opportunities: Opportunity[];
+  total: number;
+  isLimited: boolean;
+}
+
 export class OpportunityService {
+  private readonly MAP_VIEW_LIMIT = 500;
+
   constructor(private readonly repository: IOpportunityRepository) {}
 
   async getOpportunities(filters?: OpportunityFilters): Promise<OpportunityListResult> {
@@ -34,14 +42,23 @@ export class OpportunityService {
     return await this.repository.findById(id);
   }
 
-  async getOpportunitiesForMap(filters?: OpportunityFilters): Promise<Opportunity[]> {
-    // For map view, we don't want pagination
+  async getOpportunitiesForMap(filters?: OpportunityFilters): Promise<OpportunityMapResult> {
+    // For map view, limit to avoid performance issues
     const mapFilters: OpportunityFilters = {
       ...filters,
-      limit: undefined,
-      offset: undefined,
+      limit: this.MAP_VIEW_LIMIT,
+      offset: 0,
     };
 
-    return await this.repository.findAll(mapFilters);
+    const [opportunities, total] = await Promise.all([
+      this.repository.findAll(mapFilters),
+      this.repository.count(filters),
+    ]);
+
+    return {
+      opportunities,
+      total,
+      isLimited: total > this.MAP_VIEW_LIMIT,
+    };
   }
 }

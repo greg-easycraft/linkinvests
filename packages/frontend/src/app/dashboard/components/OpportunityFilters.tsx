@@ -45,7 +45,7 @@ export function OpportunityFilters({
       <CardContent className="space-y-4">
         {/* Type Filter */}
         <div>
-          <label className="text-sm font-medium mb-2 block">Type</label>
+          <label className="text-sm font-medium mb-2 block font-heading">Type</label>
           <div className="flex flex-wrap gap-2">
             {Object.values(OpportunityType).map((type) => (
               <Button
@@ -63,7 +63,7 @@ export function OpportunityFilters({
 
         {/* Department Filter */}
         <div>
-          <label className="text-sm font-medium mb-2 block">Département</label>
+          <label className="text-sm font-medium mb-2 block font-heading">Département</label>
           <Input
             type="number"
             placeholder="Numéro de département"
@@ -79,7 +79,7 @@ export function OpportunityFilters({
 
         {/* Zip Code Filter */}
         <div>
-          <label className="text-sm font-medium mb-2 block">Code postal</label>
+          <label className="text-sm font-medium mb-2 block font-heading">Code postal</label>
           <Input
             type="number"
             placeholder="Code postal"
@@ -95,7 +95,7 @@ export function OpportunityFilters({
 
         {/* Status Filter */}
         <div>
-          <label className="text-sm font-medium mb-2 block">Statut</label>
+          <label className="text-sm font-medium mb-2 block font-heading">Statut</label>
           <Input
             type="text"
             placeholder="Saisir le statut"
@@ -109,10 +109,61 @@ export function OpportunityFilters({
           />
         </div>
 
+        {/* Date Range Filters */}
+        <div className="space-y-3">
+          <div>
+            <label className="text-sm font-medium mb-2 block font-heading">Date après le</label>
+            <Input
+              type="date"
+              value={
+                filters.dateRange?.from
+                  ? new Date(filters.dateRange.from).toISOString().split("T")[0]
+                  : ""
+              }
+              onChange={(e) => {
+                const newFrom = e.target.value ? new Date(e.target.value) : undefined;
+                onFiltersChange({
+                  ...filters,
+                  dateRange: newFrom
+                    ? {
+                        from: newFrom,
+                        to: filters.dateRange?.to ?? new Date(),
+                      }
+                    : undefined,
+                });
+              }}
+            />
+          </div>
+          <div>
+            <label className="text-sm font-medium mb-2 block font-heading">Date avant le</label>
+            <Input
+              type="date"
+              value={
+                filters.dateRange?.to
+                  ? new Date(filters.dateRange.to).toISOString().split("T")[0]
+                  : ""
+              }
+              onChange={(e) => {
+                const newTo = e.target.value ? new Date(e.target.value) : undefined;
+                onFiltersChange({
+                  ...filters,
+                  dateRange:
+                    newTo || filters.dateRange?.from
+                      ? {
+                          from: filters.dateRange?.from ?? new Date("2000-01-01"),
+                          to: newTo ?? new Date(),
+                        }
+                      : undefined,
+                });
+              }}
+            />
+          </div>
+        </div>
+
         {/* Action Buttons */}
         <div className="flex gap-2 pt-2">
           <Button onClick={onApply} className="flex-1">
-            Appliquer les filtres
+            Appliquer
           </Button>
           <Button onClick={onReset} variant="outline">
             Réinitialiser

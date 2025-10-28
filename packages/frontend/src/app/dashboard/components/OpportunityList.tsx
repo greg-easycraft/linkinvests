@@ -91,7 +91,7 @@ export function OpportunityList({
                     className="w-40 h-24 rounded"
                   />
                 </TableCell>
-                <TableCell className="font-medium">{opportunity.label}</TableCell>
+                <TableCell className="font-medium font-heading">{opportunity.label}</TableCell>
                 <TableCell>
                   <Badge variant="secondary">
                     {TYPE_LABELS[opportunity.type] ?? opportunity.type}

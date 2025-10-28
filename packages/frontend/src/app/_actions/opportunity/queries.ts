@@ -4,7 +4,7 @@ import { db } from "~/server/db";
 import { DrizzleOpportunityRepository } from "~/server/domains/opportunities/repositories/DrizzleOpportunityRepository";
 import { OpportunityService } from "~/server/domains/opportunities/services/OpportunityService";
 import type { OpportunityFilters } from "~/server/domains/opportunities/types/filters";
-import type { OpportunityListResult } from "~/server/domains/opportunities/services/OpportunityService";
+import type { OpportunityListResult, OpportunityMapResult } from "~/server/domains/opportunities/services/OpportunityService";
 import type { Opportunity } from "~/server/domains/opportunities/repositories/IOpportunityRepository";
 
 // Initialize repository and service
@@ -19,7 +19,7 @@ export async function getOpportunities(
 
 export async function getOpportunitiesForMap(
   filters?: OpportunityFilters,
-): Promise<Opportunity[]> {
+): Promise<OpportunityMapResult> {
   return await opportunityService.getOpportunitiesForMap(filters);
 }
 

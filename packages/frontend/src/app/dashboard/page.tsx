@@ -15,6 +15,7 @@ import {
 } from "~/app/_actions/opportunity/queries";
 import type { OpportunityFilters as IOpportunityFilters } from "~/server/domains/opportunities/types/filters";
 import type { Opportunity } from "~/server/domains/opportunities/repositories/IOpportunityRepository";
+import Image from "next/image";
 
 type ViewType = "list" | "map";
 
@@ -79,10 +80,10 @@ export default function DashboardPage(): React.ReactElement {
   }, []);
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-screen overflow-hidden bg-neutral-900">
       {/* Collapsible Filters Sidebar */}
       <div
-        className={`transition-all duration-300 ease-in-out bg-neutral-50 border-r border-neutral-200 overflow-y-auto ${
+        className={`transition-all duration-300 ease-in-out bg-neutral-800 border-r border-neutral-700 overflow-y-auto ${
           isFiltersSidebarOpen ? "w-80" : "w-0"
         }`}
       >
@@ -102,7 +103,7 @@ export default function DashboardPage(): React.ReactElement {
       <Button
         variant="outline"
         size="icon"
-        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 rounded-r-md rounded-l-none"
+        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 rounded-r-md rounded-l-none bg-neutral-800 border-neutral-700 text-neutral-200 hover:bg-neutral-700 hover:text-white"
         style={{ left: isFiltersSidebarOpen ? "320px" : "0" }}
         onClick={() => setIsFiltersSidebarOpen(!isFiltersSidebarOpen)}
       >
@@ -116,15 +117,29 @@ export default function DashboardPage(): React.ReactElement {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="border-b border-neutral-200 bg-white p-6">
-          <h1 className="text-3xl font-bold mb-2">Tableau de bord des opportunités</h1>
-          <p className="text-neutral-600">
+        <div className="border-b border-neutral-700 bg-neutral-800 p-6">
+          <div className="flex items-center justify-between mb-4">
+            <a
+              href="https://linkinvests.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+            >
+              <Image
+                src="/Logo-LinkInvests-white.svg"
+                alt="LinkInvests Logo"
+                width={300}
+                height={30}
+              />
+            </a>
+          </div>
+          <p className="text-neutral-400">
             Consultez et filtrez les opportunités d'investissement en France
           </p>
         </div>
 
         {/* Content Grid */}
-        <div className="flex-1 flex overflow-hidden">
+        <div className="flex-1 flex overflow-hidden bg-neutral-900">
           {/* Main Content */}
           <div className="flex-1 overflow-y-auto p-6">
             <div className="space-y-4">
@@ -140,24 +155,26 @@ export default function DashboardPage(): React.ReactElement {
                 />
               )}
 
-              {viewType === "map" && (
+              {viewType === "map" && mapQuery.data && (
                 <OpportunityMap
-                  opportunities={mapQuery.data ?? []}
+                  opportunities={mapQuery.data.opportunities}
                   selectedId={selectedOpportunity?.id}
                   onSelect={handleSelectOpportunity}
+                  isLimited={mapQuery.data.isLimited}
+                  total={mapQuery.data.total}
                 />
               )}
 
               {(listQuery.isLoading || mapQuery.isLoading) && (
                 <div className="flex items-center justify-center h-96">
-                  <div className="text-neutral-500">Chargement...</div>
+                  <div className="text-neutral-400">Chargement...</div>
                 </div>
               )}
             </div>
           </div>
 
           {/* Details Sidebar */}
-          <div className="w-96 border-l border-neutral-200 bg-white overflow-y-auto">
+          <div className="w-96 border-l border-neutral-700 bg-neutral-800 overflow-y-auto">
             <OpportunitySidebar
               opportunity={selectedOpportunity}
               onClose={handleCloseSidebar}

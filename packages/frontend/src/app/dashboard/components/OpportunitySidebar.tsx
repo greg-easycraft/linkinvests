@@ -70,7 +70,7 @@ export function OpportunitySidebar({
           <div className="flex gap-3">
             <MapPin className="h-5 w-5 text-neutral-500 mt-0.5" />
             <div className="flex-1">
-              <div className="text-sm font-medium mb-1">Adresse</div>
+              <div className="text-sm font-medium mb-1 font-heading">Adresse</div>
               <div className="text-sm text-neutral-600">
                 {opportunity.address ?? "Non disponible"}
               </div>
@@ -85,7 +85,7 @@ export function OpportunitySidebar({
             <div className="flex gap-3">
               <Building2 className="h-5 w-5 text-neutral-500 mt-0.5" />
               <div className="flex-1">
-                <div className="text-sm font-medium mb-1">SIRET</div>
+                <div className="text-sm font-medium mb-1 font-heading">SIRET</div>
                 <div className="text-sm text-neutral-600">{opportunity.siret}</div>
               </div>
             </div>
@@ -95,7 +95,7 @@ export function OpportunitySidebar({
           <div className="flex gap-3">
             <Calendar className="h-5 w-5 text-neutral-500 mt-0.5" />
             <div className="flex-1">
-              <div className="text-sm font-medium mb-1">Date de l'opportunité</div>
+              <div className="text-sm font-medium mb-1 font-heading">Date de l'opportunité</div>
               <div className="text-sm text-neutral-600">
                 {format(new Date(opportunity.opportunityDate), "dd MMMM yyyy", {
                   locale: fr,
@@ -108,7 +108,7 @@ export function OpportunitySidebar({
           <div className="flex gap-3">
             <Tag className="h-5 w-5 text-neutral-500 mt-0.5" />
             <div className="flex-1">
-              <div className="text-sm font-medium mb-1">Coordonnées</div>
+              <div className="text-sm font-medium mb-1 font-heading">Coordonnées</div>
               <div className="text-xs text-neutral-600 font-mono">
                 Lat: {opportunity.latitude.toFixed(6)}
                 <br />
