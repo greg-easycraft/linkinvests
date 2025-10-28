@@ -185,17 +185,15 @@ export class AdemeApiService {
   ): string {
     const departmentStr = department.toString().padStart(2, '0');
 
-    // Build the WHERE clause for energy classes
-    // Example: (etiquette_dpe="F" OR etiquette_dpe="G")
-    const energyClassesFilter = energyClasses
-      .map((cls) => `etiquette_dpe="${cls}"`)
-      .join(' OR ');
+    // Build the query string using Data Fair API syntax (qs parameter)
+    // Energy classes filter: (F OR G)
+    const energyClassesFilter = `(${energyClasses.join(' OR ')})`;
 
-    // Add date filter using both date_etablissement_dpe and date_reception_dpe
-    // Use OR condition to catch records with either date field set
-    const whereClause = `code_departement_ban="${departmentStr}" AND (${energyClassesFilter}) AND (date_etablissement_dpe>="${sinceDate}" OR date_reception_dpe>="${sinceDate}")`;
+    // Query string: department AND energy class AND date filter
+    // Using qs syntax: field:value, AND/OR operators, >= for date comparison
+    const queryString = `code_departement_ban:${departmentStr} AND etiquette_dpe:${energyClassesFilter} AND date_etablissement_dpe:>=${sinceDate}`;
 
-    // Fields to select
+    // Fields to select - only request the fields we need
     const selectFields = [
       'numero_dpe',
       'adresse_ban',
@@ -216,7 +214,7 @@ export class AdemeApiService {
       size: size.toString(),
       page: page.toString(),
       select: selectFields,
-      where: whereClause,
+      qs: queryString,
     });
 
     return `${this.baseUrl}/lines?${params.toString()}`;

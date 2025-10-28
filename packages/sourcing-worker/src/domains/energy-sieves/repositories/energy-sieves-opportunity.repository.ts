@@ -53,11 +53,18 @@ export class EnergySievesOpportunityRepository {
           type: OpportunityType.ENERGY_SIEVE,
           status: 'pending_review',
           // Convert Date to string format 'YYYY-MM-DD' for Drizzle
-          opportunityDate: opp.opportunityDate,
+          opportunityDate: formattedDate,
         };
       });
 
       try {
+        // Debug: Log the first record being inserted to verify structure
+        if (i === 0 && dbOpportunities[0]) {
+          this.logger.debug(
+            `First DB record to insert: ${JSON.stringify(dbOpportunities[0], null, 2)}`,
+          );
+        }
+
         await this.db
           .insert(domainSchema.opportunities)
           .values(dbOpportunities)
