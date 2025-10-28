@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { X } from "lucide-react";
-import type { Opportunity } from "~/server/domains/opportunities/repositories/IOpportunityRepository";
+import type { Opportunity } from "~/server/domains/opportunities/lib.types";
 import { OpportunityType } from "@linkinvest/shared";
 
 interface OpportunityMapProps {

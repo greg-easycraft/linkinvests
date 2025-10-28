@@ -13,8 +13,8 @@ import {
   getOpportunities,
   getOpportunitiesForMap,
 } from "~/app/_actions/opportunity/queries";
-import type { OpportunityFilters as IOpportunityFilters } from "~/server/domains/opportunities/types/filters";
-import type { Opportunity } from "~/server/domains/opportunities/repositories/IOpportunityRepository";
+import type { OpportunityFilters as IOpportunityFilters } from "~/types/filters";
+import type { Opportunity } from "~/server/domains/opportunities/lib.types";
 import Image from "next/image";
 
 type ViewType = "list" | "map";

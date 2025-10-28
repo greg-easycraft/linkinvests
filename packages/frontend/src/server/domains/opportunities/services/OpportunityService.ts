@@ -1,5 +1,5 @@
-import type { IOpportunityRepository, Opportunity } from "../repositories/IOpportunityRepository";
-import type { OpportunityFilters } from "../types/filters";
+import type { IOpportunityRepository, Opportunity } from "../lib.types";
+import type { OpportunityFilters } from "~/types/filters";
 
 export interface OpportunityListResult {
   opportunities: Opportunity[];

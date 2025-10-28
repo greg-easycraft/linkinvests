@@ -11,7 +11,7 @@ import {
 } from "~/components/ui/table";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
-import type { Opportunity } from "~/server/domains/opportunities/repositories/IOpportunityRepository";
+import type { Opportunity } from "~/server/domains/opportunities/lib.types";
 import type { OpportunityListResult } from "~/server/domains/opportunities/services/OpportunityService";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { StreetView } from "./StreetView";

@@ -20,6 +20,7 @@ export function StreetView({
   className = "",
 }: StreetViewProps): React.ReactElement {
   const streetViewRef = useRef<HTMLDivElement>(null);
+  const panoramaRef = useRef<google.maps.StreetViewPanorama | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [hasStreetView, setHasStreetView] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -35,19 +36,40 @@ export function StreetView({
       return;
     }
 
+    // Reset states when coordinates change
+    setIsLoading(true);
+    setError(null);
+    setHasStreetView(true);
+
     // Configure the loader only once
     if (!isConfigured) {
       setOptions({
-        apiKey: apiKey,
-        version: "weekly",
+        key: apiKey,
+        v: "weekly",
       });
       isConfigured = true;
     }
 
     // Load Street View library
+    let isMounted = true;
+    let timeoutId: NodeJS.Timeout;
+
+    // Set a timeout to prevent infinite loading
+    timeoutId = setTimeout(() => {
+      if (isMounted && isLoading) {
+        console.error("Street View loading timed out");
+        setError("Délai d'attente dépassé");
+        setHasStreetView(false);
+        setIsLoading(false);
+      }
+    }, 10000); // 10 second timeout
+
     Promise.all([importLibrary("streetView"), importLibrary("core")])
       .then(async ([streetViewLib, coreLib]) => {
-        if (!streetViewRef.current) return;
+        if (!isMounted || !streetViewRef.current) {
+          clearTimeout(timeoutId);
+          return;
+        }
 
         const position = { lat: latitude, lng: longitude };
 
@@ -57,42 +79,76 @@ export function StreetView({
 
         // Check if Street View is available at this location
         const streetViewService = new StreetViewService();
-        streetViewService.getPanorama(
-          { location: position, radius: 50 },
-          (data, status) => {
-            if (status === StreetViewStatus.OK && data) {
-              // Street View is available
-              setHasStreetView(true);
 
-              if (streetViewRef.current) {
-                new StreetViewPanorama(streetViewRef.current, {
-                  position: position,
-                  pov: {
-                    heading: 0,
-                    pitch: 0,
-                  },
-                  zoom: 1,
-                  addressControl: false,
-                  linksControl: true,
-                  panControl: true,
-                  enableCloseButton: false,
-                  fullscreenControl: false,
-                });
+        try {
+          streetViewService.getPanorama(
+            { location: position, radius: 50 },
+            (
+              data: google.maps.StreetViewPanoramaData | null,
+              status: google.maps.StreetViewStatus,
+            ) => {
+              clearTimeout(timeoutId);
+
+              if (!isMounted) return;
+
+              if (status === StreetViewStatus.OK && data) {
+                // Street View is available
+                setHasStreetView(true);
+
+                if (streetViewRef.current) {
+                  // Clean up previous panorama if it exists
+                  if (panoramaRef.current) {
+                    panoramaRef.current.setVisible(false);
+                  }
+
+                  panoramaRef.current = new StreetViewPanorama(streetViewRef.current, {
+                    position: position,
+                    pov: {
+                      heading: 0,
+                      pitch: 0,
+                    },
+                    zoom: 1,
+                    addressControl: false,
+                    linksControl: true,
+                    panControl: true,
+                    enableCloseButton: false,
+                    fullscreenControl: false,
+                  });
+                }
+              } else {
+                // No Street View available
+                setHasStreetView(false);
               }
-            } else {
-              // No Street View available
-              setHasStreetView(false);
-            }
-            setIsLoading(false);
-          },
-        );
+              setIsLoading(false);
+            },
+          );
+        } catch (err) {
+          clearTimeout(timeoutId);
+          if (!isMounted) return;
+          console.error("Error checking Street View availability", err);
+          setError("Erreur de vérification");
+          setHasStreetView(false);
+          setIsLoading(false);
+        }
       })
       .catch((err) => {
+        clearTimeout(timeoutId);
+        if (!isMounted) return;
         console.error("Failed to load Google Maps API", err);
         setError("Erreur de chargement");
         setHasStreetView(false);
         setIsLoading(false);
       });
+
+    // Cleanup function
+    return () => {
+      isMounted = false;
+      clearTimeout(timeoutId);
+      if (panoramaRef.current) {
+        panoramaRef.current.setVisible(false);
+        panoramaRef.current = null;
+      }
+    };
   }, [latitude, longitude]);
 
   if (isLoading) {

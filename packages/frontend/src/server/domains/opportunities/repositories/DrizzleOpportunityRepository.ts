@@ -1,10 +1,8 @@
 import { and, between, eq, gte, inArray, lte, sql, type SQL } from "drizzle-orm";
 import type { DomainDbType } from "~/server/db";
-import { domainSchema } from "@linkinvest/db";
-import type { IOpportunityRepository, Opportunity } from "./IOpportunityRepository";
-import type { OpportunityFilters } from "../types/filters";
-
-const { opportunities } = domainSchema;
+import { opportunities as opportunitiesTable } from "@linkinvest/db";
+import type { IOpportunityRepository, Opportunity } from "../lib.types";
+import type { OpportunityFilters } from "~/types/filters";
 
 export class DrizzleOpportunityRepository implements IOpportunityRepository {
   constructor(private readonly db: DomainDbType) {}
@@ -14,7 +12,7 @@ export class DrizzleOpportunityRepository implements IOpportunityRepository {
 
     let query = this.db
       .select()
-      .from(opportunities)
+      .from(opportunitiesTable)
       .$dynamic();
 
     if (conditions.length > 0) {
@@ -23,7 +21,7 @@ export class DrizzleOpportunityRepository implements IOpportunityRepository {
 
     // Apply sorting
     if (filters?.sortBy) {
-      const column = opportunities[filters.sortBy as keyof typeof opportunities];
+      const column = opportunitiesTable[filters.sortBy as keyof typeof opportunitiesTable];
       if (column) {
         query = query.orderBy(
           filters.sortOrder === "desc" ? sql`${column} DESC` : sql`${column} ASC`,
@@ -31,7 +29,7 @@ export class DrizzleOpportunityRepository implements IOpportunityRepository {
       }
     } else {
       // Default sorting by creation date
-      query = query.orderBy(sql`${opportunities.createdAt} DESC`);
+      query = query.orderBy(sql`${opportunitiesTable.createdAt} DESC`);
     }
 
     // Apply pagination
@@ -48,8 +46,8 @@ export class DrizzleOpportunityRepository implements IOpportunityRepository {
   async findById(id: number): Promise<Opportunity | null> {
     const result = await this.db
       .select()
-      .from(opportunities)
-      .where(eq(opportunities.id, id))
+      .from(opportunitiesTable)
+      .where(eq(opportunitiesTable.id, id))
       .limit(1);
 
     return result[0] ?? null;
@@ -60,7 +58,7 @@ export class DrizzleOpportunityRepository implements IOpportunityRepository {
 
     let query = this.db
       .select({ count: sql<number>`count(*)::int` })
-      .from(opportunities)
+      .from(opportunitiesTable)
       .$dynamic();
 
     if (conditions.length > 0) {
@@ -80,29 +78,29 @@ export class DrizzleOpportunityRepository implements IOpportunityRepository {
 
     // Filter by types
     if (filters.types && filters.types.length > 0) {
-      conditions.push(inArray(opportunities.type, filters.types));
+      conditions.push(inArray(opportunitiesTable.type, filters.types));
     }
 
     // Filter by status
     if (filters.status) {
-      conditions.push(eq(opportunities.status, filters.status));
+      conditions.push(eq(opportunitiesTable.status, filters.status));
     }
 
     // Filter by department
     if (filters.department) {
-      conditions.push(eq(opportunities.department, filters.department));
+      conditions.push(eq(opportunitiesTable.department, filters.department));
     }
 
     // Filter by zipCode
     if (filters.zipCode) {
-      conditions.push(eq(opportunities.zipCode, filters.zipCode));
+      conditions.push(eq(opportunitiesTable.zipCode, filters.zipCode));
     }
 
     // Filter by date range
     if (filters.dateRange) {
       conditions.push(
         between(
-          opportunities.opportunityDate,
+          opportunitiesTable.opportunityDate,
           filters.dateRange.from.toISOString().split("T")[0] ?? "",
           filters.dateRange.to.toISOString().split("T")[0] ?? "",
         ),
@@ -113,10 +111,10 @@ export class DrizzleOpportunityRepository implements IOpportunityRepository {
     if (filters.bounds) {
       conditions.push(
         and(
-          gte(opportunities.latitude, filters.bounds.south),
-          lte(opportunities.latitude, filters.bounds.north),
-          gte(opportunities.longitude, filters.bounds.west),
-          lte(opportunities.longitude, filters.bounds.east),
+          gte(opportunitiesTable.latitude, filters.bounds.south),
+          lte(opportunitiesTable.latitude, filters.bounds.north),
+          gte(opportunitiesTable.longitude, filters.bounds.west),
+          lte(opportunitiesTable.longitude, filters.bounds.east),
         ) ?? sql`true`,
       );
     }

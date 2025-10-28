@@ -6,7 +6,7 @@ import { X, MapPin, Calendar, Building2, Tag } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import type { Opportunity } from "~/server/domains/opportunities/repositories/IOpportunityRepository";
+import type { Opportunity } from "~/server/domains/opportunities/lib.types";
 import { StreetView } from "./StreetView";
 
 interface OpportunitySidebarProps {
