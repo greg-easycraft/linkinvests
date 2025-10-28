@@ -7,6 +7,7 @@ import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import type { Opportunity } from "~/server/domains/opportunities/repositories/IOpportunityRepository";
+import { StreetView } from "./StreetView";
 
 interface OpportunitySidebarProps {
   opportunity: Opportunity | null;
@@ -40,6 +41,14 @@ export function OpportunitySidebar({
 
   return (
     <Card className="h-full overflow-auto">
+      {/* Street View at the top */}
+      <StreetView
+        address={opportunity.address}
+        latitude={opportunity.latitude}
+        longitude={opportunity.longitude}
+        className="w-full h-64 rounded-t-lg"
+      />
+
       <CardHeader className="flex flex-row items-start justify-between space-y-0">
         <CardTitle className="text-xl">{opportunity.label}</CardTitle>
         <Button variant="ghost" size="icon" onClick={onClose}>

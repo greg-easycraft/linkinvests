@@ -14,6 +14,7 @@ import { Button } from "~/components/ui/button";
 import type { Opportunity } from "~/server/domains/opportunities/repositories/IOpportunityRepository";
 import type { OpportunityListResult } from "~/server/domains/opportunities/services/OpportunityService";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { StreetView } from "./StreetView";
 
 interface OpportunityListProps {
   data: OpportunityListResult;
@@ -65,6 +66,7 @@ export function OpportunityList({
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-48">Aperçu</TableHead>
               <TableHead>Libellé</TableHead>
               <TableHead>Type</TableHead>
               <TableHead>Statut</TableHead>
@@ -81,6 +83,14 @@ export function OpportunityList({
                 className="cursor-pointer"
                 data-state={selectedId === opportunity.id ? "selected" : undefined}
               >
+                <TableCell>
+                  <StreetView
+                    address={opportunity.address}
+                    latitude={opportunity.latitude}
+                    longitude={opportunity.longitude}
+                    className="w-40 h-24 rounded"
+                  />
+                </TableCell>
                 <TableCell className="font-medium">{opportunity.label}</TableCell>
                 <TableCell>
                   <Badge variant="secondary">

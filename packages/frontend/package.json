@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@googlemaps/js-api-loader": "^2.0.1",
     "@hookform/resolvers": "^5.2.2",
     "@linkinvest/db": "workspace:*",
     "@linkinvest/shared": "workspace:*",
