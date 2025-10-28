@@ -87,8 +87,8 @@ export default function DashboardPage(): React.ReactElement {
       <Button
         variant="outline"
         size="icon"
-        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 rounded-r-md rounded-l-none bg-[var(--secundary)] border-neutral-700 text-neutral-200 hover:bg-neutral-700 hover:text-white"
-        style={{ left: isFiltersSidebarOpen ? "320px" : "0" }}
+        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 rounded-r-md rounded-l-none"
+        style={{ left: isFiltersSidebarOpen ? "303px" : "0" }}
         onClick={() => setIsFiltersSidebarOpen(!isFiltersSidebarOpen)}
       >
         {isFiltersSidebarOpen ? (
