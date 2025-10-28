@@ -1,10 +1,9 @@
-import { Logger, Inject } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
-import { SOURCE_ENERGY_SIEVES_QUEUE, OpportunityType } from '@linkinvest/shared';
-import { DATABASE_CONNECTION, type DomainDbType } from '~/database';
-import { domainSchema } from '@linkinvest/db';
+import { SOURCE_ENERGY_SIEVES_QUEUE } from '@linkinvest/shared';
 import { AdemeApiService } from './services';
+import { EnergySievesOpportunityRepository } from './repositories';
 import type {
   EnergySieveJobData,
   DpeRecord,
@@ -16,9 +15,8 @@ export class EnergySievesProcessor extends WorkerHost {
   private readonly logger = new Logger(EnergySievesProcessor.name);
 
   constructor(
-    @Inject(DATABASE_CONNECTION)
-    private readonly db: DomainDbType,
     private readonly ademeApi: AdemeApiService,
+    private readonly opportunityRepository: EnergySievesOpportunityRepository,
   ) {
     super();
   }
@@ -78,45 +76,18 @@ export class EnergySievesProcessor extends WorkerHost {
 
       // Step 3: Insert opportunities into database in batches
       this.logger.log('Step 3/3: Inserting opportunities into database...');
+
       if (opportunities.length > 0) {
-        const batchSize = 500;
-        let insertedCount = 0;
-
-        for (let i = 0; i < opportunities.length; i += batchSize) {
-          const batch = opportunities.slice(i, i + batchSize);
-
-          const dbOpportunities = batch.map((opp) => ({
-            label: opp.label,
-            siret: null, // No SIRET for energy sieves
-            address: opp.address,
-            zipCode: opp.zipCode,
-            department: opp.department,
-            latitude: opp.latitude,
-            longitude: opp.longitude,
-            type: OpportunityType.ENERGY_SIEVE,
-            status: 'pending_review',
-            opportunityDate: opp.opportunityDate || null,
-          }));
-
-          try {
-            await this.db
-              .insert(domainSchema.opportunities)
-              .values(dbOpportunities)
-              .onConflictDoNothing(); // Skip duplicates
-
-            insertedCount += batch.length;
-            this.logger.log(
-              `Inserted batch ${Math.floor(i / batchSize) + 1}: ${insertedCount}/${opportunities.length} opportunities`,
-            );
-          } catch (error) {
-            stats.errors++;
-            this.logger.error(
-              `Failed to insert batch starting at index ${i}: ${(error as Error).message}`,
-            );
-          }
+        try {
+          const insertedCount =
+            await this.opportunityRepository.insertOpportunities(opportunities);
+          stats.opportunitiesInserted = insertedCount;
+        } catch (error) {
+          stats.errors++;
+          this.logger.error(
+            `Failed to insert opportunities: ${(error as Error).message}`,
+          );
         }
-
-        stats.opportunitiesInserted = insertedCount;
       }
 
       const duration = Date.now() - startTime;
@@ -179,9 +150,17 @@ export class EnergySievesProcessor extends WorkerHost {
     // Create label (use address or municipality name)
     const label = record.adresse_ban || record.nom_commune_ban || 'Unknown';
 
-    // Use DPE establishment date as opportunity date (fallback to reception date if not available)
-    const opportunityDate =
-      record.date_etablissement_dpe || record.date_reception_dpe || '';
+    // Use DPE establishment date as opportunity date (fallback to reception date)
+    const opportunityDateStr =
+      record.date_etablissement_dpe || record.date_reception_dpe;
+
+    // Opportunity date is now mandatory - reject records without a date
+    if (!opportunityDateStr) {
+      this.logger.warn(
+        `Missing opportunity date for record ${record.numero_dpe}`,
+      );
+      return null;
+    }
 
     return {
       label,
@@ -190,7 +169,7 @@ export class EnergySievesProcessor extends WorkerHost {
       department: departmentId,
       latitude,
       longitude,
-      opportunityDate,
+      opportunityDate: new Date(opportunityDateStr),
     };
   }
 }

@@ -14,7 +14,7 @@ export const opportunities = pgTable("opportunity", {
     longitude: doublePrecision("longitude").notNull(),
     type: opportunityType("type").notNull(),
     status: text("status").notNull(),
-    opportunityDate: date("opportunity_date"),
+    opportunityDate: date("opportunity_date").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
         .defaultNow()

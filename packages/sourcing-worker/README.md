@@ -156,3 +156,112 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+---
+
+## CURL Examples for Triggering Jobs
+
+Below are examples of CURL requests to trigger each job type. Make sure the service is running on `http://localhost:8080` (or update the URL accordingly).
+
+### 1. Failing Companies Job
+
+Sources failing companies data for a specific department since a given date.
+
+**Required Parameters:**
+- `departmentId` (number): French department code (e.g., 75 for Paris)
+- `sinceDate` (string): Filter records since this date (format: YYYY-MM-DD)
+
+```bash
+curl -X POST http://localhost:8080/jobs/failing-companies \
+  -H "Content-Type: application/json" \
+  -d '{
+    "departmentId": 75,
+    "sinceDate": "2024-01-01"
+  }'
+```
+
+**Example Response:**
+```json
+{
+  "success": true,
+  "jobId": "12345",
+  "message": "Job enqueued successfully"
+}
+```
+
+### 2. Company Buildings Job
+
+Sources company buildings from a CSV file.
+
+**Required Parameters:**
+- `sourceFile` (string): Path to the CSV file containing company data
+
+```bash
+curl -X POST http://localhost:8080/jobs/company-buildings \
+  -H "Content-Type: application/json" \
+  -d '{
+    "sourceFile": "/path/to/companies.csv"
+  }'
+```
+
+**Example Response:**
+```json
+{
+  "success": true,
+  "jobId": "12346",
+  "message": "Job enqueued successfully"
+}
+```
+
+### 3. Energy Sieves Job
+
+Sources energy-inefficient buildings (DPE records with poor energy ratings) from ADEME API.
+
+**Required Parameters:**
+- `departmentId` (number): French department code (e.g., 75 for Paris)
+- `sinceDate` (string): Filter DPE records since this date (format: YYYY-MM-DD)
+
+**Optional Parameters:**
+- `energyClasses` (string[]): Array of energy classes to fetch (default: ["F", "G"])
+
+```bash
+# Basic request (defaults to F and G energy classes)
+curl -X POST http://localhost:8080/jobs/energy-sieves \
+  -H "Content-Type: application/json" \
+  -d '{
+    "departmentId": 75,
+    "sinceDate": "2024-01-01"
+  }'
+
+# With custom energy classes
+curl -X POST http://localhost:8080/jobs/energy-sieves \
+  -H "Content-Type: application/json" \
+  -d '{
+    "departmentId": 75,
+    "sinceDate": "2024-01-01",
+    "energyClasses": ["E", "F", "G"]
+  }'
+```
+
+**Example Response:**
+```json
+{
+  "success": true,
+  "jobId": "12347",
+  "message": "Job enqueued successfully"
+}
+```
+
+### Monitoring Jobs
+
+Once a job is enqueued, you can monitor its progress using the Bull Board dashboard:
+
+```
+http://localhost:8080/admin/queues
+```
+
+The dashboard provides real-time monitoring of:
+- Job status (waiting, active, completed, failed)
+- Job logs and errors
+- Queue metrics and statistics
+- Ability to retry failed jobs

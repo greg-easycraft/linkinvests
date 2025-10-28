@@ -3,6 +3,7 @@ import { BullModule } from '@nestjs/bullmq';
 import { SOURCE_ENERGY_SIEVES_QUEUE } from '@linkinvest/shared';
 import { EnergySievesProcessor } from './energy-sieves.processor';
 import { AdemeApiService } from './services';
+import { EnergySievesOpportunityRepository } from './repositories';
 
 const redisConnection = {
   host: process.env.REDIS_HOST || 'localhost',
@@ -16,7 +17,11 @@ const redisConnection = {
       connection: redisConnection,
     }),
   ],
-  providers: [EnergySievesProcessor, AdemeApiService],
+  providers: [
+    EnergySievesProcessor,
+    AdemeApiService,
+    EnergySievesOpportunityRepository,
+  ],
   exports: [BullModule],
 })
 export class EnergySievesModule {}

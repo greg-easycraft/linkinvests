@@ -191,8 +191,9 @@ export class AdemeApiService {
       .map((cls) => `etiquette_dpe="${cls}"`)
       .join(' OR ');
 
-    // Add date filter using date_etablissement_dpe
-    const whereClause = `code_departement_ban="${departmentStr}" AND (${energyClassesFilter}) AND date_etablissement_dpe>="${sinceDate}"`;
+    // Add date filter using both date_etablissement_dpe and date_reception_dpe
+    // Use OR condition to catch records with either date field set
+    const whereClause = `code_departement_ban="${departmentStr}" AND (${energyClassesFilter}) AND (date_etablissement_dpe>="${sinceDate}" OR date_reception_dpe>="${sinceDate}")`;
 
     // Fields to select
     const selectFields = [

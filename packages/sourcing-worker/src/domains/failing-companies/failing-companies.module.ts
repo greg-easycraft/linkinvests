@@ -5,6 +5,7 @@ import { FailingCompaniesCron } from './cron/failing-companies.cron';
 import { CsvParserService } from './services/csv-parser.service';
 import { RechercheEntreprisesApiService } from './services/recherche-entreprises-api.service';
 import { GeocodingApiService } from './services/geocoding-api.service';
+import { FailingCompaniesOpportunityRepository } from './repositories';
 import { BullModule } from '@nestjs/bullmq';
 import { BullBoardModule } from '@bull-board/nestjs';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
@@ -44,6 +45,7 @@ const redisConnection = {
     CsvParserService,
     RechercheEntreprisesApiService,
     GeocodingApiService,
+    FailingCompaniesOpportunityRepository,
   ],
   exports: [BullModule],
 })

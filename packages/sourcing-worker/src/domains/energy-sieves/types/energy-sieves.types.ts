@@ -32,5 +32,5 @@ export interface EnergySieveOpportunity {
   department: number; // Department code as integer
   latitude: number;
   longitude: number;
-  opportunityDate: string; // DPE establishment date (YYYY-MM-DD)
+  opportunityDate: Date; // DPE establishment date (YYYY-MM-DD)
 }

@@ -1,19 +1,17 @@
 import { Logger } from '@nestjs/common';
-import { Inject } from '@nestjs/common';
-import { DATABASE_CONNECTION, type DomainDbType } from '~/database';
 import { S3Service } from '~/storage';
 import {
   CsvParserService,
   GeocodingApiService,
   RechercheEntreprisesApiService,
 } from './services';
-import { domainSchema } from '@linkinvest/db';
-import {
-  OpportunityType,
-  SOURCE_COMPANY_BUILDINGS_QUEUE,
-} from '@linkinvest/shared';
+import { FailingCompaniesOpportunityRepository } from './repositories';
+import { SOURCE_COMPANY_BUILDINGS_QUEUE } from '@linkinvest/shared';
 import type { Etablissement } from './types/recherche-entreprises.types';
-import type { CompanyEstablishment, FailingCompanyCsvRow } from './types/failing-companies.types';
+import type {
+  CompanyEstablishment,
+  FailingCompanyCsvRow,
+} from './types/failing-companies.types';
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import type { Job } from 'bullmq';
 
@@ -26,12 +24,11 @@ export class CompanyBuildingsProcessor extends WorkerHost {
   private readonly logger = new Logger(CompanyBuildingsProcessor.name);
 
   constructor(
-    @Inject(DATABASE_CONNECTION)
-    private readonly db: DomainDbType,
     private readonly s3Service: S3Service,
     private readonly csvParserService: CsvParserService,
     private readonly rechercheEntreprisesApi: RechercheEntreprisesApiService,
     private readonly geocodingApi: GeocodingApiService,
+    private readonly opportunityRepository: FailingCompaniesOpportunityRepository,
   ) {
     super();
   }
@@ -128,25 +125,11 @@ export class CompanyBuildingsProcessor extends WorkerHost {
       // Step 5: Insert into database
       this.logger.log('Step 5/6: Inserting opportunities into database...');
       if (allEstablishments.length > 0) {
-        const opportunities = allEstablishments.map((est) => ({
-          label: est.companyName,
-          siret: est.siret,
-          address: est.address,
-          zipCode: parseInt(est.zipCode, 10),
-          department: est.department,
-          latitude: est.latitude,
-          longitude: est.longitude,
-          type: OpportunityType.LIQUIDATION,
-          status: 'pending_review',
-          opportunityDate: est.opportunityDate || null,
-        }));
-
-        await this.db
-          .insert(domainSchema.opportunities)
-          .values(opportunities)
-          .onConflictDoNothing(); // Skip duplicates if SIRET already exists
-
-        stats.opportunitiesInserted = opportunities.length;
+        const insertedCount =
+          await this.opportunityRepository.insertOpportunities(
+            allEstablishments,
+          );
+        stats.opportunitiesInserted = insertedCount;
       }
 
       // Step 6: Upload failed rows (if any) and delete source file
