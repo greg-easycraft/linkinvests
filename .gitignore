@@ -22,10 +22,10 @@ out/
 next-env.d.ts
 
 # Testing
-coverage/
-test-results/
-playwright-report/
-playwright/.cache/
+**/coverage/
+**/test-results/
+**/playwright-report/
+**/playwright/.cache/
 
 # IDE
 .vscode/

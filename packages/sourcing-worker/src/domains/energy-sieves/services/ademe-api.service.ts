@@ -67,9 +67,7 @@ export class AdemeApiService {
           );
           hasMorePages = false;
         } else {
-          this.logger.error(
-            `Failed to fetch page ${page}: ${err.message}`,
-          );
+          this.logger.error(`Failed to fetch page ${page}: ${err.message}`);
           throw error;
         }
       }
@@ -98,7 +96,13 @@ export class AdemeApiService {
     page: number,
     size: number,
   ): Promise<DpeRecord[]> {
-    const url = this.buildApiUrl(department, sinceDate, energyClasses, page, size);
+    const url = this.buildApiUrl(
+      department,
+      sinceDate,
+      energyClasses,
+      page,
+      size,
+    );
 
     // Rate limiting: ensure minimum interval between requests
     const now = Date.now();
@@ -133,9 +137,7 @@ export class AdemeApiService {
         }
 
         if (response.status !== 200) {
-          throw new Error(
-            `ADEME API returned status ${response.status}`,
-          );
+          throw new Error(`ADEME API returned status ${response.status}`);
         }
 
         const data = (await response.json()) as DpeApiResponse;

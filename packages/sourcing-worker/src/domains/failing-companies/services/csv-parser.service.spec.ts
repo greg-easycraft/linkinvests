@@ -40,7 +40,8 @@ describe('CsvParserService', () => {
         commercant: 'ACME Corp',
         ville: 'Paris',
         cp: '75001',
-        listepersonnes: '{"personne":{"numeroImmatriculation":{"numeroIdentification":"123456789"}}}',
+        listepersonnes:
+          '{"personne":{"numeroImmatriculation":{"numeroIdentification":"123456789"}}}',
         jugement: 'Tribunal',
       });
     });
@@ -54,7 +55,10 @@ describe('CsvParserService', () => {
     });
 
     it('should throw error for malformed CSV', () => {
-      const invalidCsv = Buffer.from('invalid,csv,data\nwithout"proper"format', 'utf-8');
+      const invalidCsv = Buffer.from(
+        'invalid,csv,data\nwithout"proper"format',
+        'utf-8',
+      );
 
       expect(() => service.parseCsv(invalidCsv)).toThrow();
     });

@@ -9,18 +9,23 @@ export interface FailingCompanyCsvRow {
   cp: string;
   listepersonnes: string; // JSON string
   jugement: string;
+  error_reason?: string; // Optional field for tracking processing errors
 }
 
 export interface NumeroImmatriculation {
   numeroIdentification: string; // SIREN (9 digits)
 }
 
-export interface ListePersonnesData {
+export interface PersonneData {
   numeroImmatriculation?: NumeroImmatriculation;
   denomination?: string;
   activite?: string;
   nomPatronymique?: string;
   prenom?: string;
+}
+
+export interface ListePersonnesData {
+  personne?: PersonneData;
   [key: string]: any; // Allow for additional fields
 }
 

@@ -68,7 +68,9 @@ describe('CompanyBuildingsProcessor', () => {
       ],
     }).compile();
 
-    processor = module.get<CompanyBuildingsProcessor>(CompanyBuildingsProcessor);
+    processor = module.get<CompanyBuildingsProcessor>(
+      CompanyBuildingsProcessor,
+    );
 
     // Suppress logger output during tests
     jest.spyOn(processor['logger'], 'log').mockImplementation();
@@ -82,9 +84,13 @@ describe('CompanyBuildingsProcessor', () => {
 
   describe('transformEstablishment', () => {
     const stats = {
+      totalSirens: 0,
+      establishmentsFound: 0,
       geocodingAttempts: 0,
       geocodingSuccesses: 0,
       geocodingFailures: 0,
+      opportunitiesInserted: 0,
+      errors: 0,
     };
 
     it('should successfully transform with existing coordinates', async () => {
@@ -159,9 +165,13 @@ describe('CompanyBuildingsProcessor', () => {
       mockGeocodingApi.geocodeAddress.mockResolvedValue(null);
 
       const freshStats = {
+        totalSirens: 0,
+        establishmentsFound: 0,
         geocodingAttempts: 0,
         geocodingSuccesses: 0,
         geocodingFailures: 0,
+        opportunitiesInserted: 0,
+        errors: 0,
       };
 
       const result = await processor['transformEstablishment'](
@@ -244,9 +254,13 @@ describe('CompanyBuildingsProcessor', () => {
       });
 
       const statsTracker = {
+        totalSirens: 0,
+        establishmentsFound: 0,
         geocodingAttempts: 5,
         geocodingSuccesses: 3,
         geocodingFailures: 2,
+        opportunitiesInserted: 0,
+        errors: 0,
       };
 
       await processor['transformEstablishment'](
@@ -293,10 +307,7 @@ describe('CompanyBuildingsProcessor', () => {
 
       mockS3Service.uploadFile.mockResolvedValue('s3://bucket/failed.csv');
 
-      await processor['uploadFailedRows'](
-        's3://bucket/source.csv',
-        failedRows,
-      );
+      await processor['uploadFailedRows']('s3://bucket/source.csv', failedRows);
 
       expect(mockS3Service.uploadFile).toHaveBeenCalledWith(
         expect.any(Buffer),
@@ -408,7 +419,9 @@ describe('CompanyBuildingsProcessor', () => {
       await processor.process(mockJob);
 
       expect(mockCsvParser.parseCsv).toHaveBeenCalledWith(csvBuffer);
-      expect(mockCsvParser.extractSirensFromRows).toHaveBeenCalledWith(mockCsvRows);
+      expect(mockCsvParser.extractSirensFromRows).toHaveBeenCalledWith(
+        mockCsvRows,
+      );
     });
 
     it('should fetch establishments for each SIREN', async () => {

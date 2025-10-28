@@ -75,7 +75,9 @@ describe('GeocodingApiService', () => {
         json: jest.fn().mockResolvedValue(mockGeocodingResponse),
       } as any);
 
-      const result = await service.geocodeAddress('123 Rue de Test 75001 Paris');
+      const result = await service.geocodeAddress(
+        '123 Rue de Test 75001 Paris',
+      );
 
       expect(result).toEqual({
         latitude: 48.8566,
@@ -250,7 +252,7 @@ describe('GeocodingApiService', () => {
       await service.geocodeAddress("123 Rue de l'Église & Co");
 
       expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining('123%20Rue%20de%20l\'%C3%89glise%20%26%20Co'),
+        expect.stringContaining("123%20Rue%20de%20l'%C3%89glise%20%26%20Co"),
         expect.any(Object),
       );
 

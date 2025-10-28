@@ -41,7 +41,7 @@ export class DatabaseModule implements OnModuleDestroy {
   }
 
   onModuleDestroy() {
-    DatabaseModule.client?.end();
+    void DatabaseModule.client?.end();
     DatabaseModule.logger.log('Database connection destroyed');
   }
 }

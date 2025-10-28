@@ -113,11 +113,9 @@ export class CsvParserService {
       // Find the first entry with a numeroImmatriculation.numeroIdentification
       for (const { personne } of personnes) {
         if (personne?.numeroImmatriculation?.numeroIdentification) {
-          const siren =
-            personne.numeroImmatriculation.numeroIdentification.replace(
-              /\s/g,
-              '',
-            ); // Remove any spaces
+          const numeroIdentification: string =
+            personne.numeroImmatriculation.numeroIdentification;
+          const siren = numeroIdentification.replace(/\s/g, ''); // Remove any spaces
           console.log(siren);
           // Validate SIREN format (9 digits)
           if (/^\d{9}$/.test(siren)) {

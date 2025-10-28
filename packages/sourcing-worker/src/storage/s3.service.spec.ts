@@ -1,5 +1,10 @@
 import { S3Service } from './s3.service';
-import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
+import {
+  S3Client,
+  PutObjectCommand,
+  GetObjectCommand,
+  DeleteObjectCommand,
+} from '@aws-sdk/client-s3';
 import { mockClient } from 'aws-sdk-client-mock';
 import 'aws-sdk-client-mock-jest';
 import { Readable } from 'stream';
@@ -98,7 +103,9 @@ describe('S3Service', () => {
         Body: mockStream as any,
       });
 
-      const result = await service.downloadFile('s3://test-bucket/test-file.csv');
+      const result = await service.downloadFile(
+        's3://test-bucket/test-file.csv',
+      );
 
       expect(result).toBeInstanceOf(Buffer);
       expect(result.toString()).toBe('test content');

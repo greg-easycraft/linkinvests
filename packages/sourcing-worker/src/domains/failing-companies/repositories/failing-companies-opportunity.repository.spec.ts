@@ -193,9 +193,9 @@ describe('FailingCompaniesOpportunityRepository', () => {
         },
       ];
 
-      await expect(repository.insertOpportunities(establishments)).rejects.toThrow(
-        'Database connection failed',
-      );
+      await expect(
+        repository.insertOpportunities(establishments),
+      ).rejects.toThrow('Database connection failed');
       expect(repository['logger'].error).toHaveBeenCalled();
     });
   });

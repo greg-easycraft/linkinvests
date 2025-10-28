@@ -19,6 +19,16 @@ interface CompanyBuildingsJobData {
   sourceFile: string;
 }
 
+interface ProcessingStats {
+  totalSirens: number;
+  establishmentsFound: number;
+  geocodingAttempts: number;
+  geocodingSuccesses: number;
+  geocodingFailures: number;
+  opportunitiesInserted: number;
+  errors: number;
+}
+
 @Processor(SOURCE_COMPANY_BUILDINGS_QUEUE)
 export class CompanyBuildingsProcessor extends WorkerHost {
   private readonly logger = new Logger(CompanyBuildingsProcessor.name);
@@ -40,7 +50,7 @@ export class CompanyBuildingsProcessor extends WorkerHost {
       `Starting to process company buildings from: ${sourceFile}`,
     );
 
-    const stats = {
+    const stats: ProcessingStats = {
       totalSirens: 0,
       establishmentsFound: 0,
       geocodingAttempts: 0,
@@ -50,7 +60,7 @@ export class CompanyBuildingsProcessor extends WorkerHost {
       errors: 0,
     };
 
-    const failedRows: any[] = [];
+    const failedRows: FailingCompanyCsvRow[] = [];
     let csvBuffer: Buffer;
 
     try {
@@ -220,7 +230,7 @@ export class CompanyBuildingsProcessor extends WorkerHost {
   private async transformEstablishment(
     etablissement: Etablissement,
     opportunityDate: string,
-    stats: any,
+    stats: ProcessingStats,
   ): Promise<CompanyEstablishment | null> {
     try {
       let latitude = etablissement.latitude;

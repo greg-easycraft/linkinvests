@@ -396,9 +396,9 @@ describe('RechercheEntreprisesApiService', () => {
 
       mockFetch.mockRejectedValue(new Error('Network error'));
 
-      await expect(
-        service['fetchWithRateLimit']('123456789'),
-      ).rejects.toThrow('Network error');
+      await expect(service['fetchWithRateLimit']('123456789')).rejects.toThrow(
+        'Network error',
+      );
 
       expect(mockFetch).toHaveBeenCalledTimes(3); // maxRetries = 3
 
@@ -415,9 +415,9 @@ describe('RechercheEntreprisesApiService', () => {
         json: jest.fn(),
       } as any);
 
-      await expect(
-        service['fetchWithRateLimit']('123456789'),
-      ).rejects.toThrow('API returned status 500');
+      await expect(service['fetchWithRateLimit']('123456789')).rejects.toThrow(
+        'API returned status 500',
+      );
 
       sleepSpy.mockRestore();
     });

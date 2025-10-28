@@ -149,7 +149,11 @@ describe('EnergySievesProcessor', () => {
     });
 
     it('should fallback to commune when address is missing', () => {
-      const record = { ...validRecord, adresse_ban: '', nom_commune_ban: 'Paris' };
+      const record = {
+        ...validRecord,
+        adresse_ban: '',
+        nom_commune_ban: 'Paris',
+      };
       const result = processor['transformDpeRecord'](record, 75);
 
       expect(result).toBeNull(); // Will be null because adresse_ban is required
@@ -234,7 +238,9 @@ describe('EnergySievesProcessor', () => {
       const apiError = new Error('API connection failed');
       mockAdemeApi.fetchAllDpeRecords.mockRejectedValue(apiError);
 
-      await expect(processor.process(mockJob)).rejects.toThrow('API connection failed');
+      await expect(processor.process(mockJob)).rejects.toThrow(
+        'API connection failed',
+      );
       expect(processor['logger'].error).toHaveBeenCalled();
     });
 

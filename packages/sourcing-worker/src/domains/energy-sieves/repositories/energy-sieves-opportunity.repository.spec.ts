@@ -223,9 +223,9 @@ describe('EnergySievesOpportunityRepository', () => {
         },
       ];
 
-      await expect(repository.insertOpportunities(opportunities)).rejects.toThrow(
-        'Database connection failed',
-      );
+      await expect(
+        repository.insertOpportunities(opportunities),
+      ).rejects.toThrow('Database connection failed');
       expect(repository['logger'].error).toHaveBeenCalled();
     });
   });
