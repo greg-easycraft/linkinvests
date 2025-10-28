@@ -4,17 +4,15 @@ import { S3Service } from '~/storage';
 import { Queue } from 'bullmq';
 import { getQueueToken } from '@nestjs/bullmq';
 import { SOURCE_COMPANY_BUILDINGS_QUEUE } from '@linkinvest/shared';
-import * as undici from 'undici';
 
-// Mock undici.request at module level
-jest.mock('undici', () => ({
-  request: jest.fn(),
-}));
+// Mock global fetch
+global.fetch = jest.fn();
 
 describe('FailingCompaniesProcessor', () => {
   let processor: FailingCompaniesProcessor;
   let mockS3Service: jest.Mocked<S3Service>;
   let mockCompanyBuildingsQueue: jest.Mocked<Queue>;
+  const mockFetch = global.fetch as jest.MockedFunction<typeof fetch>;
 
   beforeEach(async () => {
     mockS3Service = {
@@ -100,10 +98,6 @@ describe('FailingCompaniesProcessor', () => {
   });
 
   describe('fetchCsvData', () => {
-    const mockRequest = undici.request as jest.MockedFunction<
-      typeof undici.request
-    >;
-
     it('should successfully fetch CSV from API (returns Buffer)', async () => {
       const csvData = 'test,csv,data';
       const buffer = Buffer.from(csvData);
@@ -112,11 +106,9 @@ describe('FailingCompaniesProcessor', () => {
         buffer.byteOffset + buffer.byteLength,
       );
 
-      mockRequest.mockResolvedValue({
-        statusCode: 200,
-        body: {
-          arrayBuffer: jest.fn().mockResolvedValue(arrayBuffer),
-        },
+      mockFetch.mockResolvedValue({
+        status: 200,
+        arrayBuffer: jest.fn().mockResolvedValue(arrayBuffer),
       } as any);
 
       const result = await processor['fetchCsvData'](
@@ -125,18 +117,16 @@ describe('FailingCompaniesProcessor', () => {
 
       expect(result).toBeInstanceOf(Buffer);
       expect(result.toString()).toBe(csvData);
-      expect(mockRequest).toHaveBeenCalledWith('https://example.com/test', {
+      expect(mockFetch).toHaveBeenCalledWith('https://example.com/test', {
         method: 'GET',
-        headersTimeout: 60000,
+        signal: expect.any(AbortSignal),
       });
     });
 
     it('should throw error on non-200 status', async () => {
-      mockRequest.mockResolvedValue({
-        statusCode: 404,
-        body: {
-          arrayBuffer: jest.fn(),
-        },
+      mockFetch.mockResolvedValue({
+        status: 404,
+        arrayBuffer: jest.fn(),
       } as any);
 
       await expect(
@@ -145,7 +135,7 @@ describe('FailingCompaniesProcessor', () => {
     });
 
     it('should handle network errors', async () => {
-      mockRequest.mockRejectedValue(new Error('Network error'));
+      mockFetch.mockRejectedValue(new Error('Network error'));
 
       await expect(
         processor['fetchCsvData']('https://example.com/test'),
@@ -163,10 +153,6 @@ describe('FailingCompaniesProcessor', () => {
       },
     } as any;
 
-    const mockRequest = undici.request as jest.MockedFunction<
-      typeof undici.request
-    >;
-
     it('should orchestrate full flow: fetch → upload to S3 → enqueue job', async () => {
       const csvData = 'test,csv,data';
       const buffer = Buffer.from(csvData);
@@ -175,11 +161,9 @@ describe('FailingCompaniesProcessor', () => {
         buffer.byteOffset + buffer.byteLength,
       );
 
-      mockRequest.mockResolvedValue({
-        statusCode: 200,
-        body: {
-          arrayBuffer: jest.fn().mockResolvedValue(arrayBuffer),
-        },
+      mockFetch.mockResolvedValue({
+        status: 200,
+        arrayBuffer: jest.fn().mockResolvedValue(arrayBuffer),
       } as any);
 
       mockS3Service.generateFailingCompaniesKey.mockReturnValue(
@@ -195,7 +179,7 @@ describe('FailingCompaniesProcessor', () => {
       await processor.process(mockJob);
 
       // Verify API URL construction
-      expect(mockRequest).toHaveBeenCalledWith(
+      expect(mockFetch).toHaveBeenCalledWith(
         expect.stringContaining('numerodepartement%3A75'),
         expect.any(Object),
       );
@@ -231,11 +215,9 @@ describe('FailingCompaniesProcessor', () => {
         buffer.byteOffset + buffer.byteLength,
       );
 
-      mockRequest.mockResolvedValue({
-        statusCode: 200,
-        body: {
-          arrayBuffer: jest.fn().mockResolvedValue(arrayBuffer),
-        },
+      mockFetch.mockResolvedValue({
+        status: 200,
+        arrayBuffer: jest.fn().mockResolvedValue(arrayBuffer),
       } as any);
 
       mockS3Service.generateFailingCompaniesKey.mockReturnValue(
@@ -266,11 +248,9 @@ describe('FailingCompaniesProcessor', () => {
         buffer.byteOffset + buffer.byteLength,
       );
 
-      mockRequest.mockResolvedValue({
-        statusCode: 200,
-        body: {
-          arrayBuffer: jest.fn().mockResolvedValue(arrayBuffer),
-        },
+      mockFetch.mockResolvedValue({
+        status: 200,
+        arrayBuffer: jest.fn().mockResolvedValue(arrayBuffer),
       } as any);
 
       mockS3Service.generateFailingCompaniesKey.mockReturnValue(
@@ -295,7 +275,7 @@ describe('FailingCompaniesProcessor', () => {
     });
 
     it('should log error and rethrow on failure', async () => {
-      mockRequest.mockRejectedValue(new Error('API error'));
+      mockFetch.mockRejectedValue(new Error('API error'));
 
       await expect(processor.process(mockJob)).rejects.toThrow('API error');
       expect(processor['logger'].error).toHaveBeenCalledWith(

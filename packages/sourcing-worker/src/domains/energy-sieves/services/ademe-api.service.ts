@@ -1,5 +1,4 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { request } from 'undici';
 import type { DpeRecord, DpeApiResponse } from '../types/energy-sieves.types';
 
 @Injectable()
@@ -115,16 +114,16 @@ export class AdemeApiService {
       try {
         this.lastRequestTime = Date.now();
 
-        const response = await request(url, {
+        const response = await fetch(url, {
           method: 'GET',
-          headersTimeout: 30000, // 30 seconds timeout
+          signal: AbortSignal.timeout(30000), // 30 seconds timeout
         });
 
-        if (response.statusCode === 429) {
+        if (response.status === 429) {
           // Rate limited - wait and retry
-          const retryAfter = response.headers['retry-after'];
+          const retryAfter = response.headers.get('retry-after');
           const waitTime = retryAfter
-            ? parseInt(retryAfter as string, 10) * 1000
+            ? parseInt(retryAfter, 10) * 1000
             : this.retryDelay * attempt;
           this.logger.warn(
             `Rate limited on page ${page}. Waiting ${waitTime}ms before retry ${attempt}/${this.maxRetries}`,
@@ -133,13 +132,13 @@ export class AdemeApiService {
           continue;
         }
 
-        if (response.statusCode !== 200) {
+        if (response.status !== 200) {
           throw new Error(
-            `ADEME API returned status ${response.statusCode}`,
+            `ADEME API returned status ${response.status}`,
           );
         }
 
-        const data = (await response.body.json()) as DpeApiResponse;
+        const data = (await response.json()) as DpeApiResponse;
 
         return data.results || [];
       } catch (error) {

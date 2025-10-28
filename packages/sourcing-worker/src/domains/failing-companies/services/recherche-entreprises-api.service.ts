@@ -1,5 +1,4 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { request } from 'undici';
 import type {
   RechercheEntreprisesResponse,
   Etablissement,
@@ -89,12 +88,12 @@ export class RechercheEntreprisesApiService {
         this.lastRequestTime = Date.now();
 
         const url = `${this.baseUrl}?q=${siren}`;
-        const response = await request(url, {
+        const response = await fetch(url, {
           method: 'GET',
-          headersTimeout: 30000,
+          signal: AbortSignal.timeout(30000),
         });
 
-        if (response.statusCode === 404) {
+        if (response.status === 404) {
           // Company not found - not an error, just return empty results
           return {
             results: [],
@@ -105,11 +104,11 @@ export class RechercheEntreprisesApiService {
           };
         }
 
-        if (response.statusCode === 429) {
+        if (response.status === 429) {
           // Rate limited - wait and retry
-          const retryAfter = response.headers['retry-after'];
+          const retryAfter = response.headers.get('retry-after');
           const waitTime = retryAfter
-            ? parseInt(retryAfter as string, 10) * 1000
+            ? parseInt(retryAfter, 10) * 1000
             : this.retryDelay * attempt;
           this.logger.warn(
             `Rate limited. Waiting ${waitTime}ms before retry ${attempt}/${this.maxRetries}`,
@@ -118,11 +117,11 @@ export class RechercheEntreprisesApiService {
           continue;
         }
 
-        if (response.statusCode !== 200) {
-          throw new Error(`API returned status ${response.statusCode}`);
+        if (response.status !== 200) {
+          throw new Error(`API returned status ${response.status}`);
         }
 
-        const body = await response.body.json();
+        const body = await response.json();
         return body as RechercheEntreprisesResponse;
       } catch (error) {
         lastError = error as Error;

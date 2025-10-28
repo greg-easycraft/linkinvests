@@ -1,7 +1,6 @@
 import { Logger } from '@nestjs/common';
 import { S3Service } from '~/storage';
 import { Queue, Job } from 'bullmq';
-import { request } from 'undici';
 import { InjectQueue, Processor, WorkerHost } from '@nestjs/bullmq';
 import {
   SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE,
@@ -95,18 +94,18 @@ export class FailingCompaniesProcessor extends WorkerHost {
    */
   private async fetchCsvData(url: string): Promise<Buffer> {
     try {
-      const response = await request(url, {
+      const response = await fetch(url, {
         method: 'GET',
-        headersTimeout: 60000, // 60 seconds timeout
+        signal: AbortSignal.timeout(60000), // 60 seconds timeout
       });
 
-      if (response.statusCode !== 200) {
+      if (response.status !== 200) {
         throw new Error(
-          `Failed to fetch data from API. Status: ${response.statusCode}`,
+          `Failed to fetch data from API. Status: ${response.status}`,
         );
       }
 
-      const arrayBuffer = await response.body.arrayBuffer();
+      const arrayBuffer = await response.arrayBuffer();
       return Buffer.from(arrayBuffer);
     } catch (error) {
       const err = error as Error;

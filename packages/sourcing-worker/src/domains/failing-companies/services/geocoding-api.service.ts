@@ -1,5 +1,4 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { request } from 'undici';
 import type { GeocodingResponse, Coordinates } from '../types/geocoding.types';
 
 @Injectable()
@@ -88,16 +87,16 @@ export class GeocodingApiService {
         this.lastRequestTime = Date.now();
 
         const url = `${this.baseUrl}/?q=${encodeURIComponent(address)}`;
-        const response = await request(url, {
+        const response = await fetch(url, {
           method: 'GET',
-          headersTimeout: 30000,
+          signal: AbortSignal.timeout(30000),
         });
 
-        if (response.statusCode === 429) {
+        if (response.status === 429) {
           // Rate limited - wait and retry
-          const retryAfter = response.headers['retry-after'];
+          const retryAfter = response.headers.get('retry-after');
           const waitTime = retryAfter
-            ? parseInt(retryAfter as string, 10) * 1000
+            ? parseInt(retryAfter, 10) * 1000
             : this.retryDelay * attempt;
           this.logger.warn(
             `Rate limited. Waiting ${waitTime}ms before retry ${attempt}/${this.maxRetries}`,
@@ -106,11 +105,11 @@ export class GeocodingApiService {
           continue;
         }
 
-        if (response.statusCode !== 200) {
-          throw new Error(`API returned status ${response.statusCode}`);
+        if (response.status !== 200) {
+          throw new Error(`API returned status ${response.status}`);
         }
 
-        const body = await response.body.json();
+        const body = await response.json();
         return body as GeocodingResponse;
       } catch (error) {
         lastError = error as Error;
