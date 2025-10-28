@@ -101,7 +101,7 @@ export default function DashboardPage(): React.ReactElement {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="border-b border-neutral-700 p-6">
+        <div className="border-b border-[var(--secundary)] p-6">
           <div className="flex items-center justify-between">
             <a
               href="https://linkinvests.com/"
@@ -112,7 +112,7 @@ export default function DashboardPage(): React.ReactElement {
               <Image
                 src="/Logo-LinkInvests-white.svg"
                 alt="LinkInvests Logo"
-                width={300}
+                width={150}
                 height={30}
               />
             </a>
@@ -121,23 +121,22 @@ export default function DashboardPage(): React.ReactElement {
 
         {/* Content Grid */}
         <div className="flex-1 flex overflow-hidden bg-(--secundary)">
-                {/* Collapsible Filters Sidebar */}
-      <div
-        className={`transition-all duration-300 ease-in-out border-r border-neutral-700 ${
-          isFiltersSidebarOpen ? "w-80" : "w-0"
-        }`}
-      >
-        {isFiltersSidebarOpen && (
-          <div className="p-4">
-            <OpportunityFilters
-              filters={filters}
-              onFiltersChange={setFilters}
-              onApply={handleApplyFilters}
-              onReset={handleResetFilters}
-            />
+          {/* Collapsible Filters Sidebar */}
+          <div
+            className={`transition-all duration-300 ease-in-out border-r border-neutral-700 ${isFiltersSidebarOpen ? "w-80" : "w-0"
+              }`}
+          >
+            {isFiltersSidebarOpen && (
+              <div className="p-4">
+                <OpportunityFilters
+                  filters={filters}
+                  onFiltersChange={setFilters}
+                  onApply={handleApplyFilters}
+                  onReset={handleResetFilters}
+                />
+              </div>
+            )}
           </div>
-        )}
-      </div>
           {/* Main Content */}
           <div className="flex-1 overflow-y-auto p-6">
             <div className="space-y-4">
@@ -172,7 +171,7 @@ export default function DashboardPage(): React.ReactElement {
           </div>
 
           {/* Details Sidebar */}
-          <div className="w-96 border-l border-neutral-700 bg-(--secundary) overflow-y-auto">
+          <div className="w-96 border-l border-neutral-700 bg-(--secundary) overflow-y-auto p-4">
             <OpportunitySidebar
               opportunity={selectedOpportunity}
               onClose={handleCloseSidebar}

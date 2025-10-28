@@ -1,20 +1,6 @@
 import type { Metadata } from 'next';
-import { Inter, Poppins } from 'next/font/google';
 import './globals.css';
 import { QueryProvider } from '~/components/providers/query-provider';
-
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-inter',
-  display: 'swap',
-});
-
-const poppins = Poppins({
-  weight: ['400', '500', '600', '700'],
-  subsets: ['latin'],
-  variable: '--font-poppins',
-  display: 'swap',
-});
 
 export const metadata: Metadata = {
   title: 'LinkInvest',
@@ -30,8 +16,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${poppins.variable}`}>
-      <body className="font-sans">
+    <html lang="en">
+      <body className="font-helvetica">
         <QueryProvider>{children}</QueryProvider>
       </body>
     </html>

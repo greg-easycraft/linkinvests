@@ -13,8 +13,9 @@ const config: Config = {
         secundary: 'var(--secundary)',
       },
       fontFamily: {
-        sans: ['var(--font-poppins)', 'sans-serif'],
-        heading: ['var(--font-inter)', 'sans-serif'],
+        helvetica: ['"Helvetica Neue"', 'Helvetica', 'Arial', 'sans-serif'],
+        sans: ['"Helvetica Neue"', 'Helvetica', 'Arial', 'sans-serif'],
+        heading: ['"Helvetica Neue"', 'Helvetica', 'Arial', 'sans-serif'],
       },
     },
   },
