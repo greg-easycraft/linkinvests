@@ -96,6 +96,20 @@ export function OpportunityMap({
     };
   }, [onBoundsChange]);
 
+  // Handle window resize events (e.g., when sidebar toggles)
+  useEffect(() => {
+    const handleResize = () => {
+      if (map.current) {
+        map.current.resize();
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   // Update markers
   useEffect(() => {
     if (!map.current || !mapLoaded) return;

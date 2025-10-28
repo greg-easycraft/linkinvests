@@ -79,6 +79,14 @@ export default function DashboardPage(): React.ReactElement {
     setSelectedOpportunity(null);
   }, []);
 
+  const handleToggleSidebar = useCallback((): void => {
+    setIsFiltersSidebarOpen(!isFiltersSidebarOpen);
+    // Trigger map resize after sidebar animation completes
+    setTimeout(() => {
+      window.dispatchEvent(new Event('resize'));
+    }, 300); // Match the transition duration
+  }, [isFiltersSidebarOpen]);
+
   return (
     <div className="flex h-screen overflow-hidden">
 
@@ -89,7 +97,7 @@ export default function DashboardPage(): React.ReactElement {
         size="icon"
         className="absolute left-0 top-1/2 -translate-y-1/2 z-10 rounded-r-md rounded-l-none"
         style={{ left: isFiltersSidebarOpen ? "303px" : "0" }}
-        onClick={() => setIsFiltersSidebarOpen(!isFiltersSidebarOpen)}
+        onClick={handleToggleSidebar}
       >
         {isFiltersSidebarOpen ? (
           <ChevronLeft className="h-4 w-4" />
