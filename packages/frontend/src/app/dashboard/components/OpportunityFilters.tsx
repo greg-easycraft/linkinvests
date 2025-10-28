@@ -38,7 +38,7 @@ export function OpportunityFilters({
   };
 
   return (
-    <Card>
+    <Card className="bg-[var(--secundary)] text-[var(--primary)]">
       <CardHeader>
         <CardTitle className="text-lg">Filtres</CardTitle>
       </CardHeader>

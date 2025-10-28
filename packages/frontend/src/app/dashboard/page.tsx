@@ -80,30 +80,14 @@ export default function DashboardPage(): React.ReactElement {
   }, []);
 
   return (
-    <div className="flex h-screen overflow-hidden bg-neutral-900">
-      {/* Collapsible Filters Sidebar */}
-      <div
-        className={`transition-all duration-300 ease-in-out bg-neutral-800 border-r border-neutral-700 overflow-y-auto ${
-          isFiltersSidebarOpen ? "w-80" : "w-0"
-        }`}
-      >
-        {isFiltersSidebarOpen && (
-          <div className="p-4">
-            <OpportunityFilters
-              filters={filters}
-              onFiltersChange={setFilters}
-              onApply={handleApplyFilters}
-              onReset={handleResetFilters}
-            />
-          </div>
-        )}
-      </div>
+    <div className="flex h-screen overflow-hidden">
+
 
       {/* Toggle Button for Filters */}
       <Button
         variant="outline"
         size="icon"
-        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 rounded-r-md rounded-l-none bg-neutral-800 border-neutral-700 text-neutral-200 hover:bg-neutral-700 hover:text-white"
+        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 rounded-r-md rounded-l-none bg-[var(--secundary)] border-neutral-700 text-neutral-200 hover:bg-neutral-700 hover:text-white"
         style={{ left: isFiltersSidebarOpen ? "320px" : "0" }}
         onClick={() => setIsFiltersSidebarOpen(!isFiltersSidebarOpen)}
       >
@@ -117,8 +101,8 @@ export default function DashboardPage(): React.ReactElement {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="border-b border-neutral-700 bg-neutral-800 p-6">
-          <div className="flex items-center justify-between mb-4">
+        <div className="border-b border-neutral-700 p-6">
+          <div className="flex items-center justify-between">
             <a
               href="https://linkinvests.com/"
               target="_blank"
@@ -133,13 +117,27 @@ export default function DashboardPage(): React.ReactElement {
               />
             </a>
           </div>
-          <p className="text-neutral-400">
-            Consultez et filtrez les opportunités d'investissement en France
-          </p>
         </div>
 
         {/* Content Grid */}
-        <div className="flex-1 flex overflow-hidden bg-neutral-900">
+        <div className="flex-1 flex overflow-hidden bg-(--secundary)">
+                {/* Collapsible Filters Sidebar */}
+      <div
+        className={`transition-all duration-300 ease-in-out border-r border-neutral-700 ${
+          isFiltersSidebarOpen ? "w-80" : "w-0"
+        }`}
+      >
+        {isFiltersSidebarOpen && (
+          <div className="p-4">
+            <OpportunityFilters
+              filters={filters}
+              onFiltersChange={setFilters}
+              onApply={handleApplyFilters}
+              onReset={handleResetFilters}
+            />
+          </div>
+        )}
+      </div>
           {/* Main Content */}
           <div className="flex-1 overflow-y-auto p-6">
             <div className="space-y-4">
@@ -174,7 +172,7 @@ export default function DashboardPage(): React.ReactElement {
           </div>
 
           {/* Details Sidebar */}
-          <div className="w-96 border-l border-neutral-700 bg-neutral-800 overflow-y-auto">
+          <div className="w-96 border-l border-neutral-700 bg-(--secundary) overflow-y-auto">
             <OpportunitySidebar
               opportunity={selectedOpportunity}
               onClose={handleCloseSidebar}

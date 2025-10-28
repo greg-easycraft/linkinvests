@@ -29,9 +29,9 @@ export function OpportunitySidebar({
 }: OpportunitySidebarProps): React.ReactElement | null {
   if (!opportunity) {
     return (
-      <Card className="h-full">
+      <Card className="h-full bg-[var(--secundary)] text-[var(--primary)]">
         <CardContent className="flex items-center justify-center h-full">
-          <div className="text-center text-neutral-500">
+          <div className="text-center">
             <p className="text-sm">Sélectionnez une opportunité pour voir les détails</p>
           </div>
         </CardContent>
@@ -40,7 +40,7 @@ export function OpportunitySidebar({
   }
 
   return (
-    <Card className="h-full overflow-auto">
+    <Card className="h-full overflow-auto bg-[var(--secundary)] text-[var(--primary)]">
       {/* Street View at the top */}
       <StreetView
         address={opportunity.address}
