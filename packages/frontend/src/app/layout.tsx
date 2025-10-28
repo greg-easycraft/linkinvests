@@ -3,7 +3,7 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: 'LinkInvest',
-  description: 'Real estate investment platform',
+  description: 'Plateforme d\'investissement immobilier',
 };
 
 export default function RootLayout({
