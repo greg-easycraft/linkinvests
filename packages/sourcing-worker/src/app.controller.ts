@@ -1,21 +1,24 @@
-import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { InjectQueue } from '@nestjs/bullmq';
+import { Queue } from 'bullmq';
 import {
   SOURCE_COMPANY_BUILDINGS_QUEUE,
-  SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE,
+  SOURCE_DECEASES_QUEUE,
   SOURCE_ENERGY_SIEVES_QUEUE,
+  SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE,
 } from '@linkinvests/shared';
-import { Queue } from 'bullmq';
-import { InjectQueue } from '@nestjs/bullmq';
 
 @Controller()
 export class AppController {
   constructor(
-    @InjectQueue(SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE)
-    private readonly failingCompaniesQueue: Queue,
     @InjectQueue(SOURCE_COMPANY_BUILDINGS_QUEUE)
     private readonly companyBuildingsQueue: Queue,
+    @InjectQueue(SOURCE_DECEASES_QUEUE)
+    private readonly deceasesQueue: Queue,
     @InjectQueue(SOURCE_ENERGY_SIEVES_QUEUE)
     private readonly energySievesQueue: Queue,
+    @InjectQueue(SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE)
+    private readonly failingCompaniesQueue: Queue,
   ) {}
 
   @Post('jobs/failing-companies')
@@ -80,6 +83,46 @@ export class AppController {
         'source-company-buildings',
         {
           sourceFile,
+        },
+        {
+          removeOnComplete: 100,
+          removeOnFail: 100,
+        },
+      );
+
+      return {
+        success: true,
+        jobId,
+        message: 'Job enqueued successfully',
+      };
+    } catch (error) {
+      const err = error as Error;
+      return {
+        success: false,
+        error: err.message,
+      };
+    }
+  }
+
+  @Post('jobs/deceases')
+  @HttpCode(HttpStatus.ACCEPTED)
+  async enqueueDeceases(
+    @Body('sinceDate') sinceDate: string,
+    @Body('untilDate') untilDate?: string,
+  ) {
+    try {
+      if (!sinceDate) {
+        return {
+          success: false,
+          error: 'sinceDate is required (format: YYYY-MM-DD)',
+        };
+      }
+
+      const { id: jobId } = await this.deceasesQueue.add(
+        'import-deceases',
+        {
+          sinceDate,
+          untilDate,
         },
         {
           removeOnComplete: 100,

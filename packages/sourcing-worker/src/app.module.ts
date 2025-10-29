@@ -1,15 +1,17 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
-import { AppController } from './app.controller';
-import { DatabaseModule } from './database';
-import { S3Module } from './storage';
 import { BullModule } from '@nestjs/bullmq';
-import { FailingCompaniesModule } from './domains/failing-companies';
-import { EnergySievesModule } from './domains/energy-sieves';
 import { BullBoardModule } from '@bull-board/nestjs';
 import { ExpressAdapter } from '@bull-board/express';
 import basicAuth from 'express-basic-auth';
+
+import { AppController } from './app.controller';
+import { DatabaseModule } from './database';
+import { DeceasesModule } from './domains/deceases';
+import { EnergySievesModule } from './domains/energy-sieves';
+import { FailingCompaniesModule } from './domains/failing-companies';
+import { S3Module } from './storage';
 
 @Module({
   imports: [
@@ -33,8 +35,9 @@ import basicAuth from 'express-basic-auth';
         users: { admin: 'passwordhere' },
       }),
     }),
-    FailingCompaniesModule,
+    DeceasesModule,
     EnergySievesModule,
+    FailingCompaniesModule,
   ],
   controllers: [AppController],
 })
