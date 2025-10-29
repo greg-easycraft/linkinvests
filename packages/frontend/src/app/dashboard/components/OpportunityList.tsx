@@ -6,7 +6,7 @@ import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import type { Opportunity } from "~/server/domains/opportunities/lib.types";
-import type { OpportunityListResult } from "~/server/domains/opportunities/services/OpportunityService";
+import type { OpportunityListResult } from "~/server/domains/opportunities/services/opportunity-service";
 import { ChevronLeft, ChevronRight, MapPin, Calendar, Building2 } from "lucide-react";
 import { StreetView } from "./StreetView";
 

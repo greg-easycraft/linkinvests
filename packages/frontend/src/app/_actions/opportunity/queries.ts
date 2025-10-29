@@ -1,10 +1,10 @@
 "use server";
 
 import { db } from "~/server/db";
-import { DrizzleOpportunityRepository } from "~/server/domains/opportunities/repositories/DrizzleOpportunityRepository";
-import { OpportunityService } from "~/server/domains/opportunities/services/OpportunityService";
+import { DrizzleOpportunityRepository } from "~/server/domains/opportunities/repositories/opportunity-repository";
+import { OpportunityService } from "~/server/domains/opportunities/services/opportunity-service";
 import type { OpportunityFilters } from "~/types/filters";
-import type { OpportunityListResult, OpportunityMapResult } from "~/server/domains/opportunities/services/OpportunityService";
+import type { OpportunityListResult, OpportunityMapResult } from "~/server/domains/opportunities/services/opportunity-service";
 import type { Opportunity } from "~/server/domains/opportunities/lib.types";
 
 // Initialize repository and service
