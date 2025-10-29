@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import type { Page } from 'playwright';
 
 import type { AuctionOpportunity } from '../types';
+import { AiExtractionService } from './ai-extraction.service';
 import { GeocodingService } from './geocoding.service';
 
 interface DetailScraperResult {
@@ -15,7 +16,10 @@ export class DetailScraperService {
   private readonly logger = new Logger(DetailScraperService.name);
   private readonly baseUrl = 'https://www.encheres-publiques.com';
 
-  constructor(private readonly geocodingService: GeocodingService) {}
+  constructor(
+    private readonly geocodingService: GeocodingService,
+    private readonly aiExtractionService: AiExtractionService
+  ) {}
 
   async scrapeDetails(page: Page, url: string): Promise<DetailScraperResult> {
     const fullUrl = url.startsWith('http') ? url : `${this.baseUrl}${url}`;
@@ -97,6 +101,14 @@ export class DetailScraperService {
         );
       }
 
+      // Use AI to extract structured data from description
+      let aiExtractedData = null;
+      if (data.description) {
+        aiExtractedData = await this.aiExtractionService.extractAuctionData(
+          data.description
+        );
+      }
+
       const opportunity: AuctionOpportunity = {
         label: data.title || `Bien immobilier à ${city}`,
         address: data.address || fullAddress,
@@ -104,9 +116,14 @@ export class DetailScraperService {
         department: parseInt(departmentCode, 10) || 75,
         latitude: coordinates?.latitude || 0,
         longitude: coordinates?.longitude || 0,
-        price: parsedPrice,
         auctionDate: new Date().toISOString().split('T')[0] as string, // TODO: Extract real date
-        description: data.description?.substring(0, 500) || undefined,
+        extraData: {
+          price: aiExtractedData?.price ?? parsedPrice ?? undefined,
+          propertyType: aiExtractedData?.propertyType ?? undefined,
+          description: aiExtractedData?.description ?? data.description?.substring(0, 200) ?? undefined,
+          squareFootage: aiExtractedData?.squareFootage ?? undefined,
+          auctionVenue: aiExtractedData?.auctionVenue ?? undefined,
+        },
       };
 
       return { success: true, opportunity };

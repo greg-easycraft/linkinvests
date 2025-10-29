@@ -79,7 +79,7 @@ export class ListingExtractorService {
     }
   }
 
-  async extractAllListingsWithPagination(page: Page, maxScrolls: number = 10): Promise<AuctionListing[]> {
+  async extractAllListingsWithPagination(page: Page, maxScrolls: number = 50): Promise<AuctionListing[]> {
     this.logger.log({ maxScrolls }, 'Starting extraction with lazy loading');
 
     let previousCount = 0;

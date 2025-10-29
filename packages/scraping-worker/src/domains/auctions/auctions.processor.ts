@@ -58,9 +58,21 @@ export class AuctionsProcessor extends WorkerHost {
         return;
       }
 
-      // Step 2: Check how many opportunities were successfully geocoded
+      // Step 2: Collect statistics about data quality
       const geocodedCount = opportunities.filter(
         (opp) => opp.latitude !== 0 && opp.longitude !== 0
+      ).length;
+
+      const aiExtractedCount = opportunities.filter(
+        (opp) =>
+          opp.extraData?.price ||
+          opp.extraData?.propertyType ||
+          opp.extraData?.squareFootage ||
+          opp.extraData?.auctionVenue
+      ).length;
+
+      const withImagesCount = opportunities.filter(
+        (opp) => opp.images && opp.images.length > 0
       ).length;
 
       const failedGeocoding = opportunities.length - geocodedCount;
@@ -80,6 +92,8 @@ export class AuctionsProcessor extends WorkerHost {
         jobId: job.id,
         count: opportunities.length,
         geocoded: geocodedCount,
+        aiExtracted: aiExtractedCount,
+        withImages: withImagesCount,
         message: 'Inserting opportunities into database',
       });
 
@@ -90,6 +104,11 @@ export class AuctionsProcessor extends WorkerHost {
         inserted: insertedCount,
         total: opportunities.length,
         geocoded: geocodedCount,
+        aiExtracted: aiExtractedCount,
+        withImages: withImagesCount,
+        aiExtractionRate: `${Math.round((aiExtractedCount / opportunities.length) * 100)}%`,
+        imageRate: `${Math.round((withImagesCount / opportunities.length) * 100)}%`,
+        geocodingRate: `${Math.round((geocodedCount / opportunities.length) * 100)}%`,
         message: 'Job completed successfully',
       });
     } catch (error: unknown) {

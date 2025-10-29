@@ -3,6 +3,14 @@ export interface AuctionListing {
   auctionDate?: string;
 }
 
+export interface AuctionExtraData {
+  price?: number;
+  propertyType?: string;
+  description?: string;
+  squareFootage?: number;
+  auctionVenue?: string;
+}
+
 export interface AuctionOpportunity {
   label: string;
   address: string;
@@ -10,10 +18,9 @@ export interface AuctionOpportunity {
   department: number;
   latitude: number;
   longitude: number;
-  price?: number;
   auctionDate: string;
-  propertyType?: string;
-  description?: string;
+  extraData?: AuctionExtraData;
+  images?: string[];
 }
 
 export interface ScraperResult {

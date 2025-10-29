@@ -43,11 +43,11 @@ export class EncheresPubliquesScraperService {
       // Wait for content to load
       await this.browserService.waitForContent();
 
-      // Extract all listing URLs with pagination
+      // Extract all listing URLs with lazy loading (scroll-based)
       const page = this.browserService.getPage();
       const listings = await this.listingExtractor.extractAllListingsWithPagination(
         page,
-        10 // Max 10 pages
+        50 // Max 50 scroll attempts (smart stopping after 2 empty scrolls)
       );
 
       if (listings.length === 0) {

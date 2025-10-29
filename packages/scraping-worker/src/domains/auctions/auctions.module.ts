@@ -5,8 +5,10 @@ import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import { SCRAPING_QUEUE } from '@linkinvests/shared';
 
 import { AuctionsProcessor } from './auctions.processor';
+import { AuctionsCron } from './cron/auctions.cron';
 import { AuctionsOpportunityRepository } from './repositories';
 import {
+  AiExtractionService,
   BrowserService,
   DetailScraperService,
   EncheresPubliquesScraperService,
@@ -32,10 +34,12 @@ const redisConnection = {
   ],
   providers: [
     AuctionsProcessor,
+    AuctionsCron,
     AuctionsOpportunityRepository,
     EncheresPubliquesScraperService,
     BrowserService,
     GeocodingService,
+    AiExtractionService,
     ListingExtractorService,
     DetailScraperService,
   ],

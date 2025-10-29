@@ -45,10 +45,13 @@ export class AuctionsOpportunityRepository {
         type: OpportunityType.AUCTION,
         status: 'pending_review',
         opportunityDate: opp.auctionDate,
+        extraData: opp.extraData || null,
+        images: opp.images || null,
       }));
 
       try {
         await this.db
+          // @ts-expect-error - Drizzle type version conflict from dependencies
           .insert(domainSchema.opportunities)
           .values(records)
           .onConflictDoNothing(); // Skip duplicates

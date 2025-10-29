@@ -9,6 +9,7 @@ import basicAuth from 'express-basic-auth';
 import { AppController } from './app.controller';
 import { DatabaseModule } from './database';
 import { AuctionsModule } from './domains/auctions';
+import { S3Module } from './storage';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { AuctionsModule } from './domains/auctions';
     }),
     ScheduleModule.forRoot(),
     DatabaseModule.forRoot(),
+    S3Module,
     BullModule.forRoot({
       connection: {
         host: process.env.REDIS_HOST || 'localhost',

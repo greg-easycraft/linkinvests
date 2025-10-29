@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, integer, serial, varchar, doublePrecision, pgEnum, date } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, integer, serial, varchar, doublePrecision, pgEnum, date, jsonb } from "drizzle-orm/pg-core";
 import { OpportunityType } from "@linkinvests/shared";
 
 export const opportunityType = pgEnum("opportunity_type", Object.values(OpportunityType) as [string, ...string[]]);
@@ -15,6 +15,9 @@ export const opportunities = pgTable("opportunity", {
     type: opportunityType("type").notNull(),
     status: text("status").notNull(),
     opportunityDate: date("opportunity_date").notNull(),
+    // Additional opportunity data (auction-specific fields, etc.)
+    extraData: jsonb("extra_data"),
+    images: text("images").array(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
         .defaultNow()
