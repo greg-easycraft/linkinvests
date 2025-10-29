@@ -1,4 +1,4 @@
-import { SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE } from '@linkinvest/shared';
+import { SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE } from '@linkinvests/shared';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';

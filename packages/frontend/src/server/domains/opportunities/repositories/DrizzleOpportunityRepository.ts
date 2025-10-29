@@ -1,6 +1,6 @@
 import { and, between, eq, gte, inArray, lte, sql, type SQL } from "drizzle-orm";
 import type { DomainDbType } from "~/server/db";
-import { opportunities as opportunitiesTable } from "@linkinvest/db";
+import { opportunities as opportunitiesTable } from "@linkinvests/db";
 import type { IOpportunityRepository, Opportunity } from "../lib.types";
 import type { OpportunityFilters } from "~/types/filters";
 

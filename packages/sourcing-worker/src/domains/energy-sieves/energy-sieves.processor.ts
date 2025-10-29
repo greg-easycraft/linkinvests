@@ -1,7 +1,7 @@
 import { Logger } from '@nestjs/common';
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
-import { SOURCE_ENERGY_SIEVES_QUEUE } from '@linkinvest/shared';
+import { SOURCE_ENERGY_SIEVES_QUEUE } from '@linkinvests/shared';
 import { AdemeApiService } from './services';
 import { EnergySievesOpportunityRepository } from './repositories';
 import type {

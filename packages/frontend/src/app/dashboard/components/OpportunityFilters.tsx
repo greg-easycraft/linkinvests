@@ -3,7 +3,7 @@
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { OpportunityType } from "@linkinvest/shared";
+import { OpportunityType } from "@linkinvests/shared";
 import type { OpportunityFilters as IOpportunityFilters } from "~/types/filters";
 
 interface OpportunityFiltersProps {

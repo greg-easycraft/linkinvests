@@ -62,7 +62,7 @@ $ docker-compose up -d
 
 ```env
 REDIS_URL=redis://localhost:6379
-DATABASE_URL=postgresql://linkinvest:linkinvest@localhost:5432/linkinvest
+DATABASE_URL=postgresql://linkinvests:linkinvests@localhost:5432/linkinvests
 PORT=8080
 ```
 

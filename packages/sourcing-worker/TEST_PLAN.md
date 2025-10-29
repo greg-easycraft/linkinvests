@@ -259,16 +259,16 @@ Create comprehensive fixtures for:
 
 ```bash
 # Run all tests
-pnpm --filter @linkinvest/sourcing-worker test
+pnpm --filter @linkinvests/sourcing-worker test
 
 # Run tests in watch mode
-pnpm --filter @linkinvest/sourcing-worker test:watch
+pnpm --filter @linkinvests/sourcing-worker test:watch
 
 # Run tests with coverage
-pnpm --filter @linkinvest/sourcing-worker test:cov
+pnpm --filter @linkinvests/sourcing-worker test:cov
 
 # Run specific test file
-pnpm --filter @linkinvest/sourcing-worker test csv-parser.service.spec.ts
+pnpm --filter @linkinvests/sourcing-worker test csv-parser.service.spec.ts
 ```
 
 ---

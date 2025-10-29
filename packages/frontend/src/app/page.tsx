@@ -4,7 +4,7 @@ export default function Home() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
       <main className="text-center px-4">
-        <h1 className="text-5xl font-bold mb-4 text-gray-900">LinkInvest</h1>
+        <h1 className="text-5xl font-bold mb-4 text-gray-900">linkinvests</h1>
         <p className="text-xl text-gray-600 mb-8">
           Plateforme d'investissement immobilier
         </p>

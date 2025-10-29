@@ -6,7 +6,7 @@ import {
   RechercheEntreprisesApiService,
 } from './services';
 import { FailingCompaniesOpportunityRepository } from './repositories';
-import { SOURCE_COMPANY_BUILDINGS_QUEUE } from '@linkinvest/shared';
+import { SOURCE_COMPANY_BUILDINGS_QUEUE } from '@linkinvests/shared';
 import type { Etablissement } from './types/recherche-entreprises.types';
 import type {
   CompanyEstablishment,

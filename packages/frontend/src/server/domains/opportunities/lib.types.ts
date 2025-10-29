@@ -1,4 +1,4 @@
-import { domainSchema } from "@linkinvest/db";
+import { domainSchema } from "@linkinvests/db";
 import type { OpportunityFilters } from "~/types/filters";
 
 export type Opportunity = typeof domainSchema.opportunities.$inferSelect;

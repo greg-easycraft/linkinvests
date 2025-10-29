@@ -79,9 +79,9 @@ GET https://data.ademe.fr/data-fair/api/v1/datasets/dpe03existant/lines?
 
 ## Implementation Checklist
 
-### 1. Shared Package (`@linkinvest/shared`)
+### 1. Shared Package (`@linkinvests/shared`)
 - [ ] Add `SOURCE_ENERGY_SIEVES_QUEUE` constant in `src/constants/queues.ts`
-- [ ] Rebuild package: `pnpm --filter @linkinvest/shared build`
+- [ ] Rebuild package: `pnpm --filter @linkinvests/shared build`
 
 ### 2. Domain Structure (`packages/sourcing-worker/src/domains/energy-sieves/`)
 

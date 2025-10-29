@@ -12,7 +12,7 @@ import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import {
   SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE,
   SOURCE_COMPANY_BUILDINGS_QUEUE,
-} from '@linkinvest/shared';
+} from '@linkinvests/shared';
 
 const redisConnection = {
   host: process.env.REDIS_HOST || 'localhost',

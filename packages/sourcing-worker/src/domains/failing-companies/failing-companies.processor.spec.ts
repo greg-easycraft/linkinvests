@@ -3,7 +3,7 @@ import { FailingCompaniesProcessor } from './failing-companies.processor';
 import { S3Service } from '~/storage';
 import { Queue } from 'bullmq';
 import { getQueueToken } from '@nestjs/bullmq';
-import { SOURCE_COMPANY_BUILDINGS_QUEUE } from '@linkinvest/shared';
+import { SOURCE_COMPANY_BUILDINGS_QUEUE } from '@linkinvests/shared';
 
 // Mock global fetch
 global.fetch = jest.fn();

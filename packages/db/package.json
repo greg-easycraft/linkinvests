@@ -1,5 +1,5 @@
 {
-  "name": "@linkinvest/db",
+  "name": "@linkinvests/db",
   "version": "1.0.0",
   "private": true,
   "main": "./dist/index.js",
@@ -29,10 +29,10 @@
   },
   "dependencies": {
     "drizzle-orm": "^0.38.3",
-    "@linkinvest/shared": "workspace:*"
+    "@linkinvests/shared": "workspace:*"
   },
   "devDependencies": {
-    "@linkinvest/eslint-config": "workspace:*",
+    "@linkinvests/eslint-config": "workspace:*",
     "@types/node": "^22.10.2",
     "drizzle-kit": "^0.30.1",
     "eslint": "^9.17.0",

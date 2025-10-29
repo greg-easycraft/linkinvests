@@ -1,5 +1,5 @@
 import { drizzle, type PostgresJsDatabase } from "drizzle-orm/postgres-js";
-import { domainSchema } from "@linkinvest/db";
+import { domainSchema } from "@linkinvests/db";
 import postgres from "postgres";
 
 const databaseUrl = process.env.DATABASE_URL;

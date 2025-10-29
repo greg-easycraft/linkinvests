@@ -20,7 +20,7 @@ This script initializes LocalStack S3 with the required bucket for local develop
 
 This will:
 - Wait for LocalStack to be ready
-- Create the `linkinvest-failing-companies` S3 bucket
+- Create the `linkinvests-failing-companies` S3 bucket
 - List all available buckets
 
 ### Manual S3 Operations with LocalStack
@@ -37,13 +37,13 @@ export AWS_DEFAULT_REGION=eu-west-3
 aws --endpoint-url=http://localhost:4566 s3 ls
 
 # List objects in a bucket
-aws --endpoint-url=http://localhost:4566 s3 ls s3://linkinvest-failing-companies/
+aws --endpoint-url=http://localhost:4566 s3 ls s3://linkinvests-failing-companies/
 
 # Download a file
-aws --endpoint-url=http://localhost:4566 s3 cp s3://linkinvest-failing-companies/your-file.csv ./
+aws --endpoint-url=http://localhost:4566 s3 cp s3://linkinvests-failing-companies/your-file.csv ./
 
 # Upload a file
-aws --endpoint-url=http://localhost:4566 s3 cp ./file.csv s3://linkinvest-failing-companies/
+aws --endpoint-url=http://localhost:4566 s3 cp ./file.csv s3://linkinvests-failing-companies/
 ```
 
 ### Accessing LocalStack Dashboard

@@ -1,4 +1,4 @@
-import type { OpportunityType } from "@linkinvest/shared";
+import type { OpportunityType } from "@linkinvests/shared";
 
 export interface MapBounds {
   north: number;

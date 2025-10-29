@@ -5,7 +5,7 @@ import { InjectQueue, Processor, WorkerHost } from '@nestjs/bullmq';
 import {
   SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE,
   SOURCE_COMPANY_BUILDINGS_QUEUE,
-} from '@linkinvest/shared';
+} from '@linkinvests/shared';
 
 interface FailingCompaniesJobData {
   departmentId: number;

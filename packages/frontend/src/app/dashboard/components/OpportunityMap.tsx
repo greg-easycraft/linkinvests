@@ -5,7 +5,7 @@ import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { X } from "lucide-react";
 import type { Opportunity } from "~/server/domains/opportunities/lib.types";
-import { OpportunityType } from "@linkinvest/shared";
+import { OpportunityType } from "@linkinvests/shared";
 
 interface OpportunityMapProps {
   opportunities: Opportunity[];

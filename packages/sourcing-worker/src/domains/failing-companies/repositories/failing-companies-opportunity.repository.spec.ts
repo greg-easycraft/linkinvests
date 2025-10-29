@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { FailingCompaniesOpportunityRepository } from './failing-companies-opportunity.repository';
 import { DATABASE_CONNECTION } from '~/database';
-import { OpportunityType } from '@linkinvest/shared';
+import { OpportunityType } from '@linkinvests/shared';
 import type { CompanyEstablishment } from '../types/failing-companies.types';
 
 describe('FailingCompaniesOpportunityRepository', () => {

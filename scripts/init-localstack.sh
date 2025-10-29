@@ -15,7 +15,7 @@ export AWS_SECRET_ACCESS_KEY=test
 export AWS_DEFAULT_REGION=eu-west-3
 
 # Create the S3 bucket
-BUCKET_NAME="linkinvest-sourcing"
+BUCKET_NAME="linkinvests-sourcing"
 
 echo "Creating S3 bucket: $BUCKET_NAME"
 aws --endpoint-url=http://localhost:4566 s3 mb s3://$BUCKET_NAME 2>/dev/null || echo "Bucket already exists"

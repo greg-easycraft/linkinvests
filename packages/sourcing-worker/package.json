@@ -1,5 +1,5 @@
 {
-  "name": "@linkinvest/sourcing-worker",
+  "name": "@linkinvests/sourcing-worker",
   "version": "1.0.0",
   "description": "NestJS worker for real estate sourcing",
   "author": "",
@@ -26,8 +26,8 @@
     "@bull-board/api": "^6.14.0",
     "@bull-board/express": "^6.14.0",
     "@bull-board/nestjs": "^6.14.0",
-    "@linkinvest/db": "workspace:*",
-    "@linkinvest/shared": "workspace:*",
+    "@linkinvests/db": "workspace:*",
+    "@linkinvests/shared": "workspace:*",
     "@nestjs/bullmq": "^11.0.4",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",

@@ -1,6 +1,6 @@
 import { DynamicModule, Logger, OnModuleDestroy } from '@nestjs/common';
 import { drizzle, type PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import { domainSchema } from '@linkinvest/db';
+import { domainSchema } from '@linkinvests/db';
 import postgres from 'postgres';
 
 export const DATABASE_CONNECTION = 'DATABASE_CONNECTION';

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bullmq';
-import { SOURCE_ENERGY_SIEVES_QUEUE } from '@linkinvest/shared';
+import { SOURCE_ENERGY_SIEVES_QUEUE } from '@linkinvests/shared';
 import { EnergySievesProcessor } from './energy-sieves.processor';
 import { AdemeApiService } from './services';
 import { EnergySievesOpportunityRepository } from './repositories';

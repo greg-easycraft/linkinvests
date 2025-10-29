@@ -3,7 +3,7 @@ version: '3.8'
 services:
   redis:
     image: redis:7-alpine
-    container_name: linkinvest-redis
+    container_name: linkinvests-redis
     ports:
       - '6379:6379'
     volumes:
@@ -17,17 +17,17 @@ services:
 
   postgres:
     image: postgres:15-alpine
-    container_name: linkinvest-postgres
+    container_name: linkinvests-postgres
     ports:
       - '5432:5432'
     environment:
-      POSTGRES_USER: linkinvest
-      POSTGRES_PASSWORD: linkinvest
-      POSTGRES_DB: linkinvest
+      POSTGRES_USER: linkinvests
+      POSTGRES_PASSWORD: linkinvests
+      POSTGRES_DB: linkinvests
     volumes:
       - postgres-data:/var/lib/postgresql/data
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U linkinvest']
+      test: ['CMD-SHELL', 'pg_isready -U linkinvests']
       interval: 10s
       timeout: 3s
       retries: 3
@@ -35,7 +35,7 @@ services:
 
   localstack:
     image: localstack/localstack:s3-latest
-    container_name: linkinvest-localstack
+    container_name: linkinvests-localstack
     ports:
       - '4566:4566' # LocalStack Gateway
     environment:

@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { EnergySievesOpportunityRepository } from './energy-sieves-opportunity.repository';
 import { DATABASE_CONNECTION } from '~/database';
-import { OpportunityType } from '@linkinvest/shared';
+import { OpportunityType } from '@linkinvests/shared';
 import type { EnergySieveOpportunity } from '../types/energy-sieves.types';
 
 describe('EnergySievesOpportunityRepository', () => {

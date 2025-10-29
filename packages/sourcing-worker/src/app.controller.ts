@@ -3,7 +3,7 @@ import {
   SOURCE_COMPANY_BUILDINGS_QUEUE,
   SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE,
   SOURCE_ENERGY_SIEVES_QUEUE,
-} from '@linkinvest/shared';
+} from '@linkinvests/shared';
 import { Queue } from 'bullmq';
 import { InjectQueue } from '@nestjs/bullmq';
 

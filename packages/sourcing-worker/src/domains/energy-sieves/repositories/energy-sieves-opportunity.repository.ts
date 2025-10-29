@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { DATABASE_CONNECTION, type DomainDbType } from '~/database';
-import { domainSchema } from '@linkinvest/db';
-import { OpportunityType } from '@linkinvest/shared';
+import { domainSchema } from '@linkinvests/db';
+import { OpportunityType } from '@linkinvests/shared';
 import type { EnergySieveOpportunity } from '../types/energy-sieves.types';
 
 @Injectable()

@@ -7,9 +7,9 @@ export default defineConfig({
   dbCredentials: {
     host: process.env.DB_HOST || 'localhost',
     port: parseInt(process.env.DB_PORT || '5432'),
-    user: process.env.DB_USER || 'linkinvest',
-    password: process.env.DB_PASSWORD || 'linkinvest',
-    database: process.env.DB_NAME || 'linkinvest',
+    user: process.env.DB_USER || 'linkinvests',
+    password: process.env.DB_PASSWORD || 'linkinvests',
+    database: process.env.DB_NAME || 'linkinvests',
     ssl: process.env.NODE_ENV === 'production' ? true : false,
   },
 });

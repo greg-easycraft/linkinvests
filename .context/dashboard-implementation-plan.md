@@ -220,24 +220,24 @@ Implement a comprehensive dashboard for displaying opportunities with list view,
 ### To Install
 ```bash
 # Core
-pnpm --filter @linkinvest/frontend add mapbox-gl
-pnpm --filter @linkinvest/frontend add @tanstack/react-query
-pnpm --filter @linkinvest/frontend add date-fns
+pnpm --filter @linkinvests/frontend add mapbox-gl
+pnpm --filter @linkinvests/frontend add @tanstack/react-query
+pnpm --filter @linkinvests/frontend add date-fns
 
 # Forms
-pnpm --filter @linkinvest/frontend add react-hook-form @hookform/resolvers zod
+pnpm --filter @linkinvests/frontend add react-hook-form @hookform/resolvers zod
 
 # UI Utilities
-pnpm --filter @linkinvest/frontend add lucide-react
-pnpm --filter @linkinvest/frontend add class-variance-authority clsx tailwind-merge
+pnpm --filter @linkinvests/frontend add lucide-react
+pnpm --filter @linkinvests/frontend add class-variance-authority clsx tailwind-merge
 
 # Types
-pnpm --filter @linkinvest/frontend add -D @types/mapbox-gl
+pnpm --filter @linkinvests/frontend add -D @types/mapbox-gl
 ```
 
 ### Already Available
-- `@linkinvest/db` - Database access
-- `@linkinvest/shared` - Shared types (OpportunityType enum)
+- `@linkinvests/db` - Database access
+- `@linkinvests/shared` - Shared types (OpportunityType enum)
 - `next` - Framework
 - `react` & `react-dom` - UI library
 - `tailwindcss` - Styling

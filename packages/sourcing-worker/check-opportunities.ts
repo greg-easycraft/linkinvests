@@ -1,10 +1,10 @@
 // Check opportunities in the database using Drizzle
 import postgres from 'postgres';
 import { drizzle } from 'drizzle-orm/postgres-js';
-import { domainSchema } from '@linkinvest/db';
+import { domainSchema } from '@linkinvests/db';
 import { desc } from 'drizzle-orm';
 
-const databaseUrl = process.env.DATABASE_URL || 'postgresql://linkinvest:linkinvest@localhost:5432/linkinvest';
+const databaseUrl = process.env.DATABASE_URL || 'postgresql://linkinvests:linkinvests@localhost:5432/linkinvests';
 
 async function checkOpportunities() {
   const client = postgres(databaseUrl);

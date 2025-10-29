@@ -3,7 +3,7 @@ import './globals.css';
 import { QueryProvider } from '~/components/providers/query-provider';
 
 export const metadata: Metadata = {
-  title: 'LinkInvest',
+  title: 'linkinvests',
   description: 'Plateforme d\'investissement immobilier',
   icons: {
     icon: '/favicon-linkinvests.svg',
