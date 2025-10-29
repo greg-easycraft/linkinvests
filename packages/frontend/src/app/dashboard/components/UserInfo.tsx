@@ -29,7 +29,7 @@ export function UserInfo() {
 
   if (isPending) {
     return (
-      <div className="h-10 w-10 rounded-full bg-gray-200 animate-pulse" />
+      <div className="h-8 w-8 rounded-full bg-gray-200 animate-pulse" />
     );
   }
 
@@ -50,8 +50,8 @@ export function UserInfo() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="relative h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)]">
-          <Avatar>
+        <button className="relative h-8 w-8 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)]">
+          <Avatar className="h-8 w-8">
             <AvatarImage src={session.user.image || undefined} alt={session.user.name} />
             <AvatarFallback className="bg-[var(--secundary)] text-[var(--primary)] font-semibold">
               {getInitials(session.user.name)}

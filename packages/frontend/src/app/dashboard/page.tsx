@@ -110,7 +110,7 @@ export default function DashboardPage(): React.ReactElement {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="border-b border-[var(--secundary)] p-6">
+        <div className="border-b border-[var(--secundary)] px-6 py-3">
           <div className="flex items-center justify-between">
             <a
               href="https://linkinvests.com/"
@@ -148,18 +148,22 @@ export default function DashboardPage(): React.ReactElement {
             )}
           </div>
           {/* Main Content */}
-          <div className="flex-1 overflow-y-auto p-6">
-            <div className="space-y-4">
+          <div className="flex-1 flex flex-col overflow-hidden p-6">
+            <div className="flex-shrink-0 mb-4">
               <ViewToggle value={viewType} onValueChange={setViewType} />
+            </div>
 
+            <div className="flex-1 overflow-hidden">
               {viewType === "list" && listQuery.data && (
-                <OpportunityList
-                  data={listQuery.data}
-                  selectedId={selectedOpportunity?.id}
-                  onSelect={handleSelectOpportunity}
-                  onPageChange={handlePageChange}
-                  isLoading={listQuery.isLoading}
-                />
+                <div className="h-full overflow-y-auto">
+                  <OpportunityList
+                    data={listQuery.data}
+                    selectedId={selectedOpportunity?.id}
+                    onSelect={handleSelectOpportunity}
+                    onPageChange={handlePageChange}
+                    isLoading={listQuery.isLoading}
+                  />
+                </div>
               )}
 
               {viewType === "map" && mapQuery.data && (
@@ -173,7 +177,7 @@ export default function DashboardPage(): React.ReactElement {
               )}
 
               {(listQuery.isLoading || mapQuery.isLoading) && (
-                <div className="flex items-center justify-center h-96">
+                <div className="flex items-center justify-center h-full">
                   <div className="text-neutral-400">Chargement...</div>
                 </div>
               )}

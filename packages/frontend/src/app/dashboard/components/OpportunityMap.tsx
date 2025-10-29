@@ -176,7 +176,7 @@ export function OpportunityMap({
 
   return (
     <div className="relative w-full h-full">
-      <div ref={mapContainer} className="w-full h-full min-h-[600px] rounded-lg" />
+      <div ref={mapContainer} className="w-full h-full rounded-lg" />
 
       {/* Disclaimer for limited results */}
       {isLimited && isDisclaimerVisible && (
