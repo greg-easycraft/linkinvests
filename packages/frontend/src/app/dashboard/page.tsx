@@ -9,6 +9,7 @@ import { OpportunityList } from "./components/OpportunityList";
 import { OpportunityMap } from "./components/OpportunityMap";
 import { OpportunitySidebar } from "./components/OpportunitySidebar";
 import { ViewToggle } from "./components/ViewToggle";
+import { UserInfo } from "./components/UserInfo";
 import {
   getOpportunities,
   getOpportunitiesForMap,
@@ -118,12 +119,13 @@ export default function DashboardPage(): React.ReactElement {
               className="flex items-center gap-3 hover:opacity-80 transition-opacity"
             >
               <Image
-                src="/Logo-LinkInvests-white.svg"
+                src="/logo.svg"
                 alt="LinkInvests Logo"
-                width={150}
-                height={30}
+                width={20}
+                height={20}
               />
             </a>
+            <UserInfo />
           </div>
         </div>
 
