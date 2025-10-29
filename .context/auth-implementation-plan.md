@@ -112,20 +112,26 @@ Implement authentication in `@packages/frontend` using better-auth with Google O
 
 ### 7. Protected Routes & Session Management
 
-- [ ] Create `src/middleware.ts`
+- [x] Create `src/middleware.ts`
   - Check session for protected routes (`/dashboard`)
   - Redirect unauthenticated users to `/`
   - Redirect authenticated users from `/` to `/dashboard`
   - Configure matcher for auth and protected routes
 
-- [ ] Create `src/lib/get-session.ts`
+- [x] Create `src/lib/get-session.ts`
   - Server-side session helper
   - Export `getSession()` function for use in server components/actions
 
-- [ ] Update `src/app/dashboard/page.tsx`
+- [x] Update `src/app/dashboard/page.tsx`
   - Add session check (redirect if not authenticated)
-  - Display user info in header
-  - Add SignOutButton component
+  - Display user info in header with avatar dropdown
+  - Avatar displays user image or initials
+  - Dropdown menu with user details and sign-out option
+
+- [x] Create UI components for user menu
+  - `src/components/ui/dropdown-menu.tsx` - Dropdown menu component
+  - `src/components/ui/avatar.tsx` - Avatar component
+  - `src/app/dashboard/components/UserInfo.tsx` - User avatar with dropdown
 
 ### 8. Database Schema Review
 - [ ] Verify existing schema at `/packages/db/src/schema/auth.schema.ts`

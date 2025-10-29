@@ -13,6 +13,6 @@ export async function requireAuth() {
   return session;
 }
 
-export function getOptionalSession() {
-  return getSession();
+export async function getOptionalSession() {
+  return await getSession();
 }
