@@ -53,6 +53,92 @@ services:
       retries: 3
     restart: unless-stopped
 
+  # Application Services
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/app.Dockerfile
+    container_name: linkinvests-frontend
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://linkinvests:linkinvests@postgres:5432/linkinvests
+      - NEXTAUTH_SECRET=your-secret-key-here
+      - NEXTAUTH_URL=http://localhost:3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:3000/api/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
+  scraping-worker:
+    build:
+      context: .
+      dockerfile: docker/scraper.Dockerfile
+    container_name: linkinvests-scraping-worker
+    ports:
+      - '8081:8081'
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://linkinvests:linkinvests@postgres:5432/linkinvests
+      - REDIS_URL=redis://redis:6379
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - AWS_REGION=eu-west-3
+      - AWS_ENDPOINT_URL=http://localstack:4566
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      localstack:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:8081/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
+  sourcing-worker:
+    build:
+      context: .
+      dockerfile: docker/sourcing-worker.Dockerfile
+    container_name: linkinvests-sourcing-worker
+    ports:
+      - '8080:8080'
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://linkinvests:linkinvests@postgres:5432/linkinvests
+      - REDIS_URL=redis://redis:6379
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - AWS_REGION=eu-west-3
+      - AWS_ENDPOINT_URL=http://localstack:4566
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      localstack:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:8080/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
 volumes:
   redis-data:
     driver: local

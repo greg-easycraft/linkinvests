@@ -31,7 +31,7 @@ REDIS_HOST=localhost
 REDIS_PORT=6379
 
 # Database
-DATABASE_URL=postgresql://user:pass@localhost:5432/linkinvest
+DATABASE_URL=postgresql://user:pass@localhost:5432/linkinvests
 
 # Application
 PORT=8081

@@ -232,7 +232,7 @@ Add to `/packages/scraping-worker/.env`:
 ```env
 # S3 Configuration
 AWS_REGION=eu-west-3
-AWS_S3_BUCKET=linkinvest-auctions
+AWS_S3_BUCKET=linkinvests-auctions
 AWS_ACCESS_KEY_ID=your_key_here
 AWS_SECRET_ACCESS_KEY=your_secret_here
 
