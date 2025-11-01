@@ -4,6 +4,7 @@ import type { Page } from 'playwright';
 import type { AuctionOpportunity } from '../types';
 import { AiExtractionService } from './ai-extraction.service';
 import { GeocodingService } from './geocoding.service';
+import { AuctionExtraction } from '../schemas/auction-extraction.schema';
 
 interface DetailScraperResult {
   success: boolean;
@@ -102,7 +103,7 @@ export class DetailScraperService {
       }
 
       // Use AI to extract structured data from description
-      let aiExtractedData = null;
+      let aiExtractedData: AuctionExtraction | null = null;
       if (data.description) {
         aiExtractedData = await this.aiExtractionService.extractAuctionData(
           data.description
