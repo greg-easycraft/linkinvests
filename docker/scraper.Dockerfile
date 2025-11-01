@@ -18,14 +18,14 @@ COPY packages/eslint-config ./packages/eslint-config
 COPY packages/scraping-worker ./packages/scraping-worker
 
 # Install dependencies for the scraping worker workspace and its dependencies
-RUN pnpm install --filter @linkinvests/scraping-worker... --ignore-scripts
+RUN pnpm install --filter scraping-worker... --ignore-scripts
 
 # Build the shared and db packages first
-RUN pnpm --filter @linkinvests/shared build
-RUN pnpm --filter @linkinvests/db build
+RUN pnpm --filter shared build
+RUN pnpm --filter db build
 
 # Build the scraping worker application for production.
-RUN pnpm --filter @linkinvests/scraping-worker build
+RUN pnpm --filter scraping-worker build
 
 # Stage 2: The Production Stage
 # We use a slimmed-down Node.js base image for the final production image.
@@ -50,7 +50,7 @@ COPY --from=builder /app/packages/shared/dist ./packages/shared/dist
 COPY --from=builder /app/packages/db/dist ./packages/db/dist
 
 # Install only production dependencies for scraping worker
-RUN pnpm install --filter @linkinvests/scraping-worker --prod --ignore-scripts
+RUN pnpm install --filter scraping-worker --prod --ignore-scripts
 
 # Copy the built scraping worker application from the builder stage.
 COPY --from=builder /app/packages/scraping-worker/dist ./packages/scraping-worker/dist

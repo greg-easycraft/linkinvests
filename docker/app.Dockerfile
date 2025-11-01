@@ -18,17 +18,17 @@ COPY packages/eslint-config ./packages/eslint-config
 COPY packages/frontend ./packages/frontend
 
 # Install dependencies for the frontend workspace and its dependencies
-RUN pnpm install --filter @linkinvests/frontend... --ignore-scripts
+RUN pnpm install --filter frontend... --ignore-scripts
 
 # Skip environment validation during build as variables are only needed at runtime.
 ENV SKIP_ENV_VALIDATION=1
 
 # Build the shared and db packages first
-RUN pnpm --filter @linkinvests/shared build
-RUN pnpm --filter @linkinvests/db build
+RUN pnpm --filter shared build
+RUN pnpm --filter db build
 
 # Build the Next.js application for production.
-RUN pnpm --filter @linkinvests/frontend build
+RUN pnpm --filter frontend build
 
 # Stage 2: The Production Stage
 # We use a slimmed-down Node.js base image for the final production image.
@@ -53,7 +53,7 @@ COPY --from=builder /app/packages/shared/dist ./packages/shared/dist
 COPY --from=builder /app/packages/db/dist ./packages/db/dist
 
 # Install only production dependencies for frontend
-RUN pnpm install --filter @linkinvests/frontend --prod --ignore-scripts
+RUN pnpm install --filter frontend --prod --ignore-scripts
 
 # Copy the built frontend application from the builder stage.
 COPY --from=builder /app/packages/frontend/.next ./packages/frontend/.next

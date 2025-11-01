@@ -18,14 +18,14 @@ COPY packages/eslint-config ./packages/eslint-config
 COPY packages/sourcing-worker ./packages/sourcing-worker
 
 # Install dependencies for the sourcing worker workspace and its dependencies
-RUN pnpm install --filter @linkinvests/sourcing-worker... --ignore-scripts
+RUN pnpm install --filter sourcing-worker... --ignore-scripts
 
 # Build the shared and db packages first
-RUN pnpm --filter @linkinvests/shared build
-RUN pnpm --filter @linkinvests/db build
+RUN pnpm --filter shared build
+RUN pnpm --filter db build
 
 # Build the sourcing worker application for production.
-RUN pnpm --filter @linkinvests/sourcing-worker build
+RUN pnpm --filter sourcing-worker build
 
 # Stage 2: The Production Stage
 # We use a slimmed-down Node.js base image for the final production image.
@@ -50,7 +50,7 @@ COPY --from=builder /app/packages/shared/dist ./packages/shared/dist
 COPY --from=builder /app/packages/db/dist ./packages/db/dist
 
 # Install only production dependencies for sourcing worker
-RUN pnpm install --filter @linkinvests/sourcing-worker --prod --ignore-scripts
+RUN pnpm install --filter sourcing-worker --prod --ignore-scripts
 
 # Copy the built sourcing worker application from the builder stage.
 COPY --from=builder /app/packages/sourcing-worker/dist ./packages/sourcing-worker/dist
