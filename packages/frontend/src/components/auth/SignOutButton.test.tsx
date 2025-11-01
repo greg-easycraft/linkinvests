@@ -36,6 +36,7 @@ describe('SignOutButton', () => {
       options.fetchOptions.onSuccess();
       return Promise.resolve();
     });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.mocked(authClient.signOut).mockImplementation(mockSignOut as any);
 
     render(<SignOutButton />);
@@ -54,6 +55,7 @@ describe('SignOutButton', () => {
       options.fetchOptions.onSuccess();
       return Promise.resolve();
     });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.mocked(authClient.signOut).mockImplementation(mockSignOut as any);
 
     render(<SignOutButton />);

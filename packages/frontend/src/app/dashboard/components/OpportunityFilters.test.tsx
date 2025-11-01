@@ -148,7 +148,7 @@ describe('OpportunityFilters', () => {
     it('should show selected types with default variant', () => {
       const filters: IOpportunityFilters = { types: [OpportunityType.SUCCESSION] };
 
-      const { container } = render(
+      render(
         <OpportunityFilters
           filters={filters}
           onFiltersChange={mockOnFiltersChange}
@@ -330,8 +330,8 @@ describe('OpportunityFilters', () => {
       );
 
       const inputs = container.querySelectorAll('input[type="date"]') as NodeListOf<HTMLInputElement>;
-      expect(inputs[0].value).toBe('2024-01-01');
-      expect(inputs[1].value).toBe('2024-12-31');
+      expect(inputs[0]?.value).toBe('2024-01-01');
+      expect(inputs[1]?.value).toBe('2024-12-31');
     });
   });
 
@@ -420,7 +420,7 @@ describe('OpportunityFilters', () => {
 
       await waitFor(() => {
         expect(mockOnFiltersChange).toHaveBeenCalled();
-        const lastCall = mockOnFiltersChange.mock.calls[mockOnFiltersChange.mock.calls.length - 1][0];
+        const lastCall = mockOnFiltersChange.mock.calls[mockOnFiltersChange.mock.calls.length - 1]?.[0];
         expect(lastCall.types).toEqual([OpportunityType.SUCCESSION]);
         expect(lastCall.department).toBe(75);
       }, { timeout: 3000 });

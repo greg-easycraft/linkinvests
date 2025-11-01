@@ -95,7 +95,7 @@ export function OpportunitySidebar({
           <div className="flex gap-3">
             <Calendar className="h-5 w-5 text-neutral-500 mt-0.5" />
             <div className="flex-1">
-              <div className="text-sm font-medium mb-1 font-heading">Date de l'opportunité</div>
+              <div className="text-sm font-medium mb-1 font-heading">Date de l&apos;opportunité</div>
               <div className="text-sm text-neutral-600">
                 {format(new Date(opportunity.opportunityDate), "dd MMMM yyyy", {
                   locale: fr,

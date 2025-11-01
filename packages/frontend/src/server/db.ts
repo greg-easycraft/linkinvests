@@ -1,6 +1,6 @@
-import { drizzle, type PostgresJsDatabase } from "drizzle-orm/postgres-js";
+import { drizzle, type NodePgDatabase } from "drizzle-orm/node-postgres";
 import { domainSchema } from "@linkinvests/db";
-import postgres from "postgres";
+import { Pool } from "pg";
 
 const databaseUrl = process.env.DATABASE_URL;
 
@@ -8,10 +8,8 @@ if (!databaseUrl) {
   throw new Error("DATABASE_URL environment variable is not set");
 }
 
-const client = postgres(databaseUrl, {
-  max: 10,
-});
+const client = new Pool({ connectionString: databaseUrl });
 
-export type DomainDbType = PostgresJsDatabase<typeof domainSchema>;
+export type DomainDbType = NodePgDatabase<typeof domainSchema>;
 
 export const db: DomainDbType = drizzle(client, { schema: domainSchema });

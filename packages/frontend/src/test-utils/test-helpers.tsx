@@ -30,7 +30,8 @@ export function AllTheProviders({ children }: AllTheProvidersProps) {
 export function renderWithProviders(
   ui: ReactElement,
   options?: Omit<RenderOptions, 'wrapper'>,
-) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+): any {
   return render(ui, { wrapper: AllTheProviders, ...options });
 }
 
