@@ -16,7 +16,9 @@
       "default": "./dist/schema/index.js"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
@@ -28,8 +30,9 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
-    "drizzle-orm": "^0.38.3",
-    "@linkinvests/shared": "workspace:*"
+    "@linkinvests/shared": "workspace:*",
+    "dotenv": "^17.2.3",
+    "drizzle-orm": "^0.38.3"
   },
   "devDependencies": {
     "@linkinvests/eslint-config": "workspace:*",

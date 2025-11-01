@@ -8,7 +8,9 @@ export function initializeGenkit(configService: ConfigService): void {
   const apiKey = configService.get<string>('GOOGLE_AI_API_KEY');
 
   if (!apiKey) {
-    throw new Error('GOOGLE_AI_API_KEY environment variable is required for AI extraction');
+    throw new Error(
+      'GOOGLE_AI_API_KEY environment variable is required for AI extraction'
+    );
   }
 
   // TODO: Implement Genkit initialization

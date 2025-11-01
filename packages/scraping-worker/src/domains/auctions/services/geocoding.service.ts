@@ -54,7 +54,8 @@ export class GeocodingService {
 
       return { latitude, longitude };
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       const errorStack = error instanceof Error ? error.stack : undefined;
 
       this.logger.error(
@@ -93,14 +94,20 @@ export class GeocodingService {
 
     const successful = results.filter((r) => r !== null).length;
     this.logger.log(
-      { total: addresses.length, successful, failed: addresses.length - successful },
+      {
+        total: addresses.length,
+        successful,
+        failed: addresses.length - successful,
+      },
       `Batch geocoding complete: ${successful}/${addresses.length} successful`
     );
 
     return results;
   }
 
-  private async fetchWithRateLimit(address: string): Promise<GeocodingResponse> {
+  private async fetchWithRateLimit(
+    address: string
+  ): Promise<GeocodingResponse> {
     // Rate limiting: ensure minimum interval between requests
     const now = Date.now();
     const timeSinceLastRequest = now - this.lastRequestTime;

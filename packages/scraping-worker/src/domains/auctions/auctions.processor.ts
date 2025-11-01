@@ -97,7 +97,8 @@ export class AuctionsProcessor extends WorkerHost {
         message: 'Inserting opportunities into database',
       });
 
-      const insertedCount = await this.repository.insertOpportunities(opportunities);
+      const insertedCount =
+        await this.repository.insertOpportunities(opportunities);
 
       this.logger.log({
         jobId: job.id,
@@ -112,7 +113,8 @@ export class AuctionsProcessor extends WorkerHost {
         message: 'Job completed successfully',
       });
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       const errorStack = error instanceof Error ? error.stack : undefined;
 
       this.logger.error({

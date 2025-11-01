@@ -9,7 +9,8 @@ import { ListingExtractorService } from './listing-extractor.service';
 @Injectable()
 export class EncheresPubliquesScraperService {
   private readonly logger = new Logger(EncheresPubliquesScraperService.name);
-  private readonly baseUrl = 'https://www.encheres-publiques.com/evenements/immobilier';
+  private readonly baseUrl =
+    'https://www.encheres-publiques.com/evenements/immobilier';
 
   constructor(
     private readonly browserService: BrowserService,
@@ -45,10 +46,11 @@ export class EncheresPubliquesScraperService {
 
       // Extract all listing URLs with lazy loading (scroll-based)
       const page = this.browserService.getPage();
-      const listings = await this.listingExtractor.extractAllListingsWithPagination(
-        page,
-        50 // Max 50 scroll attempts (smart stopping after 2 empty scrolls)
-      );
+      const listings =
+        await this.listingExtractor.extractAllListingsWithPagination(
+          page,
+          50 // Max 50 scroll attempts (smart stopping after 2 empty scrolls)
+        );
 
       if (listings.length === 0) {
         this.logger.warn('No listings found');
@@ -68,10 +70,7 @@ export class EncheresPubliquesScraperService {
         10
       );
 
-      this.logger.log(
-        { total: opportunities.length },
-        'Scraping complete'
-      );
+      this.logger.log({ total: opportunities.length }, 'Scraping complete');
 
       return opportunities;
     } finally {

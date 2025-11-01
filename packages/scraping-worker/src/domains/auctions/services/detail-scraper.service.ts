@@ -32,9 +32,11 @@ export class DetailScraperService {
         timeout: 30000,
       });
 
-      await page.waitForLoadState('domcontentloaded', { timeout: 5000 }).catch(() => {
-        this.logger.debug('Load timeout on detail page, proceeding anyway');
-      });
+      await page
+        .waitForLoadState('domcontentloaded', { timeout: 5000 })
+        .catch(() => {
+          this.logger.debug('Load timeout on detail page, proceeding anyway');
+        });
 
       // Extract all data from the page
       const data = await page.evaluate(
@@ -93,7 +95,8 @@ export class DetailScraperService {
       const fullAddress = data.address || `${city}, ${departmentCode}, France`;
 
       // Geocode the address
-      const coordinates = await this.geocodingService.geocodeAddress(fullAddress);
+      const coordinates =
+        await this.geocodingService.geocodeAddress(fullAddress);
 
       if (!coordinates) {
         this.logger.warn(
@@ -121,7 +124,10 @@ export class DetailScraperService {
         extraData: {
           price: aiExtractedData?.price ?? parsedPrice ?? undefined,
           propertyType: aiExtractedData?.propertyType ?? undefined,
-          description: aiExtractedData?.description ?? data.description?.substring(0, 200) ?? undefined,
+          description:
+            aiExtractedData?.description ??
+            data.description?.substring(0, 200) ??
+            undefined,
           squareFootage: aiExtractedData?.squareFootage ?? undefined,
           auctionVenue: aiExtractedData?.auctionVenue ?? undefined,
         },
@@ -129,8 +135,12 @@ export class DetailScraperService {
 
       return { success: true, opportunity };
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      this.logger.warn({ url, error: errorMessage }, 'Failed to scrape detail page');
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      this.logger.warn(
+        { url, error: errorMessage },
+        'Failed to scrape detail page'
+      );
       return { success: false, error: errorMessage };
     }
   }

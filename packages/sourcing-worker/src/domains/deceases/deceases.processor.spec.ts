@@ -182,13 +182,11 @@ describe('DeceasesProcessor', () => {
       const result = await processor['processDeathRecords']([validRecord]);
 
       expect(result).toHaveLength(0);
-      expect(processor['logger'].warn).toHaveBeenCalledWith(
-        {
-          lieuDeces: '75056',
-          nomPrenom: 'DUPONT Jean',
-          message: 'Skipping record: no coordinates found',
-        },
-      );
+      expect(processor['logger'].warn).toHaveBeenCalledWith({
+        lieuDeces: '75056',
+        nomPrenom: 'DUPONT Jean',
+        message: 'Skipping record: no coordinates found',
+      });
     });
 
     it('should process records even when mairie info is not found', async () => {
@@ -266,8 +264,7 @@ describe('DeceasesProcessor', () => {
         nomPrenom: '  MARTIN   Marie   Louise  ',
       };
 
-      const result =
-        await processor['processDeathRecords']([recordWithSpaces]);
+      const result = await processor['processDeathRecords']([recordWithSpaces]);
 
       expect(result[0]?.label).toBe('MARTIN Marie Louise');
     });

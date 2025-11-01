@@ -71,7 +71,10 @@ describe('InseeApiService', () => {
     });
 
     it('should return null when commune has no coordinates', async () => {
-      const responseWithoutCentre = { ...mockCommuneResponse, centre: undefined };
+      const responseWithoutCentre = {
+        ...mockCommuneResponse,
+        centre: undefined,
+      };
       mockFetch.mockResolvedValueOnce({
         status: 200,
         json: async () => responseWithoutCentre,

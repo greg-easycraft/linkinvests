@@ -4,7 +4,6 @@
   "description": "NestJS worker for web scraping real estate opportunities",
   "author": "",
   "private": true,
-  "license": "ISC",
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",

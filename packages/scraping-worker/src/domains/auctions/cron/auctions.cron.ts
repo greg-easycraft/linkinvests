@@ -62,10 +62,14 @@ export class AuctionsCron {
         );
 
         successCount++;
-        this.logger.debug({ departmentId }, `Enqueued auction job for department ${departmentId}`);
+        this.logger.debug(
+          { departmentId },
+          `Enqueued auction job for department ${departmentId}`
+        );
       } catch (error: unknown) {
         failCount++;
-        const errorMessage = error instanceof Error ? error.message : String(error);
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
         this.logger.error(
           { departmentId, error: errorMessage },
           `Failed to enqueue auction job for department ${departmentId}`

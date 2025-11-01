@@ -1,4 +1,11 @@
-import { Body, Controller, HttpCode, HttpStatus, Logger, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Logger,
+  Post,
+} from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bullmq';
 import { SCRAPING_QUEUE } from '@linkinvests/shared';
 import type { Queue } from 'bullmq';
@@ -29,7 +36,11 @@ export class AppController {
         };
       }
 
-      if (typeof departmentId !== 'number' || departmentId < 1 || departmentId > 95) {
+      if (
+        typeof departmentId !== 'number' ||
+        departmentId < 1 ||
+        departmentId > 95
+      ) {
         return {
           success: false,
           error: 'departmentId must be a number between 1 and 95',
@@ -47,18 +58,23 @@ export class AppController {
       const jobData: ScrapingJobData = {
         jobName: 'auctions',
         departmentId,
-        sinceDate: sinceDate || new Date().toISOString().split('T')[0] as string,
+        sinceDate:
+          sinceDate || (new Date().toISOString().split('T')[0] as string),
       };
 
-      const { id: jobId } = await this.scrapingQueue.add('scrape-auctions', jobData, {
-        removeOnComplete: 100,
-        removeOnFail: 100,
-        attempts: 3,
-        backoff: {
-          type: 'exponential',
-          delay: 5000, // Start with 5 seconds
-        },
-      });
+      const { id: jobId } = await this.scrapingQueue.add(
+        'scrape-auctions',
+        jobData,
+        {
+          removeOnComplete: 100,
+          removeOnFail: 100,
+          attempts: 3,
+          backoff: {
+            type: 'exponential',
+            delay: 5000, // Start with 5 seconds
+          },
+        }
+      );
 
       this.logger.log({
         jobId,

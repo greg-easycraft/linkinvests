@@ -28,12 +28,16 @@ export class AiExtractionService implements OnModuleInit {
     const apiKey = this.configService.get<string>('GOOGLE_AI_API_KEY');
 
     if (!apiKey) {
-      this.logger.warn('GOOGLE_AI_API_KEY not configured - AI extraction disabled');
+      this.logger.warn(
+        'GOOGLE_AI_API_KEY not configured - AI extraction disabled'
+      );
       return;
     }
 
     this.isInitialized = false; // Set to false until Genkit integration is complete
-    this.logger.warn('AI extraction temporarily disabled - Genkit integration pending');
+    this.logger.warn(
+      'AI extraction temporarily disabled - Genkit integration pending'
+    );
   }
 
   /**
@@ -41,7 +45,9 @@ export class AiExtractionService implements OnModuleInit {
    * @param description - Raw auction description text in French
    * @returns Extracted auction data or null (currently always null - TODO: implement)
    */
-  async extractAuctionData(description: string): Promise<AuctionExtraction | null> {
+  async extractAuctionData(
+    description: string
+  ): Promise<AuctionExtraction | null> {
     if (!this.isInitialized) {
       this.logger.debug('AI extraction disabled - skipping');
       return null;

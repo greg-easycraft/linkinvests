@@ -66,7 +66,8 @@ export class AuctionsOpportunityRepository {
           `Batch ${Math.floor(i / batchSize) + 1}: Inserted ${insertedCount}/${opportunities.length}`
         );
       } catch (error: unknown) {
-        const errorMessage = error instanceof Error ? error.message : String(error);
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
         this.logger.error(
           { error: errorMessage, batchStart: i },
           'Failed to insert batch'

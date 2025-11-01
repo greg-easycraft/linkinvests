@@ -49,7 +49,10 @@ export class BrowserService {
       throw new Error(`Navigation failed with status: ${response.status()}`);
     }
 
-    this.logger.debug({ url, status: response.status() }, 'Navigation successful');
+    this.logger.debug(
+      { url, status: response.status() },
+      'Navigation successful'
+    );
   }
 
   async handleCookieConsent(): Promise<void> {
@@ -77,9 +80,11 @@ export class BrowserService {
       throw new Error('Browser not initialized');
     }
 
-    await this.page.waitForLoadState('domcontentloaded', { timeout }).catch(() => {
-      this.logger.debug('DOM content loaded timeout - proceeding anyway');
-    });
+    await this.page
+      .waitForLoadState('domcontentloaded', { timeout })
+      .catch(() => {
+        this.logger.debug('DOM content loaded timeout - proceeding anyway');
+      });
   }
 
   getPage(): Page {

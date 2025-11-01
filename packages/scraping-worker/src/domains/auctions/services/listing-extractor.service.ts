@@ -34,7 +34,10 @@ export class ListingExtractorService {
       return results;
     });
 
-    this.logger.log({ count: listings.length }, `Extracted ${listings.length} listing URLs`);
+    this.logger.log(
+      { count: listings.length },
+      `Extracted ${listings.length} listing URLs`
+    );
     return listings;
   }
 
@@ -62,7 +65,9 @@ export class ListingExtractorService {
 
       // Try to click next button
       await page
-        .locator('a[rel="next"], button:has-text("Suivant"), a:has-text("Suivant")')
+        .locator(
+          'a[rel="next"], button:has-text("Suivant"), a:has-text("Suivant")'
+        )
         .first()
         .click({ timeout: 3000 });
 
@@ -73,13 +78,20 @@ export class ListingExtractorService {
       this.logger.debug('Successfully navigated to next page');
       return true;
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      this.logger.debug({ error: errorMessage }, 'Could not navigate to next page');
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      this.logger.debug(
+        { error: errorMessage },
+        'Could not navigate to next page'
+      );
       return false;
     }
   }
 
-  async extractAllListingsWithPagination(page: Page, maxScrolls: number = 50): Promise<AuctionListing[]> {
+  async extractAllListingsWithPagination(
+    page: Page,
+    maxScrolls: number = 50
+  ): Promise<AuctionListing[]> {
     this.logger.log({ maxScrolls }, 'Starting extraction with lazy loading');
 
     let previousCount = 0;
@@ -134,7 +146,11 @@ export class ListingExtractorService {
     );
 
     this.logger.log(
-      { total: allListings.length, unique: uniqueListings.length, scrolls: scrollAttempts },
+      {
+        total: allListings.length,
+        unique: uniqueListings.length,
+        scrolls: scrollAttempts,
+      },
       `Extracted ${uniqueListings.length} unique listings after ${scrollAttempts} scrolls`
     );
 
