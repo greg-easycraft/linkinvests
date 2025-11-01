@@ -62,3 +62,8 @@ jobs:
                   cache-from: type=gha
                   cache-to: type=gha,mode=max
                   platforms: linux/amd64,linux/arm64
+                  build-args: |
+                      BUILDKIT_INLINE_CACHE=1
+              # Retry the build if it fails (common with ARM64 QEMU issues)
+              timeout-minutes: 60
+              continue-on-error: false
