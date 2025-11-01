@@ -6,6 +6,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import { X } from "lucide-react";
 import type { Opportunity } from "~/server/domains/opportunities/lib.types";
 import { OpportunityType } from "@linkinvests/shared";
+import { env } from "~/lib/env";
 
 interface OpportunityMapProps {
   opportunities: Opportunity[];
@@ -57,11 +58,7 @@ export function OpportunityMap({
   useEffect(() => {
     if (!mapContainer.current || map.current) return;
 
-    const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
-    if (!mapboxToken) {
-      console.error("NEXT_PUBLIC_MAPBOX_TOKEN is not set");
-      return;
-    }
+    const mapboxToken = env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
     mapboxgl.accessToken = mapboxToken;
 

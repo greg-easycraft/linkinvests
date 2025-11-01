@@ -2,6 +2,7 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "~/server/db";
 import { users, sessions, accounts, verifications } from "@linkinvests/db";
+import { env } from "~/lib/env";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -21,8 +22,8 @@ export const auth = betterAuth({
 
   socialProviders: {
     google: {
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
     },
   },
 
@@ -36,7 +37,7 @@ export const auth = betterAuth({
   },
 
   trustedOrigins: [
-    process.env.BETTER_AUTH_URL || "http://localhost:3000",
+    env.BETTER_AUTH_URL,
   ],
 });
 
