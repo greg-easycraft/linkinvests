@@ -51,7 +51,6 @@ export class AuctionsOpportunityRepository {
 
       try {
         await this.db
-          // @ts-expect-error - Drizzle type version conflict from dependencies
           .insert(domainSchema.opportunities)
           .values(records)
           .onConflictDoNothing(); // Skip duplicates
