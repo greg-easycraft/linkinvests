@@ -53,7 +53,7 @@ COPY --from=builder /app/packages/shared/dist ./packages/shared/dist
 COPY --from=builder /app/packages/db/dist ./packages/db/dist
 
 # Install only production dependencies for frontend
-RUN pnpm install --filter frontend --prod --ignore-scripts
+RUN pnpm install --filter frontend... --prod --ignore-scripts
 
 # Copy the built frontend application from the builder stage.
 COPY --from=builder /app/packages/frontend/.next ./packages/frontend/.next
