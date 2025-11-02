@@ -15,8 +15,12 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json ./
 COPY packages/shared ./packages/shared
 COPY packages/queues-monitor ./packages/queues-monitor
 
-# Install dependencies for the sourcing worker workspace and its dependencies
+# Install all dependencies (including dev dependencies) for the queues monitor workspace and its dependencies
+# Dev dependencies are needed to build packages like shared (which needs TypeScript)
 RUN pnpm install --filter queues-monitor... --ignore-scripts
+
+# Install dev dependencies for shared package (needed for TypeScript build)
+RUN pnpm install --filter shared --dev --ignore-scripts
 
 # Build the shared package first
 RUN pnpm --filter shared build

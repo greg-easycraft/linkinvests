@@ -31,8 +31,9 @@ COPY packages/frontend ./packages/frontend
 # Install dependencies for the frontend workspace and its dependencies
 RUN pnpm install --filter frontend... --ignore-scripts
 
-# Skip environment validation during build as variables are only needed at runtime.
-ENV SKIP_ENV_VALIDATION=1
+# Install dev dependencies for shared and db packages (needed for TypeScript build)
+RUN pnpm install --filter shared --dev --ignore-scripts
+RUN pnpm install --filter db --dev --ignore-scripts
 
 # Build the shared and db packages first
 RUN pnpm --filter shared build

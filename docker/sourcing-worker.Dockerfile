@@ -17,8 +17,13 @@ COPY packages/db ./packages/db
 COPY packages/eslint-config ./packages/eslint-config
 COPY packages/sourcing-worker ./packages/sourcing-worker
 
-# Install dependencies for the sourcing worker workspace and its dependencies
+# Install all dependencies (including dev dependencies) for the sourcing worker workspace and its dependencies
+# Dev dependencies are needed to build packages like shared (which needs TypeScript)
 RUN pnpm install --filter sourcing-worker... --ignore-scripts
+
+# Install dev dependencies for shared and db packages (needed for TypeScript build)
+RUN pnpm install --filter shared --dev --ignore-scripts
+RUN pnpm install --filter db --dev --ignore-scripts
 
 # Build the shared and db packages first
 RUN pnpm --filter shared build
