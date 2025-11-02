@@ -24,6 +24,9 @@ jobs:
                     - dockerfile: docker/sourcing-worker.Dockerfile
                       image: sourcing-worker
                       context: .
+                    - dockerfile: docker/queues-monitor.Dockerfile
+                      image: queues-monitor
+                      context: .
 
         steps:
             - name: Checkout code
