@@ -29,9 +29,9 @@ You can interact with LocalStack S3 using the AWS CLI:
 
 ```bash
 # Set environment variables
-export AWS_ACCESS_KEY_ID=test
-export AWS_SECRET_ACCESS_KEY=test
-export AWS_DEFAULT_REGION=eu-west-3
+export S3_ACCESS_KEY_ID=test
+export S3_SECRET_ACCESS_KEY=test
+export S3_DEFAULT_REGION=eu-west-3
 
 # List buckets
 aws --endpoint-url=http://localhost:4566 s3 ls

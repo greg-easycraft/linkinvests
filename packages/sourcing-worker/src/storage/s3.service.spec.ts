@@ -19,10 +19,10 @@ describe('S3Service', () => {
     jest.resetModules();
     process.env = {
       ...originalEnv,
-      AWS_REGION: 'us-east-1',
-      AWS_S3_BUCKET: 'test-bucket',
-      AWS_ACCESS_KEY_ID: 'test-key',
-      AWS_SECRET_ACCESS_KEY: 'test-secret',
+      S3_REGION: 'us-east-1',
+      S3_BUCKET: 'test-bucket',
+      S3_ACCESS_KEY_ID: 'test-key',
+      S3_SECRET_ACCESS_KEY: 'test-secret',
     };
 
     s3Mock.reset();
@@ -39,19 +39,19 @@ describe('S3Service', () => {
   });
 
   describe('constructor', () => {
-    it('should throw error if AWS_REGION is not set', () => {
-      delete process.env.AWS_REGION;
+    it('should throw error if S3_REGION is not set', () => {
+      delete process.env.S3_REGION;
 
       expect(() => new S3Service()).toThrow(
-        'AWS_REGION environment variable is not set',
+        'S3_REGION environment variable is not set',
       );
     });
 
-    it('should throw error if AWS_S3_BUCKET is not set', () => {
-      delete process.env.AWS_S3_BUCKET;
+    it('should throw error if S3_BUCKET is not set', () => {
+      delete process.env.S3_BUCKET;
 
       expect(() => new S3Service()).toThrow(
-        'AWS_S3_BUCKET environment variable is not set',
+        'S3_BUCKET environment variable is not set',
       );
     });
 

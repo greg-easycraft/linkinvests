@@ -13,16 +13,16 @@ export class S3Service {
   private readonly bucket: string;
 
   constructor() {
-    const region = process.env.AWS_REGION;
-    const bucket = process.env.AWS_S3_BUCKET;
-    const endpoint = process.env.AWS_ENDPOINT;
+    const region = process.env.S3_REGION;
+    const bucket = process.env.S3_BUCKET;
+    const endpoint = process.env.S3_ENDPOINT;
 
     if (!region) {
-      throw new Error('AWS_REGION environment variable is not set');
+      throw new Error('S3_REGION environment variable is not set');
     }
 
     if (!bucket) {
-      throw new Error('AWS_S3_BUCKET environment variable is not set');
+      throw new Error('S3_BUCKET environment variable is not set');
     }
 
     this.bucket = bucket;
@@ -33,8 +33,8 @@ export class S3Service {
       endpoint,
       forcePathStyle: true, // Always use path-style for LocalStack compatibility
       credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
+        accessKeyId: process.env.S3_ACCESS_KEY_ID || '',
+        secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || '',
       },
     };
 
