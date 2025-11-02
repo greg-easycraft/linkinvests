@@ -4,6 +4,7 @@ import { SOURCE_ENERGY_SIEVES_QUEUE } from '@linkinvests/shared';
 import { EnergySievesProcessor } from './energy-sieves.processor';
 import { AdemeApiService } from './services';
 import { EnergySievesOpportunityRepository } from './repositories';
+import { EnergySievesCron } from './cron/energy-sieves.cron';
 
 const redisConnection = {
   host: process.env.REDIS_HOST || 'localhost',
@@ -21,6 +22,7 @@ const redisConnection = {
     EnergySievesProcessor,
     AdemeApiService,
     EnergySievesOpportunityRepository,
+    EnergySievesCron,
   ],
   exports: [BullModule],
 })
