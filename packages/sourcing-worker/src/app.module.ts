@@ -20,8 +20,7 @@ import { S3Module } from './storage';
     S3Module,
     BullModule.forRoot({
       connection: {
-        host: process.env.REDIS_HOST || 'localhost',
-        port: parseInt(process.env.REDIS_PORT || '6379', 10),
+        url: process.env.REDIS_URL,
       },
     }),
     DeceasesModule,

@@ -17,8 +17,7 @@ import { ScrapingController } from './scraping/scraping.controller';
 import { SourcingController } from './sourcing/sourcing.controller';
 
 const redisConnection = {
-  host: process.env.REDIS_HOST || 'localhost',
-  port: parseInt(process.env.REDIS_PORT || '6379', 10),
+  url: process.env.REDIS_URL,
 };
 
 @Module({
