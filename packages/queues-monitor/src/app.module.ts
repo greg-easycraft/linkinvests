@@ -29,7 +29,7 @@ const redisConnection = {
 
     // Setup BullBoard dashboard with authentication
     BullBoardModule.forRoot({
-      route: '/queues',
+      route: '/',
       adapter: ExpressAdapter,
       middleware: basicAuth({
         users: {
