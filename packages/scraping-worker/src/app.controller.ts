@@ -1,106 +1,89 @@
 import {
-  Body,
   Controller,
-  HttpCode,
+  Get,
+  Inject,
   HttpStatus,
+  HttpException,
   Logger,
-  Post,
 } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bullmq';
 import { SCRAPING_QUEUE } from '@linkinvests/shared';
 import type { Queue } from 'bullmq';
-
-import type { ScrapingJobData } from './types/scraping-job.types';
+import { DATABASE_CONNECTION, type DomainDbType } from './database';
 
 @Controller()
 export class AppController {
   private readonly logger = new Logger(AppController.name);
 
   constructor(
+    @Inject(DATABASE_CONNECTION)
+    private readonly db: DomainDbType,
     @InjectQueue(SCRAPING_QUEUE)
     private readonly scrapingQueue: Queue
   ) {}
 
-  @Post('jobs/auctions')
-  @HttpCode(HttpStatus.ACCEPTED)
-  async enqueueAuctionJob(
-    @Body('departmentId') departmentId: number,
-    @Body('sinceDate') sinceDate?: string
-  ) {
+  @Get()
+  async getHealth() {
+    const checks = {
+      database: { status: 'healthy', error: null as string | null },
+      redis: { status: 'healthy', error: null as string | null },
+    };
+
+    let overallStatus = 'ok';
+
+    const databaseStatus = await this.checkDatabaseConnection();
+    const redisStatus = await this.checkRedisConnection();
+
+    if (!databaseStatus) {
+      overallStatus = 'degraded';
+      checks.database.status = 'unhealthy';
+      checks.database.error = 'Database connection failed';
+    }
+
+    if (!redisStatus) {
+      overallStatus = 'degraded';
+      checks.redis.status = 'unhealthy';
+      checks.redis.error = 'Redis connection failed';
+    }
+
+    const response = {
+      status: overallStatus,
+      service: 'scraping-worker',
+      message:
+        'Scraping worker is running. Job management has been moved to queues-monitor app.',
+      timestamp: new Date().toISOString(),
+      checks,
+    };
+
+    // Return 503 Service Unavailable if any critical service is down
+    if (overallStatus === 'degraded') {
+      this.logger.error('Scraping worker is degraded.', {
+        database: checks.database.status,
+        redis: checks.redis.status,
+      });
+      throw new HttpException(response, HttpStatus.SERVICE_UNAVAILABLE);
+    }
+
+    this.logger.log(`Scraping worker is healthy`);
+    // Return 200 OK even if one service is degraded (partial functionality)
+    return response;
+  }
+
+  private async checkDatabaseConnection() {
     try {
-      // Validation
-      if (!departmentId) {
-        return {
-          success: false,
-          error: 'departmentId is required',
-        };
-      }
+      await this.db.execute('SELECT 1');
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
 
-      if (
-        typeof departmentId !== 'number' ||
-        departmentId < 1 ||
-        departmentId > 95
-      ) {
-        return {
-          success: false,
-          error: 'departmentId must be a number between 1 and 95',
-        };
-      }
-
-      if (sinceDate && !/^\d{4}-\d{2}-\d{2}$/.test(sinceDate)) {
-        return {
-          success: false,
-          error: 'sinceDate must be in ISO format YYYY-MM-DD',
-        };
-      }
-
-      // Enqueue job
-      const jobData: ScrapingJobData = {
-        jobName: 'auctions',
-        departmentId,
-        sinceDate:
-          sinceDate || (new Date().toISOString().split('T')[0] as string),
-      };
-
-      const { id: jobId } = await this.scrapingQueue.add(
-        'scrape-auctions',
-        jobData,
-        {
-          removeOnComplete: 100,
-          removeOnFail: 100,
-          attempts: 3,
-          backoff: {
-            type: 'exponential',
-            delay: 5000, // Start with 5 seconds
-          },
-        }
-      );
-
-      this.logger.log({
-        jobId,
-        departmentId,
-        sinceDate,
-        message: 'Auction scraping job enqueued',
-      });
-
-      return {
-        success: true,
-        jobId,
-        message: 'Auction scraping job enqueued successfully',
-        data: jobData,
-      };
-    } catch (error: unknown) {
-      const err = error as Error;
-      this.logger.error({
-        error: err.message,
-        stack: err.stack,
-        message: 'Failed to enqueue auction job',
-      });
-
-      return {
-        success: false,
-        error: err.message,
-      };
+  private async checkRedisConnection() {
+    try {
+      await this.scrapingQueue.isPaused();
+      return true;
+    } catch (error) {
+      return false;
     }
   }
 }

@@ -1,7 +1,5 @@
 import { Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bullmq';
-import { BullBoardModule } from '@bull-board/nestjs';
-import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import { SOURCE_DECEASES_QUEUE } from '@linkinvests/shared';
 
 import { DeceasesCron } from './cron';
@@ -19,10 +17,6 @@ const redisConnection = {
     BullModule.registerQueue({
       name: SOURCE_DECEASES_QUEUE,
       connection: redisConnection,
-    }),
-    BullBoardModule.forFeature({
-      name: SOURCE_DECEASES_QUEUE,
-      adapter: BullMQAdapter,
     }),
   ],
   providers: [

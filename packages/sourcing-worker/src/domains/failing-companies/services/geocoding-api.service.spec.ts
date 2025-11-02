@@ -166,9 +166,9 @@ describe('GeocodingApiService', () => {
         ...mockGeocodingResponse,
         features: [
           {
-            ...mockGeocodingResponse.features[0]!,
+            ...mockGeocodingResponse.features[0],
             properties: {
-              ...mockGeocodingResponse.features[0]!.properties,
+              ...mockGeocodingResponse.features[0].properties,
               score: 0.3, // Below minScore of 0.5
             },
           },
@@ -199,9 +199,9 @@ describe('GeocodingApiService', () => {
         ...mockGeocodingResponse,
         features: [
           {
-            ...mockGeocodingResponse.features[0]!,
+            ...mockGeocodingResponse.features[0],
             properties: {
-              ...mockGeocodingResponse.features[0]!.properties,
+              ...mockGeocodingResponse.features[0].properties,
               score: 0.5, // Exactly minScore
             },
           },

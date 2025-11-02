@@ -26,7 +26,7 @@ export class DeceasesCron {
       // Calculate date range (yesterday)
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
-      const sinceDate = yesterday.toISOString().split('T')[0] as string;
+      const sinceDate = yesterday.toISOString().split('T')[0];
 
       // Enqueue job
       const jobData: DeceasesJobData = {

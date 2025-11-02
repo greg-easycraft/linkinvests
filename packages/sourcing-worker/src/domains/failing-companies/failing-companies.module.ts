@@ -7,8 +7,6 @@ import { RechercheEntreprisesApiService } from './services/recherche-entreprises
 import { GeocodingApiService } from './services/geocoding-api.service';
 import { FailingCompaniesOpportunityRepository } from './repositories';
 import { BullModule } from '@nestjs/bullmq';
-import { BullBoardModule } from '@bull-board/nestjs';
-import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import {
   SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE,
   SOURCE_COMPANY_BUILDINGS_QUEUE,
@@ -28,14 +26,6 @@ const redisConnection = {
     BullModule.registerQueue({
       name: SOURCE_COMPANY_BUILDINGS_QUEUE,
       connection: redisConnection,
-    }),
-    BullBoardModule.forFeature({
-      name: SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE,
-      adapter: BullMQAdapter,
-    }),
-    BullBoardModule.forFeature({
-      name: SOURCE_COMPANY_BUILDINGS_QUEUE,
-      adapter: BullMQAdapter,
     }),
   ],
   providers: [

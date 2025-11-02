@@ -314,7 +314,7 @@ describe('CompanyBuildingsProcessor', () => {
         'source_failed.csv',
       );
 
-      const buffer = mockS3Service.uploadFile.mock.calls[0]?.[0] as Buffer;
+      const buffer = mockS3Service.uploadFile.mock.calls[0]?.[0];
       const csvContent = buffer.toString('utf-8');
       expect(csvContent).toContain('siren;error_reason');
       expect(csvContent).toContain('123456789;No establishments found');
@@ -410,7 +410,7 @@ describe('CompanyBuildingsProcessor', () => {
       mockS3Service.downloadFile.mockResolvedValue(csvBuffer);
       mockCsvParser.parseCsv.mockReturnValue(mockCsvRows);
       mockCsvParser.extractSirensFromRows.mockReturnValue([
-        { siren: '123456789', row: mockCsvRows[0]! },
+        { siren: '123456789', row: mockCsvRows[0] },
       ]);
       mockRechercheApi.getEstablishmentsBySiren.mockResolvedValue([]);
       mockRepository.insertOpportunities.mockResolvedValue(0);
@@ -429,7 +429,7 @@ describe('CompanyBuildingsProcessor', () => {
       mockS3Service.downloadFile.mockResolvedValue(csvBuffer);
       mockCsvParser.parseCsv.mockReturnValue(mockCsvRows);
       mockCsvParser.extractSirensFromRows.mockReturnValue([
-        { siren: '123456789', row: mockCsvRows[0]! },
+        { siren: '123456789', row: mockCsvRows[0] },
       ]);
       mockRechercheApi.getEstablishmentsBySiren.mockResolvedValue([
         {
@@ -457,7 +457,7 @@ describe('CompanyBuildingsProcessor', () => {
       mockS3Service.downloadFile.mockResolvedValue(csvBuffer);
       mockCsvParser.parseCsv.mockReturnValue(mockCsvRows);
       mockCsvParser.extractSirensFromRows.mockReturnValue([
-        { siren: '123456789', row: mockCsvRows[0]! },
+        { siren: '123456789', row: mockCsvRows[0] },
       ]);
       mockRechercheApi.getEstablishmentsBySiren.mockResolvedValue([]);
       mockRepository.insertOpportunities.mockResolvedValue(0);
@@ -492,7 +492,7 @@ describe('CompanyBuildingsProcessor', () => {
       mockS3Service.downloadFile.mockResolvedValue(csvBuffer);
       mockCsvParser.parseCsv.mockReturnValue(mockCsvRows);
       mockCsvParser.extractSirensFromRows.mockReturnValue([
-        { siren: '123456789', row: mockCsvRows[0]! },
+        { siren: '123456789', row: mockCsvRows[0] },
       ]);
       mockRechercheApi.getEstablishmentsBySiren.mockResolvedValue([]);
       mockRepository.insertOpportunities.mockResolvedValue(0);

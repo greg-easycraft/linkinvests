@@ -1,7 +1,5 @@
 import { Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bullmq';
-import { BullBoardModule } from '@bull-board/nestjs';
-import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import { SCRAPING_QUEUE } from '@linkinvests/shared';
 
 import { AuctionsProcessor } from './auctions.processor';
@@ -26,10 +24,6 @@ const redisConnection = {
     BullModule.registerQueue({
       name: SCRAPING_QUEUE,
       connection: redisConnection,
-    }),
-    BullBoardModule.forFeature({
-      name: SCRAPING_QUEUE,
-      adapter: BullMQAdapter,
     }),
   ],
   providers: [

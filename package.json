@@ -11,13 +11,14 @@
   "scripts": {
     "build": "pnpm --filter './packages/*' build",
     "lint": "pnpm --filter './packages/*' lint",
+    "lint:fix": "pnpm --filter './packages/*' lint:fix",
+    "format": "pnpm --filter './packages/*' format",
     "test": "pnpm --filter './packages/*' test",
     "typecheck": "pnpm --filter './packages/*' typecheck",
     "dev": "pnpm --filter './packages/*' dev"
   },
   "keywords": ["real-estate", "investment", "monorepo"],
   "author": "",
-  "license": "ISC",
   "devDependencies": {
     "@types/node": "^22.10.2",
     "typescript": "^5.7.2",
