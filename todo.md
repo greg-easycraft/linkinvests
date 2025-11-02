@@ -1,5 +1,11 @@
+# TODO
+
+## Tech
+- env parsing & validation
+- DI and import orders
+- licenses check
+
+## Features
 - favoris
 - view mode & filters in URL
-- map full height
 - list view cleaner
-- DI and import orders

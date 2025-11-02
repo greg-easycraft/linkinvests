@@ -2,6 +2,17 @@
 # We start with a Node.js base image to build the application.
 FROM node:22.19-alpine AS builder
 
+# Declare build arguments for NEXT_PUBLIC_* environment variables
+# These are injected from GitHub repository secrets during CI/CD
+ARG NEXT_PUBLIC_MAPBOX_TOKEN
+ARG NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
+ARG NEXT_PUBLIC_BETTER_AUTH_URL
+
+# Make build arguments available as environment variables for Next.js build
+ENV NEXT_PUBLIC_MAPBOX_TOKEN=${NEXT_PUBLIC_MAPBOX_TOKEN}
+ENV NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=${NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
+ENV NEXT_PUBLIC_BETTER_AUTH_URL=${NEXT_PUBLIC_BETTER_AUTH_URL}
+
 # Set the working directory inside the container.
 WORKDIR /app
 
