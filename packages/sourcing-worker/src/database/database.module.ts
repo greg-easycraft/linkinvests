@@ -1,15 +1,15 @@
-import { DynamicModule, Logger, OnModuleDestroy } from '@nestjs/common';
-import { drizzle, type PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import { DynamicModule, Logger, type OnModuleDestroy } from '@nestjs/common';
 import { domainSchema } from '@linkinvests/db';
-import postgres from 'postgres';
+import { drizzle, type NodePgDatabase } from 'drizzle-orm/node-postgres';
+import { Pool } from 'pg';
 
 export const DATABASE_CONNECTION = 'DATABASE_CONNECTION';
 
-export type DomainDbType = PostgresJsDatabase<typeof domainSchema>;
+export type DomainDbType = NodePgDatabase<typeof domainSchema>;
 
 export class DatabaseModule implements OnModuleDestroy {
   private static logger = new Logger(DatabaseModule.name);
-  private static client?: postgres.Sql;
+  private static client?: Pool;
 
   static forRoot(): DynamicModule {
     const databaseUrl = process.env.DATABASE_URL;
@@ -18,9 +18,7 @@ export class DatabaseModule implements OnModuleDestroy {
       throw new Error('DATABASE_URL environment variable is not set');
     }
 
-    const client = postgres(databaseUrl, {
-      max: 10,
-    });
+    const client = new Pool({ connectionString: databaseUrl });
     DatabaseModule.client = client;
 
     const connection = drizzle(client, { schema: domainSchema });
