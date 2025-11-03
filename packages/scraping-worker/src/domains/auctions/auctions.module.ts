@@ -6,11 +6,9 @@ import { AuctionsProcessor } from './auctions.processor';
 import { AuctionsCron } from './cron/auctions.cron';
 import { AuctionsOpportunityRepository } from './repositories';
 import {
-  AiExtractionService,
   BrowserService,
   DetailScraperService,
   EncheresPubliquesScraperService,
-  GeocodingService,
   ListingExtractorService,
 } from './services';
 import { config } from '~/config';
@@ -30,8 +28,6 @@ import { config } from '~/config';
     AuctionsOpportunityRepository,
     EncheresPubliquesScraperService,
     BrowserService,
-    GeocodingService,
-    AiExtractionService,
     ListingExtractorService,
     DetailScraperService,
   ],

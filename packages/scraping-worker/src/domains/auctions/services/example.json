@@ -1,0 +1,590 @@
+{
+    "props": {
+        "pageProps": {
+            "pageProps": {},
+            "apollo": null,
+            "apolloState": {
+                "data": {
+                    "ROOT_QUERY": {
+                        "__typename": "Query",
+                        "compte": null,
+                        "lot({\"id\":\"120597\"})": {
+                            "__ref": "Lot:120597"
+                        },
+                        "lots:{\"filters\":{\"categorie\":\"immobilier\",\"ouvert\":true,\"termine\":false}}": {
+                            "__typename": "LotCollection",
+                            "collection": [
+                                {
+                                    "__ref": "Lot:120597"
+                                }
+                            ]
+                        },
+                        "compteAdmin": null
+                    },
+                    "Membre:670404": {
+                        "__typename": "Membre",
+                        "id": "670404",
+                        "prenom": "Youssef",
+                        "nom": "A.",
+                        "online": false
+                    },
+                    "LotOffre:930": {
+                        "__typename": "LotOffre",
+                        "id": "930",
+                        "date": 1758817250.8,
+                        "offre": 166000,
+                        "automatique": false,
+                        "depassee_par_automatique": false,
+                        "membre": {
+                            "__ref": "Membre:670404"
+                        }
+                    },
+                    "Membre:648329": {
+                        "__typename": "Membre",
+                        "id": "648329",
+                        "prenom": "Jean Baptiste ",
+                        "nom": "N.",
+                        "online": false
+                    },
+                    "LotOffre:929": {
+                        "__typename": "LotOffre",
+                        "id": "929",
+                        "date": 1758817146.679,
+                        "offre": 156000,
+                        "automatique": true,
+                        "depassee_par_automatique": false,
+                        "membre": {
+                            "__ref": "Membre:648329"
+                        }
+                    },
+                    "LotOffre:928": {
+                        "__typename": "LotOffre",
+                        "id": "928",
+                        "date": 1758817146.679,
+                        "offre": 156000,
+                        "automatique": false,
+                        "depassee_par_automatique": true,
+                        "membre": {
+                            "__ref": "Membre:670404"
+                        }
+                    },
+                    "LotOffre:902": {
+                        "__typename": "LotOffre",
+                        "id": "902",
+                        "date": 1755630801.335,
+                        "offre": 146000,
+                        "automatique": false,
+                        "depassee_par_automatique": false,
+                        "membre": {
+                            "__ref": "Membre:648329"
+                        }
+                    },
+                    "Membre:670903": {
+                        "__typename": "Membre",
+                        "id": "670903",
+                        "prenom": "Samir",
+                        "nom": "D.",
+                        "online": false
+                    },
+                    "LotOffre:901": {
+                        "__typename": "LotOffre",
+                        "id": "901",
+                        "date": 1755542299.072,
+                        "offre": 136000,
+                        "automatique": false,
+                        "depassee_par_automatique": false,
+                        "membre": {
+                            "__ref": "Membre:670903"
+                        }
+                    },
+                    "LotOffre:900": {
+                        "__typename": "LotOffre",
+                        "id": "900",
+                        "date": 1755542265.581,
+                        "offre": 126000,
+                        "automatique": true,
+                        "depassee_par_automatique": false,
+                        "membre": {
+                            "__ref": "Membre:648329"
+                        }
+                    },
+                    "LotOffre:899": {
+                        "__typename": "LotOffre",
+                        "id": "899",
+                        "date": 1755542265.581,
+                        "offre": 126000,
+                        "automatique": false,
+                        "depassee_par_automatique": true,
+                        "membre": {
+                            "__ref": "Membre:670903"
+                        }
+                    },
+                    "LotOffre:898": {
+                        "__typename": "LotOffre",
+                        "id": "898",
+                        "date": 1755542158.021,
+                        "offre": 116000,
+                        "automatique": false,
+                        "depassee_par_automatique": false,
+                        "membre": {
+                            "__ref": "Membre:648329"
+                        }
+                    },
+                    "LotOffre:897": {
+                        "__typename": "LotOffre",
+                        "id": "897",
+                        "date": 1755542016.54,
+                        "offre": 106000,
+                        "automatique": true,
+                        "depassee_par_automatique": false,
+                        "membre": {
+                            "__ref": "Membre:670903"
+                        }
+                    },
+                    "LotOffre:896": {
+                        "__typename": "LotOffre",
+                        "id": "896",
+                        "date": 1755542016.54,
+                        "offre": 106000,
+                        "automatique": false,
+                        "depassee_par_automatique": true,
+                        "membre": {
+                            "__ref": "Membre:648329"
+                        }
+                    },
+                    "LotOffre:895": {
+                        "__typename": "LotOffre",
+                        "id": "895",
+                        "date": 1755470676.692,
+                        "offre": 86000,
+                        "automatique": false,
+                        "depassee_par_automatique": false,
+                        "membre": {
+                            "__ref": "Membre:670903"
+                        }
+                    },
+                    "Membre:660913": {
+                        "__typename": "Membre",
+                        "id": "660913",
+                        "prenom": "Pierre-albert",
+                        "nom": "K.",
+                        "online": false
+                    },
+                    "LotOffre:894": {
+                        "__typename": "LotOffre",
+                        "id": "894",
+                        "date": 1755470632.851,
+                        "offre": 76000,
+                        "automatique": false,
+                        "depassee_par_automatique": false,
+                        "membre": {
+                            "__ref": "Membre:660913"
+                        }
+                    },
+                    "LotOffre:892": {
+                        "__typename": "LotOffre",
+                        "id": "892",
+                        "date": 1755421729.834,
+                        "offre": 66000,
+                        "automatique": false,
+                        "depassee_par_automatique": false,
+                        "membre": {
+                            "__ref": "Membre:670903"
+                        }
+                    },
+                    "LotOffre:891": {
+                        "__typename": "LotOffre",
+                        "id": "891",
+                        "date": 1755421578.804,
+                        "offre": 56000,
+                        "automatique": false,
+                        "depassee_par_automatique": false,
+                        "membre": {
+                            "__ref": "Membre:648329"
+                        }
+                    },
+                    "LotOffre:890": {
+                        "__typename": "LotOffre",
+                        "id": "890",
+                        "date": 1755245121.141,
+                        "offre": 36000,
+                        "automatique": false,
+                        "depassee_par_automatique": false,
+                        "membre": {
+                            "__ref": "Membre:670903"
+                        }
+                    },
+                    "Membre:510757": {
+                        "__typename": "Membre",
+                        "id": "510757",
+                        "prenom": "Bruno ",
+                        "nom": "G.",
+                        "online": false
+                    },
+                    "LotOffre:889": {
+                        "__typename": "LotOffre",
+                        "id": "889",
+                        "date": 1755187517.227,
+                        "offre": 26000,
+                        "automatique": false,
+                        "depassee_par_automatique": false,
+                        "membre": {
+                            "__ref": "Membre:510757"
+                        }
+                    },
+                    "Adresse:198736": {
+                        "__typename": "Adresse",
+                        "id": "198736",
+                        "ville": "Labège",
+                        "ville_slug": "labege-31",
+                        "region": "Occitanie",
+                        "text": "58 Rue Magellan, 31670 Labège, France",
+                        "coords": [
+                            1.5021138,
+                            43.5484825
+                        ],
+                        "pays": "France"
+                    },
+                    "Profil:8306": {
+                        "__typename": "Profil",
+                        "id": "8306",
+                        "avatar": "/static/profil/avatar/HgOqe8mi6.jpg",
+                        "live": true,
+                        "nom": "BSK IMMOBILIER",
+                        "client": true,
+                        "categorie": "entreprise",
+                        "services": "Organisation de vos ventes interactives immobilières, de gré à gré. Contactez-nous !",
+                        "suivi": false,
+                        "messages_desactives": false,
+                        "adresse": {
+                            "__ref": "Adresse:198736"
+                        },
+                        "online": false,
+                        "ouvert": false,
+                        "nbr_suivis": 113,
+                        "telephone": "0650774123",
+                        "conditions_de_vente": "Ces ventes se déroulent 100 % en ligne via une salle virtuelle sécurisée, fonctionnant sur un modèle d’enchères progressives. Toutefois, le vendeur reste libre d’accepter ou de refuser une offre, même si ce n’est pas la meilleure sur le plan financier.",
+                        "frais_de_vente": "Aucun frais supplémentaires ne sont facturés aux parties (acheteur ou vendeur) en dehors du processus conventionnel.",
+                        "modalite_de_paiement": "",
+                        "modalites_de_retrait": "",
+                        "modalites_dexpedition": "",
+                        "avertissement": "",
+                        "mentions_legales": "",
+                        "renseignements_de_vente": "",
+                        "consignation_pour_encherir": "L’inscription est gratuite et sans engagement légal.\n\nVous connectez le jour J, visualisez les offres en temps réel, et enchérissez selon des paliers prédéfinis.",
+                        "comment_encherir": "Le vendeur choisit l’offre selon la meilleure adéquation financière et la solidité du dossier.\n\nSi votre offre est acceptée, vous passez à la phase classique (promesse de vente ou compromis chez le notaire).\n\nVous devez visiter le bien avec le mandataire BSK avant de pouvoir participer.",
+                        "estimations_inventaires": ""
+                    },
+                    "Contact:120597_8306": {
+                        "__typename": "Contact",
+                        "id": "120597_8306",
+                        "label": "Organisateur",
+                        "profil": {
+                            "__ref": "Profil:8306"
+                        }
+                    },
+                    "Lot:120597": {
+                        "__typename": "Lot",
+                        "id": "120597",
+                        "mise_en_avant": false,
+                        "photo": "/static/lot/photo/EyAW5D9fgT.jpg",
+                        "criteres_resume": "107 m² · 6 pièces",
+                        "termine": false,
+                        "numero": "295653",
+                        "nom": "Une maison de 107 m² située à Oinville-Sous-Auneau",
+                        "categorie": "immobilier",
+                        "sous_categorie": "maisons",
+                        "adresse_defaut": null,
+                        "en_surenchere": false,
+                        "min_augmentation": 10000,
+                        "suivi": false,
+                        "statut": "VIDE",
+                        "resultat": "INCONNU",
+                        "ouverture_date": 1754935200,
+                        "fermeture_reelle_date": 1762970400,
+                        "prix_adjuge": null,
+                        "mise_a_prix": 26000,
+                        "offre_actuelle": 166000,
+                        "estimation_basse": 260000,
+                        "estimation_haute": null,
+                        "organisateur": {
+                            "__ref": "Profil:8306"
+                        },
+                        "type": "En ligne",
+                        "type_de_vente": "Vente volontaire",
+                        "appel_offres": true,
+                        "nbr_encherisseurs": 5,
+                        "nbr_offres": 16,
+                        "prix_plancher": 176000,
+                        "frais_de_vente": 0,
+                        "frais_de_livraison": null,
+                        "statistiques_avancees({\"fields\":[\"vues\",\"consultes\",\"suivis\",\"interactions\"],\"period\":\"yesterday\"})": null,
+                        "est_prive": false,
+                        "mise_en_ligne_date": 1754935660.771,
+                        "update_date": 1760003200.575,
+                        "nbr_suivis": 79,
+                        "nbr_inscriptions": 1,
+                        "nbr_participants": 8,
+                        "nbr_participants_a_gerer": 0,
+                        "dernier_suivi_date": 1762169077.413,
+                        "statistiques({\"period\":\"today\"})": {
+                            "nbr_vues": 1327,
+                            "nbr_suivis": 1
+                        },
+                        "nbr_vues": 198894,
+                        "edit": false,
+                        "sous_sous_categorie": "",
+                        "message_alerte": "",
+                        "surenchere": false,
+                        "messages_actives": true,
+                        "bouton_message": false,
+                        "bouton_action": {
+                            "__typename": "BoutonAction",
+                            "on": false,
+                            "label": "Déposer une offre",
+                            "url": "https://bskimmobilier.com/bien/aunay-sous-auneau/maison-de-107-m/295653?from=agent",
+                            "message": false
+                        },
+                        "description": "Idéalement située sur un terrain de 890 m², cette charmante maison de 107 m² à Aunay-Sous-Auneau est un véritable coup de cœur, alliant confort moderne et environnement paisible. Située en campagne, dans un cadre calme et verdoyant, elle offre de généreux volumes sur un terrain clos de 879 m² et a été entièrement rénovée.\n\nLa maison, construite en 1986, propose une disposition idéale. Au rez-de-chaussée, vous trouverez un spacieux et lumineux séjour/salon avec un poêle à granulés à insert, une salle à manger ouverte sur une cuisine conviviale, une buanderie, des WC indépendants, ainsi que deux chambres, dont une aménagée en dressing. Une salle d’eau moderne, équipée d’une grande douche, d’une baignoire semi-îlot et d’un sèche-serviettes, complète ce niveau.\n\nL'étage, composé de combles aménagés, abrite deux chambres supplémentaires, portant le total à quatre.\n\nCôté extérieur, la propriété bénéficie d’une exposition sud-nord et d’une terrasse. Un garage avec cellier, dont les combles sont aménageables (idéal pour un bureau ou un studio), offre un potentiel d'évolution. Vous trouverez également trois dépendances, un barbecue intégré et un terrain de pétanque pour profiter pleinement du jardin.\n\nAu fond du jardin une dépendance avec cuisine d'été complète ce bien, superficie environ 15m².\n\nPour plus de commodités, la maison est idéalement située : à quelques pas de la mairie, à moins de 10 minutes des écoles à Auneau-Bleury-Saint-Symphorien et de la gare SNCF d'Auneau. Les commerces, pharmacies, médecins et supermarchés sont à proximité. La vie associative y est active, et l’environnement naturel et le patrimoine local sont riches.",
+                        "documents": [],
+                        "url": "",
+                        "visites": [],
+                        "visites_activees": true,
+                        "bouton_visites_jusqua_date": null,
+                        "visites_obligatoires": true,
+                        "visite_inscription": null,
+                        "encheres_interactives": true,
+                        "en_encheres": true,
+                        "encheres_fermeture_date": 1762970400,
+                        "encheres_ouverture_inscription_date": null,
+                        "encheres_fermeture_inscription_date": null,
+                        "encheres_en_seconde_chance": false,
+                        "mon_ordre": null,
+                        "enchere_peut_desinscrire": false,
+                        "encheres_inscrit": null,
+                        "offres": {
+                            "__typename": "LotOffreCollection",
+                            "collection": [
+                                {
+                                    "__ref": "LotOffre:930"
+                                },
+                                {
+                                    "__ref": "LotOffre:929"
+                                },
+                                {
+                                    "__ref": "LotOffre:928"
+                                },
+                                {
+                                    "__ref": "LotOffre:902"
+                                },
+                                {
+                                    "__ref": "LotOffre:901"
+                                },
+                                {
+                                    "__ref": "LotOffre:900"
+                                },
+                                {
+                                    "__ref": "LotOffre:899"
+                                },
+                                {
+                                    "__ref": "LotOffre:898"
+                                },
+                                {
+                                    "__ref": "LotOffre:897"
+                                },
+                                {
+                                    "__ref": "LotOffre:896"
+                                },
+                                {
+                                    "__ref": "LotOffre:895"
+                                },
+                                {
+                                    "__ref": "LotOffre:894"
+                                },
+                                {
+                                    "__ref": "LotOffre:892"
+                                },
+                                {
+                                    "__ref": "LotOffre:891"
+                                },
+                                {
+                                    "__ref": "LotOffre:890"
+                                },
+                                {
+                                    "__ref": "LotOffre:889"
+                                }
+                            ]
+                        },
+                        "prix_de_reserve_atteint": false,
+                        "observations_visites": "Pour toutes visites, veuillez contacter directement le mandataire immobilier via le formulaire de contact.\n",
+                        "all_contacts": [
+                            {
+                                "__ref": "Contact:120597_8306"
+                            }
+                        ],
+                        "evenement": {
+                            "__ref": "Evenement:19979"
+                        },
+                        "photos": [
+                            {
+                                "__typename": "Photo",
+                                "src": "/static/lot/photo/EyAW5D9fgT.jpg"
+                            },
+                            {
+                                "__typename": "Photo",
+                                "src": "/static/lot/photo/QlDVnqPvkd.jpg"
+                            },
+                            {
+                                "__typename": "Photo",
+                                "src": "/static/lot/photo/EtON0N2-w3.jpg"
+                            },
+                            {
+                                "__typename": "Photo",
+                                "src": "/static/lot/photo/zcqyXdQNW.jpg"
+                            },
+                            {
+                                "__typename": "Photo",
+                                "src": "/static/lot/photo/Nfh9D5z-f4.jpg"
+                            },
+                            {
+                                "__typename": "Photo",
+                                "src": "/static/lot/photo/xgEzAeXH8V.jpg"
+                            },
+                            {
+                                "__typename": "Photo",
+                                "src": "/static/lot/photo/exrF9QOkN.jpg"
+                            },
+                            {
+                                "__typename": "Photo",
+                                "src": "/static/lot/photo/mL_Kmrqcll.jpg"
+                            },
+                            {
+                                "__typename": "Photo",
+                                "src": "/static/lot/photo/NVHlUHrK5V.jpg"
+                            },
+                            {
+                                "__typename": "Photo",
+                                "src": "/static/lot/photo/N0B2LY-L4Q.jpg"
+                            },
+                            {
+                                "__typename": "Photo",
+                                "src": "/static/lot/photo/U6CHUT16w0.jpg"
+                            },
+                            {
+                                "__typename": "Photo",
+                                "src": "/static/lot/photo/-FO0_O-3wk.jpg"
+                            }
+                        ],
+                        "adresse": null,
+                        "adresse_physique": null,
+                        "critere_etat": null,
+                        "critere_annee": null,
+                        "critere_marque": null,
+                        "critere_surface_habitable": 107,
+                        "critere_nombre_de_pieces": 6,
+                        "critere_nombre_de_chambres": 4,
+                        "critere_diagnostic_date": null,
+                        "critere_emissions_de_gaz": "B",
+                        "critere_consommation_energetique": "D",
+                        "critere_type_de_parking": "Garage",
+                        "critere_observations": "890 m2 de superficie, une dépendance au fond du jardin de 15m2 avec cuisine d’été",
+                        "critere_occupation_du_bien": null,
+                        "critere_modele": null,
+                        "critere_options": null,
+                        "critere_type": null,
+                        "critere_critair": null,
+                        "critere_kilometrage": null,
+                        "critere_carburant": null,
+                        "critere_boite_de_vitesse": null,
+                        "critere_couleur": null,
+                        "critere_nombre_de_portes": null,
+                        "critere_nombre_de_places": null,
+                        "critere_puissance_fiscale": null,
+                        "critere_puissance_din": null,
+                        "critere_permis": null,
+                        "critere_artiste": null,
+                        "critere_technique": null,
+                        "critere_signature": null,
+                        "critere_certificat": null,
+                        "fermeture_date": 1762970400,
+                        "infos_conditions_de_vente": "Ces ventes se déroulent 100 % en ligne via une salle virtuelle sécurisée, fonctionnant sur un modèle d’enchères progressives. Toutefois, le vendeur reste libre d’accepter ou de refuser une offre, même si ce n’est pas la meilleure sur le plan financier.",
+                        "infos_frais_de_vente": "Aucun frais supplémentaires ne sont facturés aux parties (acheteur ou vendeur) en dehors du processus conventionnel.\n\nLes honoraires d'agence sont à la charge du vendeur.",
+                        "infos_modalite_de_paiement": "",
+                        "infos_modalites_de_retrait": "",
+                        "infos_modalites_dexpedition": "",
+                        "infos_avertissement": "",
+                        "infos_mentions_legales": "",
+                        "infos_renseignements_de_vente": "",
+                        "infos_consignation_pour_encherir": "L’inscription est gratuite et sans engagement légal.\n\nVous connectez le jour J, visualisez les offres en temps réel, et enchérissez selon des paliers prédéfinis.",
+                        "infos_comment_encherir": "Le vendeur choisit l’offre selon la meilleure adéquation financière et la solidité du dossier.\n\nSi votre offre est acceptée, vous passez à la phase classique (promesse de vente ou compromis chez le notaire).\n\nVous devez visiter le bien avec le mandataire BSK avant de pouvoir participer.",
+                        "vendeur": {
+                            "__ref": "Profil:8306"
+                        },
+                        "vendeur_label": "Opérateur"
+                    },
+                    "Evenement:19979": {
+                        "__typename": "Evenement",
+                        "id": "19979",
+                        "type_de_vente": "Vente volontaire",
+                        "edit": false,
+                        "titre": "Vente immobilière par BSK Immobilier  jusqu'au 25 Septembre 2025",
+                        "cover": null,
+                        "statut": "VIDE",
+                        "type": "En ligne",
+                        "nbr_total_lots": 1,
+                        "prive": false,
+                        "suivi": false,
+                        "ouverture_date": 1754935200,
+                        "fermeture_date": 1760288400,
+                        "nbr_vues": 18667,
+                        "nbr_partages": 2,
+                        "nbr_suivis_total": 79,
+                        "nbr_inscriptions": 0,
+                        "url": "https://bskimmobilier.com/",
+                        "visites": [],
+                        "organisateur": {
+                            "__ref": "Profil:8306"
+                        },
+                        "mosaique": {
+                            "__typename": "LotCollection",
+                            "collection": [
+                                {
+                                    "__ref": "Lot:120597"
+                                }
+                            ],
+                            "total": 1
+                        },
+                        "adresse_organisateur": true,
+                        "adresse": null,
+                        "transport": null,
+                        "lots:{\"sort\":\"numero\"}": {
+                            "__typename": "LotCollection",
+                            "collection": [
+                                {
+                                    "__ref": "Lot:120597"
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "_sentryTraceData": "5a401a437ea84dcda4ca5696389d14c8-aeee328962fa71c3-0",
+            "_sentryBaggage": "sentry-environment=production,sentry-release=efc187477c1ce186617d22680e67576532e15690,sentry-public_key=edc901d9128440969a72a70d1374f431,sentry-trace_id=5a401a437ea84dcda4ca5696389d14c8,sentry-transaction=%2Flots%2Flot%2Fdetail,sentry-sampled=false"
+        }
+    },
+    "page": "/lots/lot/detail",
+    "query": {
+        "categorie": "immobilier",
+        "sous_categorie": "maisons",
+        "ville": "vente-en-ligne",
+        "nom": "une-maison-situee-oinville-sous-auneau",
+        "underscore": "_",
+        "lot_id": "120597"
+    },
+    "buildId": "MaLhTUu09DMiuuvRzfAbg",
+    "isFallback": false,
+    "customServer": true,
+    "gip": true,
+    "appGip": true,
+    "scriptLoader": []
+}

@@ -19,12 +19,11 @@ export class AuctionsOpportunityRepository {
   ) {}
 
   /**
-   * Extracts external ID from auction URL
-   * Example: https://www.encheres-publiques.com/px/encheres/vente/12345/detail.htm -> encheres-publiques-12345
+   * Creates external ID from auction ID
+   * Example: auction ID "120597" -> "encheres-publiques-120597"
    */
-  private extractExternalId(url: string): string {
-    const match = url.match(/vente\/(\d+)/);
-    return match ? `encheres-publiques-${match[1]}` : url;
+  private createExternalId(auctionId: string): string {
+    return `encheres-publiques-${auctionId}`;
   }
 
   /**
@@ -63,22 +62,36 @@ export class AuctionsOpportunityRepository {
     for (let i = 0; i < opportunities.length; i += batchSize) {
       const batch = opportunities.slice(i, i + batchSize);
 
-      const records = batch.map((opp) => ({
-        label: opp.label,
-        siret: null, // Not applicable for auctions
-        address: opp.address,
-        zipCode: opp.zipCode,
-        department: opp.department,
-        latitude: opp.latitude,
-        longitude: opp.longitude,
-        type: OpportunityType.AUCTION,
-        status: 'pending_review',
-        opportunityDate: opp.auctionDate,
-        externalId: this.extractExternalId(opp.url),
-        contactData: this.createContactData(opp.extraData?.auctionVenue),
-        extraData: opp.extraData || null,
-        images: opp.images || null,
-      }));
+      const records = batch.map((opp) => {
+        // Ensure we have an auction ID for externalId
+        const auctionId = opp.extraData?.id;
+        if (!auctionId) {
+          throw new Error(`Missing auction ID for opportunity: ${opp.url}`);
+        }
+
+        // Add URL to extraData
+        const extraDataWithUrl = {
+          ...opp.extraData,
+          url: opp.url,
+        };
+
+        return {
+          label: opp.label,
+          siret: null, // Not applicable for auctions
+          address: opp.address,
+          zipCode: opp.zipCode,
+          department: opp.department,
+          latitude: opp.latitude,
+          longitude: opp.longitude,
+          type: OpportunityType.AUCTION,
+          status: 'pending_review',
+          opportunityDate: opp.auctionDate,
+          externalId: this.createExternalId(auctionId),
+          contactData: this.createContactData(opp.extraData?.auctionVenue),
+          extraData: extraDataWithUrl,
+          images: opp.images || null,
+        };
+      });
 
       try {
         await this.db
@@ -90,7 +103,7 @@ export class AuctionsOpportunityRepository {
               domainSchema.opportunities.type,
             ],
             set: {
-              label: sql`EXCLUDED.label`,
+              label: sql`EXCLUDED.name`,
               address: sql`EXCLUDED.address`,
               zipCode: sql`EXCLUDED.zip_code`,
               department: sql`EXCLUDED.department`,
@@ -99,7 +112,6 @@ export class AuctionsOpportunityRepository {
               status: sql`EXCLUDED.status`,
               opportunityDate: sql`EXCLUDED.opportunity_date`,
               contactData: sql`EXCLUDED.contact_data`,
-              extraData: sql`EXCLUDED.extra_data`,
               images: sql`EXCLUDED.images`,
               updatedAt: sql`CURRENT_TIMESTAMP`,
             },

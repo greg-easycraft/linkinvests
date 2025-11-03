@@ -57,7 +57,7 @@ export class EncheresPubliquesScraperService {
 
       // Scrape details for each listing (in batches of 10)
       const opportunities = await this.detailScraper.scrapeDetailsBatch(
-        page,
+        this.browserService,
         listingUrls,
         10
       );
