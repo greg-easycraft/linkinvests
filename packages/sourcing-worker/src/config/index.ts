@@ -18,8 +18,10 @@ const configSchema = z.object({
   S3_BUCKET: z.string(),
 });
 
-export const config = configSchema.parse(process.env);
-
+export const config = configSchema.parse({
+  ...process.env,
+  PORT: process.env.PORT ? parseInt(process.env.PORT) : 8080,
+});
 export const CONFIG_TOKEN = Symbol('CONFIG');
 
 export type ConfigType = z.infer<typeof configSchema>;

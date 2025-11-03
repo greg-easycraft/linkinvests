@@ -13,7 +13,10 @@ const configSchema = z.object({
   BASIC_AUTH_PASSWORD: z.string(),
 });
 
-export const config = configSchema.parse(process.env);
+export const config = configSchema.parse({
+  ...process.env,
+  PORT: process.env.PORT ? parseInt(process.env.PORT) : 8081,
+});
 
 export const CONFIG_TOKEN = Symbol('CONFIG');
 
