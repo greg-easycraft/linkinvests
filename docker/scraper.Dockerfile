@@ -29,7 +29,7 @@ RUN pnpm --filter scraping-worker build
 
 # Stage 2: The Production Stage
 # We use the official Playwright image with all browser dependencies pre-installed.
-FROM mcr.microsoft.com/playwright:v1.49.1-noble AS runner
+FROM mcr.microsoft.com/playwright:v1.56.1-noble AS runner
 
 # Set the working directory for the runner.
 WORKDIR /app
