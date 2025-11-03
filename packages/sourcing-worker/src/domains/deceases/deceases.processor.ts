@@ -120,6 +120,7 @@ export class DeceasesProcessor extends WorkerHost {
 
       // Transform to opportunity
       const opportunity: DeceasesOpportunity = {
+        inseeDeathId: `${record.lieuDeces}_${record.dateDeces}`, // External ID from INSEE location + date
         label: this.formatName(record.nomPrenom),
         siret: null,
         address: mairieInfo?.name || record.lieuDeces,
@@ -128,6 +129,7 @@ export class DeceasesProcessor extends WorkerHost {
         latitude: coordinates.latitude,
         longitude: coordinates.longitude,
         opportunityDate: this.formatDate(record.dateDeces),
+        mairieInfo: mairieInfo || undefined, // Include mairie info for contact data
       };
 
       opportunities.push(opportunity);

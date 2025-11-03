@@ -11,8 +11,6 @@ import {
   SOURCE_ENERGY_SIEVES_QUEUE,
   SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE,
 } from '@linkinvests/shared';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ScrapingController } from './scraping/scraping.controller';
 import { SourcingController } from './sourcing/sourcing.controller';
 
@@ -88,7 +86,6 @@ const redisConnection = {
       },
     ),
   ],
-  controllers: [AppController, ScrapingController, SourcingController],
-  providers: [AppService],
+  controllers: [ScrapingController, SourcingController],
 })
 export class AppModule {}

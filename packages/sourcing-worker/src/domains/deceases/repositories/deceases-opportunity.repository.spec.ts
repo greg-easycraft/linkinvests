@@ -55,6 +55,7 @@ describe('DeceasesOpportunityRepository', () => {
     it('should insert single opportunity successfully', async () => {
       const opportunities: DeceasesOpportunity[] = [
         {
+          inseeDeathId: 'INSEE123_20240115',
           label: 'DUPONT Jean',
           siret: null,
           address: 'Mairie de Paris',
@@ -91,6 +92,7 @@ describe('DeceasesOpportunityRepository', () => {
       const opportunities: DeceasesOpportunity[] = Array.from(
         { length: 1500 },
         (_, i) => ({
+          inseeDeathId: `INSEE${i}_20240115`,
           label: `PERSON ${i}`,
           siret: null,
           address: `${i} Rue de Test`,
@@ -115,6 +117,7 @@ describe('DeceasesOpportunityRepository', () => {
       const opportunities: DeceasesOpportunity[] = Array.from(
         { length: 1000 },
         (_, i) => ({
+          inseeDeathId: `INSEE${i}_20240115`,
           label: `PERSON ${i}`,
           siret: null,
           address: `${i} Rue de Test`,
@@ -136,6 +139,7 @@ describe('DeceasesOpportunityRepository', () => {
     it('should convert string zipCode and department to integers', async () => {
       const opportunities: DeceasesOpportunity[] = [
         {
+          inseeDeathId: 'INSEE123_20240115',
           label: 'TEST',
           siret: null,
           address: 'Test Address',
@@ -160,6 +164,7 @@ describe('DeceasesOpportunityRepository', () => {
     it('should use OpportunityType.SUCCESSION for all records', async () => {
       const opportunities: DeceasesOpportunity[] = [
         {
+          inseeDeathId: 'INSEE1_20240115',
           label: 'TEST 1',
           siret: null,
           address: 'Address 1',
@@ -170,6 +175,7 @@ describe('DeceasesOpportunityRepository', () => {
           opportunityDate: '2024-01-15',
         },
         {
+          inseeDeathId: 'INSEE2_20240116',
           label: 'TEST 2',
           siret: null,
           address: 'Address 2',
@@ -194,6 +200,7 @@ describe('DeceasesOpportunityRepository', () => {
     it('should set status to pending_review for all records', async () => {
       const opportunities: DeceasesOpportunity[] = [
         {
+          inseeDeathId: 'INSEE123_20240115',
           label: 'TEST',
           siret: null,
           address: 'Test Address',
@@ -216,6 +223,7 @@ describe('DeceasesOpportunityRepository', () => {
       const opportunities: DeceasesOpportunity[] = Array.from(
         { length: 1000 },
         (_, i) => ({
+          inseeDeathId: `INSEE${i}_20240115`,
           label: `PERSON ${i}`,
           siret: null,
           address: `${i} Rue de Test`,
@@ -240,6 +248,7 @@ describe('DeceasesOpportunityRepository', () => {
     it('should log final success message', async () => {
       const opportunities: DeceasesOpportunity[] = [
         {
+          inseeDeathId: 'INSEE123_20240115',
           label: 'TEST',
           siret: null,
           address: 'Test Address',
@@ -264,6 +273,7 @@ describe('DeceasesOpportunityRepository', () => {
 
       const opportunities: DeceasesOpportunity[] = [
         {
+          inseeDeathId: 'INSEE123_20240115',
           label: 'TEST',
           siret: null,
           address: 'Test Address',
@@ -291,6 +301,7 @@ describe('DeceasesOpportunityRepository', () => {
 
     it('should preserve all opportunity fields', async () => {
       const opportunity: DeceasesOpportunity = {
+        inseeDeathId: 'INSEE456_20240320',
         label: 'MARTIN Marie Louise',
         siret: null,
         address: 'Mairie de Lyon',

@@ -1,6 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { domainSchema } from '@linkinvests/db';
-import { OpportunityType } from '@linkinvests/shared';
+import { OpportunityType, type AuctionHouseContactData } from '@linkinvests/shared';
+import { sql } from 'drizzle-orm';
 
 import { DATABASE_CONNECTION, type DomainDbType } from '~/database';
 import type { AuctionOpportunity } from '../types';
@@ -13,6 +14,29 @@ export class AuctionsOpportunityRepository {
     @Inject(DATABASE_CONNECTION)
     private readonly db: DomainDbType
   ) {}
+
+  /**
+   * Extracts external ID from auction URL
+   * Example: https://www.encheres-publiques.com/px/encheres/vente/12345/detail.htm -> encheres-publiques-12345
+   */
+  private extractExternalId(url: string): string {
+    const match = url.match(/vente\/(\d+)/);
+    return match ? `encheres-publiques-${match[1]}` : url;
+  }
+
+  /**
+   * Converts auction venue information to contact data
+   */
+  private createContactData(auctionVenue?: string): AuctionHouseContactData | null {
+    if (!auctionVenue) return null;
+
+    return {
+      type: 'auction_house',
+      name: auctionVenue,
+      address: '', // Not available from current scraping
+      // Additional fields could be populated if available from scraping
+    };
+  }
 
   async insertOpportunities(
     opportunities: AuctionOpportunity[],
@@ -45,6 +69,8 @@ export class AuctionsOpportunityRepository {
         type: OpportunityType.AUCTION,
         status: 'pending_review',
         opportunityDate: opp.auctionDate,
+        externalId: this.extractExternalId(opp.url),
+        contactData: this.createContactData(opp.extraData?.auctionVenue),
         extraData: opp.extraData || null,
         images: opp.images || null,
       }));
@@ -53,7 +79,23 @@ export class AuctionsOpportunityRepository {
         await this.db
           .insert(domainSchema.opportunities)
           .values(records)
-          .onConflictDoNothing(); // Skip duplicates
+          .onConflictDoUpdate({
+            target: [domainSchema.opportunities.externalId, domainSchema.opportunities.type],
+            set: {
+              label: sql`EXCLUDED.label`,
+              address: sql`EXCLUDED.address`,
+              zipCode: sql`EXCLUDED.zip_code`,
+              department: sql`EXCLUDED.department`,
+              latitude: sql`EXCLUDED.latitude`,
+              longitude: sql`EXCLUDED.longitude`,
+              status: sql`EXCLUDED.status`,
+              opportunityDate: sql`EXCLUDED.opportunity_date`,
+              contactData: sql`EXCLUDED.contact_data`,
+              extraData: sql`EXCLUDED.extra_data`,
+              images: sql`EXCLUDED.images`,
+              updatedAt: sql`CURRENT_TIMESTAMP`,
+            },
+          });
 
         insertedCount += batch.length;
 

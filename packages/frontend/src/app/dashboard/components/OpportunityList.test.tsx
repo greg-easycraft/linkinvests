@@ -27,6 +27,8 @@ describe('OpportunityList', () => {
     longitude: 2.3522,
     opportunityDate: '2024-01-15',
     siret: '12345678901234',
+    externalId: null,
+    contactData: null,
     createdAt: new Date(),
     updatedAt: new Date(),
     extraData: null,

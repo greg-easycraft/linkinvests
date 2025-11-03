@@ -82,6 +82,7 @@ describe('EnergySievesOpportunityRepository', () => {
       const opportunities: EnergySieveOpportunity[] = Array.from(
         { length: 1500 },
         (_, i) => ({
+          numeroDpe: `DPE${i.toString().padStart(6, '0')}`,
           label: `Building ${i}`,
           address: `${i} Rue de Test`,
           zipCode: 75001,
@@ -104,6 +105,7 @@ describe('EnergySievesOpportunityRepository', () => {
       const opportunities: EnergySieveOpportunity[] = Array.from(
         { length: 300 },
         (_, i) => ({
+          numeroDpe: `DPE${i.toString().padStart(6, '0')}`,
           label: `Building ${i}`,
           address: `${i} Rue de Test`,
           zipCode: 75001,
@@ -123,6 +125,7 @@ describe('EnergySievesOpportunityRepository', () => {
     it('should call db.insert with correctly formatted data', async () => {
       const opportunities: EnergySieveOpportunity[] = [
         {
+          numeroDpe: 'DPE123456',
           label: 'Test Building',
           address: '123 Rue de Test',
           zipCode: 75001,
@@ -154,6 +157,7 @@ describe('EnergySievesOpportunityRepository', () => {
     it('should set type to OpportunityType.ENERGY_SIEVE', async () => {
       const opportunities: EnergySieveOpportunity[] = [
         {
+          numeroDpe: 'DPE123456',
           label: 'Test Building',
           address: '123 Rue de Test',
           zipCode: 75001,
@@ -173,6 +177,7 @@ describe('EnergySievesOpportunityRepository', () => {
     it('should set siret to null (no SIRET for energy sieves)', async () => {
       const opportunities: EnergySieveOpportunity[] = [
         {
+          numeroDpe: 'DPE123456',
           label: 'Test Building',
           address: '123 Rue de Test',
           zipCode: 75001,
@@ -192,6 +197,7 @@ describe('EnergySievesOpportunityRepository', () => {
     it('should use onConflictDoNothing() for duplicates', async () => {
       const opportunities: EnergySieveOpportunity[] = [
         {
+          numeroDpe: 'DPE123456',
           label: 'Test Building',
           address: '123 Rue de Test',
           zipCode: 75001,
@@ -213,6 +219,7 @@ describe('EnergySievesOpportunityRepository', () => {
 
       const opportunities: EnergySieveOpportunity[] = [
         {
+          numeroDpe: 'DPE123456',
           label: 'Test Building',
           address: '123 Rue de Test',
           zipCode: 75001,

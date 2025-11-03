@@ -1,7 +1,8 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { DATABASE_CONNECTION, type DomainDbType } from '~/database';
 import { domainSchema } from '@linkinvests/db';
-import { OpportunityType } from '@linkinvests/shared';
+import { OpportunityType, type CompanyContactData } from '@linkinvests/shared';
+import { sql } from 'drizzle-orm';
 import type { CompanyEstablishment } from '../types/failing-companies.types';
 
 @Injectable()
@@ -14,6 +15,21 @@ export class FailingCompaniesOpportunityRepository {
     @Inject(DATABASE_CONNECTION)
     private readonly db: DomainDbType,
   ) {}
+
+  /**
+   * Creates contact data from company establishment information
+   */
+  private createContactData(
+    establishment: CompanyEstablishment,
+  ): CompanyContactData {
+    return {
+      type: 'company_headquarters',
+      companyName: establishment.companyName,
+      siret: establishment.siret,
+      address: establishment.address,
+      // Additional fields could be populated if available from API
+    };
+  }
 
   /**
    * Insert failing company opportunities into the database
@@ -38,13 +54,34 @@ export class FailingCompaniesOpportunityRepository {
       type: OpportunityType.LIQUIDATION,
       status: 'pending_review',
       opportunityDate: est.opportunityDate, // Already in string format 'YYYY-MM-DD'
+      externalId: est.siret, // Use SIRET as external ID
+      contactData: this.createContactData(est),
+      extraData: null,
     }));
 
     try {
       await this.db
         .insert(domainSchema.opportunities)
         .values(opportunities)
-        .onConflictDoNothing(); // Skip duplicates if SIRET already exists
+        .onConflictDoUpdate({
+          target: [
+            domainSchema.opportunities.externalId,
+            domainSchema.opportunities.type,
+          ],
+          set: {
+            label: sql`EXCLUDED.label`,
+            address: sql`EXCLUDED.address`,
+            zipCode: sql`EXCLUDED.zip_code`,
+            department: sql`EXCLUDED.department`,
+            latitude: sql`EXCLUDED.latitude`,
+            longitude: sql`EXCLUDED.longitude`,
+            status: sql`EXCLUDED.status`,
+            opportunityDate: sql`EXCLUDED.opportunity_date`,
+            contactData: sql`EXCLUDED.contact_data`,
+            extraData: sql`EXCLUDED.extra_data`,
+            updatedAt: sql`CURRENT_TIMESTAMP`,
+          },
+        });
 
       this.logger.log(`Inserted ${opportunities.length} opportunities`);
       return opportunities.length;

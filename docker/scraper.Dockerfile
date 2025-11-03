@@ -52,6 +52,8 @@ COPY --from=builder /app/packages/db/dist ./packages/db/dist
 # Install only production dependencies for scraping worker
 RUN pnpm install --filter scraping-worker... --prod --ignore-scripts
 
+RUN pnpm exec playwright install chromium
+
 # Copy the built scraping worker application from the builder stage.
 COPY --from=builder /app/packages/scraping-worker/dist ./packages/scraping-worker/dist
 

@@ -25,12 +25,17 @@ export interface EnergySieveJobData {
   energyClasses?: string[]; // Array of energy classes to fetch (default: ["F", "G"])
 }
 
+// Local type for energy sieve opportunities in sourcing worker
 export interface EnergySieveOpportunity {
-  label: string; // Address or municipality name
-  address: string; // Full standardized address
-  zipCode: number; // Postal code as integer
-  department: number; // Department code as integer
+  numeroDpe: string; // DPE certificate number (for externalId)
+  label: string;
+  address: string;
+  zipCode: number;
+  department: number;
   latitude: number;
   longitude: number;
-  opportunityDate: Date; // DPE establishment date (YYYY-MM-DD)
+  opportunityDate: Date;
+  extraData?: {
+    energyClass?: string; // A-G rating
+  };
 }

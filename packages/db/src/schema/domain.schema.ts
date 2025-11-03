@@ -9,7 +9,10 @@ import {
   pgEnum,
   date,
   jsonb,
+  uniqueIndex,
+  index,
 } from 'drizzle-orm/pg-core';
+import { desc } from 'drizzle-orm';
 import { OpportunityType } from '@linkinvests/shared';
 
 export const opportunityType = pgEnum(
@@ -29,6 +32,10 @@ export const opportunities = pgTable('opportunity', {
   type: opportunityType('type').notNull(),
   status: text('status').notNull(),
   opportunityDate: date('opportunity_date').notNull(),
+  // External unique identifier for each opportunity type
+  externalId: varchar('external_id'),
+  // Contact information specific to each opportunity type (jsonb)
+  contactData: jsonb('contact_data'),
   // Additional opportunity data (auction-specific fields, etc.)
   extraData: jsonb('extra_data'),
   images: text('images').array(),
@@ -37,7 +44,19 @@ export const opportunities = pgTable('opportunity', {
     .defaultNow()
     .$onUpdate(() => /* @__PURE__ */ new Date())
     .notNull(),
-});
+}, (table) => ({
+  // Unique constraint on (externalId, type) to prevent duplicates
+  // Only applies when externalId is not null
+  uniqueExternalIdType: uniqueIndex('uq_opportunity_external_id_type')
+    .on(table.externalId, table.type),
+  // Performance indexes
+  typeIndex: index('idx_opportunity_type').on(table.type),
+  departmentIndex: index('idx_opportunity_department').on(table.department),
+  opportunityDateIndex: index('idx_opportunity_date').on(desc(table.opportunityDate)),
+  // Composite index for common query patterns
+  typeDepDateIndex: index('idx_opportunity_type_department_date')
+    .on(table.type, table.department, desc(table.opportunityDate)),
+}));
 
 // Sourcing Tables
 export const sourcingRuns = pgTable('sourcing_run', {

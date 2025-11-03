@@ -114,6 +114,7 @@ export class DetailScraperService {
       }
 
       const opportunity: AuctionOpportunity = {
+        url: fullUrl, // Add URL for externalId
         label: data.title || `Bien immobilier à ${city}`,
         address: data.address || fullAddress,
         zipCode: parseInt(departmentCode + '000', 10) || 75000,

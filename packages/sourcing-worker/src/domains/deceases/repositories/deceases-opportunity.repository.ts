@@ -1,10 +1,11 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { OpportunityType } from '@linkinvests/shared';
+import { OpportunityType, type MairieContactData } from '@linkinvests/shared';
 import { domainSchema } from '@linkinvests/db';
+import { sql } from 'drizzle-orm';
 
 import { DATABASE_CONNECTION, type DomainDbType } from '~/database';
 
-import type { DeceasesOpportunity } from '../types/deceases.types';
+import type { DeceasesOpportunity, MairieInfo } from '../types/deceases.types';
 
 @Injectable()
 export class DeceasesOpportunityRepository {
@@ -14,6 +15,25 @@ export class DeceasesOpportunityRepository {
     @Inject(DATABASE_CONNECTION)
     private readonly db: DomainDbType,
   ) {}
+
+  /**
+   * Creates contact data from mairie information
+   */
+  private createContactData(
+    mairieInfo?: MairieInfo,
+    address?: string,
+  ): MairieContactData | null {
+    if (!mairieInfo) return null;
+
+    return {
+      type: 'mairie',
+      name: mairieInfo.name || 'Mairie',
+      address: address || '',
+      phone: mairieInfo.telephone || mairieInfo.telephone_accueil,
+      email: mairieInfo.email || mairieInfo.adresse_courriel,
+      // Additional fields could be populated if available from API
+    };
+  }
 
   async insertOpportunities(
     opportunities: DeceasesOpportunity[],
@@ -39,13 +59,37 @@ export class DeceasesOpportunityRepository {
         type: OpportunityType.SUCCESSION,
         status: 'pending_review',
         opportunityDate: opportunity.opportunityDate,
+        externalId: opportunity.inseeDeathId,
+        contactData: this.createContactData(
+          opportunity.mairieInfo,
+          opportunity.address,
+        ),
+        extraData: null,
       }));
 
       try {
         await this.db
           .insert(domainSchema.opportunities)
           .values(records)
-          .onConflictDoNothing();
+          .onConflictDoUpdate({
+            target: [
+              domainSchema.opportunities.externalId,
+              domainSchema.opportunities.type,
+            ],
+            set: {
+              label: sql`EXCLUDED.label`,
+              address: sql`EXCLUDED.address`,
+              zipCode: sql`EXCLUDED.zip_code`,
+              department: sql`EXCLUDED.department`,
+              latitude: sql`EXCLUDED.latitude`,
+              longitude: sql`EXCLUDED.longitude`,
+              status: sql`EXCLUDED.status`,
+              opportunityDate: sql`EXCLUDED.opportunity_date`,
+              contactData: sql`EXCLUDED.contact_data`,
+              extraData: sql`EXCLUDED.extra_data`,
+              updatedAt: sql`CURRENT_TIMESTAMP`,
+            },
+          });
 
         insertedCount += batch.length;
         this.logger.log(

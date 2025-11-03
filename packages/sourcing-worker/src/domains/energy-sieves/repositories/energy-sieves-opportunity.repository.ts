@@ -2,6 +2,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { DATABASE_CONNECTION, type DomainDbType } from '~/database';
 import { domainSchema } from '@linkinvests/db';
 import { OpportunityType } from '@linkinvests/shared';
+import { sql } from 'drizzle-orm';
 import type { EnergySieveOpportunity } from '../types/energy-sieves.types';
 
 @Injectable()
@@ -54,6 +55,9 @@ export class EnergySievesOpportunityRepository {
           status: 'pending_review',
           // Convert Date to string format 'YYYY-MM-DD' for Drizzle
           opportunityDate: formattedDate,
+          externalId: opp.numeroDpe,
+          contactData: null, // As requested, energy sieves should have null contactData
+          extraData: opp.extraData || null,
         };
       });
 
@@ -68,7 +72,7 @@ export class EnergySievesOpportunityRepository {
         await this.db
           .insert(domainSchema.opportunities)
           .values(dbOpportunities)
-          .onConflictDoNothing(); // Skip duplicates
+          .onConflictDoNothing();
 
         insertedCount += batch.length;
         this.logger.log(

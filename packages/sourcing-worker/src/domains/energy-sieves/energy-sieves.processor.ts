@@ -163,6 +163,7 @@ export class EnergySievesProcessor extends WorkerHost {
     }
 
     return {
+      numeroDpe: record.numero_dpe,
       label,
       address: record.adresse_ban,
       zipCode,
@@ -170,6 +171,9 @@ export class EnergySievesProcessor extends WorkerHost {
       latitude,
       longitude,
       opportunityDate: new Date(opportunityDateStr),
+      extraData: {
+        energyClass: record.etiquette_dpe,
+      },
     };
   }
 }

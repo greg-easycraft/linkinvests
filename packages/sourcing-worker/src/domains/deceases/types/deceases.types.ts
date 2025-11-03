@@ -48,7 +48,17 @@ export interface ApiLannuaireResponse {
   }>;
 }
 
+// Contact data for mairie information
+export interface MairieInfo {
+  name?: string;
+  telephone?: string;
+  email?: string;
+  adresse_courriel?: string;
+  telephone_accueil?: string;
+}
+
 export interface DeceasesOpportunity {
+  inseeDeathId: string; // For externalId: combination of lieuDeces + dateDeces
   label: string;
   siret: null;
   address: string;
@@ -57,4 +67,5 @@ export interface DeceasesOpportunity {
   latitude: number;
   longitude: number;
   opportunityDate: string; // Format: YYYY-MM-DD
+  mairieInfo?: MairieInfo; // For contactData
 }
