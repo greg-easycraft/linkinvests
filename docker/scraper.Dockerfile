@@ -28,8 +28,8 @@ RUN pnpm --filter db build
 RUN pnpm --filter scraping-worker build
 
 # Stage 2: The Production Stage
-# We use a slimmed-down Node.js base image for the final production image.
-FROM node:22.19-alpine AS runner
+# We use the official Playwright image with all browser dependencies pre-installed.
+FROM mcr.microsoft.com/playwright:v1.49.1-noble AS runner
 
 # Set the working directory for the runner.
 WORKDIR /app
@@ -50,9 +50,7 @@ COPY --from=builder /app/packages/shared/dist ./packages/shared/dist
 COPY --from=builder /app/packages/db/dist ./packages/db/dist
 
 # Install only production dependencies for scraping worker
-RUN pnpm install --filter scraping-worker... --prod --ignore-scripts
-
-RUN pnpm exec playwright install chromium
+RUN pnpm install --filter scraping-worker... --prod
 
 # Copy the built scraping worker application from the builder stage.
 COPY --from=builder /app/packages/scraping-worker/dist ./packages/scraping-worker/dist
