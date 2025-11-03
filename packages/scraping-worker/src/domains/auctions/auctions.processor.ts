@@ -21,19 +21,17 @@ export class AuctionsProcessor extends WorkerHost {
   }
 
   async process(job: Job<ScrapingJobData>): Promise<void> {
-    const { jobName, departmentId, sinceDate } = job.data;
+    const { jobName } = job.data;
 
     this.logger.log({
       jobId: job.id,
       jobName,
-      departmentId,
-      sinceDate,
       message: 'Starting scraping job',
     });
 
     // Validate job name
     if (jobName !== 'auctions') {
-      const error = `Unsupported job name: ${jobName}. Only 'auctions' is supported.`;
+      const error = `Unsupported job name: ${jobName as string}. Only 'auctions' is supported.`;
       this.logger.error({ jobId: job.id, jobName }, error);
       throw new Error(error);
     }
@@ -42,10 +40,7 @@ export class AuctionsProcessor extends WorkerHost {
       // Step 1: Scrape auction opportunities
       this.logger.log({ jobId: job.id }, 'Starting auction scraping');
 
-      const opportunities = await this.scraperService.scrapeAuctions(
-        departmentId,
-        sinceDate
-      );
+      const opportunities = await this.scraperService.scrapeAuctions();
 
       this.logger.log({
         jobId: job.id,

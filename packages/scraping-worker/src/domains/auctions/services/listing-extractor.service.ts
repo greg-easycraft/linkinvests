@@ -1,97 +1,37 @@
 import { Injectable, Logger } from '@nestjs/common';
 import type { Page } from 'playwright';
 
-import type { AuctionListing } from '../types';
-
 @Injectable()
 export class ListingExtractorService {
   private readonly logger = new Logger(ListingExtractorService.name);
 
-  async extractListingUrls(page: Page): Promise<AuctionListing[]> {
+  async extractListingUrls(page: Page): Promise<string[]> {
     this.logger.debug('Extracting listing URLs from page');
 
-    const listings = await page.evaluate((): Array<{ url: string }> => {
-      const cards = Array.from(document.querySelectorAll('[class*="card"]'));
-      const results: Array<{ url: string }> = [];
+    const links = await page.evaluate((): Array<string> => {
+      const links = Array.from(document.querySelectorAll('a'));
 
-      for (const card of cards) {
-        let url = '';
-
-        // Try to find link
-        if (card.tagName === 'A') {
-          url = (card as HTMLAnchorElement).getAttribute('href') || '';
-        } else {
-          const linkElement = card.querySelector('a');
-          url = linkElement?.getAttribute('href') || '';
-        }
-
-        // Only include auction/encheres URLs, not category pages
-        if (url && url.includes('/encheres/') && !url.includes('/ventes/')) {
-          results.push({ url });
-        }
-      }
-
-      return results;
+      return links.map((link) => link.href);
     });
+    this.logger.log({ links: links.length }, `Extracted ${links.length} links`);
 
-    this.logger.log(
-      { count: listings.length },
-      `Extracted ${listings.length} listing URLs`
+    const filteredLinks = links.filter((link) =>
+      link.includes('/encheres/immobilier/')
     );
-    return listings;
-  }
+    const relevantLinksSet = new Set<string>(filteredLinks);
 
-  async hasNextPage(page: Page): Promise<boolean> {
-    try {
-      // Look for pagination - common patterns
-      const hasNext = await page.evaluate((): boolean => {
-        // Look for "next" button or link
-        const nextButton = document.querySelector(
-          'a[rel="next"], button:has-text("Suivant"), a:has-text("Suivant"), [class*="next"]:not([disabled])'
-        );
-        return !!nextButton;
-      });
-
-      return hasNext;
-    } catch (error: unknown) {
-      this.logger.debug('Error checking for next page, assuming no pagination');
-      return false;
-    }
-  }
-
-  async goToNextPage(page: Page): Promise<boolean> {
-    try {
-      this.logger.debug('Attempting to navigate to next page');
-
-      // Try to click next button
-      await page
-        .locator(
-          'a[rel="next"], button:has-text("Suivant"), a:has-text("Suivant")'
-        )
-        .first()
-        .click({ timeout: 3000 });
-
-      // Wait for navigation
-      await page.waitForLoadState('domcontentloaded', { timeout: 10000 });
-      await new Promise((resolve) => setTimeout(resolve, 2000)); // Wait for content to load
-
-      this.logger.debug('Successfully navigated to next page');
-      return true;
-    } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error ? error.message : String(error);
-      this.logger.debug(
-        { error: errorMessage },
-        'Could not navigate to next page'
-      );
-      return false;
-    }
+    const results: Array<string> = Array.from(relevantLinksSet);
+    this.logger.log(
+      { count: results.length },
+      `Extracted ${results.length} listing URLs`
+    );
+    return results;
   }
 
   async extractAllListingsWithPagination(
     page: Page,
-    maxScrolls: number = 50
-  ): Promise<AuctionListing[]> {
+    maxScrolls: number = 200
+  ): Promise<string[]> {
     this.logger.log({ maxScrolls }, 'Starting extraction with lazy loading');
 
     let previousCount = 0;
@@ -140,20 +80,14 @@ export class ListingExtractorService {
     // Final extraction after all scrolling
     const allListings = await this.extractListingUrls(page);
 
-    // Remove duplicates based on URL
-    const uniqueListings = Array.from(
-      new Map(allListings.map((listing) => [listing.url, listing])).values()
-    );
-
     this.logger.log(
       {
         total: allListings.length,
-        unique: uniqueListings.length,
         scrolls: scrollAttempts,
       },
-      `Extracted ${uniqueListings.length} unique listings after ${scrollAttempts} scrolls`
+      `Extracted ${allListings.length} listings after ${scrollAttempts} scrolls`
     );
 
-    return uniqueListings;
+    return allListings;
   }
 }

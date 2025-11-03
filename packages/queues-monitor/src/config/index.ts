@@ -1,5 +1,7 @@
 import { DynamicModule } from '@nestjs/common';
 import { z } from 'zod';
+import { config as envConfig } from 'dotenv';
+envConfig();
 
 const configSchema = z.object({
   PORT: z.number().default(8082),
