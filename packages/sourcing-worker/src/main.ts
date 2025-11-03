@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger } from '@nestjs/common';
+import { config } from './config';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
@@ -9,7 +10,7 @@ async function bootstrap() {
   // Enable graceful shutdown
   app.enableShutdownHooks();
 
-  const port = process.env.PORT ?? 8080;
+  const port = config.PORT ?? 8080;
   await app.listen(port);
 
   logger.log(`Application is running on: http://localhost:${port}`);

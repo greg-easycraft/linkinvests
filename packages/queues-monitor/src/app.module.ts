@@ -13,16 +13,17 @@ import {
 } from '@linkinvests/shared';
 import { ScrapingController } from './scraping/scraping.controller';
 import { SourcingController } from './sourcing/sourcing.controller';
+import { config } from './config';
 
-const redisConnection = {
-  url: process.env.REDIS_URL,
+const connection = {
+  url: config.REDIS_URL,
 };
 
 @Module({
   imports: [
     // Setup BullMQ with Redis connection
     BullModule.forRoot({
-      connection: redisConnection,
+      connection,
     }),
 
     // Setup BullBoard dashboard with authentication
@@ -31,8 +32,8 @@ const redisConnection = {
       adapter: ExpressAdapter,
       middleware: basicAuth({
         users: {
-          [process.env.BULL_BOARD_USERNAME || 'admin']:
-            process.env.BULL_BOARD_PASSWORD || 'admin',
+          [config.BASIC_AUTH_USERNAME ]:
+            config.BASIC_AUTH_PASSWORD,
         },
         challenge: true,
       }),
@@ -42,23 +43,23 @@ const redisConnection = {
     BullModule.registerQueue(
       {
         name: SCRAPING_QUEUE,
-        connection: redisConnection,
+        connection,
       },
       {
         name: SOURCE_DECEASES_QUEUE,
-        connection: redisConnection,
+        connection,
       },
       {
         name: SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE,
-        connection: redisConnection,
+        connection,
       },
       {
         name: SOURCE_COMPANY_BUILDINGS_QUEUE,
-        connection: redisConnection,
+        connection,
       },
       {
         name: SOURCE_ENERGY_SIEVES_QUEUE,
-        connection: redisConnection,
+        connection,
       },
     ),
 

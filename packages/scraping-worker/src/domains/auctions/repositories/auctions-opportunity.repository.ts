@@ -1,6 +1,9 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { domainSchema } from '@linkinvests/db';
-import { OpportunityType, type AuctionHouseContactData } from '@linkinvests/shared';
+import {
+  OpportunityType,
+  type AuctionHouseContactData,
+} from '@linkinvests/shared';
 import { sql } from 'drizzle-orm';
 
 import { DATABASE_CONNECTION, type DomainDbType } from '~/database';
@@ -27,7 +30,9 @@ export class AuctionsOpportunityRepository {
   /**
    * Converts auction venue information to contact data
    */
-  private createContactData(auctionVenue?: string): AuctionHouseContactData | null {
+  private createContactData(
+    auctionVenue?: string
+  ): AuctionHouseContactData | null {
     if (!auctionVenue) return null;
 
     return {
@@ -80,7 +85,10 @@ export class AuctionsOpportunityRepository {
           .insert(domainSchema.opportunities)
           .values(records)
           .onConflictDoUpdate({
-            target: [domainSchema.opportunities.externalId, domainSchema.opportunities.type],
+            target: [
+              domainSchema.opportunities.externalId,
+              domainSchema.opportunities.type,
+            ],
             set: {
               label: sql`EXCLUDED.label`,
               address: sql`EXCLUDED.address`,

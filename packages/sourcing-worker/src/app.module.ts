@@ -1,26 +1,23 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
 import { BullModule } from '@nestjs/bullmq';
-
 import { AppController } from './app.controller';
 import { DatabaseModule } from './database';
 import { DeceasesModule } from './domains/deceases';
 import { EnergySievesModule } from './domains/energy-sieves';
 import { FailingCompaniesModule } from './domains/failing-companies';
 import { S3Module } from './storage';
+import { config, ConfigModule } from './config';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-    }),
+    ConfigModule.forRoot(),
     ScheduleModule.forRoot(),
-    DatabaseModule.forRoot(),
+    DatabaseModule.forRoot(config.DATABASE_URL),
     S3Module,
     BullModule.forRoot({
       connection: {
-        url: process.env.REDIS_URL,
+        url: config.REDIS_URL,
       },
     }),
     DeceasesModule,

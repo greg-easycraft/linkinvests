@@ -1,10 +1,11 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import {
   S3Client,
   PutObjectCommand,
   GetObjectCommand,
   DeleteObjectCommand,
 } from '@aws-sdk/client-s3';
+import { CONFIG_TOKEN, type ConfigType } from '~/config';
 
 @Injectable()
 export class S3Service {
@@ -12,10 +13,10 @@ export class S3Service {
   private readonly s3Client: S3Client;
   private readonly bucket: string;
 
-  constructor() {
-    const region = process.env.S3_REGION;
-    const bucket = process.env.S3_BUCKET;
-    const endpoint = process.env.S3_ENDPOINT;
+  constructor(@Inject(CONFIG_TOKEN) config: ConfigType) {
+    const region = config.S3_REGION;
+    const bucket = config.S3_BUCKET;
+    const endpoint = config.S3_ENDPOINT_URL;
 
     if (!region) {
       throw new Error('S3_REGION environment variable is not set');
@@ -33,8 +34,8 @@ export class S3Service {
       endpoint,
       forcePathStyle: true, // Always use path-style for LocalStack compatibility
       credentials: {
-        accessKeyId: process.env.S3_ACCESS_KEY_ID || '',
-        secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || '',
+        accessKeyId: config.S3_ACCESS_KEY_ID || '',
+        secretAccessKey: config.S3_SECRET_ACCESS_KEY || '',
       },
     };
 

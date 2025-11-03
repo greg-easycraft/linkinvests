@@ -6,13 +6,14 @@ import { DeceasesCron } from './cron';
 import { DeceasesProcessor } from './deceases.processor';
 import { DeceasesOpportunityRepository } from './repositories';
 import { InseeApiService } from './services';
+import { config } from '~/config';
 
 @Module({
   imports: [
     BullModule.registerQueue({
       name: SOURCE_DECEASES_QUEUE,
       connection: {
-        url: process.env.REDIS_URL,
+        url: config.REDIS_URL,
       },
     }),
   ],

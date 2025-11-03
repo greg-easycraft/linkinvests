@@ -2,7 +2,6 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { DATABASE_CONNECTION, type DomainDbType } from '~/database';
 import { domainSchema } from '@linkinvests/db';
 import { OpportunityType } from '@linkinvests/shared';
-import { sql } from 'drizzle-orm';
 import type { EnergySieveOpportunity } from '../types/energy-sieves.types';
 
 @Injectable()

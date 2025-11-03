@@ -73,6 +73,7 @@ export class AppController {
     try {
       await this.db.execute('SELECT 1');
       return true;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       return false;
     }
@@ -82,6 +83,7 @@ export class AppController {
     try {
       await this.scrapingQueue.isPaused();
       return true;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       return false;
     }

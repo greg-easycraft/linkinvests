@@ -13,13 +13,14 @@ import {
   GeocodingService,
   ListingExtractorService,
 } from './services';
+import { config } from '~/config';
 
 @Module({
   imports: [
     BullModule.registerQueue({
       name: SCRAPING_QUEUE,
       connection: {
-        url: process.env.REDIS_URL,
+        url: config.REDIS_URL,
       },
     }),
   ],

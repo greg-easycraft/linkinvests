@@ -121,7 +121,7 @@ export class DetailScraperService {
         department: parseInt(departmentCode, 10) || 75,
         latitude: coordinates?.latitude || 0,
         longitude: coordinates?.longitude || 0,
-        auctionDate: new Date().toISOString().split('T')[0] as string, // TODO: Extract real date
+        auctionDate: new Date().toISOString().split('T')[0], // TODO: Extract real date
         extraData: {
           price: aiExtractedData?.price ?? parsedPrice ?? undefined,
           propertyType: aiExtractedData?.propertyType ?? undefined,

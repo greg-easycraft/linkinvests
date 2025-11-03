@@ -11,14 +11,8 @@ export class DatabaseModule implements OnModuleDestroy {
   private static logger = new Logger(DatabaseModule.name);
   private static client?: Pool;
 
-  static forRoot(): DynamicModule {
-    const databaseUrl = process.env.DATABASE_URL;
-
-    if (!databaseUrl) {
-      throw new Error('DATABASE_URL environment variable is not set');
-    }
-
-    const client = new Pool({ connectionString: databaseUrl });
+  static forRoot(connectionString: string): DynamicModule {
+    const client = new Pool({ connectionString });
     DatabaseModule.client = client;
 
     const connection = drizzle(client, { schema: domainSchema });

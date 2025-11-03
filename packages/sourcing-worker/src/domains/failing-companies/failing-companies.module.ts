@@ -11,19 +11,20 @@ import {
   SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE,
   SOURCE_COMPANY_BUILDINGS_QUEUE,
 } from '@linkinvests/shared';
+import { config } from '~/config';
 
 @Module({
   imports: [
     BullModule.registerQueue({
       name: SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE,
       connection: {
-        url: process.env.REDIS_URL,
+        url: config.REDIS_URL,
       },
     }),
     BullModule.registerQueue({
       name: SOURCE_COMPANY_BUILDINGS_QUEUE,
       connection: {
-        url: process.env.REDIS_URL,
+        url: config.REDIS_URL,
       },
     }),
   ],
