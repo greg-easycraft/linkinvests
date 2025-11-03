@@ -2,7 +2,7 @@ import { DynamicModule } from '@nestjs/common';
 import { z } from 'zod';
 
 const configSchema = z.object({
-  PORT: z.number().default(8080),
+  PORT: z.number().default(8082),
   NODE_ENV: z
     .enum(['development', 'production', 'test'])
     .default('development'),
@@ -12,7 +12,14 @@ const configSchema = z.object({
   BASIC_AUTH_PASSWORD: z.string(),
 });
 
-export const config = configSchema.parse(process.env);
+export const config = configSchema.parse({
+  PORT: process.env.PORT ? parseInt(process.env.PORT) : 8082,
+  NODE_ENV: process.env.NODE_ENV,
+  LOG_LEVEL: process.env.LOG_LEVEL,
+  REDIS_URL: process.env.REDIS_URL,
+  BASIC_AUTH_USERNAME: process.env.BASIC_AUTH_USERNAME,
+  BASIC_AUTH_PASSWORD: process.env.BASIC_AUTH_PASSWORD,
+});
 
 export const CONFIG_TOKEN = Symbol('CONFIG');
 
