@@ -31,6 +31,9 @@ RUN pnpm --filter scraping-worker build
 # We use the official Playwright image with all browser dependencies pre-installed.
 FROM mcr.microsoft.com/playwright:v1.56.1-noble AS runner
 
+# Install tini for proper init process (replaces --init flag)
+RUN apt-get update && apt-get install -y tini && rm -rf /var/lib/apt/lists/*
+
 # Set the working directory for the runner.
 WORKDIR /app
 
@@ -63,6 +66,9 @@ EXPOSE 8081
 
 # Set working directory to scraping worker package
 WORKDIR /app/packages/scraping-worker
+
+# Use tini as init process to handle signals and reap zombie processes
+ENTRYPOINT ["tini", "--"]
 
 # Run the application in production mode.
 CMD ["pnpm", "start:prod"]
