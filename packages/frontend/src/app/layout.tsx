@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: 'linkinvests',
   description: 'Plateforme d\'investissement immobilier',
   icons: {
-    icon: '/favicon-linkinvests.svg',
+    icon: '/logo-dark.svg',
   },
 };
 
