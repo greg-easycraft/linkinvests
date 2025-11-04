@@ -193,6 +193,7 @@ export class SourcingController {
   async enqueueEnergySieves(
     @Body('departmentId') departmentId: number,
     @Body('sinceDate') sinceDate: string,
+    @Body('beforeDate') beforeDate?: string,
     @Body('energyClasses') energyClasses?: string[],
   ) {
     try {
@@ -215,6 +216,7 @@ export class SourcingController {
         {
           departmentId,
           sinceDate,
+          beforeDate,
           energyClasses: energyClasses || ['F', 'G'],
         },
         {
@@ -227,6 +229,7 @@ export class SourcingController {
         jobId,
         departmentId,
         sinceDate,
+        beforeDate,
         energyClasses: energyClasses || ['F', 'G'],
         message: 'Energy sieves job enqueued',
       });

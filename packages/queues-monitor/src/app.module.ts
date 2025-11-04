@@ -32,8 +32,7 @@ const connection = {
       adapter: ExpressAdapter,
       middleware: basicAuth({
         users: {
-          [config.BASIC_AUTH_USERNAME ]:
-            config.BASIC_AUTH_PASSWORD,
+          [config.BASIC_AUTH_USERNAME]: config.BASIC_AUTH_PASSWORD,
         },
         challenge: true,
       }),
