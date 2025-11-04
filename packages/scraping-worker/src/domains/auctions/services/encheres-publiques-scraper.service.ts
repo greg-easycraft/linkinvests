@@ -59,7 +59,7 @@ export class EncheresPubliquesScraperService {
 
       // Scrape details for each listing (in batches of 10)
       const rawOpportunities = await this.detailScraper.scrapeDetailsBatch(
-        listingUrls.slice(0, 20),
+        listingUrls,
         10
       );
 

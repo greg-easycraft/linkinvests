@@ -245,18 +245,26 @@ export class DetailScraperService {
       };
     }
 
-    const nom = lotData.nom;
+    const nom = lotData.nom.toLowerCase();
     let text = nom;
     for (const separator of [
       'située à',
       'situé à',
       'située au',
       'situé au',
+      'situées',
+      'située',
+      'situés',
       'situé',
     ]) {
       const index = nom.toLowerCase().indexOf(separator.toLowerCase());
       if (index > 0) {
-        text = nom.split(separator)[1];
+        text = nom
+          .split(separator)[1]
+          .split('-')
+          .join(' ')
+          .trim()
+          .replaceAll('.', '');
         if (text.includes(' à ')) {
           text = text.replace(' à ', ' ');
         }
