@@ -18,20 +18,23 @@ export class AdemeApiService {
    * @param department - French department code (e.g., 75 for Paris)
    * @param sinceDate - Filter records since this date (format: YYYY-MM-DD)
    * @param energyClasses - Array of energy classes (e.g., ["F", "G"])
+   * @param beforeDate - Filter records before this date (format: YYYY-MM-DD, optional)
    * @returns Array of all DPE records
    */
   async fetchAllDpeRecords(
     department: number,
     sinceDate: string,
     energyClasses: string[] = ['F', 'G'],
+    beforeDate?: string,
   ): Promise<DpeRecord[]> {
     const allRecords: DpeRecord[] = [];
     let page = 1;
     const pageSize = 1000;
     let hasMorePages = true;
 
+    const dateRangeText = beforeDate ? `from ${sinceDate} to ${beforeDate}` : `since ${sinceDate}`;
     this.logger.log(
-      `Starting to fetch DPE records for department ${department} since ${sinceDate} with energy classes ${energyClasses.join(', ')}`,
+      `Starting to fetch DPE records for department ${department} ${dateRangeText} with energy classes ${energyClasses.join(', ')}`,
     );
 
     while (hasMorePages) {
@@ -42,6 +45,7 @@ export class AdemeApiService {
           energyClasses,
           page,
           pageSize,
+          beforeDate,
         );
 
         allRecords.push(...records);
@@ -87,6 +91,7 @@ export class AdemeApiService {
    * @param energyClasses - Array of energy classes
    * @param page - Page number (1-indexed)
    * @param size - Number of records per page
+   * @param beforeDate - Filter records before this date (optional)
    * @returns Array of DPE records for this page
    */
   private async fetchDpePage(
@@ -95,6 +100,7 @@ export class AdemeApiService {
     energyClasses: string[],
     page: number,
     size: number,
+    beforeDate?: string,
   ): Promise<DpeRecord[]> {
     const url = this.buildApiUrl(
       department,
@@ -102,6 +108,7 @@ export class AdemeApiService {
       energyClasses,
       page,
       size,
+      beforeDate,
     );
 
     // Rate limiting: ensure minimum interval between requests
@@ -175,6 +182,7 @@ export class AdemeApiService {
    * @param energyClasses - Array of energy classes
    * @param page - Page number
    * @param size - Number of records per page
+   * @param beforeDate - Filter records before this date (optional)
    * @returns Complete API URL
    */
   private buildApiUrl(
@@ -183,6 +191,7 @@ export class AdemeApiService {
     energyClasses: string[],
     page: number,
     size: number,
+    beforeDate?: string,
   ): string {
     const departmentStr = department.toString().padStart(2, '0');
 
@@ -190,9 +199,15 @@ export class AdemeApiService {
     // Energy classes filter: (F OR G)
     const energyClassesFilter = `(${energyClasses.join(' OR ')})`;
 
+    // Build date filter - support both sinceDate and beforeDate
+    let dateFilter = `date_etablissement_dpe:>=${sinceDate}`;
+    if (beforeDate) {
+      dateFilter += ` AND date_etablissement_dpe:<=${beforeDate}`;
+    }
+
     // Query string: department AND energy class AND date filter
-    // Using qs syntax: field:value, AND/OR operators, >= for date comparison
-    const queryString = `code_departement_ban:${departmentStr} AND etiquette_dpe:${energyClassesFilter} AND date_etablissement_dpe:>=${sinceDate}`;
+    // Using qs syntax: field:value, AND/OR operators, >= and <= for date comparison
+    const queryString = `code_departement_ban:${departmentStr} AND etiquette_dpe:${energyClassesFilter} AND ${dateFilter}`;
 
     // Fields to select - only request the fields we need
     const selectFields = [

@@ -65,6 +65,7 @@ describe('EnergySievesProcessor', () => {
       const result = processor['transformDpeRecord'](validRecord, 75);
 
       expect(result).toEqual({
+        numeroDpe: 'DPE123',
         label: '123 Rue de Test',
         address: '123 Rue de Test',
         zipCode: 75001,
@@ -72,6 +73,9 @@ describe('EnergySievesProcessor', () => {
         latitude: 48.8566,
         longitude: 2.3522,
         opportunityDate: new Date('2024-01-15'),
+        extraData: {
+          energyClass: 'F',
+        },
       });
     });
 
@@ -219,6 +223,7 @@ describe('EnergySievesProcessor', () => {
         75,
         '2024-01-01',
         ['F', 'G'],
+        undefined,
       );
       expect(mockRepository.insertOpportunities).toHaveBeenCalledWith(
         expect.arrayContaining([
@@ -231,6 +236,29 @@ describe('EnergySievesProcessor', () => {
             zipCode: 75002,
           }),
         ]),
+      );
+    });
+
+    it('should pass beforeDate to ADEME API when provided', async () => {
+      const mockJobWithBeforeDate = {
+        data: {
+          departmentId: 75,
+          sinceDate: '2024-01-01',
+          beforeDate: '2024-12-31',
+          energyClasses: ['F', 'G'],
+        },
+      } as any;
+
+      mockAdemeApi.fetchAllDpeRecords.mockResolvedValue(mockDpeRecords);
+      mockRepository.insertOpportunities.mockResolvedValue(2);
+
+      await processor.process(mockJobWithBeforeDate);
+
+      expect(mockAdemeApi.fetchAllDpeRecords).toHaveBeenCalledWith(
+        75,
+        '2024-01-01',
+        ['F', 'G'],
+        '2024-12-31',
       );
     });
 

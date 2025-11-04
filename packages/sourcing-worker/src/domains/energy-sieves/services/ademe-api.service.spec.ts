@@ -79,6 +79,20 @@ describe('AdemeApiService', () => {
       expect(url).toContain('_geopoint');
       expect(url).toContain('date_etablissement_dpe');
     });
+
+    it('should build URL with date range when beforeDate is provided', () => {
+      const url = service['buildApiUrl'](75, '2024-01-01', ['F', 'G'], 1, 1000, '2024-12-31');
+
+      expect(url).toContain('date_etablissement_dpe%3A%3E%3D2024-01-01');
+      expect(url).toContain('date_etablissement_dpe%3A%3C%3D2024-12-31');
+    });
+
+    it('should build URL without beforeDate when not provided', () => {
+      const url = service['buildApiUrl'](75, '2024-01-01', ['F', 'G'], 1, 1000);
+
+      expect(url).toContain('date_etablissement_dpe%3A%3E%3D2024-01-01');
+      expect(url).not.toContain('date_etablissement_dpe%3A%3C%3D');
+    });
   });
 
   describe('fetchDpePage', () => {
@@ -304,6 +318,37 @@ describe('AdemeApiService', () => {
       // Should wait 50ms to reach minRequestInterval of 100ms
       expect(sleepSpy).toHaveBeenCalledWith(50);
     });
+
+    it('should successfully fetch a page of DPE records with beforeDate', async () => {
+      mockFetch.mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue({
+          results: mockDpeRecords,
+        }),
+      } as any);
+
+      const result = await service['fetchDpePage'](
+        75,
+        '2024-01-01',
+        ['F', 'G'],
+        1,
+        1000,
+        '2024-12-31',
+      );
+
+      expect(result).toEqual(mockDpeRecords);
+      expect(mockFetch).toHaveBeenCalledWith(
+        expect.stringContaining('date_etablissement_dpe%3A%3E%3D2024-01-01'),
+        expect.objectContaining({
+          method: 'GET',
+          signal: expect.any(AbortSignal),
+        }),
+      );
+      expect(mockFetch).toHaveBeenCalledWith(
+        expect.stringContaining('date_etablissement_dpe%3A%3C%3D2024-12-31'),
+        expect.any(Object),
+      );
+    });
   });
 
   describe('fetchAllDpeRecords', () => {
@@ -337,6 +382,24 @@ describe('AdemeApiService', () => {
 
       expect(result).toHaveLength(1500);
       expect(service['fetchDpePage']).toHaveBeenCalledTimes(2);
+    });
+
+    it('should fetch records with date range when beforeDate is provided', async () => {
+      service['fetchDpePage'] = jest
+        .fn()
+        .mockResolvedValueOnce(mockDpeRecords);
+
+      const result = await service.fetchAllDpeRecords(75, '2024-01-01', ['F', 'G'], '2024-12-31');
+
+      expect(result).toEqual(mockDpeRecords);
+      expect(service['fetchDpePage']).toHaveBeenCalledWith(
+        75,
+        '2024-01-01',
+        ['F', 'G'],
+        1,
+        1000,
+        '2024-12-31'
+      );
     });
 
     it('should stop fetching when receiving less than pageSize', async () => {

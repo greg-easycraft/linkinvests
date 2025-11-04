@@ -22,6 +22,7 @@ export interface DpeApiResponse {
 export interface EnergySieveJobData {
   departmentId: number; // French department code (e.g., 75 for Paris)
   sinceDate: string; // Filter DPE records since this date (format: YYYY-MM-DD)
+  beforeDate?: string; // Filter DPE records before this date (format: YYYY-MM-DD, optional)
   energyClasses?: string[]; // Array of energy classes to fetch (default: ["F", "G"])
 }
 

@@ -150,6 +150,9 @@ describe('EnergySievesOpportunityRepository', () => {
           type: OpportunityType.ENERGY_SIEVE,
           status: 'pending_review',
           opportunityDate: '2024-01-15',
+          externalId: 'DPE123456',
+          contactData: null,
+          extraData: null,
         },
       ]);
     });

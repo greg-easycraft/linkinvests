@@ -22,11 +22,12 @@ export class EnergySievesProcessor extends WorkerHost {
   }
 
   async process(job: Job<EnergySieveJobData>): Promise<void> {
-    const { departmentId, sinceDate, energyClasses = ['F', 'G'] } = job.data;
+    const { departmentId, sinceDate, beforeDate, energyClasses = ['F', 'G'] } = job.data;
     const startTime = Date.now();
 
+    const dateRangeText = beforeDate ? `from ${sinceDate} to ${beforeDate}` : `since ${sinceDate}`;
     this.logger.log(
-      `Starting to process energy sieves for department ${departmentId} since ${sinceDate} with classes ${energyClasses.join(', ')}`,
+      `Starting to process energy sieves for department ${departmentId} ${dateRangeText} with classes ${energyClasses.join(', ')}`,
     );
 
     const stats = {
@@ -44,6 +45,7 @@ export class EnergySievesProcessor extends WorkerHost {
         departmentId,
         sinceDate,
         energyClasses,
+        beforeDate,
       );
       stats.totalRecords = dpeRecords.length;
       this.logger.log(`Fetched ${dpeRecords.length} DPE records`);
