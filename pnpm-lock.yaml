@@ -583,6 +583,9 @@ importers:
       csv-parse:
         specifier: ^6.1.0
         version: 6.1.0
+      dotenv:
+        specifier: ^17.2.3
+        version: 17.2.3
       drizzle-orm:
         specifier: ^0.38.4
         version: 0.38.4(@opentelemetry/api@1.9.0)(@prisma/client@6.18.0(prisma@6.18.0(magicast@0.3.5)(typescript@5.9.3))(typescript@5.9.3))(@types/pg@8.15.5)(@types/react@19.2.2)(kysely@0.28.8)(pg@8.16.3)(postgres@3.4.7)(prisma@6.18.0(magicast@0.3.5)(typescript@5.9.3))(react@19.2.0)
@@ -12623,7 +12626,6 @@ snapshots:
       magic-string: 0.30.21
     optionalDependencies:
       vite: 7.1.12(@types/node@22.18.12)(jiti@2.6.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
-    optional: true
 
   '@vitest/pretty-format@4.0.4':
     dependencies:
@@ -12651,7 +12653,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 3.0.3
-      vitest: 4.0.4(@types/node@22.18.12)(@vitest/ui@4.0.4)(happy-dom@20.0.10)(jiti@1.21.7)(jsdom@25.0.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+      vitest: 4.0.4(@types/node@22.18.12)(@vitest/ui@4.0.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@25.0.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   '@vitest/utils@4.0.4':
     dependencies:
@@ -17476,7 +17478,6 @@ snapshots:
       terser: 5.44.0
       tsx: 4.20.6
       yaml: 2.8.1
-    optional: true
 
   vitest@4.0.4(@types/node@22.18.12)(@vitest/ui@4.0.4)(happy-dom@20.0.10)(jiti@1.21.7)(jsdom@25.0.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1):
     dependencies:
@@ -17559,7 +17560,6 @@ snapshots:
       - terser
       - tsx
       - yaml
-    optional: true
 
   w3c-xmlserializer@5.0.0:
     dependencies:
