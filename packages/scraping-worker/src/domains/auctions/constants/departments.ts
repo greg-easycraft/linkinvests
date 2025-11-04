@@ -2,7 +2,7 @@
  * Mapping of French department IDs (1-95) to their names
  * Used for constructing URLs to filter auctions by department
  */
-export const DEPARTMENT_NAMES: Record<number, string> = {
+export const DEPARTMENT_NAMES_MAP: Record<number, string> = {
   1: 'ain',
   2: 'aisne',
   3: 'allier',
@@ -100,3 +100,10 @@ export const DEPARTMENT_NAMES: Record<number, string> = {
   // Note: 20 (Corse) was split into 2A and 2B in 1976
   // These are typically not included in 1-95 range
 };
+
+export const DEPARTMENT_IDS_MAP: Record<string, number> = Object.fromEntries(
+  Object.entries(DEPARTMENT_NAMES_MAP).map(([key, value]) => [
+    value,
+    Number(key),
+  ])
+);

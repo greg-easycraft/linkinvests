@@ -14,7 +14,7 @@ export interface NextDataJson {
     pageProps?: {
       apolloState?: {
         data?: {
-          [key: string]: LotData;
+          [key: string]: LotData | AdressData;
         };
       };
     };
@@ -34,9 +34,9 @@ export interface OrganisateurData {
 }
 
 export interface LotData {
-  __typename?: string;
-  id?: string;
-  nom?: string;
+  __typename?: 'Lot';
+  id: string;
+  nom: string;
   description?: string;
   photo?: string;
   offre_actuelle?: number | string;
@@ -49,8 +49,26 @@ export interface LotData {
   critere_consommation_energetique?: string;
   critere_surface_habitable?: number | string;
   critere_nombre_de_pieces?: number | string;
-  adresse: string;
+  adresse?: {
+    _ref: string;
+  };
+  adresse_physique?: {
+    _ref: string;
+  };
   organisateur?: OrganisateurData;
+}
+
+export interface AdressData {
+  __typename: 'Adresse';
+  id: string;
+  ville: string;
+  ville_slug: string;
+  text: string;
+  region: string;
+  departement: string;
+  region_slug: string;
+  department_slug: string;
+  coords: [number, number];
 }
 
 // Local type for scraping worker - includes URL and uses auctionDate
@@ -75,13 +93,18 @@ export interface AuctionOpportunity {
     price?: number; // Legacy field for compatibility
     description?: string;
     dpe?: string; // Energy performance rating
-    area?: number; // Surface area in m²
+    squareFootage?: number; // Surface area in m²
     rooms?: number; // Number of rooms
-    squareFootage?: number; // Legacy field for compatibility
     auctionVenue?: string; // Will be used for contactData
   };
   images?: string[];
 }
+
+export type RawAuctionOpportunity = Omit<AuctionOpportunity, 'zipCode'> & {
+  city: string;
+  latitude?: number;
+  longitude?: number;
+};
 
 export interface ScraperResult {
   success: boolean;

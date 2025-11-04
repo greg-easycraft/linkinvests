@@ -64,12 +64,13 @@ export class BrowserService {
       this.logger.debug('Looking for cookie consent modal');
       await this.page.waitForSelector('.fc-consent-root', { timeout: 3000 });
 
-      const cookieButton = await this.page.locator('.fc-cta-consent').first();
+      const cookieButton = this.page.locator('.fc-cta-consent').first();
       if (await cookieButton.isVisible({ timeout: 2000 })) {
         await cookieButton.click();
         this.logger.log('Closed cookie consent modal');
         await this.page.waitForTimeout(1000); // Wait for modal animation
       }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error: unknown) {
       this.logger.debug('No cookie modal found or already closed');
     }

@@ -10,6 +10,7 @@ import {
   DetailScraperService,
   EncheresPubliquesScraperService,
   ListingExtractorService,
+  AuctionsGeocodingService,
 } from './services';
 import { config } from '~/config';
 
@@ -30,6 +31,7 @@ import { config } from '~/config';
     BrowserService,
     ListingExtractorService,
     DetailScraperService,
+    AuctionsGeocodingService,
   ],
   exports: [BullModule],
 })

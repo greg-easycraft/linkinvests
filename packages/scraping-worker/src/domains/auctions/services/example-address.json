@@ -1,0 +1,401 @@
+{
+    "props": {
+        "pageProps": {
+            "pageProps": {},
+            "apollo": null,
+            "apolloState": {
+                "data": {
+                    "ROOT_QUERY": {
+                        "__typename": "Query",
+                        "compte": null,
+                        "lot({\"id\":\"120706\"})": {
+                            "__ref": "Lot:120706"
+                        },
+                        "lots:{\"filters\":{\"categorie\":\"immobilier\",\"ouvert\":true,\"termine\":false}}": {
+                            "__typename": "LotCollection",
+                            "collection": [
+                                {
+                                    "__ref": "Lot:120597"
+                                }
+                            ]
+                        },
+                        "compteAdmin": null
+                    },
+                    "LotVisite:45982": {
+                        "__typename": "LotVisite",
+                        "id": "45982",
+                        "start": 1756195200,
+                        "end": 1756202400
+                    },
+                    "LotVisite:45983": {
+                        "__typename": "LotVisite",
+                        "id": "45983",
+                        "start": 1756209600,
+                        "end": 1756216800
+                    },
+                    "LotVisite:45984": {
+                        "__typename": "LotVisite",
+                        "id": "45984",
+                        "start": 1756987200,
+                        "end": 1756994400
+                    },
+                    "LotVisite:45985": {
+                        "__typename": "LotVisite",
+                        "id": "45985",
+                        "start": 1757923200,
+                        "end": 1757930400
+                    },
+                    "LotVisite:45986": {
+                        "__typename": "LotVisite",
+                        "id": "45986",
+                        "start": 1758801600,
+                        "end": 1758808800
+                    },
+                    "LotVisite:45987": {
+                        "__typename": "LotVisite",
+                        "id": "45987",
+                        "start": 1759824000,
+                        "end": 1759831200
+                    },
+                    "LotVisite:45988": {
+                        "__typename": "LotVisite",
+                        "id": "45988",
+                        "start": 1760601600,
+                        "end": 1760608800
+                    },
+                    "LotVisite:45989": {
+                        "__typename": "LotVisite",
+                        "id": "45989",
+                        "start": 1760616000,
+                        "end": 1760623200
+                    },
+                    "LotVisite:45990": {
+                        "__typename": "LotVisite",
+                        "id": "45990",
+                        "start": 1761048000,
+                        "end": 1761055200
+                    },
+                    "Adresse:198823": {
+                        "__typename": "Adresse",
+                        "id": "198823",
+                        "ville": "Rennes",
+                        "ville_slug": "rennes-35",
+                        "region": "Bretagne",
+                        "text": "4 Rue du Champ Dolent, 35000 Rennes, France",
+                        "coords": [
+                            -1.682393,
+                            48.1089323
+                        ],
+                        "pays": "France"
+                    },
+                    "Profil:8314": {
+                        "__typename": "Profil",
+                        "id": "8314",
+                        "avatar": null,
+                        "live": true,
+                        "nom": "Office du Carré",
+                        "client": false,
+                        "categorie": "notaire",
+                        "services": "",
+                        "suivi": false,
+                        "messages_desactives": false,
+                        "adresse": {
+                            "__ref": "Adresse:198823"
+                        },
+                        "online": false,
+                        "ouvert": false,
+                        "nbr_suivis": 11,
+                        "telephone": "02 99 70 50 46",
+                        "conditions_de_vente": "",
+                        "frais_de_vente": "",
+                        "modalite_de_paiement": "",
+                        "modalites_de_retrait": "",
+                        "modalites_dexpedition": "",
+                        "avertissement": "",
+                        "mentions_legales": "",
+                        "renseignements_de_vente": "",
+                        "consignation_pour_encherir": "",
+                        "comment_encherir": "",
+                        "estimations_inventaires": ""
+                    },
+                    "Contact:120706_8314": {
+                        "__typename": "Contact",
+                        "id": "120706_8314",
+                        "label": "Organisateur",
+                        "profil": {
+                            "__ref": "Profil:8314"
+                        }
+                    },
+                    "Lot:120706": {
+                        "__typename": "Lot",
+                        "id": "120706",
+                        "mise_en_avant": false,
+                        "photo": "/back/services/streetview?adresse_id=198825\u0026heading=147",
+                        "criteres_resume": "Saint-Malo · 359 m² · 17 pièces · 5362 €/m²",
+                        "termine": false,
+                        "numero": "VILLA ST-MALO",
+                        "nom": "Une maison/villa de 359 m² située rue Mahé de la Bourdonnais à St Malo",
+                        "categorie": "immobilier",
+                        "sous_categorie": "biens-exception",
+                        "adresse_defaut": {
+                            "__ref": "Adresse:198825"
+                        },
+                        "en_surenchere": false,
+                        "min_augmentation": 10,
+                        "suivi": false,
+                        "statut": "VIDE",
+                        "resultat": "INCONNU",
+                        "ouverture_date": 1762183800,
+                        "fermeture_reelle_date": 1762198200,
+                        "prix_adjuge": null,
+                        "mise_a_prix": 1925000,
+                        "offre_actuelle": null,
+                        "estimation_basse": null,
+                        "estimation_haute": null,
+                        "organisateur": {
+                            "__ref": "Profil:8314"
+                        },
+                        "type": "En salle",
+                        "type_de_vente": "Vente volontaire",
+                        "appel_offres": false,
+                        "nbr_encherisseurs": 0,
+                        "nbr_offres": 0,
+                        "prix_plancher": 1925000,
+                        "frais_de_vente": null,
+                        "frais_de_livraison": null,
+                        "statistiques_avancees({\"fields\":[\"vues\",\"consultes\",\"suivis\",\"interactions\"],\"period\":\"yesterday\"})": null,
+                        "est_prive": false,
+                        "mise_en_ligne_date": 1755541062.291,
+                        "update_date": 1755541062.291,
+                        "nbr_suivis": 4,
+                        "nbr_inscriptions": 0,
+                        "nbr_participants": 0,
+                        "nbr_participants_a_gerer": 0,
+                        "dernier_suivi_date": 1756067771.185,
+                        "statistiques({\"period\":\"today\"})": {
+                            "nbr_vues": 659,
+                            "nbr_suivis": 0
+                        },
+                        "nbr_vues": 19819,
+                        "edit": false,
+                        "sous_sous_categorie": null,
+                        "message_alerte": "",
+                        "surenchere": true,
+                        "messages_actives": true,
+                        "bouton_message": true,
+                        "bouton_action": {
+                            "__typename": "BoutonAction",
+                            "on": false,
+                            "label": "",
+                            "url": "",
+                            "message": false
+                        },
+                        "description": "Une maison/villa T17 de 359 m², située au 8 rue Mahé de la Bourdonnais à St Malo. Elle comprend un sous-sol, un rez-de-chaussée et trois étages, le tout sur un terrain de 341 m².",
+                        "documents": [],
+                        "url": "",
+                        "visites": [
+                            {
+                                "__ref": "LotVisite:45982"
+                            },
+                            {
+                                "__ref": "LotVisite:45983"
+                            },
+                            {
+                                "__ref": "LotVisite:45984"
+                            },
+                            {
+                                "__ref": "LotVisite:45985"
+                            },
+                            {
+                                "__ref": "LotVisite:45986"
+                            },
+                            {
+                                "__ref": "LotVisite:45987"
+                            },
+                            {
+                                "__ref": "LotVisite:45988"
+                            },
+                            {
+                                "__ref": "LotVisite:45989"
+                            },
+                            {
+                                "__ref": "LotVisite:45990"
+                            }
+                        ],
+                        "visites_activees": false,
+                        "bouton_visites_jusqua_date": null,
+                        "visites_obligatoires": false,
+                        "visite_inscription": null,
+                        "encheres_interactives": false,
+                        "en_encheres": false,
+                        "encheres_fermeture_date": null,
+                        "encheres_ouverture_inscription_date": null,
+                        "encheres_fermeture_inscription_date": null,
+                        "encheres_en_seconde_chance": false,
+                        "mon_ordre": null,
+                        "enchere_peut_desinscrire": false,
+                        "encheres_inscrit": null,
+                        "offres": {
+                            "__typename": "LotOffreCollection",
+                            "collection": []
+                        },
+                        "prix_de_reserve_atteint": null,
+                        "observations_visites": "Contacter Monsieur Yohann Peron (yohann.peron@dgfip.finances.gouv.fr / drfip35.pole-gestion-domaniale@dgfip.finances.gouv.fr / Tél fixe : 02.99.66.29.40 / Tél mobile : 06.21.76.27.65) pour l’organisation des visites.",
+                        "all_contacts": [
+                            {
+                                "__ref": "Contact:120706_8314"
+                            }
+                        ],
+                        "evenement": {
+                            "__ref": "Evenement:20016"
+                        },
+                        "photos": [],
+                        "adresse": null,
+                        "adresse_physique": {
+                            "__ref": "Adresse:198825"
+                        },
+                        "critere_etat": "Ancien",
+                        "critere_annee": null,
+                        "critere_marque": null,
+                        "critere_surface_habitable": 359,
+                        "critere_nombre_de_pieces": 17,
+                        "critere_nombre_de_chambres": null,
+                        "critere_diagnostic_date": null,
+                        "critere_emissions_de_gaz": "E",
+                        "critere_consommation_energetique": "F",
+                        "critere_type_de_parking": null,
+                        "critere_observations": null,
+                        "critere_occupation_du_bien": null,
+                        "critere_modele": null,
+                        "critere_options": null,
+                        "critere_type": null,
+                        "critere_critair": null,
+                        "critere_kilometrage": null,
+                        "critere_carburant": null,
+                        "critere_boite_de_vitesse": null,
+                        "critere_couleur": null,
+                        "critere_nombre_de_portes": null,
+                        "critere_nombre_de_places": null,
+                        "critere_puissance_fiscale": null,
+                        "critere_puissance_din": null,
+                        "critere_permis": null,
+                        "critere_artiste": null,
+                        "critere_technique": null,
+                        "critere_signature": null,
+                        "critere_certificat": null,
+                        "fermeture_date": 1762198200,
+                        "infos_conditions_de_vente": "La vente a lieu au chronomètre",
+                        "infos_frais_de_vente": "",
+                        "infos_modalite_de_paiement": "",
+                        "infos_modalites_de_retrait": "",
+                        "infos_modalites_dexpedition": "",
+                        "infos_avertissement": "",
+                        "infos_mentions_legales": "",
+                        "infos_renseignements_de_vente": "",
+                        "infos_consignation_pour_encherir": "50000,00 €",
+                        "infos_comment_encherir": "Virement bancaire de la consignation à effectuer en la comptabilité de la SAS OFFICE DU CARRE-NOTAIRES, sise à RENNES (35000), 4 rue du Champ Dolent, avant le 17 octobre 2025.",
+                        "vendeur": {
+                            "__ref": "Profil:8314"
+                        },
+                        "vendeur_label": "Opérateur"
+                    },
+                    "Adresse:198824": {
+                        "__typename": "Adresse",
+                        "id": "198824",
+                        "text": "2 Mail Anne-Catherine, 35000 Rennes, France",
+                        "ville": "Rennes",
+                        "ville_slug": "rennes-35",
+                        "region": "Bretagne",
+                        "coords": [
+                            -1.6856503,
+                            48.1044939
+                        ]
+                    },
+                    "Adresse:198825": {
+                        "__typename": "Adresse",
+                        "id": "198825",
+                        "ville": "Saint-Malo",
+                        "ville_slug": "saint-malo-35",
+                        "text": "8 Rue Mahé de la Bourdonnais, 35400 Saint-Malo, France",
+                        "region": "Bretagne",
+                        "departement": "Ille-et-Vilaine",
+                        "region_slug": "bretagne",
+                        "department_slug": "ille-et-vilaine",
+                        "coords": [
+                            -2.0259,
+                            48.651272
+                        ],
+                        "streetview": true
+                    },
+                    "Evenement:20016": {
+                        "__typename": "Evenement",
+                        "id": "20016",
+                        "type_de_vente": "Vente volontaire",
+                        "edit": false,
+                        "titre": "Vente immobilière par l'Office du Carré le 3 Novembre 2025",
+                        "cover": null,
+                        "statut": "VIDE",
+                        "type": "En salle",
+                        "nbr_total_lots": 1,
+                        "prive": false,
+                        "suivi": false,
+                        "ouverture_date": 1762183800,
+                        "fermeture_date": 1762198200,
+                        "nbr_vues": 36418,
+                        "nbr_partages": 0,
+                        "nbr_suivis_total": 4,
+                        "nbr_inscriptions": 0,
+                        "url": "",
+                        "visites": [],
+                        "organisateur": {
+                            "__ref": "Profil:8314"
+                        },
+                        "mosaique": {
+                            "__typename": "LotCollection",
+                            "collection": [
+                                {
+                                    "__ref": "Lot:120706"
+                                }
+                            ],
+                            "total": 1
+                        },
+                        "adresse_organisateur": false,
+                        "adresse": {
+                            "__ref": "Adresse:198824"
+                        },
+                        "transport": "",
+                        "lots:{\"sort\":\"numero\"}": {
+                            "__typename": "LotCollection",
+                            "collection": [
+                                {
+                                    "__ref": "Lot:120706"
+                                }
+                            ]
+                        }
+                    },
+                    "Lot:120597": {
+                        "__typename": "Lot",
+                        "id": "120597"
+                    }
+                }
+            },
+            "_sentryTraceData": "dbe691d76598450dbf1c12878ed1637d-b918220b053ee33d-0",
+            "_sentryBaggage": "sentry-environment=production,sentry-release=efc187477c1ce186617d22680e67576532e15690,sentry-public_key=edc901d9128440969a72a70d1374f431,sentry-trace_id=dbe691d76598450dbf1c12878ed1637d,sentry-transaction=%2Flots%2Flot%2Fdetail,sentry-sampled=false"
+        }
+    },
+    "page": "/lots/lot/detail",
+    "query": {
+        "categorie": "immobilier",
+        "sous_categorie": "biens-exception",
+        "ville": "saint-malo-35",
+        "nom": "une-maison-villa-situee-rue-mahe-bourdonnais-malo",
+        "underscore": "_",
+        "lot_id": "120706"
+    },
+    "buildId": "MaLhTUu09DMiuuvRzfAbg",
+    "isFallback": false,
+    "customServer": true,
+    "gip": true,
+    "appGip": true,
+    "scriptLoader": []
+}

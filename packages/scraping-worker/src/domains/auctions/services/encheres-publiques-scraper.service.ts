@@ -4,6 +4,7 @@ import type { AuctionOpportunity } from '../types';
 import { BrowserService } from './browser.service';
 import { DetailScraperService } from './detail-scraper.service';
 import { ListingExtractorService } from './listing-extractor.service';
+import { AuctionsGeocodingService } from './geocoding.service';
 
 @Injectable()
 export class EncheresPubliquesScraperService {
@@ -14,7 +15,8 @@ export class EncheresPubliquesScraperService {
   constructor(
     private readonly browserService: BrowserService,
     private readonly listingExtractor: ListingExtractorService,
-    private readonly detailScraper: DetailScraperService
+    private readonly detailScraper: DetailScraperService,
+    private readonly geocodingService: AuctionsGeocodingService
   ) {}
 
   async scrapeAuctions(): Promise<AuctionOpportunity[]> {
@@ -56,15 +58,14 @@ export class EncheresPubliquesScraperService {
       );
 
       // Scrape details for each listing (in batches of 10)
-      const opportunities = await this.detailScraper.scrapeDetailsBatch(
-        this.browserService,
-        listingUrls,
+      const rawOpportunities = await this.detailScraper.scrapeDetailsBatch(
+        listingUrls.slice(0, 20),
         10
       );
 
-      this.logger.log({ total: opportunities.length }, 'Scraping complete');
+      this.logger.log({ total: rawOpportunities.length }, 'Scraping complete');
 
-      return opportunities;
+      return this.geocodingService.geocodeBatch(rawOpportunities);
     } finally {
       // Always close browser
       await this.browserService.close();

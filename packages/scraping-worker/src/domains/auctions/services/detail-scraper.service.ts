@@ -1,12 +1,18 @@
 import { Injectable, Logger } from '@nestjs/common';
 import type { Page } from 'playwright';
 
-import type { AuctionOpportunity, NextDataJson, LotData } from '../types';
+import type {
+  NextDataJson,
+  LotData,
+  AdressData,
+  RawAuctionOpportunity,
+} from '../types';
 import { BrowserService } from './browser.service';
+import { DEPARTMENT_IDS_MAP } from '../constants/departments';
 
 interface DetailScraperResult {
   success: boolean;
-  opportunity?: AuctionOpportunity;
+  opportunity?: RawAuctionOpportunity;
   error?: string;
 }
 
@@ -15,19 +21,16 @@ export class DetailScraperService {
   private readonly logger = new Logger(DetailScraperService.name);
   private readonly baseUrl = 'https://www.encheres-publiques.com';
 
-  constructor() {}
+  constructor(private readonly browserService: BrowserService) {}
 
-  async scrapeDetails(
-    browserService: BrowserService,
-    url: string
-  ): Promise<DetailScraperResult> {
+  async scrapeDetails(url: string): Promise<DetailScraperResult> {
     const fullUrl = url.startsWith('http') ? url : `${this.baseUrl}${url}`;
 
     try {
       // Navigate to detail page
-      await browserService.navigateToUrl(fullUrl);
-      await browserService.waitForContent();
-      const page = browserService.getPage();
+      await this.browserService.navigateToUrl(fullUrl);
+      await this.browserService.waitForContent();
+      const page = this.browserService.getPage();
 
       // Extract JSON data from __NEXT_DATA__ script tag
       const jsonData = await this.extractJsonData(page);
@@ -55,6 +58,51 @@ export class DetailScraperService {
     }
   }
 
+  async scrapeDetailsBatch(
+    urls: string[],
+    batchSize: number = 10
+  ): Promise<RawAuctionOpportunity[]> {
+    const opportunities: RawAuctionOpportunity[] = [];
+    let processed = 0;
+    let failed = 0;
+
+    for (let i = 0; i < urls.length; i += batchSize) {
+      const batch = urls.slice(i, i + batchSize);
+
+      this.logger.log(
+        { current: i + 1, total: urls.length },
+        `Processing batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(urls.length / batchSize)}`
+      );
+
+      for (const url of batch) {
+        // Rate limiting: 2-3 seconds between requests
+        const delay = 2000 + Math.random() * 1000;
+        await new Promise((resolve) => setTimeout(resolve, delay));
+
+        const result = await this.scrapeDetails(url);
+
+        if (result.success && result.opportunity) {
+          opportunities.push(result.opportunity);
+          processed++;
+        } else {
+          failed++;
+        }
+      }
+
+      this.logger.log(
+        { processed, failed, remaining: urls.length - i - batch.length },
+        `Batch complete: ${processed} successful, ${failed} failed`
+      );
+    }
+
+    this.logger.log(
+      { total: opportunities.length, processed, failed },
+      `Detail scraping complete: ${opportunities.length} opportunities extracted`
+    );
+
+    return opportunities;
+  }
+
   /**
    * Extract JSON data from __NEXT_DATA__ script tag
    */
@@ -79,7 +127,7 @@ export class DetailScraperService {
   private parseAuctionDataFromJson(
     jsonData: NextDataJson,
     url: string
-  ): AuctionOpportunity {
+  ): RawAuctionOpportunity {
     const props = jsonData.props;
     const query = jsonData.query;
     const apolloState = props?.pageProps?.apolloState?.data || {};
@@ -93,7 +141,7 @@ export class DetailScraperService {
     // Find lot data in Apollo state
     const lotKey = `Lot:${lotId}`;
     const lotData = apolloState[lotKey];
-    if (!lotData) {
+    if (!lotData || lotData.__typename !== 'Lot') {
       throw new Error(`No lot data found for ID: ${lotId}`);
     }
 
@@ -101,61 +149,20 @@ export class DetailScraperService {
     const auctionType = query.categorie || 'immobilier';
     const propertyType = query.sous_categorie || '';
 
-    // Extract title - split on 'situé' and take first part
-    const rawTitle = lotData.nom || '';
-    const title = this.extractTitleFromNom(rawTitle);
-
     // Extract address - prefer adresse object, fallback to parsing nom
-    let address = '';
-    const latitude = 0;
-    const longitude = 0;
-    let zipCode = 0;
-    let department = 0;
-
-    if (lotData.adresse) {
-      console.log('GOT ADRESS')
-      console.log('GOT ADRESS')
-      console.log('GOT ADRESS')
-      console.log('GOT ADRESS')
-      console.log('GOT ADRESS')
-      console.log('GOT ADRESS')
-      console.log('GOT ADRESS')
-      console.log('GOT ADRESS')
-      console.log('GOT ADRESS')
-      console.log('GOT ADRESS')
-      console.log('GOT ADRESS')
-      console.log('GOT ADRESS', lotData.adresse)
-      address = lotData.adresse;
-      // Extract postal code and department from address
-      const postalCodeMatch = address.match(/(\d{5})/);
-      if (postalCodeMatch) {
-        zipCode = parseInt(postalCodeMatch[1], 10);
-        department = parseInt(postalCodeMatch[1].substring(0, 2), 10);
-      }
-    } else {
-      // Fallback: extract address from nom field
-      address = this.extractAddressFromNom(rawTitle);
-      // Try to extract department from URL as fallback
-      const urlMatch = url.match(/\/([a-z-]+)-(\d{2,3})\//);
-      if (urlMatch) {
-        department = parseInt(urlMatch[2], 10);
-        zipCode = department * 1000;
-      }
-    }
-
-    // Extract auction date - priority order per YAML
-    const auctionDate = this.extractAuctionDate(lotData);
+    const { text, latitude, longitude, city, departmentId } =
+      this.extractAdress(lotData, apolloState, url);
 
     // Build the opportunity object
-    const opportunity: AuctionOpportunity = {
+    const opportunity: RawAuctionOpportunity = {
       url,
-      label: title,
-      address: address || 'Adresse non disponible',
-      zipCode: zipCode || 75000,
-      department: department || 75,
-      latitude,
-      longitude,
-      auctionDate,
+      label: this.extractTitleFromNom(lotData.nom),
+      address: text,
+      city,
+      department: departmentId,
+      latitude: latitude || 0,
+      longitude: longitude || 0,
+      auctionDate: this.extractAuctionDate(lotData),
       extraData: {
         id: lotId,
         auctionType,
@@ -166,7 +173,7 @@ export class DetailScraperService {
         reservePrice: Number(lotData.prix_plancher) || undefined,
         description: lotData.description || undefined,
         dpe: lotData.critere_consommation_energetique || undefined,
-        area: Number(lotData.critere_surface_habitable) || undefined,
+        squareFootage: Number(lotData.critere_surface_habitable) || undefined,
         rooms: Number(lotData.critere_nombre_de_pieces) || undefined,
         auctionVenue: lotData.organisateur?.nom || undefined,
       },
@@ -187,25 +194,6 @@ export class DetailScraperService {
     }
 
     return nom;
-  }
-
-  /**
-   * Extract address from nom field - split on 'situé' and take last part
-   */
-  private extractAddressFromNom(nom: string): string {
-    if (!nom) return '';
-
-    // Split on various forms of 'situé' and take the last part
-    const splitPatterns = ['située à', 'situé à', 'situé'];
-
-    for (const pattern of splitPatterns) {
-      const index = nom.toLowerCase().indexOf(pattern.toLowerCase());
-      if (index >= 0) {
-        return nom.substring(index + pattern.length).trim();
-      }
-    }
-
-    return '';
   }
 
   /**
@@ -234,73 +222,56 @@ export class DetailScraperService {
     return new Date().toISOString().split('T')[0];
   }
 
-  /**
-   * Extract image URLs from photos array
-   */
-  private extractImages(photos: unknown[]): string[] {
-    if (!Array.isArray(photos)) return [];
-
-    return photos
-      .map((photo: unknown) => {
-        if (typeof photo === 'string') return photo;
-        if (typeof photo === 'object' && photo !== null && 'src' in photo) {
-          return (photo as { src: string }).src;
-        }
-        return null;
-      })
-      .filter((url: string | null): url is string => url !== null)
-      .map((url: string) => {
-        // Convert relative URLs to absolute URLs
-        if (url.startsWith('/')) {
-          return `${this.baseUrl}${url}`;
-        }
-        return url;
-      });
-  }
-
-  async scrapeDetailsBatch(
-    browserService: BrowserService,
-    urls: string[],
-    batchSize: number = 10
-  ): Promise<AuctionOpportunity[]> {
-    const opportunities: AuctionOpportunity[] = [];
-    let processed = 0;
-    let failed = 0;
-
-    for (let i = 0; i < urls.length; i += batchSize) {
-      const batch = urls.slice(i, i + batchSize);
-
-      this.logger.log(
-        { current: i + 1, total: urls.length },
-        `Processing batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(urls.length / batchSize)}`
-      );
-
-      for (const url of batch) {
-        // Rate limiting: 2-3 seconds between requests
-        const delay = 2000 + Math.random() * 1000;
-        await new Promise((resolve) => setTimeout(resolve, delay));
-
-        const result = await this.scrapeDetails(browserService, url);
-
-        if (result.success && result.opportunity) {
-          opportunities.push(result.opportunity);
-          processed++;
-        } else {
-          failed++;
-        }
-      }
-
-      this.logger.log(
-        { processed, failed, remaining: urls.length - i - batch.length },
-        `Batch complete: ${processed} successful, ${failed} failed`
-      );
+  private extractAdress(
+    lotData: LotData,
+    allData: { [key: string]: LotData | AdressData },
+    url: string
+  ): {
+    text: string;
+    latitude?: number;
+    longitude?: number;
+    city: string;
+    departmentId: number;
+  } {
+    const ref = lotData.adresse_physique?._ref || lotData.adresse?._ref;
+    const adressData = ref ? allData[ref] : null;
+    if (adressData && adressData.__typename === 'Adresse') {
+      return {
+        text: adressData.text,
+        latitude: adressData.coords[0],
+        longitude: adressData.coords[1],
+        city: adressData.ville,
+        departmentId: DEPARTMENT_IDS_MAP[adressData.department_slug],
+      };
     }
 
-    this.logger.log(
-      { total: opportunities.length, processed, failed },
-      `Detail scraping complete: ${opportunities.length} opportunities extracted`
-    );
+    const nom = lotData.nom;
+    let text = nom;
+    for (const separator of [
+      'située à',
+      'situé à',
+      'située au',
+      'situé au',
+      'situé',
+    ]) {
+      const index = nom.toLowerCase().indexOf(separator.toLowerCase());
+      if (index > 0) {
+        text = nom.split(separator)[1];
+        if (text.includes(' à ')) {
+          text = text.replace(' à ', ' ');
+        }
+        break;
+      }
+    }
 
-    return opportunities;
+    let city = '';
+    let departmentId = 0;
+    const urlMatch = url.match(/\/([a-z-]+)-(\d{2})\//);
+    if (urlMatch) {
+      city = urlMatch[1].split('-').join(' ');
+      departmentId = Number(urlMatch[2]);
+    }
+
+    return { text, city, departmentId };
   }
 }

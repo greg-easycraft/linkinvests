@@ -1,18 +1,25 @@
 import { Injectable, Logger } from '@nestjs/common';
 
-import type { Coordinates, GeocodingResponse } from '../types/geocoding.types';
+import type { GeocodingResponse } from '../types/geocoding.types';
+import { AuctionOpportunity, RawAuctionOpportunity } from '../types';
+import { DEPARTMENT_NAMES_MAP } from '../constants/departments';
 
 @Injectable()
-export class GeocodingService {
-  private readonly logger = new Logger(GeocodingService.name);
-  private readonly baseUrl = 'https://api-adresse.data.gouv.fr/search';
+export class AuctionsGeocodingService {
+  private readonly logger = new Logger(AuctionsGeocodingService.name);
+  private readonly baseUrl = 'https://geocodeur.easycraft.cloud/search';
   private readonly maxRetries = 3;
   private readonly retryDelay = 1000; // 1 second
   private readonly minScore = 0.5; // Minimum confidence score
   private lastRequestTime = 0;
   private readonly minRequestInterval = 25; // 25ms between requests (40 req/sec - buffer for 50/sec limit)
 
-  async geocodeAddress(address: string): Promise<Coordinates | null> {
+  private async geocodeAddress(address: string): Promise<{
+    formattedAddress: string;
+    zipCode: number;
+    latitude: number;
+    longitude: number;
+  } | null> {
     if (!address || address.trim().length === 0) {
       this.logger.warn('Empty address provided for geocoding');
       return null;
@@ -20,94 +27,6 @@ export class GeocodingService {
 
     this.logger.debug({ address }, 'Geocoding address');
 
-    try {
-      const response = await this.fetchWithRateLimit(address);
-
-      if (!response.features || response.features.length === 0) {
-        this.logger.warn({ address }, 'No geocoding results found');
-        return null;
-      }
-
-      const feature = response.features[0];
-      if (!feature) {
-        this.logger.warn({ address }, 'No feature data in geocoding response');
-        return null;
-      }
-
-      const score = feature.properties.score;
-
-      // Check if confidence score is acceptable
-      if (score < this.minScore) {
-        this.logger.warn(
-          { address, score },
-          `Low geocoding confidence (${score})`
-        );
-        return null;
-      }
-
-      const [longitude, latitude] = feature.geometry.coordinates;
-
-      this.logger.debug(
-        { address, latitude, longitude, score },
-        'Successfully geocoded address'
-      );
-
-      return { latitude, longitude };
-    } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error ? error.message : String(error);
-      const errorStack = error instanceof Error ? error.stack : undefined;
-
-      this.logger.error(
-        { address, error: errorMessage, stack: errorStack },
-        'Failed to geocode address'
-      );
-      return null;
-    }
-  }
-
-  async geocodeBatch(addresses: string[]): Promise<Array<Coordinates | null>> {
-    const results: Array<Coordinates | null> = [];
-
-    this.logger.log(
-      { total: addresses.length },
-      `Geocoding batch of ${addresses.length} addresses`
-    );
-
-    for (let i = 0; i < addresses.length; i++) {
-      const address = addresses[i];
-      if (!address) {
-        results.push(null);
-        continue;
-      }
-
-      const coords = await this.geocodeAddress(address);
-      results.push(coords);
-
-      if ((i + 1) % 100 === 0) {
-        this.logger.log(
-          { processed: i + 1, total: addresses.length },
-          `Geocoded ${i + 1}/${addresses.length} addresses`
-        );
-      }
-    }
-
-    const successful = results.filter((r) => r !== null).length;
-    this.logger.log(
-      {
-        total: addresses.length,
-        successful,
-        failed: addresses.length - successful,
-      },
-      `Batch geocoding complete: ${successful}/${addresses.length} successful`
-    );
-
-    return results;
-  }
-
-  private async fetchWithRateLimit(
-    address: string
-  ): Promise<GeocodingResponse> {
     // Rate limiting: ensure minimum interval between requests
     const now = Date.now();
     const timeSinceLastRequest = now - this.lastRequestTime;
@@ -146,8 +65,45 @@ export class GeocodingService {
           throw new Error(`API returned status ${response.status}`);
         }
 
-        const body = await response.json();
-        return body as GeocodingResponse;
+        const body = (await response.json()) as GeocodingResponse;
+
+        if (!body.features || body.features.length === 0) {
+          this.logger.warn({ address }, 'No geocoding results found');
+          return null;
+        }
+
+        const feature = body.features[0];
+        if (!feature) {
+          this.logger.warn(
+            { address },
+            'No feature data in geocoding response'
+          );
+          return null;
+        }
+
+        const score = feature.properties.score;
+
+        // Check if confidence score is acceptable
+        if (score < this.minScore) {
+          this.logger.warn(
+            { address, score },
+            `Low geocoding confidence (${score})`
+          );
+          return null;
+        }
+
+        const [longitude, latitude] = feature.geometry.coordinates;
+        const formattedAddress = feature.properties.label || address;
+        const zipCode = feature.properties.postcode
+          ? parseInt(feature.properties.postcode, 10)
+          : 0;
+
+        this.logger.debug(
+          { address, formattedAddress, zipCode, latitude, longitude, score },
+          'Successfully geocoded address'
+        );
+
+        return { formattedAddress, zipCode, latitude, longitude };
       } catch (error: unknown) {
         lastError = error as Error;
         if (attempt < this.maxRetries) {
@@ -160,10 +116,73 @@ export class GeocodingService {
       }
     }
 
-    throw lastError || new Error('Failed to fetch data from API');
+    const errorMessage = lastError?.message || 'Failed to fetch data from API';
+    const errorStack = lastError?.stack;
+
+    this.logger.error(
+      { address, error: errorMessage, stack: errorStack },
+      'Failed to geocode address'
+    );
+    return null;
+  }
+
+  async geocodeBatch(
+    auctionOpportunities: RawAuctionOpportunity[]
+  ): Promise<Array<AuctionOpportunity>> {
+    const results: Array<AuctionOpportunity> = [];
+    const failures: Array<RawAuctionOpportunity> = [];
+
+    this.logger.log(
+      { total: auctionOpportunities.length },
+      `Geocoding batch of ${auctionOpportunities.length} auction opportunities`
+    );
+
+    for (let i = 0; i < auctionOpportunities.length; i++) {
+      const auctionOpportunity = auctionOpportunities[i];
+
+      const addressData = await this.geocodeAddress(
+        this.formatAddressForRequest(auctionOpportunity)
+      );
+      if (!addressData) {
+        this.logger.warn({ auctionOpportunity }, 'Failed to geocode address');
+        failures.push(auctionOpportunity);
+        continue;
+      }
+
+      const { formattedAddress, zipCode, latitude, longitude } = addressData;
+      results.push({
+        ...auctionOpportunity,
+        address: formattedAddress,
+        zipCode,
+        latitude,
+        longitude,
+      });
+
+      if ((i + 1) % 100 === 0) {
+        this.logger.log(
+          { processed: i + 1, total: auctionOpportunities.length },
+          `Geocoded ${i + 1}/${auctionOpportunities.length} auction opportunities`
+        );
+      }
+    }
+
+    this.logger.log(
+      {
+        total: auctionOpportunities.length,
+        geocoded: results.length,
+        failed: failures.length,
+      },
+      `Batch geocoding complete: ${results.length}/${auctionOpportunities.length} geocoded`
+    );
+
+    return results;
   }
 
   private sleep(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  private formatAddressForRequest(opportunity: RawAuctionOpportunity): string {
+    return `${opportunity.address}, ${DEPARTMENT_NAMES_MAP[opportunity.department]}`;
   }
 }
