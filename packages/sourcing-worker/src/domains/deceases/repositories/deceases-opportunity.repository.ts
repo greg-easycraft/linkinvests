@@ -1,7 +1,6 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { OpportunityType, type MairieContactData } from '@linkinvests/shared';
 import { domainSchema } from '@linkinvests/db';
-import { sql } from 'drizzle-orm';
 
 import { DATABASE_CONNECTION, type DomainDbType } from '~/database';
 
@@ -71,31 +70,13 @@ export class DeceasesOpportunityRepository {
         await this.db
           .insert(domainSchema.opportunities)
           .values(records)
-          .onConflictDoUpdate({
-            target: [
-              domainSchema.opportunities.externalId,
-              domainSchema.opportunities.type,
-            ],
-            set: {
-              label: sql`EXCLUDED.label`,
-              address: sql`EXCLUDED.address`,
-              zipCode: sql`EXCLUDED.zip_code`,
-              department: sql`EXCLUDED.department`,
-              latitude: sql`EXCLUDED.latitude`,
-              longitude: sql`EXCLUDED.longitude`,
-              status: sql`EXCLUDED.status`,
-              opportunityDate: sql`EXCLUDED.opportunity_date`,
-              contactData: sql`EXCLUDED.contact_data`,
-              extraData: sql`EXCLUDED.extra_data`,
-              updatedAt: sql`CURRENT_TIMESTAMP`,
-            },
-          });
+          .onConflictDoNothing();
 
         insertedCount += batch.length;
         this.logger.log(
           `Batch ${Math.floor(i / batchSize) + 1}: Inserted ${insertedCount}/${opportunities.length} opportunities`,
         );
-      } catch (error) {
+      } catch (error: unknown) {
         this.logger.error(
           { error, batchStart: i, batchSize: batch.length },
           'Failed to insert batch',
