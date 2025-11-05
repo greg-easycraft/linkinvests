@@ -11,6 +11,7 @@ import {
   InseeCsvRow,
   CsvProcessingStats,
   DeceasesOpportunity,
+  MairieInfo,
 } from './types/deceases.types';
 import { SOURCE_DECEASES_CSV_PROCESS_QUEUE } from '@linkinvests/shared';
 
@@ -18,6 +19,14 @@ import { SOURCE_DECEASES_CSV_PROCESS_QUEUE } from '@linkinvests/shared';
 @Processor(SOURCE_DECEASES_CSV_PROCESS_QUEUE)
 export class DeceasesCsvProcessor extends WorkerHost {
   private readonly logger = new Logger(DeceasesCsvProcessor.name);
+  private lastProcessedMairieId: string = '';
+  private lastProcessedMairieInfo: {
+    coordinates: {
+      latitude: number;
+      longitude: number;
+    };
+    mairieInfo: MairieInfo;
+  } | null = null;
 
   constructor(
     private readonly s3Service: S3Service,
@@ -77,7 +86,7 @@ export class DeceasesCsvProcessor extends WorkerHost {
 
       // Process records in batches
       const batchSize = 1000;
-      const opportunities: DeceasesOpportunity[] = [];
+      let opportunitiesInserted = 0;
 
       for (let i = 0; i < csvRows.length; i += batchSize) {
         const batch = csvRows.slice(i, i + batchSize);
@@ -91,14 +100,21 @@ export class DeceasesCsvProcessor extends WorkerHost {
         );
 
         const batchOpportunities = await this.processBatch(batch, stats);
-        opportunities.push(...batchOpportunities);
+        // Insert opportunities into database
+        if (batchOpportunities.length > 0) {
+          this.logger.log('Inserting opportunities into database', {
+            count: batchOpportunities.length,
+          });
+          opportunitiesInserted +=
+            await this.repository.insertOpportunities(batchOpportunities);
+        }
 
         // Update progress
         stats.recordsProcessed = i + batch.length;
 
         this.logger.log('Batch processing completed', {
           batchOpportunities: batchOpportunities.length,
-          totalOpportunities: opportunities.length,
+          totalOpportunities: opportunitiesInserted,
           stats: {
             geocodingAttempts: stats.geocodingAttempts,
             geocodingSuccesses: stats.geocodingSuccesses,
@@ -107,15 +123,6 @@ export class DeceasesCsvProcessor extends WorkerHost {
             errors: stats.errors,
           },
         });
-      }
-
-      // Insert opportunities into database
-      if (opportunities.length > 0) {
-        this.logger.log('Inserting opportunities into database', {
-          count: opportunities.length,
-        });
-        stats.opportunitiesInserted =
-          await this.repository.insertOpportunities(opportunities);
       }
 
       // Finalize processing
@@ -187,24 +194,16 @@ export class DeceasesCsvProcessor extends WorkerHost {
 
     // Fetch commune coordinates
     stats.geocodingAttempts++;
-    const coordinates = await this.inseeApiService.fetchCommuneCoordinates(
-      row.lieudeces,
-    );
-    if (!coordinates) {
+    stats.mairieInfoAttempts++;
+    const mairieInfoResult = await this.getMairieInfo(row.lieudeces);
+    if (!mairieInfoResult) {
       throw new Error(
-        `Failed to fetch coordinates for commune: ${row.lieudeces}`,
+        `Failed to fetch mairie info for commune: ${row.lieudeces}`,
       );
     }
+    const { coordinates, mairieInfo } = mairieInfoResult;
     stats.geocodingSuccesses++;
-
-    // Fetch mairie information
-    stats.mairieInfoAttempts++;
-    const mairieInfo = await this.inseeApiService.fetchMairieInfo(
-      row.lieudeces,
-    );
-    if (mairieInfo) {
-      stats.mairieInfoSuccesses++;
-    }
+    stats.mairieInfoSuccesses++;
 
     // Generate unique ID for the death record
     const inseeDeathId = this.generateDeathId(row);
@@ -242,6 +241,28 @@ export class DeceasesCsvProcessor extends WorkerHost {
     };
 
     return opportunity;
+  }
+
+  private async getMairieInfo(inseeCode: string): Promise<{
+    coordinates: {
+      latitude: number;
+      longitude: number;
+    };
+    mairieInfo: MairieInfo;
+  } | null> {
+    if (this.lastProcessedMairieId === inseeCode) {
+      return this.lastProcessedMairieInfo;
+    }
+
+    const coordinates =
+      await this.inseeApiService.fetchCommuneCoordinates(inseeCode);
+    const mairieInfo = await this.inseeApiService.fetchMairieInfo(inseeCode);
+    if (!coordinates || !mairieInfo) {
+      return null;
+    }
+    this.lastProcessedMairieId = inseeCode;
+    this.lastProcessedMairieInfo = { coordinates, mairieInfo };
+    return { coordinates, mairieInfo };
   }
 
   /**
