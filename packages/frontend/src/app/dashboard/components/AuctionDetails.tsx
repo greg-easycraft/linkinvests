@@ -12,9 +12,11 @@ import {
   Phone,
   Mail,
   UserCheck,
-  Banknote
+  Banknote,
+  ExternalLink
 } from "lucide-react";
 import { Badge } from "~/components/ui/badge";
+import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import type { Opportunity } from "~/server/domains/opportunities/lib.types";
 import { OpportunityType } from "@linkinvests/shared";
@@ -79,10 +81,23 @@ export function AuctionDetails({ opportunity }: AuctionDetailsProps) {
   return (
     <Card className="mt-6">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
+        <CardTitle className="flex items-center gap-2 mb-2">
           <Gavel className="h-5 w-5" />
           Détails de l&apos;enchère
         </CardTitle>
+        {extraData?.url && (
+          <div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => window.open(extraData.url, '_blank', 'noopener,noreferrer')}
+              title="Voir l'annonce originale"
+            >
+              <ExternalLink className="h-4 w-4 mr-2" />
+              Voir l&apos;annonce
+            </Button>
+          </div>
+        )}
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Price Information */}

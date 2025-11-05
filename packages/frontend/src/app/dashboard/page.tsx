@@ -155,7 +155,7 @@ export default function DashboardPage(): React.ReactElement {
 
             <div className="flex-1 overflow-hidden">
               {viewType === "list" && listQuery.data && (
-                <div className="h-full overflow-y-auto">
+                <div className="h-full overflow-y-auto rounded-md">
                   <OpportunityList
                     data={listQuery.data}
                     selectedId={selectedOpportunity?.id}

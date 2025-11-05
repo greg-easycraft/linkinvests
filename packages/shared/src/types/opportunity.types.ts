@@ -65,6 +65,7 @@ export interface AuctionExtraData {
   description?: string;
   squareFootage?: number;
   auctionVenue?: string;
+  url: string;
 }
 
 export interface AuctionOpportunity extends BaseOpportunity {

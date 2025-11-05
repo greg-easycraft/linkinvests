@@ -7,7 +7,7 @@ import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import type { Opportunity } from "~/server/domains/opportunities/lib.types";
 import type { OpportunityListResult } from "~/server/domains/opportunities/services/opportunity-service";
-import { ChevronLeft, ChevronRight, MapPin, Calendar, Building2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, MapPin, Calendar, Building2, ExternalLink } from "lucide-react";
 import { StreetView } from "./StreetView";
 import { OpportunityListSkeleton } from "./OpportunityListSkeleton";
 import { OpportunityListEmptyState } from "./OpportunityListEmptyState";
@@ -29,6 +29,15 @@ const TYPE_LABELS: Record<string, string> = {
   divorce: "Divorce",
 };
 
+// Helper function to get URL from opportunity extraData
+function getOpportunityUrl(opportunity: Opportunity): string | null {
+  if (opportunity.type === "auction" && opportunity.extraData) {
+    const extraData = opportunity.extraData as { url?: string };
+    return extraData.url || null;
+  }
+  return null;
+}
+
 export function OpportunityList({
   data,
   selectedId,
@@ -46,22 +55,25 @@ export function OpportunityList({
 
   return (
     <div className="space-y-4">
-      <div className="text-sm text-[var(--primary)]">
+      <div className="text-sm text-[var(--secundary)]">
         Affichage de {data.opportunities.length} sur {data.total} opportunités
       </div>
 
       {/* Cards Grid */}
       <div className="space-y-3">
-        {data.opportunities.map((opportunity) => (
-          <Card
-            key={opportunity.id}
-            onClick={() => onSelect(opportunity)}
-            className={`cursor-pointer transition-all hover:shadow-lg bg-[var(--secundary)] text-[var(--primary)] border-2 ${
-              selectedId === opportunity.id
-                ? "border-blue-500 shadow-lg"
-                : "border-transparent"
-            }`}
-          >
+        {data.opportunities.map((opportunity) => {
+          const opportunityUrl = getOpportunityUrl(opportunity);
+
+          return (
+            <Card
+              key={opportunity.id}
+              onClick={() => onSelect(opportunity)}
+              className={`cursor-pointer transition-all hover:shadow-lg bg-[var(--secundary)] text-[var(--primary)] border-2 ${
+                selectedId === opportunity.id
+                  ? "border-blue-500 shadow-lg"
+                  : "border-transparent"
+              }`}
+            >
             <div className="flex gap-4 p-4">
               {/* Street View Thumbnail */}
               <div className="flex-shrink-0">
@@ -85,6 +97,20 @@ export function OpportunityList({
                       <Badge variant="secondary">
                         {TYPE_LABELS[opportunity.type] ?? opportunity.type}
                       </Badge>
+                      {opportunityUrl && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-6 px-2 text-xs"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            window.open(opportunityUrl, '_blank', 'noopener,noreferrer');
+                          }}
+                          title="Voir l'annonce originale"
+                        >
+                          <ExternalLink className="h-3 w-3" />
+                        </Button>
+                      )}
                     </div>
                   </div>
 
@@ -136,7 +162,8 @@ export function OpportunityList({
               </div>
             </div>
           </Card>
-        ))}
+          );
+        })}
       </div>
 
       {/* Pagination */}

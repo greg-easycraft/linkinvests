@@ -2,7 +2,7 @@
 
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { X, MapPin, Calendar, Building2, Tag } from "lucide-react";
+import { X, MapPin, Calendar, Building2 } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
@@ -104,18 +104,6 @@ export function OpportunitySidebar({
             </div>
           </div>
 
-          {/* Coordinates */}
-          <div className="flex gap-3">
-            <Tag className="h-5 w-5 text-neutral-500 mt-0.5" />
-            <div className="flex-1">
-              <div className="text-sm font-medium mb-1 font-heading">Coordonnées</div>
-              <div className="text-xs text-neutral-600 font-mono">
-                Lat: {opportunity.latitude.toFixed(6)}
-                <br />
-                Lng: {opportunity.longitude.toFixed(6)}
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* Auction Details (only for auction opportunities) */}
