@@ -81,7 +81,14 @@ describe('AdemeApiService', () => {
     });
 
     it('should build URL with date range when beforeDate is provided', () => {
-      const url = service['buildApiUrl'](75, '2024-01-01', ['F', 'G'], 1, 1000, '2024-12-31');
+      const url = service['buildApiUrl'](
+        75,
+        '2024-01-01',
+        ['F', 'G'],
+        1,
+        1000,
+        '2024-12-31',
+      );
 
       expect(url).toContain('date_etablissement_dpe%3A%3E%3D2024-01-01');
       expect(url).toContain('date_etablissement_dpe%3A%3C%3D2024-12-31');
@@ -385,11 +392,14 @@ describe('AdemeApiService', () => {
     });
 
     it('should fetch records with date range when beforeDate is provided', async () => {
-      service['fetchDpePage'] = jest
-        .fn()
-        .mockResolvedValueOnce(mockDpeRecords);
+      service['fetchDpePage'] = jest.fn().mockResolvedValueOnce(mockDpeRecords);
 
-      const result = await service.fetchAllDpeRecords(75, '2024-01-01', ['F', 'G'], '2024-12-31');
+      const result = await service.fetchAllDpeRecords(
+        75,
+        '2024-01-01',
+        ['F', 'G'],
+        '2024-12-31',
+      );
 
       expect(result).toEqual(mockDpeRecords);
       expect(service['fetchDpePage']).toHaveBeenCalledWith(
@@ -398,7 +408,7 @@ describe('AdemeApiService', () => {
         ['F', 'G'],
         1,
         1000,
-        '2024-12-31'
+        '2024-12-31',
       );
     });
 

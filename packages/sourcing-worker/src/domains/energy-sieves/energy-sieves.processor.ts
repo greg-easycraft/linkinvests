@@ -22,10 +22,17 @@ export class EnergySievesProcessor extends WorkerHost {
   }
 
   async process(job: Job<EnergySieveJobData>): Promise<void> {
-    const { departmentId, sinceDate, beforeDate, energyClasses = ['F', 'G'] } = job.data;
+    const {
+      departmentId,
+      sinceDate,
+      beforeDate,
+      energyClasses = ['F', 'G'],
+    } = job.data;
     const startTime = Date.now();
 
-    const dateRangeText = beforeDate ? `from ${sinceDate} to ${beforeDate}` : `since ${sinceDate}`;
+    const dateRangeText = beforeDate
+      ? `from ${sinceDate} to ${beforeDate}`
+      : `since ${sinceDate}`;
     this.logger.log(
       `Starting to process energy sieves for department ${departmentId} ${dateRangeText} with classes ${energyClasses.join(', ')}`,
     );

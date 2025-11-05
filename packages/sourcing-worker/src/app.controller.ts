@@ -7,7 +7,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bullmq';
-import { SOURCE_DECEASES_QUEUE } from '@linkinvests/shared';
+import { SOURCE_DECEASES_CSV_INGEST_QUEUE } from '@linkinvests/shared';
 import type { Queue } from 'bullmq';
 import { DATABASE_CONNECTION, type DomainDbType } from './database';
 
@@ -18,7 +18,7 @@ export class AppController {
   constructor(
     @Inject(DATABASE_CONNECTION)
     private readonly db: DomainDbType,
-    @InjectQueue(SOURCE_DECEASES_QUEUE)
+    @InjectQueue(SOURCE_DECEASES_CSV_INGEST_QUEUE)
     private readonly scrapingQueue: Queue,
   ) {}
 

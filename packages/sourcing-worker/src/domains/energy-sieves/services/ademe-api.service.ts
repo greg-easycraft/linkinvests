@@ -32,7 +32,9 @@ export class AdemeApiService {
     const pageSize = 1000;
     let hasMorePages = true;
 
-    const dateRangeText = beforeDate ? `from ${sinceDate} to ${beforeDate}` : `since ${sinceDate}`;
+    const dateRangeText = beforeDate
+      ? `from ${sinceDate} to ${beforeDate}`
+      : `since ${sinceDate}`;
     this.logger.log(
       `Starting to fetch DPE records for department ${department} ${dateRangeText} with energy classes ${energyClasses.join(', ')}`,
     );

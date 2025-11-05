@@ -26,7 +26,14 @@ describe('S3Service', () => {
     };
 
     s3Mock.reset();
-    service = new S3Service();
+    const mockConfig = {
+      S3_REGION: 'us-east-1',
+      S3_BUCKET: 'test-bucket',
+      S3_ACCESS_KEY_ID: 'test-key',
+      S3_SECRET_ACCESS_KEY: 'test-secret',
+      S3_ENDPOINT_URL: undefined,
+    };
+    service = new S3Service(mockConfig as any);
 
     // Suppress logger output during tests
     jest.spyOn(service['logger'], 'log').mockImplementation();
@@ -40,23 +47,37 @@ describe('S3Service', () => {
 
   describe('constructor', () => {
     it('should throw error if S3_REGION is not set', () => {
-      delete process.env.S3_REGION;
+      const configWithoutRegion = {
+        S3_BUCKET: 'test-bucket',
+        S3_ACCESS_KEY_ID: 'test-key',
+        S3_SECRET_ACCESS_KEY: 'test-secret',
+      };
 
-      expect(() => new S3Service()).toThrow(
+      expect(() => new S3Service(configWithoutRegion as any)).toThrow(
         'S3_REGION environment variable is not set',
       );
     });
 
     it('should throw error if S3_BUCKET is not set', () => {
-      delete process.env.S3_BUCKET;
+      const configWithoutBucket = {
+        S3_REGION: 'us-east-1',
+        S3_ACCESS_KEY_ID: 'test-key',
+        S3_SECRET_ACCESS_KEY: 'test-secret',
+      };
 
-      expect(() => new S3Service()).toThrow(
+      expect(() => new S3Service(configWithoutBucket as any)).toThrow(
         'S3_BUCKET environment variable is not set',
       );
     });
 
     it('should initialize with correct configuration', () => {
-      const service = new S3Service();
+      const mockConfig = {
+        S3_REGION: 'us-east-1',
+        S3_BUCKET: 'test-bucket',
+        S3_ACCESS_KEY_ID: 'test-key',
+        S3_SECRET_ACCESS_KEY: 'test-secret',
+      };
+      const service = new S3Service(mockConfig as any);
 
       expect(service).toBeDefined();
       expect(service['bucket']).toBe('test-bucket');
