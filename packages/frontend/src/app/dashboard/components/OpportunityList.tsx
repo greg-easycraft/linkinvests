@@ -9,6 +9,8 @@ import type { Opportunity } from "~/server/domains/opportunities/lib.types";
 import type { OpportunityListResult } from "~/server/domains/opportunities/services/opportunity-service";
 import { ChevronLeft, ChevronRight, MapPin, Calendar, Building2 } from "lucide-react";
 import { StreetView } from "./StreetView";
+import { OpportunityListSkeleton } from "./OpportunityListSkeleton";
+import { OpportunityListEmptyState } from "./OpportunityListEmptyState";
 
 interface OpportunityListProps {
   data: OpportunityListResult;
@@ -35,19 +37,11 @@ export function OpportunityList({
   isLoading = false,
 }: OpportunityListProps): React.ReactElement {
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-96">
-        <div className="text-neutral-500">Chargement...</div>
-      </div>
-    );
+    return <OpportunityListSkeleton />;
   }
 
   if (data.opportunities.length === 0) {
-    return (
-      <div className="flex items-center justify-center h-96">
-        <div className="text-neutral-500">Aucune opportunité trouvée</div>
-      </div>
-    );
+    return <OpportunityListEmptyState />;
   }
 
   return (
@@ -91,7 +85,6 @@ export function OpportunityList({
                       <Badge variant="secondary">
                         {TYPE_LABELS[opportunity.type] ?? opportunity.type}
                       </Badge>
-                      <Badge variant="outline">{opportunity.status}</Badge>
                     </div>
                   </div>
 
@@ -148,11 +141,8 @@ export function OpportunityList({
 
       {/* Pagination */}
       {data.totalPages > 1 && (
-        <div className="flex items-center justify-between pt-2">
-          <div className="text-sm text-[var(--primary)] opacity-70">
-            Page {data.page} sur {data.totalPages}
-          </div>
-          <div className="flex gap-2">
+        <div className="flex items-center justify-center pt-2">
+          <div className="flex items-center gap-2">
             <Button
               variant="outline"
               size="sm"
@@ -162,6 +152,9 @@ export function OpportunityList({
               <ChevronLeft className="h-4 w-4" />
               Précédent
             </Button>
+            <div className="text-sm text-[var(--secundary)] opacity-70 px-4">
+              Page {data.page} sur {data.totalPages}
+            </div>
             <Button
               variant="outline"
               size="sm"

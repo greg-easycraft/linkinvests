@@ -13,6 +13,8 @@ export class DrizzleOpportunityRepository implements IOpportunityRepository {
     let query = this.db
       .select()
       .from(opportunitiesTable)
+      .limit(filters?.limit ?? 100)
+      .offset(filters?.offset ?? 0)
       .$dynamic();
 
     if (conditions.length > 0) {
@@ -30,14 +32,6 @@ export class DrizzleOpportunityRepository implements IOpportunityRepository {
     } else {
       // Default sorting by creation date
       query = query.orderBy(sql`${opportunitiesTable.createdAt} DESC`);
-    }
-
-    // Apply pagination
-    if (filters?.limit) {
-      query = query.limit(filters.limit);
-    }
-    if (filters?.offset) {
-      query = query.offset(filters.offset);
     }
 
     return await query;

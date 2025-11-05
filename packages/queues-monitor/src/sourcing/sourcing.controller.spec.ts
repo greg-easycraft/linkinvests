@@ -505,7 +505,9 @@ describe('SourcingController', () => {
 
   describe('Logging', () => {
     it('should log successful job enqueuing', async () => {
-      mockFailingCompaniesQueue.add.mockResolvedValue({ id: 'test-job' } as any);
+      mockFailingCompaniesQueue.add.mockResolvedValue({
+        id: 'test-job',
+      } as any);
 
       await controller.enqueueFailingCompanies(75, '2024-01-01');
 

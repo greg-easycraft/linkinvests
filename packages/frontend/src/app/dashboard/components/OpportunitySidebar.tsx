@@ -8,6 +8,7 @@ import { Badge } from "~/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import type { Opportunity } from "~/server/domains/opportunities/lib.types";
 import { StreetView } from "./StreetView";
+import { AuctionDetails } from "./AuctionDetails";
 
 interface OpportunitySidebarProps {
   opportunity: Opportunity | null;
@@ -56,12 +57,11 @@ export function OpportunitySidebar({
         </Button>
       </CardHeader>
       <CardContent className="space-y-6">
-        {/* Type and Status */}
+        {/* Type */}
         <div className="flex gap-2">
           <Badge variant="secondary">
             {TYPE_LABELS[opportunity.type] ?? opportunity.type}
           </Badge>
-          <Badge variant="outline">{opportunity.status}</Badge>
         </div>
 
         {/* Details Grid */}
@@ -117,6 +117,9 @@ export function OpportunitySidebar({
             </div>
           </div>
         </div>
+
+        {/* Auction Details (only for auction opportunities) */}
+        <AuctionDetails opportunity={opportunity} />
 
         {/* Timestamps */}
         <div className="pt-4 border-t border-neutral-200">

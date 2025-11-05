@@ -209,19 +209,21 @@ describe('ScrapingController', () => {
 
       it('should reject invalid sinceDate formats', async () => {
         const invalidFormats = [
-          '24-01-01',    // Wrong year format
-          '2024-1-01',   // Wrong month format
-          '2024-01-1',   // Wrong day format
-          '2024/01/01',  // Wrong separator
-          '01-01-2024',  // Wrong order
-          'not-a-date',  // Not a date
+          '24-01-01', // Wrong year format
+          '2024-1-01', // Wrong month format
+          '2024-01-1', // Wrong day format
+          '2024/01/01', // Wrong separator
+          '01-01-2024', // Wrong order
+          'not-a-date', // Not a date
         ];
 
         // These should fail format validation
         for (const date of invalidFormats) {
           const result = await controller.enqueueAuctionJob(75, date);
           expect(result.success).toBe(false);
-          expect(result.error).toBe('sinceDate must be in ISO format YYYY-MM-DD');
+          expect(result.error).toBe(
+            'sinceDate must be in ISO format YYYY-MM-DD',
+          );
         }
 
         expect(mockScrapingQueue.add).not.toHaveBeenCalled();
@@ -273,7 +275,9 @@ describe('ScrapingController', () => {
         mockScrapingQueue.add.mockRejectedValue(undefined);
 
         // This should throw an error because the controller tries to access .message on undefined
-        await expect(controller.enqueueAuctionJob(75, '2024-01-01')).rejects.toThrow();
+        await expect(
+          controller.enqueueAuctionJob(75, '2024-01-01'),
+        ).rejects.toThrow();
       });
     });
 
@@ -363,7 +367,10 @@ describe('ScrapingController', () => {
 
       expect(result).toHaveProperty('success', true);
       expect(result).toHaveProperty('jobId', 'test-job');
-      expect(result).toHaveProperty('message', 'Auction scraping job enqueued successfully');
+      expect(result).toHaveProperty(
+        'message',
+        'Auction scraping job enqueued successfully',
+      );
       expect(result).toHaveProperty('data');
       expect(result.data).toEqual({
         jobName: 'auctions',

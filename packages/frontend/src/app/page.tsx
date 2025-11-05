@@ -20,11 +20,13 @@ export default function Home() {
             Plateforme d&apos;investissement immobilier
           </p>
         </div>
+        <div className="flex justify-center">
           <Button variant="outline" asChild>
             <Link href="/dashboard">
               Accéder à la plateforme
             </Link>
           </Button>
+        </div>
         {/* <SignInForm /> */}
       </div>
     </div>
