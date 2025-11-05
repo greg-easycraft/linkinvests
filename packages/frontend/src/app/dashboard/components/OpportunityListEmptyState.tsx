@@ -49,7 +49,7 @@ export function OpportunityListEmptyState(): React.ReactElement {
               </li>
               <li className="flex items-start gap-2">
                 <div className="w-1 h-1 rounded-full bg-[var(--primary)] opacity-80 mt-2 flex-shrink-0"></div>
-                <span>Vérifiez les types d'opportunités sélectionnés</span>
+                <span>Vérifiez les types d&apos;opportunités sélectionnés</span>
               </li>
             </ul>
           </div>
