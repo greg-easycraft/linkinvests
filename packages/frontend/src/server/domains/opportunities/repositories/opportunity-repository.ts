@@ -75,11 +75,6 @@ export class DrizzleOpportunityRepository implements IOpportunityRepository {
       conditions.push(inArray(opportunitiesTable.type, filters.types));
     }
 
-    // Filter by status
-    if (filters.status) {
-      conditions.push(eq(opportunitiesTable.status, filters.status));
-    }
-
     // Filter by department
     if (filters.department) {
       conditions.push(eq(opportunitiesTable.department, filters.department));

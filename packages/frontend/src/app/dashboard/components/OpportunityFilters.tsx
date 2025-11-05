@@ -93,22 +93,6 @@ export function OpportunityFilters({
           />
         </div>
 
-        {/* Status Filter */}
-        <div>
-          <label className="text-sm font-medium mb-2 block font-heading">Statut</label>
-          <Input
-            type="text"
-            placeholder="Saisir le statut"
-            value={filters.status ?? ""}
-            onChange={(e) =>
-              onFiltersChange({
-                ...filters,
-                status: e.target.value || undefined,
-              })
-            }
-          />
-        </div>
-
         {/* Date Range Filters */}
         <div className="space-y-3">
           <div>

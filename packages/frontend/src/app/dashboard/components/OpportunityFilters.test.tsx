@@ -43,7 +43,6 @@ describe('OpportunityFilters', () => {
       expect(screen.getByText('Type')).toBeInTheDocument();
       expect(screen.getByText('Département')).toBeInTheDocument();
       expect(screen.getByText('Code postal')).toBeInTheDocument();
-      expect(screen.getByText('Statut')).toBeInTheDocument();
       expect(screen.getByText('Date après le')).toBeInTheDocument();
       expect(screen.getByText('Date avant le')).toBeInTheDocument();
     });
@@ -260,43 +259,6 @@ describe('OpportunityFilters', () => {
     });
   });
 
-  describe('Status Filter', () => {
-    it('should call onFiltersChange when status input changes', async () => {
-      const user = userEvent.setup({ delay: null });
-      render(
-        <OpportunityFilters
-          filters={emptyFilters}
-          onFiltersChange={mockOnFiltersChange}
-          onApply={mockOnApply}
-          onReset={mockOnReset}
-        />
-      );
-
-      const input = screen.getByPlaceholderText('Saisir le statut');
-      await user.type(input, 'a');
-
-      await waitFor(() => {
-        expect(mockOnFiltersChange).toHaveBeenCalled();
-      }, { timeout: 3000 });
-    });
-
-    it('should display current status value', () => {
-      const filters: IOpportunityFilters = { status: 'active' };
-
-      render(
-        <OpportunityFilters
-          filters={filters}
-          onFiltersChange={mockOnFiltersChange}
-          onApply={mockOnApply}
-          onReset={mockOnReset}
-        />
-      );
-
-      const input = screen.getByPlaceholderText('Saisir le statut') as HTMLInputElement;
-      expect(input.value).toBe('active');
-    });
-  });
-
   describe('Date Range Filter', () => {
     it('should display date inputs', () => {
       const { container } = render(
@@ -377,7 +339,6 @@ describe('OpportunityFilters', () => {
         types: [OpportunityType.SUCCESSION, OpportunityType.LIQUIDATION],
         department: 75,
         zipCode: 75001,
-        status: 'active',
         dateRange: {
           from: new Date('2024-01-01'),
           to: new Date('2024-12-31'),
@@ -396,7 +357,6 @@ describe('OpportunityFilters', () => {
       // Check that all values are displayed correctly
       expect(screen.getByPlaceholderText('Numéro de département')).toHaveValue(75);
       expect(screen.getByPlaceholderText('Code postal')).toHaveValue(75001);
-      expect(screen.getByPlaceholderText('Saisir le statut')).toHaveValue('active');
     });
 
     it('should preserve existing filters when adding new ones', async () => {
@@ -415,8 +375,8 @@ describe('OpportunityFilters', () => {
         />
       );
 
-      const statusInput = screen.getByPlaceholderText('Saisir le statut');
-      await user.type(statusInput, 'a');
+      const zipCodeInput = screen.getByPlaceholderText('Code postal');
+      await user.type(zipCodeInput, '1');
 
       await waitFor(() => {
         expect(mockOnFiltersChange).toHaveBeenCalled();

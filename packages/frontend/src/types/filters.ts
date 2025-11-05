@@ -14,7 +14,6 @@ export interface DateRange {
 
 export interface OpportunityFilters {
   types?: OpportunityType[];
-  status?: string;
   department?: number;
   zipCode?: number;
   dateRange?: DateRange;
