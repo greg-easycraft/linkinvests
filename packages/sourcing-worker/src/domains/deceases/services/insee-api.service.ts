@@ -3,6 +3,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import type {
   ApiLannuaireResponse,
   MairieContactInfo,
+  RawMairieAddress,
   RawMairieData,
 } from '../types/deceases.types';
 
@@ -106,16 +107,21 @@ export class InseeApiService {
   }
 
   private formatResponse(data: RawMairieData): MairieData {
-    if (!data.adresse || data.adresse.length === 0) {
+    console.log('data', data);
+    if (!data.adresse) {
       throw new Error('No address found');
     }
-    if (data.adresse.length === 1) {
-      const address = data.adresse[0];
+    const adresse = JSON.parse(data.adresse) as RawMairieAddress[];
+    const phoneData = data.telephone
+      ? (JSON.parse(data.telephone) as { value: string })
+      : null;
+    if (adresse.length === 1) {
+      const address = adresse[0];
       return {
         zipCode: address.code_postal,
         contactInfo: {
           name: data.nom,
-          phone: data.telephone,
+          phone: phoneData?.value,
           email: data.email,
           address: {
             complement1: address.complement1,
@@ -134,7 +140,7 @@ export class InseeApiService {
       };
     }
 
-    const addressWithCoordinates = data.adresse.find(
+    const addressWithCoordinates = adresse.find(
       (address) => address.type_adresse === 'Adresse',
     );
     if (!addressWithCoordinates) {
@@ -142,7 +148,7 @@ export class InseeApiService {
     }
 
     const { latitude, longitude } = addressWithCoordinates;
-    const postalAddress = data.adresse.find(
+    const postalAddress = adresse.find(
       (address) => address.type_adresse === 'Adresse postale',
     );
     return {

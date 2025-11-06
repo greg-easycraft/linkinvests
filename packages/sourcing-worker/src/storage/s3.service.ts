@@ -76,20 +76,12 @@ export class S3Service {
    * @param s3Path - S3 path in format: s3://bucket/key
    * @returns File content as Buffer
    */
-  async downloadFile(s3Path: string): Promise<Buffer> {
+  async downloadFile(key: string): Promise<Buffer> {
     try {
-      this.logger.log(`Downloading file from S3: ${s3Path}`);
-
-      // Parse S3 path (format: s3://bucket/key)
-      const match = s3Path.match(/^s3:\/\/([^/]+)\/(.+)$/);
-      if (!match) {
-        throw new Error(`Invalid S3 path format: ${s3Path}`);
-      }
-
-      const [, bucket, key] = match;
+      this.logger.log(`Downloading file from S3: ${key}`);
 
       const command = new GetObjectCommand({
-        Bucket: bucket,
+        Bucket: this.bucket,
         Key: key,
       });
 
@@ -107,7 +99,7 @@ export class S3Service {
       const buffer = Buffer.concat(chunks);
 
       this.logger.log(
-        `File downloaded successfully: ${buffer.length} bytes from ${s3Path}`,
+        `File downloaded successfully: ${buffer.length} bytes from ${key}`,
       );
 
       return buffer;
@@ -116,7 +108,7 @@ export class S3Service {
       this.logger.error(`Failed to download file from S3`, {
         error: err,
         stack: err.stack,
-        s3Path,
+        key,
       });
       throw error;
     }
@@ -126,32 +118,24 @@ export class S3Service {
    * Delete a file from S3
    * @param s3Path - S3 path in format: s3://bucket/key
    */
-  async deleteFile(s3Path: string): Promise<void> {
+  async deleteFile(key: string): Promise<void> {
     try {
-      this.logger.log(`Deleting file from S3: ${s3Path}`);
-
-      // Parse S3 path (format: s3://bucket/key)
-      const match = s3Path.match(/^s3:\/\/([^/]+)\/(.+)$/);
-      if (!match) {
-        throw new Error(`Invalid S3 path format: ${s3Path}`);
-      }
-
-      const [, bucket, key] = match;
+      this.logger.log(`Deleting file from S3: ${key}`);
 
       const command = new DeleteObjectCommand({
-        Bucket: bucket,
+        Bucket: this.bucket,
         Key: key,
       });
 
       await this.s3Client.send(command);
 
-      this.logger.log(`File deleted successfully: ${s3Path}`);
+      this.logger.log(`File deleted successfully: ${key}`);
     } catch (error) {
       const err = error as Error;
       this.logger.error(`Failed to delete file from S3`, {
         error: err,
         stack: err.stack,
-        s3Path,
+        key,
       });
       throw error;
     }
@@ -159,8 +143,8 @@ export class S3Service {
 
   /**
    * Move a file from one S3 path to another
-   * @param sourcePath - Source S3 path in format: s3://bucket/key
-   * @param destinationPath - Destination S3 path in format: s3://bucket/key
+   * @param sourceKey - Source S3 key
+   * @param destinationKey - Destination S3 key
    */
   async moveFile(sourceKey: string, destinationKey: string): Promise<void> {
     try {

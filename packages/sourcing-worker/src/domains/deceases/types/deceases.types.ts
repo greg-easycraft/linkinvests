@@ -82,25 +82,27 @@ export interface MairieAddress {
   nom_commune: string;
 }
 
+export interface RawMairieAddress {
+  type_adresse: 'Adresse' | 'Adresse postale';
+  complement1: string;
+  complement2: string;
+  numero_voie: string;
+  service_distribution: string;
+  code_postal: string;
+  nom_commune: string;
+  pays: string;
+  continent: string;
+  longitude: string;
+  latitude: string;
+}
+
 export interface RawMairieData {
   nom: string;
   telephone?: string;
   email?: string;
   adresse_courriel?: string;
   telephone_accueil?: string;
-  adresse: {
-    type_adresse: 'Adresse' | 'Adresse postale';
-    complement1: string;
-    complement2: string;
-    numero_voie: string;
-    service_distribution: string;
-    code_postal: string;
-    nom_commune: string;
-    pays: string;
-    continent: string;
-    longitude: string;
-    latitude: string;
-  }[];
+  adresse: string;
 }
 
 export interface ApiLannuaireResponse {
