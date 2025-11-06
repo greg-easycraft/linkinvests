@@ -4,7 +4,7 @@ import { getQueueToken } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import {
   SOURCE_COMPANY_BUILDINGS_QUEUE,
-  SOURCE_DECEASES_QUEUE,
+  INGEST_DECEASES_CSV_QUEUE,
   SOURCE_ENERGY_SIEVES_QUEUE,
   SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE,
 } from '@linkinvests/shared';
@@ -44,7 +44,7 @@ describe('SourcingController', () => {
           useValue: mockCompanyBuildingsQueue,
         },
         {
-          provide: getQueueToken(SOURCE_DECEASES_QUEUE),
+          provide: getQueueToken(INGEST_DECEASES_CSV_QUEUE),
           useValue: mockDeceasesQueue,
         },
         {

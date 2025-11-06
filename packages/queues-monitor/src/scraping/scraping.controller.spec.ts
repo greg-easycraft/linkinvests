@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { HttpStatus } from '@nestjs/common';
 import { getQueueToken } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
-import { SCRAPING_QUEUE } from '@linkinvests/shared';
+import { AUCTIONS_SCRAPING_QUEUE } from '@linkinvests/shared';
 
 import { ScrapingController } from './scraping.controller';
 import type { ScrapingJobData } from '../types/scraping-job.types';
@@ -21,7 +21,7 @@ describe('ScrapingController', () => {
       controllers: [ScrapingController],
       providers: [
         {
-          provide: getQueueToken(SCRAPING_QUEUE),
+          provide: getQueueToken(AUCTIONS_SCRAPING_QUEUE),
           useValue: mockScrapingQueue,
         },
       ],

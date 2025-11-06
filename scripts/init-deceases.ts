@@ -4,6 +4,8 @@ import { z } from 'zod';
 // Load environment variables
 config();
 
+const ENDPOINT = '/sourcing/jobs/deceases';
+
 // Environment variables validation schema
 const envSchema = z.object({
     QUEUES_MONITOR_URL: z.url('Invalid URL'),
@@ -13,17 +15,17 @@ const envSchema = z.object({
 });
 
 const FILE_PATHES = [
-    'deceases/Deces_2025_M01.csv',
-    'deceases/Deces_2025_M02.csv',
-    'deceases/Deces_2025_M03.csv',
-    'deceases/Deces_2025_M04.csv',
-    'deceases/Deces_2025_M05.csv',
-    'deceases/Deces_2025_M06.csv',
-    'deceases/Deces_2025_M07.csv',
-    'deceases/Deces_2025_M08.csv',
-    'deceases/Deces_2025_M09.csv',
-    'deceases/Deces_2025_M10.csv',
-    //'deceases/Deces_2024.csv',
+    'Deces_2025_M01.csv',
+    'Deces_2025_M02.csv',
+    'Deces_2025_M03.csv',
+    'Deces_2025_M04.csv',
+    'Deces_2025_M05.csv',
+    'Deces_2025_M06.csv',
+    'Deces_2025_M07.csv',
+    'Deces_2025_M08.csv',
+    'Deces_2025_M09.csv',
+    'Deces_2025_M10.csv',
+    //'Deces_2024.csv',
 ];
 
 (async () => {
@@ -60,8 +62,6 @@ const FILE_PATHES = [
         } else {
             errorCount++;
         }
-
-        console.log(`✅ Completed file ${filePath}\n`);
     }
 
     // Summary
@@ -104,10 +104,10 @@ function buildCreateDeceasesCsvProcessJob(endpointUrl: string, headers: Record<s
 
 function getEnv(): z.infer<typeof envSchema> {
     const envResult = envSchema.safeParse({
-        QUEUES_MONITOR_HOST: process.env.QUEUES_MONITOR_HOST,
-        QUEUES_MONITOR_PORT: process.env.QUEUES_MONITOR_PORT,
+        QUEUES_MONITOR_URL: process.env.QUEUES_MONITOR_URL,
         QUEUES_MONITOR_USERNAME: process.env.QUEUES_MONITOR_USERNAME || process.env.BASIC_AUTH_USERNAME,
         QUEUES_MONITOR_PASSWORD: process.env.QUEUES_MONITOR_PASSWORD || process.env.BASIC_AUTH_PASSWORD,
+        ENDPOINT,
     });
 
     if (envResult.success) return envResult.data;

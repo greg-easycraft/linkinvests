@@ -10,7 +10,7 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import {
   SOURCE_COMPANY_BUILDINGS_QUEUE,
-  SOURCE_DECEASES_QUEUE,
+  INGEST_DECEASES_CSV_QUEUE,
   SOURCE_ENERGY_SIEVES_QUEUE,
   SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE,
 } from '@linkinvests/shared';
@@ -22,7 +22,7 @@ export class SourcingController {
   constructor(
     @InjectQueue(SOURCE_COMPANY_BUILDINGS_QUEUE)
     private readonly companyBuildingsQueue: Queue,
-    @InjectQueue(SOURCE_DECEASES_QUEUE)
+    @InjectQueue(INGEST_DECEASES_CSV_QUEUE)
     private readonly deceasesQueue: Queue,
     @InjectQueue(SOURCE_ENERGY_SIEVES_QUEUE)
     private readonly energySievesQueue: Queue,
@@ -136,25 +136,21 @@ export class SourcingController {
     }
   }
 
-  @Post('jobs/deceases')
+  @Post('jobs/ingest-deceases-csv')
   @HttpCode(HttpStatus.ACCEPTED)
-  async enqueueDeceases(
-    @Body('sinceDate') sinceDate: string,
-    @Body('untilDate') untilDate?: string,
-  ) {
+  async enqueueIngestDeceasesCsv(@Body('fileName') fileName: string) {
     try {
-      if (!sinceDate) {
+      if (!fileName) {
         return {
           success: false,
-          error: 'sinceDate is required (format: YYYY-MM-DD)',
+          error: 'fileName is required',
         };
       }
 
       const { id: jobId } = await this.deceasesQueue.add(
-        'import-deceases',
+        'ingest-deceases-csv',
         {
-          sinceDate,
-          untilDate,
+          fileName,
         },
         {
           removeOnComplete: 100,
@@ -164,9 +160,8 @@ export class SourcingController {
 
       this.logger.log({
         jobId,
-        sinceDate,
-        untilDate,
-        message: 'Deceases job enqueued',
+        fileName,
+        message: 'Deceases CSV ingestion job enqueued',
       });
 
       return {
@@ -178,7 +173,7 @@ export class SourcingController {
       const err = error as Error;
       this.logger.error({
         error: err.message,
-        message: 'Failed to enqueue deceases job',
+        message: 'Failed to enqueue deceases CSV ingestion job',
       });
 
       return {

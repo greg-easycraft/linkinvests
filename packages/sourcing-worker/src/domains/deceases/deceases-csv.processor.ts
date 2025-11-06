@@ -12,10 +12,10 @@ import {
   CsvProcessingStats,
   DeceasesOpportunity,
 } from './types/deceases.types';
-import { SOURCE_DECEASES_CSV_PROCESS_QUEUE } from '@linkinvests/shared';
+import { INGEST_DECEASES_CSV_QUEUE } from '@linkinvests/shared';
 
 @Injectable()
-@Processor(SOURCE_DECEASES_CSV_PROCESS_QUEUE, { concurrency: 1 })
+@Processor(INGEST_DECEASES_CSV_QUEUE, { concurrency: 1 })
 export class DeceasesCsvProcessor extends WorkerHost {
   private readonly logger = new Logger(DeceasesCsvProcessor.name);
   private lastProcessedMairieId: string = '';

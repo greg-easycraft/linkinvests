@@ -5,9 +5,9 @@ import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import { ExpressAdapter } from '@bull-board/express';
 import basicAuth from 'express-basic-auth';
 import {
-  SCRAPING_QUEUE,
+  AUCTIONS_SCRAPING_QUEUE,
   SOURCE_COMPANY_BUILDINGS_QUEUE,
-  SOURCE_DECEASES_QUEUE,
+  INGEST_DECEASES_CSV_QUEUE,
   SOURCE_ENERGY_SIEVES_QUEUE,
   SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE,
 } from '@linkinvests/shared';
@@ -41,11 +41,11 @@ const connection = {
     // Register all queues for monitoring (read-only, no processors)
     BullModule.registerQueue(
       {
-        name: SCRAPING_QUEUE,
+        name: AUCTIONS_SCRAPING_QUEUE,
         connection,
       },
       {
-        name: SOURCE_DECEASES_QUEUE,
+        name: INGEST_DECEASES_CSV_QUEUE,
         connection,
       },
       {
@@ -65,11 +65,11 @@ const connection = {
     // Register all queues with BullBoard for dashboard visibility
     BullBoardModule.forFeature(
       {
-        name: SCRAPING_QUEUE,
+        name: AUCTIONS_SCRAPING_QUEUE,
         adapter: BullMQAdapter,
       },
       {
-        name: SOURCE_DECEASES_QUEUE,
+        name: INGEST_DECEASES_CSV_QUEUE,
         adapter: BullMQAdapter,
       },
       {
