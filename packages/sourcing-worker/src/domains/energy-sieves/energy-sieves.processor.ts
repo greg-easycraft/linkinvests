@@ -10,7 +10,7 @@ import type {
   EnergySieveOpportunity,
 } from './types/energy-sieves.types';
 
-@Processor(SOURCE_ENERGY_SIEVES_QUEUE)
+@Processor(SOURCE_ENERGY_SIEVES_QUEUE, { concurrency: 1 })
 export class EnergySievesProcessor extends WorkerHost {
   private readonly logger = new Logger(EnergySievesProcessor.name);
 
