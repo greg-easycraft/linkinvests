@@ -15,14 +15,22 @@
     "format": "pnpm --filter './packages/*' format",
     "test": "pnpm --filter './packages/*' test",
     "typecheck": "pnpm --filter './packages/*' typecheck",
-    "dev": "pnpm --filter './packages/*' dev"
+    "dev": "pnpm --filter './packages/*' dev",
+    "init-energy-diags": "tsx scripts/init-energy-diags.ts"
   },
-  "keywords": ["real-estate", "investment", "monorepo"],
+  "keywords": [
+    "real-estate",
+    "investment",
+    "monorepo"
+  ],
   "author": "",
   "devDependencies": {
     "@types/node": "^22.10.2",
-    "typescript": "^5.7.2",
+    "dotenv": "^17.2.3",
     "eslint": "^9.17.0",
-    "prettier": "^3.4.2"
+    "prettier": "^3.4.2",
+    "tsx": "^4.20.6",
+    "typescript": "^5.7.2",
+    "zod": "^4.1.12"
   }
 }

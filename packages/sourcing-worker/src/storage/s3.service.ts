@@ -4,6 +4,7 @@ import {
   PutObjectCommand,
   GetObjectCommand,
   DeleteObjectCommand,
+  CopyObjectCommand,
 } from '@aws-sdk/client-s3';
 import { CONFIG_TOKEN, type ConfigType } from '~/config';
 
@@ -17,14 +18,6 @@ export class S3Service {
     const region = config.S3_REGION;
     const bucket = config.S3_BUCKET;
     const endpoint = config.S3_ENDPOINT_URL;
-
-    if (!region) {
-      throw new Error('S3_REGION environment variable is not set');
-    }
-
-    if (!bucket) {
-      throw new Error('S3_BUCKET environment variable is not set');
-    }
 
     this.bucket = bucket;
 
@@ -160,6 +153,52 @@ export class S3Service {
         stack: err.stack,
         s3Path,
       });
+      throw error;
+    }
+  }
+
+  /**
+   * Move a file from one S3 path to another
+   * @param sourcePath - Source S3 path in format: s3://bucket/key
+   * @param destinationPath - Destination S3 path in format: s3://bucket/key
+   */
+  async moveFile(sourceKey: string, destinationKey: string): Promise<void> {
+    try {
+      this.logger.log(`Moving file from ${sourceKey} to ${destinationKey}`);
+
+      // Step 1: Copy the object to the new location
+      const copyCommand = new CopyObjectCommand({
+        Bucket: this.bucket,
+        Key: destinationKey,
+        CopySource: `${this.bucket}/${sourceKey}`,
+      });
+
+      await this.s3Client.send(copyCommand);
+      this.logger.log(`File copied successfully to: ${destinationKey}`);
+
+      // Step 2: Delete the original object
+      const deleteCommand = new DeleteObjectCommand({
+        Bucket: this.bucket,
+        Key: sourceKey,
+      });
+
+      await this.s3Client.send(deleteCommand);
+      this.logger.log(`Original file deleted successfully: ${sourceKey}`);
+
+      this.logger.log(
+        `File moved successfully from ${sourceKey} to ${destinationKey}`,
+      );
+    } catch (error) {
+      const err = error as Error;
+      this.logger.error(
+        `Failed to move file from ${sourceKey} to ${destinationKey}`,
+        {
+          error: err,
+          stack: err.stack,
+          sourceKey,
+          destinationKey,
+        },
+      );
       throw error;
     }
   }
