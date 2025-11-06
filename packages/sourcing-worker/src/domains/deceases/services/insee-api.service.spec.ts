@@ -1,10 +1,8 @@
+/* eslint-disable @typescript-eslint/require-await */
 import { Test, TestingModule } from '@nestjs/testing';
 
-import type {
-  ApiLannuaireResponse,
-  RawMairieData,
-} from '../types/deceases.types';
-import { InseeApiService, MairieData } from './insee-api.service';
+import type { ApiLannuaireResponse } from '../types/deceases.types';
+import { InseeApiService } from './insee-api.service';
 
 describe('InseeApiService', () => {
   let service: InseeApiService;
@@ -35,72 +33,72 @@ describe('InseeApiService', () => {
     jest.useRealTimers();
   });
 
+  const mockMairieResponseSingleAddress: ApiLannuaireResponse = {
+    total_count: 1,
+    results: [
+      {
+        nom: 'Mairie de Paris',
+        telephone: '01 42 76 40 40',
+        email: 'contact@paris.fr',
+        adresse: [
+          {
+            type_adresse: 'Adresse',
+            complement1: 'Hôtel de Ville',
+            complement2: 'Place',
+            numero_voie: '4',
+            service_distribution: "Place de l'Hôtel de Ville",
+            code_postal: '75004',
+            nom_commune: 'Paris',
+            pays: 'France',
+            continent: 'Europe',
+            latitude: '48.8566',
+            longitude: '2.3522',
+          },
+        ],
+      },
+    ],
+  };
+
+  const mockMairieResponseMultipleAddresses: ApiLannuaireResponse = {
+    total_count: 1,
+    results: [
+      {
+        nom: 'Mairie de Test',
+        telephone: '01 23 45 67 89',
+        email: 'test@mairie.fr',
+        adresse: [
+          {
+            type_adresse: 'Adresse',
+            complement1: 'Bâtiment Principal',
+            complement2: '',
+            numero_voie: '10',
+            service_distribution: 'Rue de la Mairie',
+            code_postal: '12345',
+            nom_commune: 'TestVille',
+            pays: 'France',
+            continent: 'Europe',
+            latitude: '45.1234',
+            longitude: '2.5678',
+          },
+          {
+            type_adresse: 'Adresse postale',
+            complement1: 'BP 123',
+            complement2: '',
+            numero_voie: 'CS 456',
+            service_distribution: 'Cedex',
+            code_postal: '12346',
+            nom_commune: 'TestVille Cedex',
+            pays: 'France',
+            continent: 'Europe',
+            latitude: '',
+            longitude: '',
+          },
+        ],
+      },
+    ],
+  };
+
   describe('fetchMairieData', () => {
-    const mockMairieResponseSingleAddress: ApiLannuaireResponse = {
-      total_count: 1,
-      results: [
-        {
-          nom: 'Mairie de Paris',
-          telephone: '01 42 76 40 40',
-          email: 'contact@paris.fr',
-          adresse: [
-            {
-              type_adresse: 'Adresse',
-              complement1: 'Hôtel de Ville',
-              complement2: 'Place',
-              numero_voie: '4',
-              service_distribution: 'Place de l\'Hôtel de Ville',
-              code_postal: '75004',
-              nom_commune: 'Paris',
-              pays: 'France',
-              continent: 'Europe',
-              latitude: '48.8566',
-              longitude: '2.3522',
-            },
-          ],
-        },
-      ],
-    };
-
-    const mockMairieResponseMultipleAddresses: ApiLannuaireResponse = {
-      total_count: 1,
-      results: [
-        {
-          nom: 'Mairie de Test',
-          telephone: '01 23 45 67 89',
-          email: 'test@mairie.fr',
-          adresse: [
-            {
-              type_adresse: 'Adresse',
-              complement1: 'Bâtiment Principal',
-              complement2: '',
-              numero_voie: '10',
-              service_distribution: 'Rue de la Mairie',
-              code_postal: '12345',
-              nom_commune: 'TestVille',
-              pays: 'France',
-              continent: 'Europe',
-              latitude: '45.1234',
-              longitude: '2.5678',
-            },
-            {
-              type_adresse: 'Adresse postale',
-              complement1: 'BP 123',
-              complement2: '',
-              numero_voie: 'CS 456',
-              service_distribution: 'Cedex',
-              code_postal: '12346',
-              nom_commune: 'TestVille Cedex',
-              pays: 'France',
-              continent: 'Europe',
-              latitude: '',
-              longitude: '',
-            },
-          ],
-        },
-      ],
-    };
-
     it('should return formatted mairie data with single address', async () => {
       mockFetch.mockResolvedValueOnce({
         status: 200,
@@ -119,7 +117,7 @@ describe('InseeApiService', () => {
             complement1: 'Hôtel de Ville',
             complement2: 'Place',
             numero_voie: '4',
-            service_distribution: 'Place de l\'Hôtel de Ville',
+            service_distribution: "Place de l'Hôtel de Ville",
             code_postal: '75004',
             nom_commune: 'Paris',
           },
@@ -143,6 +141,7 @@ describe('InseeApiService', () => {
     it('should handle multiple addresses correctly', async () => {
       mockFetch.mockResolvedValueOnce({
         status: 200,
+
         json: async () => mockMairieResponseMultipleAddresses,
       });
 
@@ -414,6 +413,7 @@ describe('InseeApiService', () => {
                 longitude: '',
               },
               {
+                // @ts-expect-error - Test error
                 type_adresse: 'Autre adresse', // Another non-coordinate address type
                 complement1: 'Building B',
                 complement2: '',
@@ -435,7 +435,7 @@ describe('InseeApiService', () => {
         Promise.resolve({
           status: 200,
           json: () => Promise.resolve(responseWithoutCoordinatesAddress),
-        } as Response)
+        } as Response),
       );
 
       const result = await service.fetchMairieData('12345');
