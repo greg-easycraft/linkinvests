@@ -107,7 +107,6 @@ export class InseeApiService {
   }
 
   private formatResponse(data: RawMairieData): MairieData {
-    console.log('data', data);
     if (!data.adresse) {
       throw new Error('No address found');
     }

@@ -104,7 +104,6 @@ export class CsvParserService {
       const personnesData = JSON.parse(
         row.listepersonnes,
       ) as ListePersonnesData[];
-      console.log(personnesData);
       // listepersonnes can be an array or a single object
       const personnes = Array.isArray(personnesData)
         ? personnesData
@@ -116,7 +115,6 @@ export class CsvParserService {
           const numeroIdentification: string =
             personne.numeroImmatriculation.numeroIdentification;
           const siren = numeroIdentification.replace(/\s/g, ''); // Remove any spaces
-          console.log(siren);
           // Validate SIREN format (9 digits)
           if (/^\d{9}$/.test(siren)) {
             return siren;
