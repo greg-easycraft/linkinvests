@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
-import { SOURCE_DECEASES_CSV_INGEST_QUEUE } from '@linkinvests/shared';
+import { INGEST_DECEASES_CSV_QUEUE } from '@linkinvests/shared';
 
 import type { DeceasesIngestJobData } from '../types/deceases.types';
 
@@ -11,7 +11,7 @@ export class DeceasesCron {
   private readonly logger = new Logger(DeceasesCron.name);
 
   constructor(
-    @InjectQueue(SOURCE_DECEASES_CSV_INGEST_QUEUE)
+    @InjectQueue(INGEST_DECEASES_CSV_QUEUE)
     private readonly ingestQueue: Queue<DeceasesIngestJobData>,
   ) {}
 

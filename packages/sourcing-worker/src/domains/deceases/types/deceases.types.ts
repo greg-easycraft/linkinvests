@@ -11,8 +11,7 @@ export interface DeceasesIngestJobData {
 }
 
 export interface DeceasesCsvProcessJobData {
-  s3Path: string; // Path to the CSV file in S3
-  fileName: string; // Original filename for tracking
+  fileName: string;
 }
 
 export interface InseeDeathRecord {
@@ -43,8 +42,6 @@ export interface CsvProcessingStats {
   totalRecords: number;
   recordsProcessed: number;
   recordsFiltered: number; // Filtered by age
-  geocodingAttempts: number;
-  geocodingSuccesses: number;
   mairieInfoAttempts: number;
   mairieInfoSuccesses: number;
   opportunitiesInserted: number;
@@ -76,24 +73,47 @@ export interface ApiLannuaireMairieRecord {
   telephone_accueil?: string;
 }
 
-export interface ApiLannuaireResponse {
-  total_count: number;
-  results: Array<{
-    nom?: string;
-    telephone?: string;
-    email?: string;
-    adresse_courriel?: string;
-    telephone_accueil?: string;
-  }>;
+export interface MairieAddress {
+  complement1: string;
+  complement2: string;
+  numero_voie: string;
+  service_distribution: string;
+  code_postal: string;
+  nom_commune: string;
 }
 
-// Contact data for mairie information
-export interface MairieInfo {
-  name?: string;
+export interface RawMairieData {
+  nom: string;
   telephone?: string;
   email?: string;
   adresse_courriel?: string;
   telephone_accueil?: string;
+  adresse: {
+    type_adresse: 'Adresse' | 'Adresse postale';
+    complement1: string;
+    complement2: string;
+    numero_voie: string;
+    service_distribution: string;
+    code_postal: string;
+    nom_commune: string;
+    pays: string;
+    continent: string;
+    longitude: string;
+    latitude: string;
+  }[];
+}
+
+export interface ApiLannuaireResponse {
+  total_count: number;
+  results: RawMairieData[];
+}
+
+// Contact data for mairie information
+export interface MairieContactInfo {
+  name?: string;
+  phone?: string;
+  email?: string;
+  address: MairieAddress;
 }
 
 export interface DeceasesOpportunity {
@@ -106,5 +126,9 @@ export interface DeceasesOpportunity {
   latitude: number;
   longitude: number;
   opportunityDate: string; // Format: YYYY-MM-DD
-  mairieInfo?: MairieInfo; // For contactData
+  mairieInfo?: MairieContactInfo; // For contactData
+  extraData: {
+    firstName: string;
+    lastName: string;
+  };
 }

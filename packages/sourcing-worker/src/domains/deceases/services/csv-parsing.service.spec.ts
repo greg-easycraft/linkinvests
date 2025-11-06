@@ -97,7 +97,9 @@ describe('CsvParsingService', () => {
         '"unclosed quote field and other malformed content";\n"another";"malformed';
       const buffer = Buffer.from(invalidCsv, 'utf-8');
 
-      await expect(service.parseCsv(buffer, 50)).rejects.toThrow('CSV streaming parsing failed');
+      await expect(service.parseCsv(buffer, 50)).rejects.toThrow(
+        'CSV streaming parsing failed',
+      );
     });
   });
 

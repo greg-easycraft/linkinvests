@@ -4,29 +4,22 @@ import { Processor, WorkerHost } from '@nestjs/bullmq';
 
 import { S3Service } from '~/storage/s3.service';
 import { CsvParsingService } from './services/csv-parsing.service';
-import { InseeApiService } from './services/insee-api.service';
+import { InseeApiService, MairieData } from './services/insee-api.service';
 import { DeceasesOpportunityRepository } from './repositories/deceases-opportunity.repository';
 import {
   DeceasesCsvProcessJobData,
   InseeCsvRow,
   CsvProcessingStats,
   DeceasesOpportunity,
-  MairieInfo,
 } from './types/deceases.types';
 import { SOURCE_DECEASES_CSV_PROCESS_QUEUE } from '@linkinvests/shared';
 
 @Injectable()
-@Processor(SOURCE_DECEASES_CSV_PROCESS_QUEUE)
+@Processor(SOURCE_DECEASES_CSV_PROCESS_QUEUE, { concurrency: 1 })
 export class DeceasesCsvProcessor extends WorkerHost {
   private readonly logger = new Logger(DeceasesCsvProcessor.name);
   private lastProcessedMairieId: string = '';
-  private lastProcessedMairieInfo: {
-    coordinates: {
-      latitude: number;
-      longitude: number;
-    };
-    mairieInfo: MairieInfo;
-  } | null = null;
+  private lastProcessedMairieData: MairieData | null = null;
 
   constructor(
     private readonly s3Service: S3Service,
@@ -38,7 +31,8 @@ export class DeceasesCsvProcessor extends WorkerHost {
   }
 
   async process(job: Job<DeceasesCsvProcessJobData>): Promise<void> {
-    const { s3Path, fileName } = job.data;
+    const { fileName } = job.data;
+    const s3Path = `deceases/${fileName}`;
 
     this.logger.log('Starting CSV processing job', {
       jobId: job.id,
@@ -50,8 +44,6 @@ export class DeceasesCsvProcessor extends WorkerHost {
       totalRecords: 0,
       recordsProcessed: 0,
       recordsFiltered: 0,
-      geocodingAttempts: 0,
-      geocodingSuccesses: 0,
       mairieInfoAttempts: 0,
       mairieInfoSuccesses: 0,
       opportunitiesInserted: 0,
@@ -80,7 +72,7 @@ export class DeceasesCsvProcessor extends WorkerHost {
 
       if (csvRows.length === 0) {
         this.logger.warn('No valid records to process');
-        await this.finalizeCsv(s3Path, fileName, stats);
+        await this.finalizeCsv(fileName, stats);
         return;
       }
 
@@ -116,8 +108,6 @@ export class DeceasesCsvProcessor extends WorkerHost {
           batchOpportunities: batchOpportunities.length,
           totalOpportunities: opportunitiesInserted,
           stats: {
-            geocodingAttempts: stats.geocodingAttempts,
-            geocodingSuccesses: stats.geocodingSuccesses,
             mairieInfoAttempts: stats.mairieInfoAttempts,
             mairieInfoSuccesses: stats.mairieInfoSuccesses,
             errors: stats.errors,
@@ -126,7 +116,7 @@ export class DeceasesCsvProcessor extends WorkerHost {
       }
 
       // Finalize processing
-      await this.finalizeCsv(s3Path, fileName, stats);
+      await this.finalizeCsv(fileName, stats);
 
       this.logger.log('CSV processing completed successfully', {
         fileName,
@@ -192,77 +182,55 @@ export class DeceasesCsvProcessor extends WorkerHost {
       );
     }
 
+    // If death occured outside France
+    if (row.lieudeces.startsWith('99') || row.lieudeces.startsWith('97')) {
+      return null;
+    }
+
     // Fetch commune coordinates
-    stats.geocodingAttempts++;
     stats.mairieInfoAttempts++;
-    const mairieInfoResult = await this.getMairieInfo(row.lieudeces);
-    if (!mairieInfoResult) {
+    const mairieDataResult = await this.getMairieInfo(row.lieudeces);
+    if (!mairieDataResult) {
       throw new Error(
         `Failed to fetch mairie info for commune: ${row.lieudeces}`,
       );
     }
-    const { coordinates, mairieInfo } = mairieInfoResult;
-    stats.geocodingSuccesses++;
+    const { coordinates, contactInfo, zipCode, address } = mairieDataResult;
     stats.mairieInfoSuccesses++;
-
-    // Generate unique ID for the death record
-    const inseeDeathId = this.generateDeathId(row);
-
-    // Extract department from INSEE code
-    const department = this.extractDepartment(row.lieudeces);
-    if (!department) {
-      throw new Error(`Invalid INSEE code: ${row.lieudeces}`);
-    }
-
-    // Extract zip code (use first 5 digits of INSEE code, or extract from commune name)
-    const zipCode = this.extractZipCode(row.lieudeces);
-
-    // Format opportunity date
-    const opportunityDate = this.formatDate(row.datedeces);
-
-    // Clean person name
-    const personName = this.cleanPersonName(row.nomprenom);
-
-    // Use commune name or mairie name as address
-    const address =
-      row.commnaiss || mairieInfo?.name || `Commune ${row.lieudeces}`;
+    const { firstName, lastName } = this.cleanPersonName(row.nomprenom);
 
     const opportunity: DeceasesOpportunity = {
-      inseeDeathId,
-      label: personName,
+      inseeDeathId: this.generateDeathId(row),
+      label: `Succession ${firstName.split(' ')[0]} ${lastName.toUpperCase()}`,
       siret: null,
       address,
       zipCode,
-      department,
+      department: row.lieudeces.substring(0, 2),
       latitude: coordinates.latitude,
       longitude: coordinates.longitude,
-      opportunityDate,
-      mairieInfo: mairieInfo || undefined,
+      opportunityDate: this.formatDate(row.datedeces),
+      mairieInfo: contactInfo,
+      extraData: {
+        firstName,
+        lastName,
+      },
     };
 
     return opportunity;
   }
 
-  private async getMairieInfo(inseeCode: string): Promise<{
-    coordinates: {
-      latitude: number;
-      longitude: number;
-    };
-    mairieInfo: MairieInfo;
-  } | null> {
+  private async getMairieInfo(inseeCode: string): Promise<MairieData | null> {
     if (this.lastProcessedMairieId === inseeCode) {
-      return this.lastProcessedMairieInfo;
+      return this.lastProcessedMairieData;
     }
 
-    const coordinates =
-      await this.inseeApiService.fetchCommuneCoordinates(inseeCode);
-    const mairieInfo = await this.inseeApiService.fetchMairieInfo(inseeCode);
-    if (!coordinates || !mairieInfo) {
+    const mairieData = await this.inseeApiService.fetchMairieData(inseeCode);
+    if (!mairieData) {
       return null;
     }
     this.lastProcessedMairieId = inseeCode;
-    this.lastProcessedMairieInfo = { coordinates, mairieInfo };
-    return { coordinates, mairieInfo };
+    this.lastProcessedMairieData = mairieData;
+    return mairieData;
   }
 
   /**
@@ -271,58 +239,6 @@ export class DeceasesCsvProcessor extends WorkerHost {
   private generateDeathId(row: InseeCsvRow): string {
     // Combine lieu de décès, date de décès, and acte de décès for unique ID
     return `${row.lieudeces}_${row.datedeces}_${row.actedeces}`;
-  }
-
-  /**
-   * Extract department from INSEE code
-   */
-  private extractDepartment(inseeCode: string): string | null {
-    if (!inseeCode || inseeCode.length < 2) {
-      return null;
-    }
-
-    // For most departments, first 2 digits
-    let dept = inseeCode.substring(0, 2);
-
-    // Handle special cases for overseas territories
-    if (inseeCode.startsWith('971'))
-      dept = '971'; // Guadeloupe
-    else if (inseeCode.startsWith('972'))
-      dept = '972'; // Martinique
-    else if (inseeCode.startsWith('973'))
-      dept = '973'; // Guyane
-    else if (inseeCode.startsWith('974'))
-      dept = '974'; // La Réunion
-    else if (inseeCode.startsWith('976'))
-      dept = '976'; // Mayotte
-    else if (inseeCode.startsWith('2A'))
-      dept = '2A'; // Corse-du-Sud
-    else if (inseeCode.startsWith('2B')) dept = '2B'; // Haute-Corse
-
-    return dept;
-  }
-
-  /**
-   * Extract zip code from INSEE code or commune name
-   */
-  private extractZipCode(inseeCode: string): string {
-    // For simplicity, use the INSEE code as base
-    // This could be enhanced with a proper INSEE -> postal code mapping
-    if (inseeCode.length >= 5) {
-      return inseeCode.substring(0, 5);
-    }
-
-    // For overseas territories, use full INSEE code
-    if (
-      inseeCode.startsWith('97') ||
-      inseeCode.startsWith('2A') ||
-      inseeCode.startsWith('2B')
-    ) {
-      return inseeCode;
-    }
-
-    // Fallback: pad with zeros
-    return inseeCode.padEnd(5, '0');
   }
 
   /**
@@ -343,37 +259,46 @@ export class DeceasesCsvProcessor extends WorkerHost {
   /**
    * Clean person name from INSEE format
    */
-  private cleanPersonName(nomprenom: string): string {
+  private cleanPersonName(nomprenom: string): {
+    firstName: string;
+    lastName: string;
+  } {
     // INSEE format: "LASTNAME*FIRSTNAME/"
-    let cleaned = nomprenom.replace(/\*/g, ' ').replace(/\/$/, '');
+    // INSEE format: "LASTNAME*FIRSTNAME/"
+    const cleaned = nomprenom.replace(/\/$/, '');
+    const [lastNameRaw, firstNameRaw] = cleaned.split('*');
 
-    // Capitalize first letter of each word
-    cleaned = cleaned.toLowerCase().replace(/\b\w/g, (l) => l.toUpperCase());
+    // Capitalize first and last names properly
+    const formatName = (str: string) =>
+      str
+        .toLowerCase()
+        .replace(/\b\w/g, (l) => l.toUpperCase())
+        .trim();
 
-    return cleaned.trim();
+    return {
+      lastName: formatName(lastNameRaw ?? ''),
+      firstName: formatName(firstNameRaw ?? ''),
+    };
   }
 
   /**
    * Finalize CSV processing
    */
   private async finalizeCsv(
-    originalS3Path: string,
     fileName: string,
     stats: CsvProcessingStats,
   ): Promise<void> {
     try {
       // Archive processed file
-      const archivePath = originalS3Path.replace('/raw/', '/processed/');
+      const originalS3Path = `deceases/${fileName}`;
+      const archivePath = `deceases/processed/${fileName}`;
       this.logger.log('Archiving processed file', {
         from: originalS3Path,
         to: archivePath,
       });
 
       // Since S3 doesn't have a direct move operation, we'll copy and delete
-      const fileBuffer = await this.s3Service.downloadFile(originalS3Path);
-      const archiveKey = archivePath.replace(/^s3:\/\/[^/]+\//, '');
-      await this.s3Service.uploadFile(fileBuffer, archiveKey);
-      await this.s3Service.deleteFile(originalS3Path);
+      await this.s3Service.moveFile(originalS3Path, archivePath);
 
       // Upload failed records if any
       if (stats.failedRows.length > 0) {
@@ -402,7 +327,6 @@ export class DeceasesCsvProcessor extends WorkerHost {
     } catch (error) {
       this.logger.error('Failed to finalize CSV processing', {
         fileName,
-        originalS3Path,
         error: error instanceof Error ? error.message : String(error),
       });
       // Don't throw here - the main processing succeeded

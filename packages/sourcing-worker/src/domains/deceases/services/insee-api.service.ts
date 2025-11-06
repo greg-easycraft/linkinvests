@@ -1,25 +1,24 @@
 import { Injectable, Logger } from '@nestjs/common';
 
 import type {
-  ApiGouvCommuneResponse,
   ApiLannuaireResponse,
+  MairieContactInfo,
+  RawMairieData,
 } from '../types/deceases.types';
 
-export interface CommuneCoordinates {
-  longitude: number;
-  latitude: number;
-}
-
-export interface MairieInfo {
-  name: string;
-  telephone: string;
-  email: string;
+export interface MairieData {
+  contactInfo: MairieContactInfo;
+  coordinates: {
+    latitude: number;
+    longitude: number;
+  };
+  address: string;
+  zipCode: string;
 }
 
 @Injectable()
 export class InseeApiService {
   private readonly logger = new Logger(InseeApiService.name);
-  private readonly geoApiBaseUrl = 'https://geo.api.gouv.fr';
   private readonly lannuaireApiBaseUrl =
     'https://api-lannuaire.service-public.fr/api/explore/v2.1/catalog/datasets/api-lannuaire-administration';
 
@@ -29,31 +28,7 @@ export class InseeApiService {
   private readonly maxRetries = 3;
   private readonly retryDelay = 2000; // 2 seconds
 
-  async fetchCommuneCoordinates(
-    codeLieu: string,
-  ): Promise<CommuneCoordinates | null> {
-    const url = `${this.geoApiBaseUrl}/communes/${codeLieu}?fields=centre`;
-
-    try {
-      const response = await this.fetchWithRetry<ApiGouvCommuneResponse>(url);
-
-      if (!response.centre) {
-        this.logger.warn({ codeLieu }, 'No coordinates found for commune');
-        return null;
-      }
-
-      const [longitude, latitude] = response.centre.coordinates;
-      return { longitude, latitude };
-    } catch (error) {
-      this.logger.error(
-        { error, codeLieu },
-        'Failed to fetch commune coordinates',
-      );
-      return null;
-    }
-  }
-
-  async fetchMairieInfo(codeLieu: string): Promise<MairieInfo | null> {
+  async fetchMairieData(codeLieu: string): Promise<MairieData | null> {
     const url = `${this.lannuaireApiBaseUrl}/records?where=code_insee_commune='${codeLieu}' AND pivot LIKE 'mairie%'&limit=1`;
 
     try {
@@ -68,12 +43,8 @@ export class InseeApiService {
       if (!mairie) {
         return null;
       }
-      return {
-        name: mairie.nom || 'Mairie',
-        telephone: mairie.telephone || mairie.telephone_accueil || '',
-        email: mairie.email || mairie.adresse_courriel || '',
-      };
-    } catch (error) {
+      return this.formatResponse(mairie);
+    } catch (error: unknown) {
       this.logger.error({ error, codeLieu }, 'Failed to fetch mairie info');
       return null;
     }
@@ -119,7 +90,7 @@ export class InseeApiService {
 
         const data = (await response.json()) as T;
         return data;
-      } catch (error) {
+      } catch (error: unknown) {
         lastError = error as Error;
         if (attempt < this.maxRetries) {
           this.logger.warn(
@@ -132,6 +103,76 @@ export class InseeApiService {
     }
 
     throw lastError || new Error('Failed to fetch data');
+  }
+
+  private formatResponse(data: RawMairieData): MairieData {
+    if (!data.adresse || data.adresse.length === 0) {
+      throw new Error('No address found');
+    }
+    if (data.adresse.length === 1) {
+      const address = data.adresse[0];
+      return {
+        zipCode: address.code_postal,
+        contactInfo: {
+          name: data.nom,
+          phone: data.telephone,
+          email: data.email,
+          address: {
+            complement1: address.complement1,
+            complement2: address.complement2,
+            numero_voie: address.numero_voie,
+            service_distribution: address.service_distribution,
+            code_postal: address.code_postal,
+            nom_commune: address.nom_commune,
+          },
+        },
+        address: `${address.numero_voie} ${address.code_postal} ${address.nom_commune}`,
+        coordinates: {
+          latitude: parseFloat(address.latitude),
+          longitude: parseFloat(address.longitude),
+        },
+      };
+    }
+
+    const addressWithCoordinates = data.adresse.find(
+      (address) => address.type_adresse === 'Adresse',
+    );
+    if (!addressWithCoordinates) {
+      throw new Error('No address with coordinates found');
+    }
+
+    const { latitude, longitude } = addressWithCoordinates;
+    const postalAddress = data.adresse.find(
+      (address) => address.type_adresse === 'Adresse postale',
+    );
+    return {
+      contactInfo: {
+        name: data.nom,
+        phone: data.telephone,
+        email: data.email,
+        address: {
+          complement1:
+            postalAddress?.complement1 ?? addressWithCoordinates.complement1,
+          complement2:
+            postalAddress?.complement2 ?? addressWithCoordinates.complement2,
+          numero_voie:
+            postalAddress?.numero_voie ?? addressWithCoordinates.numero_voie,
+          service_distribution:
+            postalAddress?.service_distribution ??
+            addressWithCoordinates.service_distribution,
+          code_postal:
+            postalAddress?.code_postal ?? addressWithCoordinates.code_postal,
+          nom_commune:
+            postalAddress?.nom_commune ?? addressWithCoordinates.nom_commune,
+        },
+      },
+      address: `${addressWithCoordinates.numero_voie} ${addressWithCoordinates.service_distribution} ${addressWithCoordinates.code_postal} ${addressWithCoordinates.nom_commune}`,
+      zipCode: addressWithCoordinates.code_postal ?? postalAddress?.code_postal,
+      coordinates: {
+        latitude: parseFloat(latitude),
+        longitude: parseFloat(longitude),
+      },
+    };
   }
 
   private sleep(ms: number): Promise<void> {
