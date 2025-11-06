@@ -5,12 +5,17 @@ import { Input } from "~/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { OpportunityType } from "@linkinvests/shared";
 import type { OpportunityFilters as IOpportunityFilters } from "~/types/filters";
+import { ViewToggle } from "./ViewToggle";
+
+type ViewType = "list" | "map";
 
 interface OpportunityFiltersProps {
   filters: IOpportunityFilters;
   onFiltersChange: (filters: IOpportunityFilters) => void;
   onApply: () => void;
   onReset: () => void;
+  viewType: ViewType;
+  onViewTypeChange: (viewType: ViewType) => void;
 }
 
 const TYPE_LABELS: Record<OpportunityType, string> = {
@@ -27,6 +32,8 @@ export function OpportunityFilters({
   onFiltersChange,
   onApply,
   onReset,
+  viewType,
+  onViewTypeChange,
 }: OpportunityFiltersProps): React.ReactElement {
   const handleTypeToggle = (type: OpportunityType): void => {
     const currentTypes = filters.types ?? [];
@@ -40,9 +47,13 @@ export function OpportunityFilters({
   return (
     <Card className="bg-[var(--secundary)] text-[var(--primary)]">
       <CardHeader>
-        <CardTitle className="text-lg">Filtres</CardTitle>
+        {/* View Toggle */}
+        <div>
+          <ViewToggle value={viewType} onValueChange={onViewTypeChange} />
+        </div>
       </CardHeader>
       <CardContent className="space-y-4">
+        <CardTitle className="text-lg">Filtres</CardTitle>
         {/* Type Filter */}
         <div>
           <label className="text-sm font-medium mb-2 block font-heading">Type</label>
@@ -110,9 +121,9 @@ export function OpportunityFilters({
                   ...filters,
                   dateRange: newFrom
                     ? {
-                        from: newFrom,
-                        to: filters.dateRange?.to ?? new Date(),
-                      }
+                      from: newFrom,
+                      to: filters.dateRange?.to ?? new Date(),
+                    }
                     : undefined,
                 });
               }}
@@ -134,9 +145,9 @@ export function OpportunityFilters({
                   dateRange:
                     newTo || filters.dateRange?.from
                       ? {
-                          from: filters.dateRange?.from ?? new Date("2000-01-01"),
-                          to: newTo ?? new Date(),
-                        }
+                        from: filters.dateRange?.from ?? new Date("2000-01-01"),
+                        to: newTo ?? new Date(),
+                      }
                       : undefined,
                 });
               }}

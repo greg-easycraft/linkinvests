@@ -16,7 +16,7 @@ export function ViewToggle({
 }: ViewToggleProps): React.ReactElement {
   return (
     <Tabs value={value} onValueChange={(v) => onValueChange(v as ViewType)}>
-      <TabsList>
+      <TabsList className="border-2 border-[var(--primary)]">
         <TabsTrigger value="list" className="gap-2">
           <List className="h-4 w-4" />
           Vue liste

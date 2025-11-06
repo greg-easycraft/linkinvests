@@ -79,7 +79,7 @@ export function AuctionDetails({ opportunity }: AuctionDetailsProps) {
   }
 
   return (
-    <Card className="mt-6">
+    <Card className="mt-6 text-[var(--primary)]">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 mb-2">
           <Gavel className="h-5 w-5" />

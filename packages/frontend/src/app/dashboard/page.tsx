@@ -7,8 +7,7 @@ import { Button } from "~/components/ui/button";
 import { OpportunityFilters } from "./components/OpportunityFilters";
 import { OpportunityList } from "./components/OpportunityList";
 import { OpportunityMap } from "./components/OpportunityMap";
-import { OpportunitySidebar } from "./components/OpportunitySidebar";
-import { ViewToggle } from "./components/ViewToggle";
+import { OpportunityDetailsModal } from "./components/OpportunityDetailsModal";
 import { UserInfo } from "./components/UserInfo";
 import {
   getOpportunities,
@@ -19,6 +18,7 @@ import type { Opportunity } from "~/server/domains/opportunities/lib.types";
 import Image from "next/image";
 import { OpportunityListSkeleton } from "./components/OpportunityListSkeleton";
 import { MapSkeleton } from "./components/MapSkeleton";
+import { MapEmptyState } from "./components/MapEmptyState";
 
 type ViewType = "list" | "map";
 
@@ -32,6 +32,7 @@ export default function DashboardPage(): React.ReactElement {
   const [selectedOpportunity, setSelectedOpportunity] = useState<Opportunity | null>(
     null,
   );
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isFiltersSidebarOpen, setIsFiltersSidebarOpen] = useState(true);
 
   // Query for list view
@@ -76,10 +77,12 @@ export default function DashboardPage(): React.ReactElement {
 
   const handleSelectOpportunity = useCallback((opportunity: Opportunity): void => {
     setSelectedOpportunity(opportunity);
+    setIsModalOpen(true);
   }, []);
 
-  const handleCloseSidebar = useCallback((): void => {
+  const handleCloseModal = useCallback((): void => {
     setSelectedOpportunity(null);
+    setIsModalOpen(false);
   }, []);
 
   const handleToggleSidebar = useCallback((): void => {
@@ -145,16 +148,14 @@ export default function DashboardPage(): React.ReactElement {
                   onFiltersChange={setFilters}
                   onApply={handleApplyFilters}
                   onReset={handleResetFilters}
+                  viewType={viewType}
+                  onViewTypeChange={setViewType}
                 />
               </div>
             )}
           </div>
           {/* Main Content */}
           <div className="flex-1 flex flex-col overflow-hidden p-6">
-            <div className="flex-shrink-0 mb-4">
-              <ViewToggle value={viewType} onValueChange={setViewType} />
-            </div>
-
             <div className="flex-1 overflow-hidden">
               {viewType === "list" && listQuery.data && (
                 <div className="h-full overflow-y-auto rounded-md">
@@ -169,13 +170,16 @@ export default function DashboardPage(): React.ReactElement {
               )}
 
               {viewType === "map" && mapQuery.data && (
-                <OpportunityMap
-                  opportunities={mapQuery.data.opportunities}
-                  selectedId={selectedOpportunity?.id}
-                  onSelect={handleSelectOpportunity}
-                  isLimited={mapQuery.data.isLimited}
-                  total={mapQuery.data.total}
-                />
+                <div className="relative w-full h-full">
+                  <OpportunityMap
+                    opportunities={mapQuery.data.opportunities}
+                    selectedId={selectedOpportunity?.id}
+                    onSelect={handleSelectOpportunity}
+                    isLimited={mapQuery.data.isLimited}
+                    total={mapQuery.data.total}
+                  />
+                  {mapQuery.data.opportunities.length === 0 && <MapEmptyState />}
+                </div>
               )}
 
               {viewType === "map" && mapQuery.isLoading && (
@@ -186,16 +190,15 @@ export default function DashboardPage(): React.ReactElement {
               )}
             </div>
           </div>
-
-          {/* Details Sidebar */}
-          <div className="w-96 border-l border-neutral-700 bg-(--secundary) overflow-y-auto p-4">
-            <OpportunitySidebar
-              opportunity={selectedOpportunity}
-              onClose={handleCloseSidebar}
-            />
-          </div>
         </div>
       </div>
+
+      {/* Opportunity Details Modal */}
+      <OpportunityDetailsModal
+        opportunity={selectedOpportunity}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+      />
     </div>
   );
 }
