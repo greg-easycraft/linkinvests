@@ -18,6 +18,7 @@ import type { OpportunityFilters as IOpportunityFilters } from "~/types/filters"
 import type { Opportunity } from "~/server/domains/opportunities/lib.types";
 import Image from "next/image";
 import { OpportunityListSkeleton } from "./components/OpportunityListSkeleton";
+import { MapSkeleton } from "./components/MapSkeleton";
 
 type ViewType = "list" | "map";
 
@@ -177,12 +178,10 @@ export default function DashboardPage(): React.ReactElement {
                 />
               )}
 
-              {(mapQuery.isLoading) && (
-                <div className="flex items-center justify-center h-full">
-                  <div className="text-neutral-400">Chargement...</div>
-                </div>
+              {viewType === "map" && mapQuery.isLoading && (
+                <MapSkeleton />
               )}
-              {(listQuery.isLoading) && (
+              {viewType === "list" && listQuery.isLoading && (
                 <OpportunityListSkeleton />
               )}
             </div>

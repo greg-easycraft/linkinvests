@@ -7,9 +7,9 @@ import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import type { Opportunity } from "~/server/domains/opportunities/lib.types";
 import type { OpportunityListResult } from "~/server/domains/opportunities/services/opportunity-service";
+import type { OpportunityFilters } from "~/types/filters";
 import { ChevronLeft, ChevronRight, MapPin, Calendar, Building2, ExternalLink } from "lucide-react";
 import { StreetView } from "./StreetView";
-import { OpportunityListSkeleton } from "./OpportunityListSkeleton";
 import { OpportunityListEmptyState } from "./OpportunityListEmptyState";
 
 interface OpportunityListProps {
@@ -17,7 +17,7 @@ interface OpportunityListProps {
   selectedId?: number;
   onSelect: (opportunity: Opportunity) => void;
   onPageChange: (page: number) => void;
-  isLoading?: boolean;
+  filters?: OpportunityFilters;
 }
 
 const TYPE_LABELS: Record<string, string> = {
@@ -43,20 +43,18 @@ export function OpportunityList({
   selectedId,
   onSelect,
   onPageChange,
-  isLoading = false,
+  filters,
 }: OpportunityListProps): React.ReactElement {
-  if (isLoading) {
-    return <OpportunityListSkeleton />;
-  }
-
   if (data.opportunities.length === 0) {
     return <OpportunityListEmptyState />;
   }
 
   return (
     <div className="space-y-4">
-      <div className="text-sm text-[var(--secundary)]">
-        Affichage de {data.opportunities.length} sur {data.total} opportunités
+      <div className="flex items-center justify-between">
+        <div className="text-sm text-[var(--secundary)]">
+          Affichage de {data.opportunities.length} sur {data.total} opportunités
+        </div>
       </div>
 
       {/* Cards Grid */}
