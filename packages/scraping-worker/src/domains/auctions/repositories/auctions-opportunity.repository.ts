@@ -4,7 +4,6 @@ import {
   OpportunityType,
   type AuctionHouseContactData,
 } from '@linkinvests/shared';
-import { sql } from 'drizzle-orm';
 
 import { DATABASE_CONNECTION, type DomainDbType } from '~/database';
 import type { AuctionOpportunity } from '../types';
@@ -97,25 +96,7 @@ export class AuctionsOpportunityRepository {
         await this.db
           .insert(domainSchema.opportunities)
           .values(records)
-          .onConflictDoUpdate({
-            target: [
-              domainSchema.opportunities.externalId,
-              domainSchema.opportunities.type,
-            ],
-            set: {
-              label: sql`EXCLUDED.name`,
-              address: sql`EXCLUDED.address`,
-              zipCode: sql`EXCLUDED.zip_code`,
-              department: sql`EXCLUDED.department`,
-              latitude: sql`EXCLUDED.latitude`,
-              longitude: sql`EXCLUDED.longitude`,
-              status: sql`EXCLUDED.status`,
-              opportunityDate: sql`EXCLUDED.opportunity_date`,
-              contactData: sql`EXCLUDED.contact_data`,
-              images: sql`EXCLUDED.images`,
-              updatedAt: sql`CURRENT_TIMESTAMP`,
-            },
-          });
+          .onConflictDoNothing();
 
         insertedCount += batch.length;
 
