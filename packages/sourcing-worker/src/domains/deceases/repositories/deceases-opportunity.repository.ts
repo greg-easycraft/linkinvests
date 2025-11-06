@@ -1,10 +1,10 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { OpportunityType, type MairieContactData } from '@linkinvests/shared';
+import { OpportunityType } from '@linkinvests/shared';
 import { domainSchema } from '@linkinvests/db';
 
 import { DATABASE_CONNECTION, type DomainDbType } from '~/database';
 
-import type { DeceasesOpportunity, MairieInfo } from '../types/deceases.types';
+import type { DeceasesOpportunity } from '../types/deceases.types';
 
 @Injectable()
 export class DeceasesOpportunityRepository {
@@ -14,25 +14,6 @@ export class DeceasesOpportunityRepository {
     @Inject(DATABASE_CONNECTION)
     private readonly db: DomainDbType,
   ) {}
-
-  /**
-   * Creates contact data from mairie information
-   */
-  private createContactData(
-    mairieInfo?: MairieInfo,
-    address?: string,
-  ): MairieContactData | null {
-    if (!mairieInfo) return null;
-
-    return {
-      type: 'mairie',
-      name: mairieInfo.name || 'Mairie',
-      address: address || '',
-      phone: mairieInfo.telephone || mairieInfo.telephone_accueil,
-      email: mairieInfo.email || mairieInfo.adresse_courriel,
-      // Additional fields could be populated if available from API
-    };
-  }
 
   async insertOpportunities(
     opportunities: DeceasesOpportunity[],
@@ -59,11 +40,8 @@ export class DeceasesOpportunityRepository {
         status: 'pending_review',
         opportunityDate: opportunity.opportunityDate,
         externalId: opportunity.inseeDeathId,
-        contactData: this.createContactData(
-          opportunity.mairieInfo,
-          opportunity.address,
-        ),
-        extraData: null,
+        contactData: opportunity.mairieInfo,
+        extraData: opportunity.extraData,
       }));
 
       try {

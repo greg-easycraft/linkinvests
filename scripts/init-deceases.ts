@@ -23,7 +23,7 @@ const FILE_PATHES = [
     'deceases/Deces_2025_M08.csv',
     'deceases/Deces_2025_M09.csv',
     'deceases/Deces_2025_M10.csv',
-    'deceases/Deces_2024.csv',
+    //'deceases/Deces_2024.csv',
 ];
 
 (async () => {
