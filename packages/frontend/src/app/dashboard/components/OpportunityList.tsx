@@ -43,7 +43,6 @@ export function OpportunityList({
   selectedId,
   onSelect,
   onPageChange,
-  filters,
 }: OpportunityListProps): React.ReactElement {
   if (data.opportunities.length === 0) {
     return <OpportunityListEmptyState />;
