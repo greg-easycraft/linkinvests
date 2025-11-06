@@ -11,6 +11,7 @@ import {
   jsonb,
   uniqueIndex,
   index,
+  uuid,
 } from 'drizzle-orm/pg-core';
 import { desc } from 'drizzle-orm';
 import { OpportunityType } from '@linkinvests/shared';
@@ -65,5 +66,11 @@ export const sourcingRuns = pgTable('sourcing_run', {
   opportunityType: opportunityType('opportunity_type').notNull(),
   department: integer('department').notNull(),
   syncDate: date('sync_date').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export const scrapedDeceasesFiles = pgTable('scraped_deceases_file', {
+  id: uuid('id').primaryKey(),
+  fileName: text('file_name').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
