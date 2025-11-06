@@ -17,6 +17,7 @@ import {
 import type { OpportunityFilters as IOpportunityFilters } from "~/types/filters";
 import type { Opportunity } from "~/server/domains/opportunities/lib.types";
 import Image from "next/image";
+import { OpportunityListSkeleton } from "./components/OpportunityListSkeleton";
 
 type ViewType = "list" | "map";
 
@@ -161,7 +162,7 @@ export default function DashboardPage(): React.ReactElement {
                     selectedId={selectedOpportunity?.id}
                     onSelect={handleSelectOpportunity}
                     onPageChange={handlePageChange}
-                    isLoading={listQuery.isLoading}
+                    filters={appliedFilters}
                   />
                 </div>
               )}
@@ -176,10 +177,13 @@ export default function DashboardPage(): React.ReactElement {
                 />
               )}
 
-              {(listQuery.isLoading || mapQuery.isLoading) && (
+              {(mapQuery.isLoading) && (
                 <div className="flex items-center justify-center h-full">
                   <div className="text-neutral-400">Chargement...</div>
                 </div>
+              )}
+              {(listQuery.isLoading) && (
+                <OpportunityListSkeleton />
               )}
             </div>
           </div>
