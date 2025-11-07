@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuctionsCron } from './auctions.cron';
 import { Queue } from 'bullmq';
-import { SCRAPING_QUEUE } from '@linkinvests/shared';
+import { AUCTIONS_SCRAPING_QUEUE } from '@linkinvests/shared';
 
 // Mock BullMQ Queue
 const mockQueue = {
@@ -19,7 +19,7 @@ describe('AuctionsCron', () => {
       providers: [
         AuctionsCron,
         {
-          provide: `BullQueue_${SCRAPING_QUEUE}`,
+          provide: `BullQueue_${AUCTIONS_SCRAPING_QUEUE}`,
           useValue: mockQueue,
         },
       ],
@@ -77,7 +77,9 @@ describe('AuctionsCron', () => {
         }
       );
 
-      expect(cronService['logger'].log).toHaveBeenCalledWith('Starting daily auction scraping for all departments');
+      expect(cronService['logger'].log).toHaveBeenCalledWith(
+        'Starting daily auction scraping for all departments'
+      );
     });
 
     it('should handle job scheduling failure', async () => {
@@ -357,7 +359,9 @@ describe('AuctionsCron', () => {
     it('should log successful job scheduling', async () => {
       await cronService.handleDailyAuctionScraping();
 
-      expect(cronService['logger'].log).toHaveBeenCalledWith('Scheduled auction scraping job');
+      expect(cronService['logger'].log).toHaveBeenCalledWith(
+        'Scheduled auction scraping job'
+      );
     });
 
     it('should log detailed error information', async () => {
@@ -404,8 +408,11 @@ describe('AuctionsCron', () => {
 
     it('should not block on job scheduling', async () => {
       // Mock a slow add operation
-      mockQueue.add.mockImplementation(() =>
-        new Promise(resolve => setTimeout(() => resolve({ id: 'job-123' } as any), 100))
+      mockQueue.add.mockImplementation(
+        () =>
+          new Promise((resolve) =>
+            setTimeout(() => resolve({ id: 'job-123' } as any), 100)
+          )
       );
 
       const startTime = Date.now();

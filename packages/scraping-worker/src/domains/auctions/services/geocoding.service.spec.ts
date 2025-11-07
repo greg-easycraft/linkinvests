@@ -536,7 +536,7 @@ describe('AuctionsGeocodingService', () => {
 
       // Mock a faster sleep for testing
       jest.spyOn(service as any, 'sleep').mockImplementation((ms: number) => {
-        return new Promise(resolve => setTimeout(resolve, Math.min(ms, 10))); // Cap at 10ms for tests
+        return new Promise((resolve) => setTimeout(resolve, Math.min(ms, 10))); // Cap at 10ms for tests
       });
     });
 

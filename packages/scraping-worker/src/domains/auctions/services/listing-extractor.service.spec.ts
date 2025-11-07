@@ -95,7 +95,9 @@ describe('ListingExtractorService', () => {
       const evaluationError = new Error('DOM evaluation failed');
       mockPage.evaluate.mockRejectedValue(evaluationError);
 
-      await expect(service.extractListingUrls(mockPage)).rejects.toThrow('DOM evaluation failed');
+      await expect(service.extractListingUrls(mockPage)).rejects.toThrow(
+        'DOM evaluation failed'
+      );
     });
 
     it.skip('should deduplicate URLs', async () => {
@@ -142,7 +144,7 @@ describe('ListingExtractorService', () => {
       // Mock the page evaluate to simulate what would happen in browser
       mockPage.evaluate.mockImplementation((fn) => {
         // Simulate browser environment where relative URLs are converted to absolute
-        const absoluteUrls = relativeUrls.map(url => {
+        const absoluteUrls = relativeUrls.map((url) => {
           if (url.startsWith('/')) {
             return `https://encheres-publiques.fr${url}`;
           } else {
@@ -204,7 +206,10 @@ describe('ListingExtractorService', () => {
         }
       });
 
-      const result = await service.extractAllListingsWithPagination(mockPage, 10);
+      const result = await service.extractAllListingsWithPagination(
+        mockPage,
+        10
+      );
 
       expect(result).toEqual([...mockInitialUrls, ...mockNewUrls]);
       expect(service['logger'].log).toHaveBeenCalledWith(
@@ -224,11 +229,16 @@ describe('ListingExtractorService', () => {
         .mockResolvedValueOnce(['url-1', 'url-2']) // Scroll 1
         .mockResolvedValueOnce(['url-1', 'url-2', 'url-3']); // Scroll 2
 
-      const result = await service.extractAllListingsWithPagination(mockPage, 2);
+      const result = await service.extractAllListingsWithPagination(
+        mockPage,
+        2
+      );
 
       expect(result).toEqual(['url-1', 'url-2', 'url-3']);
       expect(mockPage.evaluate).toHaveBeenCalledTimes(3); // Initial + 2 scrolls (max reached)
-      expect(service['logger'].log).toHaveBeenCalledWith('Reached maximum scroll limit of 2');
+      expect(service['logger'].log).toHaveBeenCalledWith(
+        'Reached maximum scroll limit of 2'
+      );
     });
 
     it.skip('should handle random delays between scrolls', async () => {
@@ -249,8 +259,9 @@ describe('ListingExtractorService', () => {
         .mockResolvedValueOnce(mockInitialUrls) // Initial load succeeds
         .mockRejectedValueOnce(scrollError); // First scroll fails
 
-      await expect(service.extractAllListingsWithPagination(mockPage, 10))
-        .rejects.toThrow('Scroll evaluation failed');
+      await expect(
+        service.extractAllListingsWithPagination(mockPage, 10)
+      ).rejects.toThrow('Scroll evaluation failed');
 
       expect(service['logger'].error).toHaveBeenCalledWith(
         'Error during pagination:',
@@ -265,8 +276,9 @@ describe('ListingExtractorService', () => {
         .mockResolvedValueOnce([...mockInitialUrls, ...mockNewUrls]);
       mockPage.waitForTimeout.mockRejectedValue(timeoutError);
 
-      await expect(service.extractAllListingsWithPagination(mockPage, 10))
-        .rejects.toThrow('Wait timeout');
+      await expect(
+        service.extractAllListingsWithPagination(mockPage, 10)
+      ).rejects.toThrow('Wait timeout');
     });
 
     it.skip('should handle empty initial results', async () => {
@@ -275,16 +287,23 @@ describe('ListingExtractorService', () => {
         .mockResolvedValueOnce(mockNewUrls) // New content after scroll
         .mockResolvedValueOnce(mockNewUrls); // No additional content
 
-      const result = await service.extractAllListingsWithPagination(mockPage, 10);
+      const result = await service.extractAllListingsWithPagination(
+        mockPage,
+        10
+      );
 
       expect(result).toEqual(mockNewUrls);
-      expect(service['logger'].log).toHaveBeenCalledWith('Extracted 0 URLs initially');
+      expect(service['logger'].log).toHaveBeenCalledWith(
+        'Extracted 0 URLs initially'
+      );
     });
 
     it.skip('should handle large number of scrolls efficiently', async () => {
       // Simulate finding new content for first few scrolls, then stopping
       const generateUrls = (count: number) =>
-        Array(count).fill(null).map((_, i) => `https://test.com/lot-${i}`);
+        Array(count)
+          .fill(null)
+          .map((_, i) => `https://test.com/lot-${i}`);
 
       mockPage.evaluate
         .mockResolvedValueOnce(generateUrls(10)) // Initial: 10 URLs
@@ -293,7 +312,10 @@ describe('ListingExtractorService', () => {
         .mockResolvedValueOnce(generateUrls(30)) // Scroll 3: no new (30 total)
         .mockResolvedValueOnce(generateUrls(30)); // Scroll 4: no new (30 total)
 
-      const result = await service.extractAllListingsWithPagination(mockPage, 50);
+      const result = await service.extractAllListingsWithPagination(
+        mockPage,
+        50
+      );
 
       expect(result).toHaveLength(30);
       expect(mockPage.evaluate).toHaveBeenCalledTimes(5); // Initial + 4 scrolls
@@ -304,15 +326,25 @@ describe('ListingExtractorService', () => {
       mockPage.evaluate.mockImplementation(async () => {
         const currentCount = scrollCount === 0 ? 1 : scrollCount + 1;
         scrollCount++;
-        return Array(currentCount).fill(null).map((_, i) => `url-${i}`);
+        return Array(currentCount)
+          .fill(null)
+          .map((_, i) => `url-${i}`);
       });
 
       await service.extractAllListingsWithPagination(mockPage, 3);
 
-      expect(service['logger'].log).toHaveBeenCalledWith('Extracted 1 URLs initially');
-      expect(service['logger'].log).toHaveBeenCalledWith('Scroll 1: Found 1 new URLs (total: 2)');
-      expect(service['logger'].log).toHaveBeenCalledWith('Scroll 2: Found 1 new URLs (total: 3)');
-      expect(service['logger'].log).toHaveBeenCalledWith('Scroll 3: Found 1 new URLs (total: 4)');
+      expect(service['logger'].log).toHaveBeenCalledWith(
+        'Extracted 1 URLs initially'
+      );
+      expect(service['logger'].log).toHaveBeenCalledWith(
+        'Scroll 1: Found 1 new URLs (total: 2)'
+      );
+      expect(service['logger'].log).toHaveBeenCalledWith(
+        'Scroll 2: Found 1 new URLs (total: 3)'
+      );
+      expect(service['logger'].log).toHaveBeenCalledWith(
+        'Scroll 3: Found 1 new URLs (total: 4)'
+      );
     });
 
     it.skip('should handle mixed content updates', async () => {
@@ -325,12 +357,21 @@ describe('ListingExtractorService', () => {
         .mockResolvedValueOnce(['url-1', 'url-2', 'url-3', 'url-4', 'url-5']) // Scroll 4: no new
         .mockResolvedValueOnce(['url-1', 'url-2', 'url-3', 'url-4', 'url-5']); // Scroll 5: no new
 
-      const result = await service.extractAllListingsWithPagination(mockPage, 10);
+      const result = await service.extractAllListingsWithPagination(
+        mockPage,
+        10
+      );
 
       expect(result).toEqual(['url-1', 'url-2', 'url-3', 'url-4', 'url-5']);
-      expect(service['logger'].log).toHaveBeenCalledWith('Scroll 2: Found 0 new URLs (total: 3)');
-      expect(service['logger'].log).toHaveBeenCalledWith('Scroll 3: Found 2 new URLs (total: 5)');
-      expect(service['logger'].log).toHaveBeenCalledWith('No new content found for 2 consecutive scrolls. Stopping.');
+      expect(service['logger'].log).toHaveBeenCalledWith(
+        'Scroll 2: Found 0 new URLs (total: 3)'
+      );
+      expect(service['logger'].log).toHaveBeenCalledWith(
+        'Scroll 3: Found 2 new URLs (total: 5)'
+      );
+      expect(service['logger'].log).toHaveBeenCalledWith(
+        'No new content found for 2 consecutive scrolls. Stopping.'
+      );
     });
 
     it.skip('should maintain URL order and deduplication across scrolls', async () => {
@@ -346,7 +387,10 @@ describe('ListingExtractorService', () => {
         .mockResolvedValueOnce(urlsWithDuplicates[2])
         .mockResolvedValueOnce(urlsWithDuplicates[2]); // No new content
 
-      const result = await service.extractAllListingsWithPagination(mockPage, 10);
+      const result = await service.extractAllListingsWithPagination(
+        mockPage,
+        10
+      );
 
       expect(result).toEqual(['url-2', 'url-1', 'url-3', 'url-4']); // Order preserved from latest extraction
     });
@@ -354,7 +398,10 @@ describe('ListingExtractorService', () => {
     it.skip('should handle zero max scrolls parameter', async () => {
       mockPage.evaluate.mockResolvedValueOnce(mockInitialUrls);
 
-      const result = await service.extractAllListingsWithPagination(mockPage, 0);
+      const result = await service.extractAllListingsWithPagination(
+        mockPage,
+        0
+      );
 
       expect(result).toEqual(mockInitialUrls);
       expect(mockPage.evaluate).toHaveBeenCalledTimes(1); // Only initial extraction
@@ -364,7 +411,10 @@ describe('ListingExtractorService', () => {
     it.skip('should handle negative max scrolls parameter', async () => {
       mockPage.evaluate.mockResolvedValueOnce(mockInitialUrls);
 
-      const result = await service.extractAllListingsWithPagination(mockPage, -5);
+      const result = await service.extractAllListingsWithPagination(
+        mockPage,
+        -5
+      );
 
       expect(result).toEqual(mockInitialUrls);
       expect(mockPage.evaluate).toHaveBeenCalledTimes(1); // Only initial extraction

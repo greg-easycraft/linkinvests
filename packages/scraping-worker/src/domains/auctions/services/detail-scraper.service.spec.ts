@@ -62,8 +62,12 @@ describe('DetailScraperService', () => {
 
       expect(result).toBeDefined();
       expect(result.url).toBe(testUrl);
-      expect(result.label).toBe('Une maison/villa située rue Mahé de la Bourdonnais à St Malo');
-      expect(result.address).toBe('8 Rue Mahé de la Bourdonnais, 35400 Saint-Malo, France');
+      expect(result.label).toBe(
+        'Une maison/villa située rue Mahé de la Bourdonnais à St Malo'
+      );
+      expect(result.address).toBe(
+        '8 Rue Mahé de la Bourdonnais, 35400 Saint-Malo, France'
+      );
       expect(result.city).toBe('Saint-Malo');
       expect(result.department).toBe(35);
       expect(result.latitude).toBe(48.651272);
@@ -113,7 +117,9 @@ describe('DetailScraperService', () => {
     });
 
     it('should handle navigation failures', async () => {
-      mockBrowserService.navigateToUrl.mockRejectedValue(new Error('Navigation failed'));
+      mockBrowserService.navigateToUrl.mockRejectedValue(
+        new Error('Navigation failed')
+      );
 
       const result = await service.scrapeDetails(testUrl);
 
@@ -129,10 +135,10 @@ describe('DetailScraperService', () => {
         props: {
           pageProps: {
             apolloState: {
-              data: {}
-            }
-          }
-        }
+              data: {},
+            },
+          },
+        },
       };
       mockPage.evaluate.mockResolvedValue(emptyJson);
 
@@ -171,7 +177,7 @@ describe('DetailScraperService', () => {
       const results = await service.scrapeDetailsBatch(testUrls, 1);
 
       expect(results).toHaveLength(2); // Only successful results
-      expect(results.every(r => r !== null)).toBe(true);
+      expect(results.every((r) => r !== null)).toBe(true);
     });
 
     it('should handle empty URL array', async () => {
@@ -213,7 +219,9 @@ describe('DetailScraperService', () => {
     it('should handle page evaluation errors', async () => {
       mockPage.evaluate.mockRejectedValue(new Error('Evaluation failed'));
 
-      await expect(service['extractJsonData'](mockPage)).rejects.toThrow('Evaluation failed');
+      await expect(service['extractJsonData'](mockPage)).rejects.toThrow(
+        'Evaluation failed'
+      );
     });
   });
 
@@ -221,11 +229,18 @@ describe('DetailScraperService', () => {
     const testUrl = 'https://encheres-publiques.fr/lot/test-123';
 
     it('should parse auction data with address object', () => {
-      const result = service['parseAuctionDataFromJson'](exampleAddressJson, testUrl);
+      const result = service['parseAuctionDataFromJson'](
+        exampleAddressJson,
+        testUrl
+      );
 
       expect(result).toBeDefined();
-      expect(result.label).toBe('Une maison/villa située rue Mahé de la Bourdonnais à St Malo');
-      expect(result.address).toBe('8 Rue Mahé de la Bourdonnais, 35400 Saint-Malo, France');
+      expect(result.label).toBe(
+        'Une maison/villa située rue Mahé de la Bourdonnais à St Malo'
+      );
+      expect(result.address).toBe(
+        '8 Rue Mahé de la Bourdonnais, 35400 Saint-Malo, France'
+      );
       expect(result.city).toBe('Saint-Malo');
       expect(result.department).toBe(35);
       expect(result.latitude).toBe(48.651272);
@@ -249,10 +264,10 @@ describe('DetailScraperService', () => {
         props: {
           pageProps: {
             apolloState: {
-              data: {}
-            }
-          }
-        }
+              data: {},
+            },
+          },
+        },
       };
 
       const result = service['parseAuctionDataFromJson'](emptyJson, testUrl);
@@ -263,7 +278,10 @@ describe('DetailScraperService', () => {
     it('should handle malformed JSON structure', () => {
       const malformedJson = { invalid: 'structure' };
 
-      const result = service['parseAuctionDataFromJson'](malformedJson, testUrl);
+      const result = service['parseAuctionDataFromJson'](
+        malformedJson,
+        testUrl
+      );
 
       expect(result).toBeNull();
     });
@@ -361,7 +379,8 @@ describe('DetailScraperService', () => {
   });
 
   describe('extractAdress', () => {
-    const testUrl = 'https://encheres-publiques.fr/immobilier/maisons/saint-malo-35/test_120706';
+    const testUrl =
+      'https://encheres-publiques.fr/immobilier/maisons/saint-malo-35/test_120706';
     const mockAllData = exampleAddressJson.props.pageProps.apolloState.data;
 
     it('should extract address from address object (strategy 1)', () => {
@@ -450,11 +469,19 @@ describe('DetailScraperService', () => {
       const testCases = [
         {
           nom: 'Une maison située à Paris 12ème',
-          expected: { address: 'Paris 12ème', city: 'Paris 12ème', department: 75 },
+          expected: {
+            address: 'Paris 12ème',
+            city: 'Paris 12ème',
+            department: 75,
+          },
         },
         {
           nom: 'Appartement situé à Lyon, Rhône',
-          expected: { address: 'Lyon, Rhône', city: 'Lyon, Rhône', department: 69 },
+          expected: {
+            address: 'Lyon, Rhône',
+            city: 'Lyon, Rhône',
+            department: 69,
+          },
         },
         {
           nom: 'Villa située dans le Var',
@@ -462,7 +489,11 @@ describe('DetailScraperService', () => {
         },
         {
           nom: 'Propriété située sur la commune de Marseille',
-          expected: { address: 'la commune de Marseille', city: 'la commune de Marseille', department: 13 },
+          expected: {
+            address: 'la commune de Marseille',
+            city: 'la commune de Marseille',
+            department: 13,
+          },
         },
       ];
 
@@ -486,7 +517,11 @@ describe('DetailScraperService', () => {
         nom: 'Une maison moderne',
       };
 
-      const result = service['extractAdress'](lotData, mockAllData, malformedUrl);
+      const result = service['extractAdress'](
+        lotData,
+        mockAllData,
+        malformedUrl
+      );
 
       expect(result).toEqual({
         address: 'Une maison moderne',

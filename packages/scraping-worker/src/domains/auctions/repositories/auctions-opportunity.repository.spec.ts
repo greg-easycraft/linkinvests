@@ -57,7 +57,9 @@ describe('AuctionsOpportunityRepository', () => {
       ],
     }).compile();
 
-    repository = module.get<AuctionsOpportunityRepository>(AuctionsOpportunityRepository);
+    repository = module.get<AuctionsOpportunityRepository>(
+      AuctionsOpportunityRepository
+    );
 
     // Suppress logger
     jest.spyOn(repository['logger'], 'log').mockImplementation();
@@ -139,14 +141,16 @@ describe('AuctionsOpportunityRepository', () => {
     });
 
     it('should handle batch processing with custom batch size', async () => {
-      const largeOpportunitiesArray = Array(1200).fill(null).map((_, index) => ({
-        ...mockOpportunities[0],
-        url: `https://encheres-publiques.fr/lot/test-${index}`,
-        extraData: {
-          ...mockOpportunities[0].extraData,
-          id: `1234${index}`,
-        },
-      }));
+      const largeOpportunitiesArray = Array(1200)
+        .fill(null)
+        .map((_, index) => ({
+          ...mockOpportunities[0],
+          url: `https://encheres-publiques.fr/lot/test-${index}`,
+          extraData: {
+            ...mockOpportunities[0].extraData,
+            id: `1234${index}`,
+          },
+        }));
 
       mockDb.onConflictDoUpdate.mockResolvedValue(undefined);
 
@@ -193,9 +197,9 @@ describe('AuctionsOpportunityRepository', () => {
       const dbError = new Error('Database connection failed');
       mockDb.onConflictDoUpdate.mockRejectedValue(dbError);
 
-      await expect(repository.insertOpportunities(mockOpportunities)).rejects.toThrow(
-        'Database connection failed'
-      );
+      await expect(
+        repository.insertOpportunities(mockOpportunities)
+      ).rejects.toThrow('Database connection failed');
 
       expect(repository['logger'].error).toHaveBeenCalledWith(
         { error: 'Database connection failed', batchStart: 0 },
@@ -342,14 +346,16 @@ describe('AuctionsOpportunityRepository', () => {
     });
 
     it('should log progress for large batches', async () => {
-      const largeOpportunitiesArray = Array(1000).fill(null).map((_, index) => ({
-        ...mockOpportunities[0],
-        url: `https://test.com/${index}`,
-        extraData: {
-          ...mockOpportunities[0].extraData,
-          auctionId: `id-${index}`,
-        },
-      }));
+      const largeOpportunitiesArray = Array(1000)
+        .fill(null)
+        .map((_, index) => ({
+          ...mockOpportunities[0],
+          url: `https://test.com/${index}`,
+          extraData: {
+            ...mockOpportunities[0].extraData,
+            auctionId: `id-${index}`,
+          },
+        }));
 
       mockDb.onConflictDoUpdate.mockResolvedValue(undefined);
 
@@ -434,7 +440,8 @@ describe('AuctionsOpportunityRepository', () => {
     });
 
     it('should handle special characters in venue', () => {
-      const venue = 'Tribunal de Grande Instance - Section Commerciale (1er étage)';
+      const venue =
+        'Tribunal de Grande Instance - Section Commerciale (1er étage)';
       const result = repository['createContactData'](venue);
 
       expect(result).toEqual({
@@ -451,9 +458,9 @@ describe('AuctionsOpportunityRepository', () => {
 
       mockDb.returning.mockRejectedValue(constraintError);
 
-      await expect(repository.insertOpportunities(mockOpportunities)).rejects.toThrow(
-        'UNIQUE constraint failed'
-      );
+      await expect(
+        repository.insertOpportunities(mockOpportunities)
+      ).rejects.toThrow('UNIQUE constraint failed');
 
       expect(repository['logger'].error).toHaveBeenCalledWith(
         'Failed to insert opportunities:',
@@ -467,9 +474,9 @@ describe('AuctionsOpportunityRepository', () => {
 
       mockDb.returning.mockRejectedValue(timeoutError);
 
-      await expect(repository.insertOpportunities(mockOpportunities)).rejects.toThrow(
-        'Connection timeout'
-      );
+      await expect(
+        repository.insertOpportunities(mockOpportunities)
+      ).rejects.toThrow('Connection timeout');
     });
 
     it('should handle partial batch failures', async () => {
@@ -478,18 +485,20 @@ describe('AuctionsOpportunityRepository', () => {
         .mockResolvedValueOnce([{ id: 1 }])
         .mockRejectedValueOnce(new Error('Database error'));
 
-      const largeOpportunitiesArray = Array(1000).fill(null).map((_, index) => ({
-        ...mockOpportunities[0],
-        url: `https://test.com/${index}`,
-        extraData: {
-          ...mockOpportunities[0].extraData,
-          auctionId: `id-${index}`,
-        },
-      }));
+      const largeOpportunitiesArray = Array(1000)
+        .fill(null)
+        .map((_, index) => ({
+          ...mockOpportunities[0],
+          url: `https://test.com/${index}`,
+          extraData: {
+            ...mockOpportunities[0].extraData,
+            auctionId: `id-${index}`,
+          },
+        }));
 
-      await expect(repository.insertOpportunities(largeOpportunitiesArray)).rejects.toThrow(
-        'Database error'
-      );
+      await expect(
+        repository.insertOpportunities(largeOpportunitiesArray)
+      ).rejects.toThrow('Database error');
 
       // Should have attempted both batches
       expect(mockDb.insert).toHaveBeenCalledTimes(2);
@@ -563,8 +572,12 @@ describe('AuctionsOpportunityRepository', () => {
       await repository.insertOpportunities(opportunitiesWithSpecialChars);
 
       const insertedData = mockDb.values.mock.calls[0][0][0];
-      expect(insertedData.label).toBe('Propriété avec caractères spéciaux: ñáéíóú & <>&"');
-      expect(insertedData.address).toBe('Rue de l\'Église, 75001 Paris "France"');
+      expect(insertedData.label).toBe(
+        'Propriété avec caractères spéciaux: ñáéíóú & <>&"'
+      );
+      expect(insertedData.address).toBe(
+        'Rue de l\'Église, 75001 Paris "France"'
+      );
       expect(insertedData.city).toBe('Saint-Étienne-du-Rouvray');
     });
   });

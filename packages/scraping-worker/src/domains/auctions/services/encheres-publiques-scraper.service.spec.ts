@@ -76,17 +76,27 @@ describe('EncheresPubliquesScraperService', () => {
       providers: [
         EncheresPubliquesScraperService,
         { provide: BrowserService, useValue: mockBrowserService },
-        { provide: ListingExtractorService, useValue: mockListingExtractorService },
+        {
+          provide: ListingExtractorService,
+          useValue: mockListingExtractorService,
+        },
         { provide: DetailScraperService, useValue: mockDetailScraperService },
         { provide: AuctionsGeocodingService, useValue: mockGeocodingService },
       ],
     }).compile();
 
-    service = module.get<EncheresPubliquesScraperService>(EncheresPubliquesScraperService);
+    service = module.get<EncheresPubliquesScraperService>(
+      EncheresPubliquesScraperService
+    );
     browserService = module.get<BrowserService>(BrowserService);
-    listingExtractorService = module.get<ListingExtractorService>(ListingExtractorService);
-    detailScraperService = module.get<DetailScraperService>(DetailScraperService);
-    geocodingService = module.get<AuctionsGeocodingService>(AuctionsGeocodingService);
+    listingExtractorService = module.get<ListingExtractorService>(
+      ListingExtractorService
+    );
+    detailScraperService =
+      module.get<DetailScraperService>(DetailScraperService);
+    geocodingService = module.get<AuctionsGeocodingService>(
+      AuctionsGeocodingService
+    );
 
     // Mock page object
     mockPage = {
@@ -118,9 +128,15 @@ describe('EncheresPubliquesScraperService', () => {
       mockBrowserService.initialize.mockResolvedValue(undefined);
       mockBrowserService.navigateToUrl.mockResolvedValue(undefined);
       mockBrowserService.handleCookieConsent.mockResolvedValue(undefined);
-      mockListingExtractorService.extractAllListingsWithPagination.mockResolvedValue(mockListingUrls);
-      mockDetailScraperService.scrapeDetailsBatch.mockResolvedValue(mockRawOpportunities);
-      mockGeocodingService.geocodeBatch.mockResolvedValue(mockEnrichedOpportunities);
+      mockListingExtractorService.extractAllListingsWithPagination.mockResolvedValue(
+        mockListingUrls
+      );
+      mockDetailScraperService.scrapeDetailsBatch.mockResolvedValue(
+        mockRawOpportunities
+      );
+      mockGeocodingService.geocodeBatch.mockResolvedValue(
+        mockEnrichedOpportunities
+      );
       mockBrowserService.close.mockResolvedValue(undefined);
     });
 
@@ -135,39 +151,64 @@ describe('EncheresPubliquesScraperService', () => {
         'https://encheres-publiques.fr/encheres/immobilier?size=48&page=0&sort=end_at%2Casc'
       );
       expect(mockBrowserService.handleCookieConsent).toHaveBeenCalledTimes(1);
-      expect(mockListingExtractorService.extractAllListingsWithPagination).toHaveBeenCalledWith(
-        mockPage,
-        50
-      );
+      expect(
+        mockListingExtractorService.extractAllListingsWithPagination
+      ).toHaveBeenCalledWith(mockPage, 50);
       expect(mockDetailScraperService.scrapeDetailsBatch).toHaveBeenCalledWith(
         mockListingUrls,
         5
       );
-      expect(mockGeocodingService.geocodeBatch).toHaveBeenCalledWith(mockRawOpportunities);
+      expect(mockGeocodingService.geocodeBatch).toHaveBeenCalledWith(
+        mockRawOpportunities
+      );
       expect(mockBrowserService.close).toHaveBeenCalledTimes(1);
     });
 
     it('should log progress throughout the workflow', async () => {
       await service.scrapeAuctions();
 
-      expect(service['logger'].log).toHaveBeenCalledWith('Starting auction scraping...');
-      expect(service['logger'].log).toHaveBeenCalledWith('Initializing browser...');
-      expect(service['logger'].log).toHaveBeenCalledWith('Navigating to listings page...');
-      expect(service['logger'].log).toHaveBeenCalledWith('Handling cookie consent...');
-      expect(service['logger'].log).toHaveBeenCalledWith('Extracting listing URLs...');
-      expect(service['logger'].log).toHaveBeenCalledWith(`Found ${mockListingUrls.length} listing URLs`);
-      expect(service['logger'].log).toHaveBeenCalledWith('Scraping details from listings...');
-      expect(service['logger'].log).toHaveBeenCalledWith(`Scraped ${mockRawOpportunities.length} opportunities`);
-      expect(service['logger'].log).toHaveBeenCalledWith('Geocoding addresses...');
-      expect(service['logger'].log).toHaveBeenCalledWith(`Geocoded ${mockEnrichedOpportunities.length} opportunities`);
-      expect(service['logger'].log).toHaveBeenCalledWith('Auction scraping completed successfully');
+      expect(service['logger'].log).toHaveBeenCalledWith(
+        'Starting auction scraping...'
+      );
+      expect(service['logger'].log).toHaveBeenCalledWith(
+        'Initializing browser...'
+      );
+      expect(service['logger'].log).toHaveBeenCalledWith(
+        'Navigating to listings page...'
+      );
+      expect(service['logger'].log).toHaveBeenCalledWith(
+        'Handling cookie consent...'
+      );
+      expect(service['logger'].log).toHaveBeenCalledWith(
+        'Extracting listing URLs...'
+      );
+      expect(service['logger'].log).toHaveBeenCalledWith(
+        `Found ${mockListingUrls.length} listing URLs`
+      );
+      expect(service['logger'].log).toHaveBeenCalledWith(
+        'Scraping details from listings...'
+      );
+      expect(service['logger'].log).toHaveBeenCalledWith(
+        `Scraped ${mockRawOpportunities.length} opportunities`
+      );
+      expect(service['logger'].log).toHaveBeenCalledWith(
+        'Geocoding addresses...'
+      );
+      expect(service['logger'].log).toHaveBeenCalledWith(
+        `Geocoded ${mockEnrichedOpportunities.length} opportunities`
+      );
+      expect(service['logger'].log).toHaveBeenCalledWith(
+        'Auction scraping completed successfully'
+      );
     });
 
     it('should handle browser initialization failure', async () => {
       const initError = new Error('Failed to launch browser');
       mockBrowserService.initialize.mockRejectedValue(initError);
 
-      await expect(service.scrapeAuctions()).rejects.toThrow('Failed to launch browser');
+      await expect(service.scrapeAuctions()).rejects.toThrow(
+        'Failed to launch browser'
+      );
 
       expect(service['logger'].error).toHaveBeenCalledWith(
         'Failed to scrape auctions:',
@@ -180,7 +221,9 @@ describe('EncheresPubliquesScraperService', () => {
       const navError = new Error('Navigation timeout');
       mockBrowserService.navigateToUrl.mockRejectedValue(navError);
 
-      await expect(service.scrapeAuctions()).rejects.toThrow('Navigation timeout');
+      await expect(service.scrapeAuctions()).rejects.toThrow(
+        'Navigation timeout'
+      );
 
       expect(service['logger'].error).toHaveBeenCalledWith(
         'Failed to scrape auctions:',
@@ -193,7 +236,9 @@ describe('EncheresPubliquesScraperService', () => {
       const cookieError = new Error('Cookie consent failed');
       mockBrowserService.handleCookieConsent.mockRejectedValue(cookieError);
 
-      await expect(service.scrapeAuctions()).rejects.toThrow('Cookie consent failed');
+      await expect(service.scrapeAuctions()).rejects.toThrow(
+        'Cookie consent failed'
+      );
 
       expect(service['logger'].error).toHaveBeenCalledWith(
         'Failed to scrape auctions:',
@@ -204,9 +249,13 @@ describe('EncheresPubliquesScraperService', () => {
 
     it('should handle listing extraction failure', async () => {
       const extractionError = new Error('Failed to extract listings');
-      mockListingExtractorService.extractAllListingsWithPagination.mockRejectedValue(extractionError);
+      mockListingExtractorService.extractAllListingsWithPagination.mockRejectedValue(
+        extractionError
+      );
 
-      await expect(service.scrapeAuctions()).rejects.toThrow('Failed to extract listings');
+      await expect(service.scrapeAuctions()).rejects.toThrow(
+        'Failed to extract listings'
+      );
 
       expect(service['logger'].error).toHaveBeenCalledWith(
         'Failed to scrape auctions:',
@@ -217,9 +266,13 @@ describe('EncheresPubliquesScraperService', () => {
 
     it('should handle detail scraping failure', async () => {
       const scrapingError = new Error('Failed to scrape details');
-      mockDetailScraperService.scrapeDetailsBatch.mockRejectedValue(scrapingError);
+      mockDetailScraperService.scrapeDetailsBatch.mockRejectedValue(
+        scrapingError
+      );
 
-      await expect(service.scrapeAuctions()).rejects.toThrow('Failed to scrape details');
+      await expect(service.scrapeAuctions()).rejects.toThrow(
+        'Failed to scrape details'
+      );
 
       expect(service['logger'].error).toHaveBeenCalledWith(
         'Failed to scrape auctions:',
@@ -232,7 +285,9 @@ describe('EncheresPubliquesScraperService', () => {
       const geocodingError = new Error('Geocoding service unavailable');
       mockGeocodingService.geocodeBatch.mockRejectedValue(geocodingError);
 
-      await expect(service.scrapeAuctions()).rejects.toThrow('Geocoding service unavailable');
+      await expect(service.scrapeAuctions()).rejects.toThrow(
+        'Geocoding service unavailable'
+      );
 
       expect(service['logger'].error).toHaveBeenCalledWith(
         'Failed to scrape auctions:',
@@ -242,13 +297,20 @@ describe('EncheresPubliquesScraperService', () => {
     });
 
     it('should handle empty listing URLs', async () => {
-      mockListingExtractorService.extractAllListingsWithPagination.mockResolvedValue([]);
+      mockListingExtractorService.extractAllListingsWithPagination.mockResolvedValue(
+        []
+      );
 
       const result = await service.scrapeAuctions();
 
       expect(result).toEqual([]);
-      expect(service['logger'].log).toHaveBeenCalledWith('Found 0 listing URLs');
-      expect(mockDetailScraperService.scrapeDetailsBatch).toHaveBeenCalledWith([], 5);
+      expect(service['logger'].log).toHaveBeenCalledWith(
+        'Found 0 listing URLs'
+      );
+      expect(mockDetailScraperService.scrapeDetailsBatch).toHaveBeenCalledWith(
+        [],
+        5
+      );
       expect(mockBrowserService.close).toHaveBeenCalledTimes(1);
     });
 
@@ -258,7 +320,9 @@ describe('EncheresPubliquesScraperService', () => {
       const result = await service.scrapeAuctions();
 
       expect(result).toEqual([]);
-      expect(service['logger'].log).toHaveBeenCalledWith('Scraped 0 opportunities');
+      expect(service['logger'].log).toHaveBeenCalledWith(
+        'Scraped 0 opportunities'
+      );
       expect(mockGeocodingService.geocodeBatch).toHaveBeenCalledWith([]);
       expect(mockBrowserService.close).toHaveBeenCalledTimes(1);
     });
@@ -275,19 +339,27 @@ describe('EncheresPubliquesScraperService', () => {
         mockRawOpportunities[1] as AuctionOpportunity,
       ];
 
-      mockGeocodingService.geocodeBatch.mockResolvedValue(partiallyGeocodedOpportunities);
+      mockGeocodingService.geocodeBatch.mockResolvedValue(
+        partiallyGeocodedOpportunities
+      );
 
       const result = await service.scrapeAuctions();
 
       expect(result).toEqual(partiallyGeocodedOpportunities);
-      expect(service['logger'].log).toHaveBeenCalledWith('Geocoded 2 opportunities');
+      expect(service['logger'].log).toHaveBeenCalledWith(
+        'Geocoded 2 opportunities'
+      );
     });
 
     it('should ensure browser cleanup even when errors occur', async () => {
       const error = new Error('Random error during workflow');
-      mockListingExtractorService.extractAllListingsWithPagination.mockRejectedValue(error);
+      mockListingExtractorService.extractAllListingsWithPagination.mockRejectedValue(
+        error
+      );
 
-      await expect(service.scrapeAuctions()).rejects.toThrow('Random error during workflow');
+      await expect(service.scrapeAuctions()).rejects.toThrow(
+        'Random error during workflow'
+      );
 
       // Browser close should be called in finally block
       expect(mockBrowserService.close).toHaveBeenCalledTimes(1);
@@ -308,35 +380,50 @@ describe('EncheresPubliquesScraperService', () => {
     });
 
     it('should handle workflow with large number of listings', async () => {
-      const largeListing = Array(1000).fill(null).map((_, index) =>
-        `https://encheres-publiques.fr/lot/test-${index}`
+      const largeListing = Array(1000)
+        .fill(null)
+        .map((_, index) => `https://encheres-publiques.fr/lot/test-${index}`);
+      const largeRawOpportunities: RawAuctionOpportunity[] = largeListing.map(
+        (url, index) => ({
+          url,
+          label: `Property ${index}`,
+          address: `Address ${index}`,
+          city: 'Paris',
+          department: 75,
+          auctionDate: '2025-01-15T14:00:00.000Z',
+          extraData: { url },
+        })
       );
-      const largeRawOpportunities: RawAuctionOpportunity[] = largeListing.map((url, index) => ({
-        url,
-        label: `Property ${index}`,
-        address: `Address ${index}`,
-        city: 'Paris',
-        department: 75,
-        auctionDate: '2025-01-15T14:00:00.000Z',
-        extraData: { url },
-      }));
-      const largeEnrichedOpportunities: AuctionOpportunity[] = largeRawOpportunities.map(opp => ({
-        ...opp,
-        zipCode: 75001,
-        latitude: 48.8566,
-        longitude: 2.3522,
-      }));
+      const largeEnrichedOpportunities: AuctionOpportunity[] =
+        largeRawOpportunities.map((opp) => ({
+          ...opp,
+          zipCode: 75001,
+          latitude: 48.8566,
+          longitude: 2.3522,
+        }));
 
-      mockListingExtractorService.extractAllListingsWithPagination.mockResolvedValue(largeListing);
-      mockDetailScraperService.scrapeDetailsBatch.mockResolvedValue(largeRawOpportunities);
-      mockGeocodingService.geocodeBatch.mockResolvedValue(largeEnrichedOpportunities);
+      mockListingExtractorService.extractAllListingsWithPagination.mockResolvedValue(
+        largeListing
+      );
+      mockDetailScraperService.scrapeDetailsBatch.mockResolvedValue(
+        largeRawOpportunities
+      );
+      mockGeocodingService.geocodeBatch.mockResolvedValue(
+        largeEnrichedOpportunities
+      );
 
       const result = await service.scrapeAuctions();
 
       expect(result).toHaveLength(1000);
-      expect(service['logger'].log).toHaveBeenCalledWith('Found 1000 listing URLs');
-      expect(service['logger'].log).toHaveBeenCalledWith('Scraped 1000 opportunities');
-      expect(service['logger'].log).toHaveBeenCalledWith('Geocoded 1000 opportunities');
+      expect(service['logger'].log).toHaveBeenCalledWith(
+        'Found 1000 listing URLs'
+      );
+      expect(service['logger'].log).toHaveBeenCalledWith(
+        'Scraped 1000 opportunities'
+      );
+      expect(service['logger'].log).toHaveBeenCalledWith(
+        'Geocoded 1000 opportunities'
+      );
     });
 
     it('should pass correct parameters to services', async () => {
@@ -348,10 +435,9 @@ describe('EncheresPubliquesScraperService', () => {
       );
 
       // Verify correct pagination limit
-      expect(mockListingExtractorService.extractAllListingsWithPagination).toHaveBeenCalledWith(
-        mockPage,
-        50
-      );
+      expect(
+        mockListingExtractorService.extractAllListingsWithPagination
+      ).toHaveBeenCalledWith(mockPage, 50);
 
       // Verify correct batch size for detail scraping
       expect(mockDetailScraperService.scrapeDetailsBatch).toHaveBeenCalledWith(
@@ -364,8 +450,11 @@ describe('EncheresPubliquesScraperService', () => {
       await service.scrapeAuctions();
 
       // Verify data flows correctly between services
-      const extractorCall = mockListingExtractorService.extractAllListingsWithPagination.mock.calls[0];
-      const detailScraperCall = mockDetailScraperService.scrapeDetailsBatch.mock.calls[0];
+      const extractorCall =
+        mockListingExtractorService.extractAllListingsWithPagination.mock
+          .calls[0];
+      const detailScraperCall =
+        mockDetailScraperService.scrapeDetailsBatch.mock.calls[0];
       const geocodingCall = mockGeocodingService.geocodeBatch.mock.calls[0];
 
       expect(detailScraperCall[0]).toEqual(mockListingUrls); // URLs from extractor
@@ -373,8 +462,12 @@ describe('EncheresPubliquesScraperService', () => {
     });
 
     it('should handle null/undefined results from services gracefully', async () => {
-      mockListingExtractorService.extractAllListingsWithPagination.mockResolvedValue(null as any);
-      mockDetailScraperService.scrapeDetailsBatch.mockResolvedValue(null as any);
+      mockListingExtractorService.extractAllListingsWithPagination.mockResolvedValue(
+        null as any
+      );
+      mockDetailScraperService.scrapeDetailsBatch.mockResolvedValue(
+        null as any
+      );
       mockGeocodingService.geocodeBatch.mockResolvedValue(null as any);
 
       await expect(service.scrapeAuctions()).rejects.toThrow();
@@ -394,14 +487,18 @@ describe('EncheresPubliquesScraperService', () => {
       mockBrowserService.handleCookieConsent.mockImplementation(async () => {
         callOrder.push('cookies');
       });
-      mockListingExtractorService.extractAllListingsWithPagination.mockImplementation(async () => {
-        callOrder.push('extract');
-        return mockListingUrls;
-      });
-      mockDetailScraperService.scrapeDetailsBatch.mockImplementation(async () => {
-        callOrder.push('scrape');
-        return mockRawOpportunities;
-      });
+      mockListingExtractorService.extractAllListingsWithPagination.mockImplementation(
+        async () => {
+          callOrder.push('extract');
+          return mockListingUrls;
+        }
+      );
+      mockDetailScraperService.scrapeDetailsBatch.mockImplementation(
+        async () => {
+          callOrder.push('scrape');
+          return mockRawOpportunities;
+        }
+      );
       mockGeocodingService.geocodeBatch.mockImplementation(async () => {
         callOrder.push('geocode');
         return mockEnrichedOpportunities;
@@ -419,7 +516,7 @@ describe('EncheresPubliquesScraperService', () => {
         'extract',
         'scrape',
         'geocode',
-        'close'
+        'close',
       ]);
     });
   });

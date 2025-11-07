@@ -4,7 +4,7 @@ NestJS worker for web scraping real estate opportunities using Playwright.
 
 ## Features
 
-- **Queue-based architecture**: BullMQ with single queue (SCRAPING_QUEUE)
+- **Queue-based architecture**: BullMQ with single queue (AUCTIONS_SCRAPING_QUEUE)
 - **Concurrency**: 1 job at a time (safe for heavy scraping operations)
 - **Playwright integration**: Headless browser automation
 - **Pagination support**: Automatically processes all listing pages

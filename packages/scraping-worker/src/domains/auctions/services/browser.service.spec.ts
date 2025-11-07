@@ -88,7 +88,9 @@ describe('BrowserService', () => {
       });
 
       expect(mockContext.newPage).toHaveBeenCalledTimes(1);
-      expect(service['logger'].log).toHaveBeenCalledWith('Browser initialized successfully');
+      expect(service['logger'].log).toHaveBeenCalledWith(
+        'Browser initialized successfully'
+      );
     });
   });
 
@@ -115,8 +117,9 @@ describe('BrowserService', () => {
     it('should throw error if browser not initialized', async () => {
       const uninitializedService = new BrowserService();
 
-      await expect(uninitializedService.navigateToUrl('https://test.com'))
-        .rejects.toThrow('Browser not initialized');
+      await expect(
+        uninitializedService.navigateToUrl('https://test.com')
+      ).rejects.toThrow('Browser not initialized');
     });
   });
 
@@ -136,7 +139,10 @@ describe('BrowserService', () => {
 
       await service.handleCookieConsent();
 
-      expect(mockPage.waitForSelector).toHaveBeenCalledWith('.fc-consent-root', { timeout: 3000 });
+      expect(mockPage.waitForSelector).toHaveBeenCalledWith(
+        '.fc-consent-root',
+        { timeout: 3000 }
+      );
       expect(mockPage.locator).toHaveBeenCalledWith('.fc-cta-consent');
       expect(mockLocator.click).toHaveBeenCalled();
     });
@@ -144,8 +150,9 @@ describe('BrowserService', () => {
     it('should throw error if browser not initialized', async () => {
       const uninitializedService = new BrowserService();
 
-      await expect(uninitializedService.handleCookieConsent())
-        .rejects.toThrow('Browser not initialized');
+      await expect(uninitializedService.handleCookieConsent()).rejects.toThrow(
+        'Browser not initialized'
+      );
     });
   });
 
@@ -157,24 +164,31 @@ describe('BrowserService', () => {
     it('should wait for content with default timeout', async () => {
       await service.waitForContent();
 
-      expect(mockPage.waitForLoadState).toHaveBeenCalledWith('domcontentloaded', {
-        timeout: 5000,
-      });
+      expect(mockPage.waitForLoadState).toHaveBeenCalledWith(
+        'domcontentloaded',
+        {
+          timeout: 5000,
+        }
+      );
     });
 
     it('should wait for content with custom timeout', async () => {
       await service.waitForContent(10000);
 
-      expect(mockPage.waitForLoadState).toHaveBeenCalledWith('domcontentloaded', {
-        timeout: 10000,
-      });
+      expect(mockPage.waitForLoadState).toHaveBeenCalledWith(
+        'domcontentloaded',
+        {
+          timeout: 10000,
+        }
+      );
     });
 
     it('should throw error if browser not initialized', async () => {
       const uninitializedService = new BrowserService();
 
-      await expect(uninitializedService.waitForContent())
-        .rejects.toThrow('Browser not initialized');
+      await expect(uninitializedService.waitForContent()).rejects.toThrow(
+        'Browser not initialized'
+      );
     });
   });
 
@@ -188,8 +202,7 @@ describe('BrowserService', () => {
     });
 
     it('should throw error if browser not initialized', () => {
-      expect(() => service.getPage())
-        .toThrow('Browser not initialized');
+      expect(() => service.getPage()).toThrow('Browser not initialized');
     });
   });
 

@@ -57,14 +57,21 @@ describe('AuctionsProcessor', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuctionsProcessor,
-        { provide: EncheresPubliquesScraperService, useValue: mockScraperService },
+        {
+          provide: EncheresPubliquesScraperService,
+          useValue: mockScraperService,
+        },
         { provide: AuctionsOpportunityRepository, useValue: mockRepository },
       ],
     }).compile();
 
     processor = module.get<AuctionsProcessor>(AuctionsProcessor);
-    scraperService = module.get<EncheresPubliquesScraperService>(EncheresPubliquesScraperService);
-    repository = module.get<AuctionsOpportunityRepository>(AuctionsOpportunityRepository);
+    scraperService = module.get<EncheresPubliquesScraperService>(
+      EncheresPubliquesScraperService
+    );
+    repository = module.get<AuctionsOpportunityRepository>(
+      AuctionsOpportunityRepository
+    );
 
     // Suppress logger
     jest.spyOn(processor['logger'], 'log').mockImplementation();
@@ -78,17 +85,18 @@ describe('AuctionsProcessor', () => {
   });
 
   describe('processScrapeAuctions', () => {
-    const createMockJob = (name: string, data: any = {}): Job => ({
-      name,
-      data,
-      id: 'test-job-123',
-      timestamp: Date.now(),
-      processedOn: Date.now(),
-      finishedOn: null,
-      progress: jest.fn(),
-      log: jest.fn(),
-      updateProgress: jest.fn(),
-    } as any);
+    const createMockJob = (name: string, data: any = {}): Job =>
+      ({
+        name,
+        data,
+        id: 'test-job-123',
+        timestamp: Date.now(),
+        processedOn: Date.now(),
+        finishedOn: null,
+        progress: jest.fn(),
+        log: jest.fn(),
+        updateProgress: jest.fn(),
+      }) as any;
 
     beforeEach(() => {
       mockScraperService.scrapeAuctions.mockResolvedValue(mockOpportunities);
@@ -107,12 +115,22 @@ describe('AuctionsProcessor', () => {
       });
 
       expect(mockScraperService.scrapeAuctions).toHaveBeenCalledTimes(1);
-      expect(mockRepository.insertOpportunities).toHaveBeenCalledWith(mockOpportunities);
+      expect(mockRepository.insertOpportunities).toHaveBeenCalledWith(
+        mockOpportunities
+      );
 
-      expect(processor['logger'].log).toHaveBeenCalledWith('Starting auction scraping job...');
-      expect(processor['logger'].log).toHaveBeenCalledWith('Found 2 opportunities to process');
-      expect(processor['logger'].log).toHaveBeenCalledWith('Successfully persisted 2 opportunities');
-      expect(processor['logger'].log).toHaveBeenCalledWith('Auction scraping job completed successfully');
+      expect(processor['logger'].log).toHaveBeenCalledWith(
+        'Starting auction scraping job...'
+      );
+      expect(processor['logger'].log).toHaveBeenCalledWith(
+        'Found 2 opportunities to process'
+      );
+      expect(processor['logger'].log).toHaveBeenCalledWith(
+        'Successfully persisted 2 opportunities'
+      );
+      expect(processor['logger'].log).toHaveBeenCalledWith(
+        'Auction scraping job completed successfully'
+      );
     });
 
     it('should reject job with invalid name', async () => {
@@ -138,8 +156,12 @@ describe('AuctionsProcessor', () => {
         persistedOpportunities: 0,
       });
 
-      expect(processor['logger'].log).toHaveBeenCalledWith('Found 0 opportunities to process');
-      expect(processor['logger'].log).toHaveBeenCalledWith('No opportunities to persist');
+      expect(processor['logger'].log).toHaveBeenCalledWith(
+        'Found 0 opportunities to process'
+      );
+      expect(processor['logger'].log).toHaveBeenCalledWith(
+        'No opportunities to persist'
+      );
       expect(mockRepository.insertOpportunities).not.toHaveBeenCalled();
     });
 
@@ -148,7 +170,9 @@ describe('AuctionsProcessor', () => {
       mockScraperService.scrapeAuctions.mockRejectedValue(scraperError);
       const job = createMockJob('scrape-auctions');
 
-      await expect(processor.processScrapeAuctions(job)).rejects.toThrow('Scraping failed');
+      await expect(processor.processScrapeAuctions(job)).rejects.toThrow(
+        'Scraping failed'
+      );
 
       expect(processor['logger'].error).toHaveBeenCalledWith(
         'Failed to scrape auctions:',
@@ -162,7 +186,9 @@ describe('AuctionsProcessor', () => {
       mockRepository.insertOpportunities.mockRejectedValue(repositoryError);
       const job = createMockJob('scrape-auctions');
 
-      await expect(processor.processScrapeAuctions(job)).rejects.toThrow('Database insertion failed');
+      await expect(processor.processScrapeAuctions(job)).rejects.toThrow(
+        'Database insertion failed'
+      );
 
       expect(processor['logger'].error).toHaveBeenCalledWith(
         'Failed to persist opportunities:',
@@ -183,7 +209,9 @@ describe('AuctionsProcessor', () => {
         persistedOpportunities: 0,
       });
 
-      expect(processor['logger'].log).toHaveBeenCalledWith('Found 0 opportunities to process');
+      expect(processor['logger'].log).toHaveBeenCalledWith(
+        'Found 0 opportunities to process'
+      );
     });
 
     it('should handle undefined scraping results', async () => {
@@ -200,16 +228,20 @@ describe('AuctionsProcessor', () => {
     });
 
     it('should log detailed statistics for large datasets', async () => {
-      const largeOpportunitiesArray: AuctionOpportunity[] = Array(1000).fill(null).map((_, index) => ({
-        ...mockOpportunities[0],
-        url: `https://test.com/lot-${index}`,
-        extraData: {
-          ...mockOpportunities[0].extraData,
-          auctionId: `id-${index}`,
-        },
-      }));
+      const largeOpportunitiesArray: AuctionOpportunity[] = Array(1000)
+        .fill(null)
+        .map((_, index) => ({
+          ...mockOpportunities[0],
+          url: `https://test.com/lot-${index}`,
+          extraData: {
+            ...mockOpportunities[0].extraData,
+            auctionId: `id-${index}`,
+          },
+        }));
 
-      mockScraperService.scrapeAuctions.mockResolvedValue(largeOpportunitiesArray);
+      mockScraperService.scrapeAuctions.mockResolvedValue(
+        largeOpportunitiesArray
+      );
       const job = createMockJob('scrape-auctions');
 
       const result = await processor.processScrapeAuctions(job);
@@ -220,8 +252,12 @@ describe('AuctionsProcessor', () => {
         persistedOpportunities: 1000,
       });
 
-      expect(processor['logger'].log).toHaveBeenCalledWith('Found 1000 opportunities to process');
-      expect(processor['logger'].log).toHaveBeenCalledWith('Successfully persisted 1000 opportunities');
+      expect(processor['logger'].log).toHaveBeenCalledWith(
+        'Found 1000 opportunities to process'
+      );
+      expect(processor['logger'].log).toHaveBeenCalledWith(
+        'Successfully persisted 1000 opportunities'
+      );
     });
 
     it('should handle partial persistence scenarios', async () => {
@@ -256,7 +292,8 @@ describe('AuctionsProcessor', () => {
       // Mock Date.now to control timing
       const startTime = 1000000;
       const endTime = 1005000; // 5 seconds later
-      jest.spyOn(Date, 'now')
+      jest
+        .spyOn(Date, 'now')
         .mockReturnValueOnce(startTime)
         .mockReturnValueOnce(endTime);
 
@@ -290,7 +327,9 @@ describe('AuctionsProcessor', () => {
 
       const job = createMockJob('scrape-auctions');
 
-      await expect(processor.processScrapeAuctions(job)).rejects.toThrow('Service temporarily unavailable');
+      await expect(processor.processScrapeAuctions(job)).rejects.toThrow(
+        'Service temporarily unavailable'
+      );
 
       expect(processor['logger'].error).toHaveBeenCalledWith(
         'Failed to scrape auctions:',
@@ -305,7 +344,9 @@ describe('AuctionsProcessor', () => {
 
       const job = createMockJob('scrape-auctions');
 
-      await expect(processor.processScrapeAuctions(job)).rejects.toThrow('Operation timed out');
+      await expect(processor.processScrapeAuctions(job)).rejects.toThrow(
+        'Operation timed out'
+      );
 
       expect(processor['logger'].error).toHaveBeenCalledWith(
         'Failed to scrape auctions:',
@@ -319,7 +360,9 @@ describe('AuctionsProcessor', () => {
 
       await processor.processScrapeAuctions(job);
 
-      expect(processor['logger'].log).toHaveBeenCalledWith('Starting auction scraping job...');
+      expect(processor['logger'].log).toHaveBeenCalledWith(
+        'Starting auction scraping job...'
+      );
       // The processor should have access to job metadata if needed for debugging
     });
 
@@ -330,11 +373,15 @@ describe('AuctionsProcessor', () => {
 
       const job = createMockJob('scrape-auctions');
 
-      await expect(processor.processScrapeAuctions(job)).rejects.toThrow('Some records failed to insert');
+      await expect(processor.processScrapeAuctions(job)).rejects.toThrow(
+        'Some records failed to insert'
+      );
 
       // Should have attempted scraping first
       expect(mockScraperService.scrapeAuctions).toHaveBeenCalledTimes(1);
-      expect(processor['logger'].log).toHaveBeenCalledWith('Found 2 opportunities to process');
+      expect(processor['logger'].log).toHaveBeenCalledWith(
+        'Found 2 opportunities to process'
+      );
 
       // Then failed during persistence
       expect(processor['logger'].error).toHaveBeenCalledWith(

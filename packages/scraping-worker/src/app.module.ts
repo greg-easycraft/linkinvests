@@ -5,6 +5,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { AppController } from './app.controller';
 import { DatabaseModule } from './database';
 import { AuctionsModule } from './domains/auctions';
+import { DeceasesModule } from './domains/deceases';
 import { config, ConfigModule } from './config';
 
 @Module({
@@ -18,6 +19,7 @@ import { config, ConfigModule } from './config';
       },
     }),
     AuctionsModule,
+    DeceasesModule,
   ],
   controllers: [AppController],
 })

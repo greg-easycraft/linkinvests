@@ -13,6 +13,12 @@ const configSchema = z.object({
   REDIS_URL: z.string(),
   BASIC_AUTH_USERNAME: z.string(),
   BASIC_AUTH_PASSWORD: z.string(),
+  // S3 Configuration
+  S3_REGION: z.string().default('us-east-1'),
+  S3_BUCKET: z.string(),
+  S3_ACCESS_KEY_ID: z.string().optional(),
+  S3_SECRET_ACCESS_KEY: z.string().optional(),
+  S3_ENDPOINT_URL: z.string().optional(),
 });
 
 export const config = configSchema.parse({
