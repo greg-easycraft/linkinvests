@@ -16,6 +16,7 @@
 
 body {
   color: var(--secundary);
-  background: var(--primary);
+  background: var(--primary) url('/background.png') no-repeat center center fixed;
+  background-size: cover;
   font-family: Arial, Helvetica, sans-serif;
 }

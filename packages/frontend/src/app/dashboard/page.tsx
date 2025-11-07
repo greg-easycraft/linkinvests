@@ -142,7 +142,7 @@ export default function DashboardPage(): React.ReactElement {
               }`}
           >
             {isFiltersSidebarOpen && (
-              <div className="p-4">
+              <div className="p-4 h-full">
                 <OpportunityFilters
                   filters={filters}
                   onFiltersChange={setFilters}

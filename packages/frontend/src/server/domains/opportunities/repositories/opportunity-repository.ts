@@ -1,8 +1,9 @@
-import { and, between, eq, gte, inArray, lte, sql, type SQL } from "drizzle-orm";
+import { and, eq, gte, inArray, lte, sql, type SQL } from "drizzle-orm";
 import type { DomainDbType } from "~/server/db";
 import { opportunities as opportunitiesTable } from "@linkinvests/db";
 import type { IOpportunityRepository, Opportunity } from "../lib.types";
 import type { OpportunityFilters } from "~/types/filters";
+import { calculateStartDate } from "~/constants/date-periods";
 
 export class DrizzleOpportunityRepository implements IOpportunityRepository {
   constructor(private readonly db: DomainDbType) {}
@@ -75,23 +76,22 @@ export class DrizzleOpportunityRepository implements IOpportunityRepository {
       conditions.push(inArray(opportunitiesTable.type, filters.types));
     }
 
-    // Filter by department
-    if (filters.department) {
-      conditions.push(eq(opportunitiesTable.department, filters.department));
+    // Filter by departments (support multiple departments)
+    if (filters.departments && filters.departments.length > 0) {
+      conditions.push(inArray(opportunitiesTable.department, filters.departments));
     }
 
-    // Filter by zipCode
-    if (filters.zipCode) {
-      conditions.push(eq(opportunitiesTable.zipCode, filters.zipCode));
+    // Filter by zipCodes (support multiple zip codes)
+    if (filters.zipCodes && filters.zipCodes.length > 0) {
+      conditions.push(inArray(opportunitiesTable.zipCode, filters.zipCodes));
     }
 
-    // Filter by date range
-    if (filters.dateRange) {
+    if (filters.datePeriod) {
+      const dateThreshold = calculateStartDate(filters.datePeriod);
       conditions.push(
-        between(
+        gte(
           opportunitiesTable.opportunityDate,
-          filters.dateRange.from.toISOString().split("T")[0] ?? "",
-          filters.dateRange.to.toISOString().split("T")[0] ?? "",
+          dateThreshold.toISOString().split("T")[0] ?? "",
         ),
       );
     }

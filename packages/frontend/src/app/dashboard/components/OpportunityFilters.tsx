@@ -1,10 +1,14 @@
 "use client";
 
 import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import { MultiSelect, type MultiSelectOption } from "~/components/ui/multi-select";
+import { MultiInput } from "~/components/ui/multi-input";
 import { OpportunityType } from "@linkinvests/shared";
-import type { OpportunityFilters as IOpportunityFilters } from "~/types/filters";
+import type { OpportunityFilters as IOpportunityFilters, DatePeriod } from "~/types/filters";
+import { FRENCH_DEPARTMENTS } from "~/constants/departments";
+import { DATE_PERIOD_OPTIONS } from "~/constants/date-periods";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { ViewToggle } from "./ViewToggle";
 
 type ViewType = "list" | "map";
@@ -35,128 +39,127 @@ export function OpportunityFilters({
   viewType,
   onViewTypeChange,
 }: OpportunityFiltersProps): React.ReactElement {
-  const handleTypeToggle = (type: OpportunityType): void => {
-    const currentTypes = filters.types ?? [];
-    const newTypes = currentTypes.includes(type)
-      ? currentTypes.filter((t) => t !== type)
-      : [...currentTypes, type];
 
-    onFiltersChange({ ...filters, types: newTypes });
+  // Convert departments to MultiSelectOption format
+  const departmentOptions: MultiSelectOption[] = FRENCH_DEPARTMENTS.map((dept) => ({
+    label: dept.label,
+    value: dept.id.toString(),
+    searchValue: `${dept.id} ${dept.name}`,
+  }));
+
+  // Convert opportunity types to MultiSelectOption format
+  const typeOptions: MultiSelectOption[] = Object.values(OpportunityType).map((type) => ({
+    label: TYPE_LABELS[type],
+    value: type,
+  }));
+
+  const handleDepartmentChange = (selectedValues: string[]): void => {
+    const departmentIds = selectedValues.map((value) => parseInt(value, 10));
+    onFiltersChange({ ...filters, departments: departmentIds.length > 0 ? departmentIds : undefined });
+  };
+
+  const handleZipCodeChange = (zipCodes: string[]): void => {
+    const zipCodeNumbers = zipCodes
+      .map((value) => parseInt(value, 10))
+      .filter((num) => !isNaN(num) && num > 0);
+    onFiltersChange({ ...filters, zipCodes: zipCodeNumbers.length > 0 ? zipCodeNumbers : undefined });
+  };
+
+  const handleTypeMultiSelectChange = (selectedValues: string[]): void => {
+    const selectedTypes = selectedValues as OpportunityType[];
+    onFiltersChange({ ...filters, types: selectedTypes.length > 0 ? selectedTypes : undefined });
+  };
+
+  // Validator for zip codes (French postal codes are 5 digits)
+  const validateZipCode = (value: string): boolean => {
+    const num = parseInt(value, 10);
+    return !isNaN(num) && num > 0 && value.length === 5;
+  };
+
+  const handleDatePeriodChange = (value: string): void => {
+    const datePeriod = value === "" ? undefined : (value as DatePeriod);
+    onFiltersChange({ ...filters, datePeriod, dateRange: undefined }); // Clear old dateRange when using period
   };
 
   return (
-    <Card className="bg-[var(--secundary)] text-[var(--primary)]">
-      <CardHeader>
+    <Card className="bg-[var(--secundary)] text-[var(--primary)] h-full flex flex-col">
+      <CardHeader className="flex-shrink-0">
         {/* View Toggle */}
         <div>
           <ViewToggle value={viewType} onValueChange={onViewTypeChange} />
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <CardTitle className="text-lg">Filtres</CardTitle>
-        {/* Type Filter */}
-        <div>
-          <label className="text-sm font-medium mb-2 block font-heading">Type</label>
-          <div className="flex flex-wrap gap-2">
-            {Object.values(OpportunityType).map((type) => (
-              <Button
-                key={type}
-                variant={filters.types?.includes(type) ? "default" : "outline"}
-                size="sm"
-                onClick={() => handleTypeToggle(type)}
-                type="button"
-              >
-                {TYPE_LABELS[type]}
-              </Button>
-            ))}
-          </div>
-        </div>
+      <CardContent className="flex-1 overflow-y-auto">
+        <div className="space-y-4">
+          <CardTitle className="text-lg">Filtres</CardTitle>
 
-        {/* Department Filter */}
-        <div>
-          <label className="text-sm font-medium mb-2 block font-heading">Département</label>
-          <Input
-            type="number"
-            placeholder="Numéro de département"
-            value={filters.department ?? ""}
-            onChange={(e) =>
-              onFiltersChange({
-                ...filters,
-                department: e.target.value ? parseInt(e.target.value, 10) : undefined,
-              })
-            }
-          />
-        </div>
-
-        {/* Zip Code Filter */}
-        <div>
-          <label className="text-sm font-medium mb-2 block font-heading">Code postal</label>
-          <Input
-            type="number"
-            placeholder="Code postal"
-            value={filters.zipCode ?? ""}
-            onChange={(e) =>
-              onFiltersChange({
-                ...filters,
-                zipCode: e.target.value ? parseInt(e.target.value, 10) : undefined,
-              })
-            }
-          />
-        </div>
-
-        {/* Date Range Filters */}
-        <div className="space-y-3">
+          {/* Type Filter - Multi-select */}
           <div>
-            <label className="text-sm font-medium mb-2 block font-heading">Date après le</label>
-            <Input
-              type="date"
-              value={
-                filters.dateRange?.from
-                  ? new Date(filters.dateRange.from).toISOString().split("T")[0]
-                  : ""
-              }
-              onChange={(e) => {
-                const newFrom = e.target.value ? new Date(e.target.value) : undefined;
-                onFiltersChange({
-                  ...filters,
-                  dateRange: newFrom
-                    ? {
-                      from: newFrom,
-                      to: filters.dateRange?.to ?? new Date(),
-                    }
-                    : undefined,
-                });
-              }}
+            <label className="text-sm font-medium mb-2 block font-heading">Types d&apos;opportunité</label>
+            <MultiSelect
+              options={typeOptions}
+              selected={filters.types?.map(String) ?? []}
+              onChange={handleTypeMultiSelectChange}
+              placeholder="Sélectionner les types..."
+              searchPlaceholder="Rechercher un type..."
+              maxDisplayItems={2}
             />
           </div>
+
+          {/* Department Filter - Multi-select with search */}
           <div>
-            <label className="text-sm font-medium mb-2 block font-heading">Date avant le</label>
-            <Input
-              type="date"
-              value={
-                filters.dateRange?.to
-                  ? new Date(filters.dateRange.to).toISOString().split("T")[0]
-                  : ""
-              }
-              onChange={(e) => {
-                const newTo = e.target.value ? new Date(e.target.value) : undefined;
-                onFiltersChange({
-                  ...filters,
-                  dateRange:
-                    newTo || filters.dateRange?.from
-                      ? {
-                        from: filters.dateRange?.from ?? new Date("2000-01-01"),
-                        to: newTo ?? new Date(),
-                      }
-                      : undefined,
-                });
-              }}
+            <label className="text-sm font-medium mb-2 block font-heading">Départements</label>
+            <MultiSelect
+              options={departmentOptions}
+              selected={filters.departments?.map(String) ?? []}
+              onChange={handleDepartmentChange}
+              placeholder="Sélectionner des départements..."
+              searchPlaceholder="Rechercher par numéro ou nom..."
+              maxDisplayItems={3}
             />
           </div>
-        </div>
 
-        {/* Action Buttons */}
-        <div className="flex gap-2 pt-2">
+          {/* Zip Code Filter - Multi-input */}
+          <div>
+            <label className="text-sm font-medium mb-2 block font-heading">Codes postaux</label>
+            <MultiInput
+              values={filters.zipCodes?.map(String) ?? []}
+              onChange={handleZipCodeChange}
+              placeholder="Entrez les codes postaux séparés par des virgules..."
+              type="number"
+              validator={validateZipCode}
+              maxValues={10}
+            />
+            <p className="text-xs text-muted-foreground mt-1">
+              Format: 5 chiffres (ex: 75001, 13001)
+            </p>
+          </div>
+
+          {/* Date Period Filter */}
+          <div>
+            <label className="text-sm font-medium mb-2 block font-heading">Opportunités depuis</label>
+            <Select
+              value={filters.datePeriod ?? ""}
+              onValueChange={handleDatePeriodChange}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Toutes les opportunités" />
+              </SelectTrigger>
+              <SelectContent>
+                {DATE_PERIOD_OPTIONS.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      </CardContent>
+
+      {/* Fixed Action Buttons */}
+      <div className="flex-shrink-0 p-6 pt-0">
+        <div className="flex gap-2">
           <Button onClick={onApply} className="flex-1">
             Appliquer
           </Button>
@@ -164,7 +167,7 @@ export function OpportunityFilters({
             Réinitialiser
           </Button>
         </div>
-      </CardContent>
+      </div>
     </Card>
   );
 }

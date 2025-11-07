@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[var(--primary)]">
+    <div className="min-h-screen flex items-center justify-center">
       <div className="w-full max-w-md px-4">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-4">

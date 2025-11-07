@@ -12,11 +12,26 @@ export interface DateRange {
   to: Date;
 }
 
+export type DatePeriod = "last_month" | "last_3_months" | "6_months" | "9_months" | "12_months" | "18_months" | "24_months";
+
+export interface DatePeriodOption {
+  value: DatePeriod;
+  label: string;
+  months: number;
+}
+
+export interface DepartmentOption {
+  id: number;
+  name: string;
+  label: string; // Formatted as "ID - Name" for display
+}
+
 export interface OpportunityFilters {
   types?: OpportunityType[];
-  department?: number;
-  zipCode?: number;
-  dateRange?: DateRange;
+  departments?: number[];
+  zipCodes?: number[];
+  dateRange?: DateRange; // Legacy support - uses 'from' date as threshold
+  datePeriod?: DatePeriod; // New predefined period - filters for opportunities after start date
   bounds?: MapBounds;
   limit?: number;
   offset?: number;

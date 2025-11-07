@@ -122,15 +122,6 @@ export function OpportunityList({
                       </div>
                     </div>
 
-                    {/* Department */}
-                    <div className="flex items-start gap-2">
-                      <Building2 className="h-4 w-4 mt-0.5 flex-shrink-0 text-[var(--primary)] opacity-70" />
-                      <div>
-                        <div className="text-xs opacity-70 font-heading">Département</div>
-                        <div>{opportunity.department} - {opportunity.zipCode}</div>
-                      </div>
-                    </div>
-
                     {/* Date */}
                     <div className="flex items-start gap-2">
                       <Calendar className="h-4 w-4 mt-0.5 flex-shrink-0 text-[var(--primary)] opacity-70" />
