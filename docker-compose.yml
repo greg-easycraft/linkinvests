@@ -52,108 +52,108 @@ services:
     restart: unless-stopped
 
   # Application Services
-  frontend:
-    build:
-      context: .
-      dockerfile: docker/app.Dockerfile
-    container_name: linkinvests-frontend
-    ports:
-      - '3000:3000'
-    environment:
-      - NODE_ENV=production
-      - DATABASE_URL=postgresql://linkinvests:linkinvests@postgres:5432/linkinvests
-      - NEXTAUTH_SECRET=your-secret-key-here
-      - NEXTAUTH_URL=http://localhost:3000
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:3000/api/health']
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-    restart: unless-stopped
+  # frontend:
+  #   build:
+  #     context: .
+  #     dockerfile: docker/app.Dockerfile
+  #   container_name: linkinvests-frontend
+  #   ports:
+  #     - '3000:3000'
+  #   environment:
+  #     - NODE_ENV=production
+  #     - DATABASE_URL=postgresql://linkinvests:linkinvests@postgres:5432/linkinvests
+  #     - NEXTAUTH_SECRET=your-secret-key-here
+  #     - NEXTAUTH_URL=http://localhost:3000
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
+  #   healthcheck:
+  #     test: ['CMD', 'curl', '-f', 'http://localhost:3000/api/health']
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #     start_period: 40s
+  #   restart: unless-stopped
 
-  scraping-worker:
-    build:
-      context: .
-      dockerfile: docker/scraper.Dockerfile
-    container_name: linkinvests-scraping-worker
-    ports:
-      - '8081:8081'
-    environment:
-      - NODE_ENV=production
-      - DATABASE_URL=postgresql://linkinvests:linkinvests@postgres:5432/linkinvests
-      - REDIS_URL=redis://redis:6379
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:8081/health']
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-    restart: unless-stopped
+  # scraping-worker:
+  #   build:
+  #     context: .
+  #     dockerfile: docker/scraper.Dockerfile
+  #   container_name: linkinvests-scraping-worker
+  #   ports:
+  #     - '8081:8081'
+  #   environment:
+  #     - NODE_ENV=production
+  #     - DATABASE_URL=postgresql://linkinvests:linkinvests@postgres:5432/linkinvests
+  #     - REDIS_URL=redis://redis:6379
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
+  #   healthcheck:
+  #     test: ['CMD', 'curl', '-f', 'http://localhost:8081/health']
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #     start_period: 40s
+  #   restart: unless-stopped
 
-  sourcing-worker:
-    build:
-      context: .
-      dockerfile: docker/sourcing-worker.Dockerfile
-    container_name: linkinvests-sourcing-worker
-    ports:
-      - '8080:8080'
-    environment:
-      - NODE_ENV=production
-      - DATABASE_URL=postgresql://linkinvests:linkinvests@postgres:5432/linkinvests
-      - REDIS_URL=redis://redis:6379
-      - S3_ACCESS_KEY_ID=test
-      - S3_SECRET_ACCESS_KEY=test
-      - S3_REGION=eu-west-3
-      - S3_ENDPOINT_URL=http://localstack:4566
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      localstack:
-        condition: service_healthy
-    healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:8080/health']
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-    restart: unless-stopped
+  # sourcing-worker:
+  #   build:
+  #     context: .
+  #     dockerfile: docker/sourcing-worker.Dockerfile
+  #   container_name: linkinvests-sourcing-worker
+  #   ports:
+  #     - '8080:8080'
+  #   environment:
+  #     - NODE_ENV=production
+  #     - DATABASE_URL=postgresql://linkinvests:linkinvests@postgres:5432/linkinvests
+  #     - REDIS_URL=redis://redis:6379
+  #     - S3_ACCESS_KEY_ID=test
+  #     - S3_SECRET_ACCESS_KEY=test
+  #     - S3_REGION=eu-west-3
+  #     - S3_ENDPOINT_URL=http://localstack:4566
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
+  #     localstack:
+  #       condition: service_healthy
+  #   healthcheck:
+  #     test: ['CMD', 'curl', '-f', 'http://localhost:8080/health']
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #     start_period: 40s
+  #   restart: unless-stopped
 
-  queues-monitor:
-    build:
-      context: .
-      dockerfile: docker/queues-monitor.Dockerfile
-    container_name: linkinvests-queues-monitor
-    ports:
-      - '8082:3000'
-    environment:
-      - NODE_ENV=production
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - BULL_BOARD_USERNAME=admin
-      - BULL_BOARD_PASSWORD=admin
-    depends_on:
-      redis:
-        condition: service_healthy
-    healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:8082/']
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-    restart: unless-stopped
+  # queues-monitor:
+  #   build:
+  #     context: .
+  #     dockerfile: docker/queues-monitor.Dockerfile
+  #   container_name: linkinvests-queues-monitor
+  #   ports:
+  #     - '8082:3000'
+  #   environment:
+  #     - NODE_ENV=production
+  #     - REDIS_HOST=redis
+  #     - REDIS_PORT=6379
+  #     - BULL_BOARD_USERNAME=admin
+  #     - BULL_BOARD_PASSWORD=admin
+  #   depends_on:
+  #     redis:
+  #       condition: service_healthy
+  #   healthcheck:
+  #     test: ['CMD', 'curl', '-f', 'http://localhost:8082/']
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #     start_period: 40s
+  #   restart: unless-stopped
 
 volumes:
   redis-data:

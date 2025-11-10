@@ -7,7 +7,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bullmq';
-import { AUCTIONS_SCRAPING_QUEUE } from '@linkinvests/shared';
+import { SCRAPING_QUEUE } from '@linkinvests/shared';
 import type { Queue } from 'bullmq';
 
 import type { ScrapingJobData } from '../types/scraping-job.types';
@@ -17,7 +17,7 @@ export class ScrapingController {
   private readonly logger = new Logger(ScrapingController.name);
 
   constructor(
-    @InjectQueue(AUCTIONS_SCRAPING_QUEUE)
+    @InjectQueue(SCRAPING_QUEUE)
     private readonly scrapingQueue: Queue,
   ) {}
 

@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuctionsCron } from './auctions.cron';
 import { Queue } from 'bullmq';
-import { AUCTIONS_SCRAPING_QUEUE } from '@linkinvests/shared';
+import { SCRAPING_QUEUE } from '@linkinvests/shared';
 
 // Mock BullMQ Queue
 const mockQueue = {
@@ -19,7 +19,7 @@ describe('AuctionsCron', () => {
       providers: [
         AuctionsCron,
         {
-          provide: `BullQueue_${AUCTIONS_SCRAPING_QUEUE}`,
+          provide: `BullQueue_${SCRAPING_QUEUE}`,
           useValue: mockQueue,
         },
       ],

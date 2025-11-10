@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
-import { AUCTIONS_SCRAPING_QUEUE } from '@linkinvests/shared';
+import { SCRAPING_QUEUE } from '@linkinvests/shared';
 
 import type { ScrapingJobData } from '~/types/scraping-job.types';
 
@@ -15,7 +15,7 @@ export class AuctionsCron {
   private readonly logger = new Logger(AuctionsCron.name);
 
   constructor(
-    @InjectQueue(AUCTIONS_SCRAPING_QUEUE)
+    @InjectQueue(SCRAPING_QUEUE)
     private readonly queue: Queue<ScrapingJobData>
   ) {}
 

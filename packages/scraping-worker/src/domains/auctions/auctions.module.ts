@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bullmq';
-import { AUCTIONS_SCRAPING_QUEUE } from '@linkinvests/shared';
+import { SCRAPING_QUEUE } from '@linkinvests/shared';
 
 import { AuctionsProcessor } from './auctions.processor';
 import { AuctionsCron } from './cron/auctions.cron';
@@ -17,7 +17,7 @@ import { config } from '~/config';
 @Module({
   imports: [
     BullModule.registerQueue({
-      name: AUCTIONS_SCRAPING_QUEUE,
+      name: SCRAPING_QUEUE,
       connection: {
         url: config.REDIS_URL,
       },

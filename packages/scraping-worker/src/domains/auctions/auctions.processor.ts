@@ -1,13 +1,13 @@
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Logger } from '@nestjs/common';
-import { AUCTIONS_SCRAPING_QUEUE } from '@linkinvests/shared';
+import { SCRAPING_QUEUE } from '@linkinvests/shared';
 import type { Job } from 'bullmq';
 
 import type { ScrapingJobData } from '~/types/scraping-job.types';
 import { AuctionsOpportunityRepository } from './repositories';
 import { EncheresPubliquesScraperService } from './services';
 
-@Processor(AUCTIONS_SCRAPING_QUEUE, {
+@Processor(SCRAPING_QUEUE, {
   concurrency: 1, // Process ONE job at a time
 })
 export class AuctionsProcessor extends WorkerHost {
