@@ -7,10 +7,6 @@ export interface InseeFileMetadata {
   fileType: 'monthly' | 'yearly';
 }
 
-export interface DeceasesScraperJobData {
-  forceRescrape?: boolean;
-}
-
 export interface ScrapedDeceasesFile {
   id: string;
   fileName: string;

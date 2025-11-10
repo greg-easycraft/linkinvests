@@ -1,17 +1,13 @@
 import { Job } from 'bullmq';
 import { Injectable, Logger } from '@nestjs/common';
-import { Processor, WorkerHost } from '@nestjs/bullmq';
 
 import { S3Service } from '~/storage/s3.service';
-import { InseeScraperService } from './services/insee-scraper.service';
-import { FileDownloadService } from './services/file-download.service';
-import { ScrapedDeceasesFilesRepository } from './repositories/scraped-deceases-files.repository';
+import { InseeScraperService } from './insee-scraper.service';
+import { FileDownloadService } from './file-download.service';
 import type {
-  DeceasesScraperJobData,
   InseeFileMetadata,
   ScrapedDeceasesFile,
-} from './types/deceases.types';
-import { SOURCE_DECEASES_SCRAPER_QUEUE } from '@linkinvests/shared';
+} from '../types/deceases.types';
 
 interface ScraperStats {
   filesFound: number;
@@ -24,26 +20,25 @@ interface ScraperStats {
   }>;
 }
 
+export abstract class AbstractDeceasesRepository {
+  abstract getMonthlyFiles(): Promise<ScrapedDeceasesFile[]>;
+  abstract insertFile(fileName: string): Promise<void>;
+}
+
 @Injectable()
-@Processor(SOURCE_DECEASES_SCRAPER_QUEUE, { concurrency: 1 })
-export class DeceasesScraperProcessor extends WorkerHost {
-  private readonly logger = new Logger(DeceasesScraperProcessor.name);
+export class DeceasesScrapingService {
+  private readonly logger = new Logger(DeceasesScrapingService.name);
 
   constructor(
     private readonly inseeScraperService: InseeScraperService,
     private readonly fileDownloadService: FileDownloadService,
     private readonly s3Service: S3Service,
-    private readonly repository: ScrapedDeceasesFilesRepository
-  ) {
-    super();
-  }
+    private readonly repository: AbstractDeceasesRepository
+  ) {}
 
-  async process(job: Job<DeceasesScraperJobData>): Promise<void> {
-    const { forceRescrape = false } = job.data;
-
-    this.logger.log('Starting deceases scraper job', {
+  async scrapeDeceases(job: Job): Promise<void> {
+    this.logger.log('Starting deceases scraping job', {
       jobId: job.id,
-      forceRescrape,
     });
 
     const stats: ScraperStats = {

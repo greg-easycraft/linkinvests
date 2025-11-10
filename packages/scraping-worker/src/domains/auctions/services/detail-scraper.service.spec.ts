@@ -61,19 +61,21 @@ describe('DetailScraperService', () => {
       const result = await service.scrapeDetails(testUrl);
 
       expect(result).toBeDefined();
-      expect(result.url).toBe(testUrl);
-      expect(result.label).toBe(
+      expect(result.success).toBe(true);
+      expect(result.opportunity).toBeDefined();
+      expect(result.opportunity?.url).toBe(testUrl);
+      expect(result.opportunity?.label).toBe(
         'Une maison/villa située rue Mahé de la Bourdonnais à St Malo'
       );
-      expect(result.address).toBe(
+      expect(result.opportunity?.address).toBe(
         '8 Rue Mahé de la Bourdonnais, 35400 Saint-Malo, France'
       );
-      expect(result.city).toBe('Saint-Malo');
-      expect(result.department).toBe(35);
-      expect(result.latitude).toBe(48.651272);
-      expect(result.longitude).toBe(-2.0259);
-      expect(result.auctionDate).toBeDefined();
-      expect(result.extraData).toEqual({ url: testUrl });
+      expect(result.opportunity?.city).toBe('Saint-Malo');
+      expect(result.opportunity?.department).toBe(35);
+      expect(result.opportunity?.latitude).toBe(48.651272);
+      expect(result.opportunity?.longitude).toBe(-2.0259);
+      expect(result.opportunity?.auctionDate).toBeDefined();
+      expect(result.opportunity?.extraData).toEqual({ url: testUrl });
     });
 
     it('should scrape auction details successfully without address object', async () => {
@@ -83,14 +85,14 @@ describe('DetailScraperService', () => {
       const result = await service.scrapeDetails(testUrl);
 
       expect(result).toBeDefined();
-      expect(result.url).toBe(testUrl);
-      expect(result.label).toBe('Une maison de 107 m²');
-      expect(result.address).toBe('Oinville-Sous-Auneau');
-      expect(result.city).toBe('Oinville-Sous-Auneau');
-      expect(result.department).toBe(28); // Eure-et-Loir
-      expect(result.latitude).toBeUndefined();
-      expect(result.longitude).toBeUndefined();
-      expect(result.auctionDate).toBeDefined();
+      expect(result.opportunity?.url).toBe(testUrl);
+      expect(result.opportunity?.label).toBe('Une maison de 107 m²');
+      expect(result.opportunity?.address).toBe('Oinville-Sous-Auneau');
+      expect(result.opportunity?.city).toBe('Oinville-Sous-Auneau');
+      expect(result.opportunity?.department).toBe(28); // Eure-et-Loir
+      expect(result.opportunity?.latitude).toBeUndefined();
+      expect(result.opportunity?.longitude).toBeUndefined();
+      expect(result.opportunity?.auctionDate).toBeDefined();
     });
 
     it('should handle missing __NEXT_DATA__ gracefully', async () => {
@@ -326,6 +328,8 @@ describe('DetailScraperService', () => {
   describe('extractAuctionDate', () => {
     it('should extract from fermeture_reelle_date (priority 1)', () => {
       const lotData = {
+        id: 'test-lot-date-1',
+        nom: 'Test auction',
         fermeture_reelle_date: 1762970400,
         encheres_fermeture_date: 1762970500,
         fermeture_date: 1762970600,
@@ -338,6 +342,8 @@ describe('DetailScraperService', () => {
 
     it('should fall back to encheres_fermeture_date (priority 2)', () => {
       const lotData = {
+        id: 'test-lot-date-2',
+        nom: 'Test auction 2',
         encheres_fermeture_date: 1762970400,
         fermeture_date: 1762970500,
       };
@@ -349,6 +355,8 @@ describe('DetailScraperService', () => {
 
     it('should fall back to fermeture_date (priority 3)', () => {
       const lotData = {
+        id: 'test-lot-date-3',
+        nom: 'Test auction 3',
         fermeture_date: 1762970400,
       };
 
@@ -358,7 +366,10 @@ describe('DetailScraperService', () => {
     });
 
     it('should return null when no date fields are present', () => {
-      const lotData = {};
+      const lotData = {
+        id: 'test-lot-date-4',
+        nom: 'Test auction 4',
+      };
 
       const result = service['extractAuctionDate'](lotData);
 
@@ -367,6 +378,8 @@ describe('DetailScraperService', () => {
 
     it('should handle null date values', () => {
       const lotData = {
+        id: 'test-lot-date-5',
+        nom: 'Test auction 5',
         fermeture_reelle_date: null,
         encheres_fermeture_date: null,
         fermeture_date: 1762970400,
@@ -385,7 +398,8 @@ describe('DetailScraperService', () => {
 
     it('should extract address from address object (strategy 1)', () => {
       const lotData = {
-        adresse_physique: { __ref: 'Adresse:198825' },
+        id: 'test-lot-addr-1',
+        adresse_physique: { _ref: 'Adresse:198825' },
         nom: 'Test property',
       };
 
@@ -402,8 +416,9 @@ describe('DetailScraperService', () => {
 
     it('should extract address from adresse field when adresse_physique is null', () => {
       const lotData = {
-        adresse_physique: null,
-        adresse: { __ref: 'Adresse:198825' },
+        id: 'test-lot-addr-2',
+        adresse_physique: undefined,
+        adresse: { _ref: 'Adresse:198825' },
         nom: 'Test property',
       };
 
@@ -420,8 +435,9 @@ describe('DetailScraperService', () => {
 
     it('should parse address from nom field (strategy 2)', () => {
       const lotData = {
-        adresse_physique: null,
-        adresse: null,
+        id: 'test-lot-1',
+        adresse_physique: undefined,
+        adresse: undefined,
         nom: 'Une maison de 107 m² située à Oinville-Sous-Auneau',
       };
 
@@ -436,8 +452,9 @@ describe('DetailScraperService', () => {
 
     it('should extract from URL as fallback (strategy 3)', () => {
       const lotData = {
-        adresse_physique: null,
-        adresse: null,
+        id: 'test-lot-2',
+        adresse_physique: undefined,
+        adresse: undefined,
         nom: 'Une maison moderne',
       };
 
@@ -452,7 +469,8 @@ describe('DetailScraperService', () => {
 
     it('should handle missing address reference gracefully', () => {
       const lotData = {
-        adresse_physique: { __ref: 'Adresse:MISSING' },
+        id: 'test-lot-3',
+        adresse_physique: { _ref: 'Adresse:MISSING' },
         nom: 'Test property',
       };
 
@@ -497,10 +515,11 @@ describe('DetailScraperService', () => {
         },
       ];
 
-      testCases.forEach(({ nom, expected }) => {
+      testCases.forEach(({ nom, expected }, index) => {
         const lotData = {
-          adresse_physique: null,
-          adresse: null,
+          id: `test-lot-nom-${index}`,
+          adresse_physique: undefined,
+          adresse: undefined,
           nom,
         };
 
@@ -512,8 +531,9 @@ describe('DetailScraperService', () => {
     it('should handle malformed URLs gracefully', () => {
       const malformedUrl = 'https://invalid-url';
       const lotData = {
-        adresse_physique: null,
-        adresse: null,
+        id: 'test-lot-malformed-url',
+        adresse_physique: undefined,
+        adresse: undefined,
         nom: 'Une maison moderne',
       };
 

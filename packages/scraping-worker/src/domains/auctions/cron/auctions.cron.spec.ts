@@ -8,11 +8,10 @@ const mockQueue = {
   add: jest.fn(),
   getJobs: jest.fn(),
   clean: jest.fn(),
-} as jest.Mocked<Partial<Queue>>;
+};
 
 describe('AuctionsCron', () => {
   let cronService: AuctionsCron;
-  let queue: jest.Mocked<Queue>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -26,7 +25,6 @@ describe('AuctionsCron', () => {
     }).compile();
 
     cronService = module.get<AuctionsCron>(AuctionsCron);
-    queue = cronService['queue'] as jest.Mocked<Queue>;
 
     // Suppress logger
     jest.spyOn(cronService['logger'], 'log').mockImplementation();
@@ -34,9 +32,7 @@ describe('AuctionsCron', () => {
     jest.spyOn(cronService['logger'], 'error').mockImplementation();
 
     // Reset mocks
-    mockQueue.add.mockClear();
-    mockQueue.getJobs.mockClear();
-    mockQueue.clean.mockClear();
+    jest.clearAllMocks();
   });
 
   afterEach(() => {
@@ -46,7 +42,7 @@ describe('AuctionsCron', () => {
 
   describe('handleDailyAuctionScraping', () => {
     beforeEach(() => {
-      mockQueue.add.mockResolvedValue({
+      (mockQueue.add as jest.MockedFunction<any>).mockResolvedValue({
         id: 'job-123',
         name: 'auctions',
         data: {},
@@ -84,7 +80,7 @@ describe('AuctionsCron', () => {
 
     it('should handle job scheduling failure', async () => {
       const schedulingError = new Error('Queue unavailable');
-      mockQueue.add.mockRejectedValue(schedulingError);
+      (mockQueue.add as jest.MockedFunction<any>).mockRejectedValue(schedulingError);
 
       await cronService.handleDailyAuctionScraping();
 
@@ -97,7 +93,7 @@ describe('AuctionsCron', () => {
     it('should configure job options correctly', async () => {
       await cronService.handleDailyAuctionScraping();
 
-      const jobOptions = mockQueue.add.mock.calls[0][2];
+      const jobOptions = (mockQueue.add as jest.MockedFunction<any>).mock.calls[0][2];
       expect(jobOptions).toEqual({
         attempts: 3,
         backoff: {
@@ -111,7 +107,7 @@ describe('AuctionsCron', () => {
 
     it('should handle queue connection issues', async () => {
       const connectionError = new Error('ECONNREFUSED: Connection refused');
-      mockQueue.add.mockRejectedValue(connectionError);
+      (mockQueue.add as jest.MockedFunction<any>).mockRejectedValue(connectionError);
 
       await cronService.handleDailyAuctionScraping();
 
@@ -123,7 +119,7 @@ describe('AuctionsCron', () => {
 
     it('should handle Redis unavailability', async () => {
       const redisError = new Error('Redis connection lost');
-      mockQueue.add.mockRejectedValue(redisError);
+      (mockQueue.add as jest.MockedFunction<any>).mockRejectedValue(redisError);
 
       await cronService.handleDailyAuctionScraping();
 
@@ -135,7 +131,7 @@ describe('AuctionsCron', () => {
 
     it('should handle queue full scenarios', async () => {
       const queueFullError = new Error('Queue is full');
-      mockQueue.add.mockRejectedValue(queueFullError);
+      (mockQueue.add as jest.MockedFunction<any>).mockRejectedValue(queueFullError);
 
       await cronService.handleDailyAuctionScraping();
 
@@ -146,10 +142,10 @@ describe('AuctionsCron', () => {
     });
 
     it('should not throw errors on failure', async () => {
-      mockQueue.add.mockRejectedValue(new Error('Any error'));
+      (mockQueue.add as jest.MockedFunction<any>).mockRejectedValue(new Error('Any error'));
 
       // Should not throw, only log
-      await expect(cronService.handleCron()).resolves.not.toThrow();
+      await expect(cronService.handleDailyAuctionScraping()).resolves.not.toThrow();
     });
 
     it('should schedule with empty job data', async () => {
@@ -174,7 +170,7 @@ describe('AuctionsCron', () => {
 
     it('should handle timeout scenarios', async () => {
       const timeoutError = new Error('Operation timed out');
-      mockQueue.add.mockRejectedValue(timeoutError);
+      (mockQueue.add as jest.MockedFunction<any>).mockRejectedValue(timeoutError);
 
       await cronService.handleDailyAuctionScraping();
 
@@ -186,7 +182,7 @@ describe('AuctionsCron', () => {
 
     it('should handle authentication errors', async () => {
       const authError = new Error('Authentication failed');
-      mockQueue.add.mockRejectedValue(authError);
+      (mockQueue.add as jest.MockedFunction<any>).mockRejectedValue(authError);
 
       await cronService.handleDailyAuctionScraping();
 
@@ -201,7 +197,7 @@ describe('AuctionsCron', () => {
     it('should be configured to run daily at 2 AM Paris time', () => {
       // Check if the cron decorator is properly configured
       // This would typically be verified through metadata or integration tests
-      expect(cronService.handleCron).toBeDefined();
+      expect(cronService.handleDailyAuctionScraping).toBeDefined();
     });
 
     it('should handle timezone considerations', async () => {
@@ -234,14 +230,14 @@ describe('AuctionsCron', () => {
     it('should configure appropriate retry attempts', async () => {
       await cronService.handleDailyAuctionScraping();
 
-      const jobOptions = mockQueue.add.mock.calls[0][2];
+      const jobOptions = (mockQueue.add as jest.MockedFunction<any>).mock.calls[0][2];
       expect(jobOptions.attempts).toBe(3);
     });
 
     it('should configure exponential backoff', async () => {
       await cronService.handleDailyAuctionScraping();
 
-      const jobOptions = mockQueue.add.mock.calls[0][2];
+      const jobOptions = (mockQueue.add as jest.MockedFunction<any>).mock.calls[0][2];
       expect(jobOptions.backoff).toEqual({
         type: 'exponential',
         delay: 5000,
@@ -251,7 +247,7 @@ describe('AuctionsCron', () => {
     it('should configure job cleanup policies', async () => {
       await cronService.handleDailyAuctionScraping();
 
-      const jobOptions = mockQueue.add.mock.calls[0][2];
+      const jobOptions = (mockQueue.add as jest.MockedFunction<any>).mock.calls[0][2];
       expect(jobOptions.removeOnComplete).toBe(10);
       expect(jobOptions.removeOnFail).toBe(5);
     });
@@ -259,7 +255,7 @@ describe('AuctionsCron', () => {
     it('should handle job priority if needed', async () => {
       await cronService.handleDailyAuctionScraping();
 
-      const jobOptions = mockQueue.add.mock.calls[0][2];
+      const jobOptions = (mockQueue.add as jest.MockedFunction<any>).mock.calls[0][2];
       // Job priority could be added if needed
       expect(jobOptions).toBeDefined();
     });
@@ -268,7 +264,7 @@ describe('AuctionsCron', () => {
   describe('error scenarios and resilience', () => {
     it('should handle network interruptions gracefully', async () => {
       const networkError = new Error('ENETUNREACH: Network is unreachable');
-      mockQueue.add.mockRejectedValue(networkError);
+      (mockQueue.add as jest.MockedFunction<any>).mockRejectedValue(networkError);
 
       await cronService.handleDailyAuctionScraping();
 
@@ -280,7 +276,7 @@ describe('AuctionsCron', () => {
 
     it('should handle malformed job data gracefully', async () => {
       // Even though we pass empty object, test resilience
-      mockQueue.add.mockRejectedValue(new Error('Invalid job data'));
+      (mockQueue.add as jest.MockedFunction<any>).mockRejectedValue(new Error('Invalid job data'));
 
       await cronService.handleDailyAuctionScraping();
 
@@ -292,7 +288,7 @@ describe('AuctionsCron', () => {
 
     it('should handle queue service downtime', async () => {
       const serviceDownError = new Error('Service temporarily unavailable');
-      mockQueue.add.mockRejectedValue(serviceDownError);
+      (mockQueue.add as jest.MockedFunction<any>).mockRejectedValue(serviceDownError);
 
       await cronService.handleDailyAuctionScraping();
 
@@ -304,7 +300,7 @@ describe('AuctionsCron', () => {
 
     it('should handle memory issues in queue', async () => {
       const memoryError = new Error('Out of memory');
-      mockQueue.add.mockRejectedValue(memoryError);
+      (mockQueue.add as jest.MockedFunction<any>).mockRejectedValue(memoryError);
 
       await cronService.handleDailyAuctionScraping();
 
@@ -317,9 +313,9 @@ describe('AuctionsCron', () => {
     it('should handle concurrent scheduling attempts', async () => {
       // Simulate multiple cron triggers
       const promises = [
-        cronService.handleCron(),
-        cronService.handleCron(),
-        cronService.handleCron(),
+        cronService.handleDailyAuctionScraping(),
+        cronService.handleDailyAuctionScraping(),
+        cronService.handleDailyAuctionScraping(),
       ];
 
       await Promise.all(promises);
@@ -367,7 +363,7 @@ describe('AuctionsCron', () => {
     it('should log detailed error information', async () => {
       const detailedError = new Error('Detailed error message');
       detailedError.stack = 'Error: Detailed error message\n    at ...';
-      mockQueue.add.mockRejectedValue(detailedError);
+      (mockQueue.add as jest.MockedFunction<any>).mockRejectedValue(detailedError);
 
       await cronService.handleDailyAuctionScraping();
 
@@ -380,7 +376,7 @@ describe('AuctionsCron', () => {
     it('should maintain consistent logging format', async () => {
       await cronService.handleDailyAuctionScraping();
 
-      const logCalls = cronService['logger'].log.mock.calls;
+      const logCalls = (cronService['logger'].log as jest.MockedFunction<any>).mock.calls;
       expect(logCalls).toHaveLength(1);
       expect(typeof logCalls[0][0]).toBe('string');
     });
@@ -392,7 +388,7 @@ describe('AuctionsCron', () => {
       });
 
       // Should not throw even if logging fails
-      await expect(cronService.handleCron()).resolves.not.toThrow();
+      await expect(cronService.handleDailyAuctionScraping()).resolves.not.toThrow();
     });
   });
 
@@ -408,7 +404,7 @@ describe('AuctionsCron', () => {
 
     it('should not block on job scheduling', async () => {
       // Mock a slow add operation
-      mockQueue.add.mockImplementation(
+      (mockQueue.add as jest.MockedFunction<any>).mockImplementation(
         () =>
           new Promise((resolve) =>
             setTimeout(() => resolve({ id: 'job-123' } as any), 100)

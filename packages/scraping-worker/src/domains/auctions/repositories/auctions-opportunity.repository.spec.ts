@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuctionsOpportunityRepository } from './auctions-opportunity.repository';
-import { DATABASE_CONNECTION } from '~/database';
+import { DATABASE_CONNECTION } from '../../../database/database.module';
 import type { AuctionOpportunity } from '../types';
 
 describe('AuctionsOpportunityRepository', () => {
@@ -12,7 +12,6 @@ describe('AuctionsOpportunityRepository', () => {
       url: 'https://encheres-publiques.fr/lot/test-1',
       label: 'Test Property 1',
       address: '1 Rue de la Paix, 75001 Paris, France',
-      city: 'Paris',
       department: 75,
       zipCode: 75001,
       latitude: 48.8566,
@@ -28,7 +27,6 @@ describe('AuctionsOpportunityRepository', () => {
       url: 'https://encheres-publiques.fr/lot/test-2',
       label: 'Test Property 2',
       address: '2 Avenue des Champs-Élysées, 75008 Paris, France',
-      city: 'Paris',
       department: 75,
       zipCode: 75008,
       latitude: 48.8698,
@@ -232,7 +230,7 @@ describe('AuctionsOpportunityRepository', () => {
           ...mockOpportunities[0],
           extraData: {
             url: 'https://test.com',
-            auctionId: '12345',
+            id: '12345',
             // No auctionVenue
           },
         },
@@ -254,14 +252,14 @@ describe('AuctionsOpportunityRepository', () => {
           ...mockOpportunities[0],
           extraData: {
             ...mockOpportunities[0].extraData,
-            auctionId: 'ABC123',
+            id: 'ABC123',
           },
         },
         {
           ...mockOpportunities[1],
           extraData: {
             ...mockOpportunities[1].extraData,
-            auctionId: '999888',
+            id: '999888',
           },
         },
       ];
@@ -281,7 +279,7 @@ describe('AuctionsOpportunityRepository', () => {
           ...mockOpportunities[0],
           extraData: {
             ...mockOpportunities[0].extraData,
-            auctionId: 123456,
+            id: '123456',
           },
         },
       ];
@@ -353,7 +351,7 @@ describe('AuctionsOpportunityRepository', () => {
           url: `https://test.com/${index}`,
           extraData: {
             ...mockOpportunities[0].extraData,
-            auctionId: `id-${index}`,
+            id: `id-${index}`,
           },
         }));
 
@@ -376,19 +374,19 @@ describe('AuctionsOpportunityRepository', () => {
     });
 
     it('should create external ID with numeric auction ID', () => {
-      const result = repository['createExternalId'](123456);
+      const result = repository['createExternalId']('123456');
 
       expect(result).toBe('encheres-publiques-123456');
     });
 
     it('should handle null auction ID', () => {
-      const result = repository['createExternalId'](null);
+      const result = repository['createExternalId']('null');
 
       expect(result).toBe('encheres-publiques-null');
     });
 
     it('should handle undefined auction ID', () => {
-      const result = repository['createExternalId'](undefined);
+      const result = repository['createExternalId']('undefined');
 
       expect(result).toBe('encheres-publiques-undefined');
     });
@@ -492,7 +490,7 @@ describe('AuctionsOpportunityRepository', () => {
           url: `https://test.com/${index}`,
           extraData: {
             ...mockOpportunities[0].extraData,
-            auctionId: `id-${index}`,
+            id: `id-${index}`,
           },
         }));
 
@@ -563,7 +561,6 @@ describe('AuctionsOpportunityRepository', () => {
           ...mockOpportunities[0],
           label: 'Propriété avec caractères spéciaux: ñáéíóú & <>&"',
           address: 'Rue de l\'Église, 75001 Paris "France"',
-          city: 'Saint-Étienne-du-Rouvray',
         },
       ];
 

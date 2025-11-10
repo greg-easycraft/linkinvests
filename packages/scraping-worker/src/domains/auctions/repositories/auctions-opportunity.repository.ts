@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { domainSchema } from '@linkinvests/db';
 
-import { DATABASE_CONNECTION, type DomainDbType } from '~/database';
+import { DATABASE_CONNECTION, type DomainDbType } from '../../../database/database.module';
 import type { AuctionOpportunity } from '../types';
 
 @Injectable()
@@ -63,7 +63,9 @@ export class AuctionsOpportunityRepository {
           throw new Error(`Missing auction ID for opportunity: ${opp.url}`);
         }
 
-        const auctionHouseContact = this.createAuctionHouseContact(opp.extraData?.auctionVenue);
+        const auctionHouseContact = this.createAuctionHouseContact(
+          opp.extraData?.auctionVenue
+        );
 
         // Extract main picture and additional pictures from images array
         const images = opp.images || [];
@@ -86,16 +88,16 @@ export class AuctionsOpportunityRepository {
           auctionType: opp.extraData?.auctionType || null,
           propertyType: opp.extraData?.propertyType || null,
           description: opp.extraData?.description || null,
-          squareFootage: opp.extraData?.squareFootage || null,
+          squareFootage: opp.extraData?.squareFootage?.toString() || null,
           rooms: opp.extraData?.rooms || null,
           dpe: opp.extraData?.dpe || null,
           auctionVenue: opp.extraData?.auctionVenue || null,
 
           // Price fields (normalized from extraData)
-          currentPrice: opp.extraData?.currentPrice || null,
-          reservePrice: opp.extraData?.reservePrice || null,
-          lowerEstimate: opp.extraData?.lowerEstimate || null,
-          upperEstimate: opp.extraData?.upperEstimate || null,
+          currentPrice: opp.extraData?.currentPrice?.toString() || null,
+          reservePrice: opp.extraData?.reservePrice?.toString() || null,
+          lowerEstimate: opp.extraData?.lowerEstimate?.toString() || null,
+          upperEstimate: opp.extraData?.upperEstimate?.toString() || null,
 
           // Picture fields (normalized from images array)
           mainPicture,

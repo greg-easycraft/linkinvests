@@ -1,8 +1,5 @@
 import { Module } from '@nestjs/common';
-import { BullModule } from '@nestjs/bullmq';
-import { SCRAPING_QUEUE } from '@linkinvests/shared';
 
-import { AuctionsProcessor } from './auctions.processor';
 import { AuctionsCron } from './cron/auctions.cron';
 import { AuctionsOpportunityRepository } from './repositories';
 import {
@@ -11,28 +8,24 @@ import {
   EncheresPubliquesScraperService,
   ListingExtractorService,
   AuctionsGeocodingService,
+  AuctionsScrapingService,
+  AbstractAuctionsRepository,
 } from './services';
-import { config } from '~/config';
 
 @Module({
-  imports: [
-    BullModule.registerQueue({
-      name: SCRAPING_QUEUE,
-      connection: {
-        url: config.REDIS_URL,
-      },
-    }),
-  ],
   providers: [
-    AuctionsProcessor,
+    {
+      provide: AbstractAuctionsRepository,
+      useClass: AuctionsOpportunityRepository,
+    },
+    AuctionsScrapingService,
     AuctionsCron,
-    AuctionsOpportunityRepository,
     EncheresPubliquesScraperService,
     BrowserService,
     ListingExtractorService,
     DetailScraperService,
     AuctionsGeocodingService,
   ],
-  exports: [BullModule],
+  exports: [AuctionsScrapingService],
 })
 export class AuctionsModule {}

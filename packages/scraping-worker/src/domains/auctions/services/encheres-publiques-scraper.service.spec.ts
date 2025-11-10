@@ -42,6 +42,8 @@ describe('EncheresPubliquesScraperService', () => {
       address: '1 Rue de la Paix, Paris',
       city: 'Paris',
       department: 75,
+      latitude: 48.8566,
+      longitude: 2.3522,
       auctionDate: '2025-01-15T14:00:00.000Z',
       extraData: { url: 'https://encheres-publiques.fr/lot/test-1' },
     },
@@ -51,6 +53,8 @@ describe('EncheresPubliquesScraperService', () => {
       address: '2 Avenue des Champs-Élysées, Paris',
       city: 'Paris',
       department: 75,
+      latitude: 48.8738,
+      longitude: 2.2950,
       auctionDate: '2025-01-20T15:30:00.000Z',
       extraData: { url: 'https://encheres-publiques.fr/lot/test-2' },
     },
@@ -336,7 +340,10 @@ describe('EncheresPubliquesScraperService', () => {
           longitude: 2.3522,
         },
         // Second opportunity failed geocoding
-        mockRawOpportunities[1] as AuctionOpportunity,
+        {
+          ...mockRawOpportunities[1],
+          zipCode: 75008,
+        } as AuctionOpportunity,
       ];
 
       mockGeocodingService.geocodeBatch.mockResolvedValue(
@@ -390,6 +397,8 @@ describe('EncheresPubliquesScraperService', () => {
           address: `Address ${index}`,
           city: 'Paris',
           department: 75,
+          latitude: 48.8566,
+          longitude: 2.3522,
           auctionDate: '2025-01-15T14:00:00.000Z',
           extraData: { url },
         })

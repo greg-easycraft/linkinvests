@@ -40,7 +40,7 @@ describe('InseeApiService', () => {
         nom: 'Mairie de Paris',
         telephone: '01 42 76 40 40',
         email: 'contact@paris.fr',
-        adresse: [
+        adresse: JSON.stringify([
           {
             type_adresse: 'Adresse',
             complement1: 'Hôtel de Ville',
@@ -54,7 +54,7 @@ describe('InseeApiService', () => {
             latitude: '48.8566',
             longitude: '2.3522',
           },
-        ],
+        ]),
       },
     ],
   };
@@ -66,7 +66,7 @@ describe('InseeApiService', () => {
         nom: 'Mairie de Test',
         telephone: '01 23 45 67 89',
         email: 'test@mairie.fr',
-        adresse: [
+        adresse: JSON.stringify([
           {
             type_adresse: 'Adresse',
             complement1: 'Bâtiment Principal',
@@ -93,7 +93,7 @@ describe('InseeApiService', () => {
             latitude: '',
             longitude: '',
           },
-        ],
+        ]),
       },
     ],
   };
@@ -163,7 +163,7 @@ describe('InseeApiService', () => {
           {
             nom: 'Mairie de Test',
             // No telephone or email fields
-            adresse: [
+            adresse: JSON.stringify([
               {
                 type_adresse: 'Adresse',
                 complement1: '',
@@ -177,7 +177,7 @@ describe('InseeApiService', () => {
                 latitude: '45.0000',
                 longitude: '2.0000',
               },
-            ],
+            ]),
           },
         ],
       };
@@ -218,7 +218,7 @@ describe('InseeApiService', () => {
             nom: 'Mairie Test',
             telephone: '01 23 45 67 89',
             email: 'test@test.fr',
-            adresse: [],
+            adresse: JSON.stringify([]),
           },
         ],
       };
@@ -300,7 +300,7 @@ describe('InseeApiService', () => {
           results: [
             {
               nom: 'Test Mairie',
-              adresse: [
+              adresse: JSON.stringify([
                 {
                   type_adresse: 'Adresse',
                   complement1: '',
@@ -314,7 +314,7 @@ describe('InseeApiService', () => {
                   latitude: '45.0',
                   longitude: '2.0',
                 },
-              ],
+              ]),
             },
           ],
         }),
@@ -344,7 +344,7 @@ describe('InseeApiService', () => {
         results: [
           {
             nom: 'Test Mairie',
-            adresse: [
+            adresse: JSON.stringify([
               {
                 type_adresse: 'Adresse',
                 complement1: 'Building',
@@ -358,7 +358,7 @@ describe('InseeApiService', () => {
                 latitude: '45.1234',
                 longitude: '2.5678',
               },
-            ],
+            ]),
           },
         ],
       };
@@ -398,7 +398,7 @@ describe('InseeApiService', () => {
         results: [
           {
             nom: 'Test Mairie',
-            adresse: [
+            adresse: JSON.stringify([
               {
                 type_adresse: 'Adresse postale', // Only postal addresses, no 'Adresse' type
                 complement1: 'BP 123',
@@ -413,7 +413,6 @@ describe('InseeApiService', () => {
                 longitude: '',
               },
               {
-                // @ts-expect-error - Test error
                 type_adresse: 'Autre adresse', // Another non-coordinate address type
                 complement1: 'Building B',
                 complement2: '',
@@ -426,7 +425,7 @@ describe('InseeApiService', () => {
                 latitude: '',
                 longitude: '',
               },
-            ],
+            ]),
           },
         ],
       };

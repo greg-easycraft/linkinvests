@@ -12,6 +12,7 @@ export interface DeceasesIngestJobData {
 
 export interface DeceasesCsvProcessJobData {
   fileName: string;
+  s3Path?: string; // Optional S3 path for the CSV file
 }
 
 export interface InseeDeathRecord {

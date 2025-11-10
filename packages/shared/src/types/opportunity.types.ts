@@ -1,4 +1,4 @@
-import { OpportunityType } from "../constants/opportunity";
+import { OpportunityType } from "../constants/opportunity.js";
 
 // Re-export OpportunityType for backward compatibility
 export { OpportunityType };

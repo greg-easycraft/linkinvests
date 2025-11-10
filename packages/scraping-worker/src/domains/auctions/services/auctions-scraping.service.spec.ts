@@ -1,14 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuctionsProcessor } from './auctions.processor';
-import { EncheresPubliquesScraperService } from './services/encheres-publiques-scraper.service';
-import { AuctionsOpportunityRepository } from './repositories/auctions-opportunity.repository';
+import {
+  AbstractAuctionsRepository,
+  AuctionsScrapingService,
+} from './auctions-scraping.service';
+import { EncheresPubliquesScraperService } from './encheres-publiques-scraper.service';
 import type { Job } from 'bullmq';
-import type { AuctionOpportunity } from './types';
+import type { AuctionOpportunity } from '../types/auctions.types';
 
-describe('AuctionsProcessor', () => {
-  let processor: AuctionsProcessor;
+describe('AuctionsScrapingService', () => {
+  let processor: AuctionsScrapingService;
   let scraperService: EncheresPubliquesScraperService;
-  let repository: AuctionsOpportunityRepository;
+  let repository: AbstractAuctionsRepository;
 
   const mockScraperService = {
     scrapeAuctions: jest.fn(),
@@ -23,7 +25,6 @@ describe('AuctionsProcessor', () => {
       url: 'https://encheres-publiques.fr/lot/test-1',
       label: 'Test Property 1',
       address: '1 Rue de la Paix, 75001 Paris, France',
-      city: 'Paris',
       department: 75,
       zipCode: 75001,
       latitude: 48.8566,
@@ -31,7 +32,7 @@ describe('AuctionsProcessor', () => {
       auctionDate: '2025-01-15T14:00:00.000Z',
       extraData: {
         url: 'https://encheres-publiques.fr/lot/test-1',
-        auctionId: '12345',
+        id: '12345',
         auctionVenue: 'Tribunal de Paris',
       },
     },
@@ -39,7 +40,6 @@ describe('AuctionsProcessor', () => {
       url: 'https://encheres-publiques.fr/lot/test-2',
       label: 'Test Property 2',
       address: '2 Avenue des Champs-Élysées, 75008 Paris, France',
-      city: 'Paris',
       department: 75,
       zipCode: 75008,
       latitude: 48.8698,
@@ -47,7 +47,7 @@ describe('AuctionsProcessor', () => {
       auctionDate: '2025-01-20T15:30:00.000Z',
       extraData: {
         url: 'https://encheres-publiques.fr/lot/test-2',
-        auctionId: '12346',
+        id: '12346',
         auctionVenue: 'Tribunal de Paris',
       },
     },
@@ -56,21 +56,21 @@ describe('AuctionsProcessor', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        AuctionsProcessor,
+        AuctionsScrapingService,
         {
           provide: EncheresPubliquesScraperService,
           useValue: mockScraperService,
         },
-        { provide: AuctionsOpportunityRepository, useValue: mockRepository },
+        { provide: AbstractAuctionsRepository, useValue: mockRepository },
       ],
     }).compile();
 
-    processor = module.get<AuctionsProcessor>(AuctionsProcessor);
+    processor = module.get<AuctionsScrapingService>(AuctionsScrapingService);
     scraperService = module.get<EncheresPubliquesScraperService>(
       EncheresPubliquesScraperService
     );
-    repository = module.get<AuctionsOpportunityRepository>(
-      AuctionsOpportunityRepository
+    repository = module.get<AbstractAuctionsRepository>(
+      AbstractAuctionsRepository
     );
 
     // Suppress logger
@@ -84,19 +84,20 @@ describe('AuctionsProcessor', () => {
     jest.restoreAllMocks();
   });
 
-  describe('processScrapeAuctions', () => {
-    const createMockJob = (name: string, data: any = {}): Job =>
-      ({
-        name,
-        data,
-        id: 'test-job-123',
-        timestamp: Date.now(),
-        processedOn: Date.now(),
-        finishedOn: null,
-        progress: jest.fn(),
-        log: jest.fn(),
-        updateProgress: jest.fn(),
-      }) as any;
+  const createMockJob = (name: string, data: any = {}): Job =>
+    ({
+      name,
+      data,
+      id: 'test-job-123',
+      timestamp: Date.now(),
+      processedOn: Date.now(),
+      finishedOn: null,
+      progress: jest.fn(),
+      log: jest.fn(),
+      updateProgress: jest.fn(),
+    }) as any;
+
+  describe('scrapeAuctions', () => {
 
     beforeEach(() => {
       mockScraperService.scrapeAuctions.mockResolvedValue(mockOpportunities);
@@ -106,7 +107,7 @@ describe('AuctionsProcessor', () => {
     it('should process scrape-auctions job successfully', async () => {
       const job = createMockJob('scrape-auctions');
 
-      const result = await processor.processScrapeAuctions(job);
+      const result = await processor.scrapeAuctions(job);
 
       expect(result).toEqual({
         success: true,
@@ -136,7 +137,7 @@ describe('AuctionsProcessor', () => {
     it('should reject job with invalid name', async () => {
       const job = createMockJob('invalid-job-name');
 
-      await expect(processor.processScrapeAuctions(job)).rejects.toThrow(
+      await expect(processor.scrapeAuctions(job)).rejects.toThrow(
         'Invalid job name: invalid-job-name. Expected: scrape-auctions'
       );
 
@@ -148,7 +149,7 @@ describe('AuctionsProcessor', () => {
       mockScraperService.scrapeAuctions.mockResolvedValue([]);
       const job = createMockJob('scrape-auctions');
 
-      const result = await processor.processScrapeAuctions(job);
+      const result = await processor.scrapeAuctions(job);
 
       expect(result).toEqual({
         success: true,
@@ -170,9 +171,7 @@ describe('AuctionsProcessor', () => {
       mockScraperService.scrapeAuctions.mockRejectedValue(scraperError);
       const job = createMockJob('scrape-auctions');
 
-      await expect(processor.processScrapeAuctions(job)).rejects.toThrow(
-        'Scraping failed'
-      );
+      await expect(processor.scrapeAuctions(job)).rejects.toThrow('Scraping failed');
 
       expect(processor['logger'].error).toHaveBeenCalledWith(
         'Failed to scrape auctions:',
@@ -186,7 +185,7 @@ describe('AuctionsProcessor', () => {
       mockRepository.insertOpportunities.mockRejectedValue(repositoryError);
       const job = createMockJob('scrape-auctions');
 
-      await expect(processor.processScrapeAuctions(job)).rejects.toThrow(
+      await expect(processor.scrapeAuctions(job)).rejects.toThrow(
         'Database insertion failed'
       );
 
@@ -201,7 +200,7 @@ describe('AuctionsProcessor', () => {
       mockScraperService.scrapeAuctions.mockResolvedValue(null as any);
       const job = createMockJob('scrape-auctions');
 
-      const result = await processor.processScrapeAuctions(job);
+      const result = await processor.scrapeAuctions(job);
 
       expect(result).toEqual({
         success: true,
@@ -218,7 +217,7 @@ describe('AuctionsProcessor', () => {
       mockScraperService.scrapeAuctions.mockResolvedValue(undefined as any);
       const job = createMockJob('scrape-auctions');
 
-      const result = await processor.processScrapeAuctions(job);
+      const result = await processor.scrapeAuctions(job);
 
       expect(result).toEqual({
         success: true,
@@ -244,7 +243,7 @@ describe('AuctionsProcessor', () => {
       );
       const job = createMockJob('scrape-auctions');
 
-      const result = await processor.processScrapeAuctions(job);
+      const result = await processor.scrapeAuctions(job);
 
       expect(result).toEqual({
         success: true,
@@ -265,7 +264,7 @@ describe('AuctionsProcessor', () => {
       // (This would happen if some records were filtered or failed silently)
       const job = createMockJob('scrape-auctions');
 
-      const result = await processor.processScrapeAuctions(job);
+      const result = await processor.scrapeAuctions(job);
 
       expect(result.totalOpportunities).toBe(2);
       expect(result.persistedOpportunities).toBe(2); // Assuming all were persisted
@@ -279,7 +278,7 @@ describe('AuctionsProcessor', () => {
       };
       const job = createMockJob('scrape-auctions', customData);
 
-      const result = await processor.processScrapeAuctions(job);
+      const result = await processor.scrapeAuctions(job);
 
       expect(result.success).toBe(true);
       // Custom data doesn't affect processing, but job should still succeed
@@ -297,7 +296,7 @@ describe('AuctionsProcessor', () => {
         .mockReturnValueOnce(startTime)
         .mockReturnValueOnce(endTime);
 
-      await processor.processScrapeAuctions(job);
+      await processor.scrapeAuctions(job);
 
       expect(processor['logger'].log).toHaveBeenCalledWith(
         expect.stringContaining('Auction scraping job completed successfully')
@@ -310,8 +309,8 @@ describe('AuctionsProcessor', () => {
 
       // Process both jobs concurrently
       const [result1, result2] = await Promise.all([
-        processor.processScrapeAuctions(job1),
-        processor.processScrapeAuctions(job2),
+        processor.scrapeAuctions(job1),
+        processor.scrapeAuctions(job2),
       ]);
 
       expect(result1.success).toBe(true);
@@ -327,7 +326,7 @@ describe('AuctionsProcessor', () => {
 
       const job = createMockJob('scrape-auctions');
 
-      await expect(processor.processScrapeAuctions(job)).rejects.toThrow(
+      await expect(processor.scrapeAuctions(job)).rejects.toThrow(
         'Service temporarily unavailable'
       );
 
@@ -344,7 +343,7 @@ describe('AuctionsProcessor', () => {
 
       const job = createMockJob('scrape-auctions');
 
-      await expect(processor.processScrapeAuctions(job)).rejects.toThrow(
+      await expect(processor.scrapeAuctions(job)).rejects.toThrow(
         'Operation timed out'
       );
 
@@ -358,7 +357,7 @@ describe('AuctionsProcessor', () => {
       const job = createMockJob('scrape-auctions');
       job.id = 'auction-job-456';
 
-      await processor.processScrapeAuctions(job);
+      await processor.scrapeAuctions(job);
 
       expect(processor['logger'].log).toHaveBeenCalledWith(
         'Starting auction scraping job...'
@@ -373,7 +372,7 @@ describe('AuctionsProcessor', () => {
 
       const job = createMockJob('scrape-auctions');
 
-      await expect(processor.processScrapeAuctions(job)).rejects.toThrow(
+      await expect(processor.scrapeAuctions(job)).rejects.toThrow(
         'Some records failed to insert'
       );
 
@@ -399,7 +398,7 @@ describe('AuctionsProcessor', () => {
 
       const job = { name: 'scrape-auctions' } as Job;
 
-      await expect(processor.processScrapeAuctions(job)).rejects.toThrow(
+      await expect(processor.scrapeAuctions(job)).rejects.toThrow(
         'Database connection pool exhausted'
       );
 
@@ -412,7 +411,7 @@ describe('AuctionsProcessor', () => {
     it('should handle invalid job data gracefully', async () => {
       const job = createMockJob('scrape-auctions', null);
 
-      const result = await processor.processScrapeAuctions(job);
+      const result = await processor.scrapeAuctions(job);
 
       expect(result.success).toBe(true);
       // Should still process normally as job data isn't used in this implementation
@@ -421,7 +420,7 @@ describe('AuctionsProcessor', () => {
     it('should maintain job processing statistics', async () => {
       const job = createMockJob('scrape-auctions');
 
-      const result = await processor.processScrapeAuctions(job);
+      const result = await processor.scrapeAuctions(job);
 
       expect(result).toHaveProperty('success');
       expect(result).toHaveProperty('totalOpportunities');

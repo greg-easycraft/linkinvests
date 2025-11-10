@@ -14,7 +14,7 @@ async function bootstrap() {
   const port = config.PORT ?? 8081;
   await app.listen(port);
 
-  logger.log(`Scraping Worker is running on: http://localhost:${port}`);
+  logger.log(`Scraping Worker started`);
 }
 
 bootstrap().catch((err) => console.error(err));

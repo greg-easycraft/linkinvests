@@ -23,8 +23,7 @@ const mockCsvParsingService = {
 } as unknown as jest.Mocked<CsvParsingService>;
 
 const mockInseeApiService = {
-  fetchCommuneCoordinates: jest.fn(),
-  fetchMairieInfo: jest.fn(),
+  fetchMairieData: jest.fn(),
 } as unknown as jest.Mocked<InseeApiService>;
 
 const mockRepository = {
@@ -104,17 +103,27 @@ describe('DeceasesCsvProcessor', () => {
         },
       });
 
-      // Mock geocoding
-      mockInseeApiService.fetchCommuneCoordinates.mockResolvedValueOnce({
-        latitude: 48.8566,
-        longitude: 2.3522,
-      });
-
-      // Mock mairie info
-      mockInseeApiService.fetchMairieInfo.mockResolvedValueOnce({
-        name: 'Mairie de Paris 1er',
-        telephone: '01.42.76.40.40',
-        email: 'mairie01@paris.fr',
+      // Mock mairie data
+      mockInseeApiService.fetchMairieData.mockResolvedValueOnce({
+        contactInfo: {
+          name: 'Mairie de Paris 1er',
+          phone: '01.42.76.40.40',
+          email: 'mairie01@paris.fr',
+          address: {
+            complement1: 'Hôtel de Ville',
+            complement2: 'Place',
+            numero_voie: '4',
+            service_distribution: "Place de l'Hôtel de Ville",
+            code_postal: '75001',
+            nom_commune: 'Paris',
+          },
+        },
+        coordinates: {
+          latitude: 48.8566,
+          longitude: 2.3522,
+        },
+        address: "4 Place de l'Hôtel de Ville 75001 Paris",
+        zipCode: '75001',
       });
 
       // Mock repository insert
@@ -137,13 +146,8 @@ describe('DeceasesCsvProcessor', () => {
         50,
       );
 
-      // Verify geocoding was called
-      expect(mockInseeApiService.fetchCommuneCoordinates).toHaveBeenCalledWith(
-        '75001',
-      );
-
-      // Verify mairie info was fetched
-      expect(mockInseeApiService.fetchMairieInfo).toHaveBeenCalledWith('75001');
+      // Verify mairie data was fetched
+      expect(mockInseeApiService.fetchMairieData).toHaveBeenCalledWith('75001');
 
       // Verify opportunities were inserted
       expect(mockRepository.insertOpportunities).toHaveBeenCalledWith([
@@ -232,8 +236,8 @@ describe('DeceasesCsvProcessor', () => {
         },
       });
 
-      // Mock geocoding failure
-      mockInseeApiService.fetchCommuneCoordinates.mockResolvedValueOnce(null);
+      // Mock mairie data fetch failure
+      mockInseeApiService.fetchMairieData.mockResolvedValueOnce(null);
 
       // Mock failed records CSV generation
       mockCsvParsingService.generateFailedRecordsCsv.mockReturnValueOnce(
@@ -283,13 +287,8 @@ describe('DeceasesCsvProcessor', () => {
         },
       });
 
-      // Mock successful geocoding for valid row
-      mockInseeApiService.fetchCommuneCoordinates.mockResolvedValueOnce({
-        latitude: 48.8566,
-        longitude: 2.3522,
-      });
-
-      mockInseeApiService.fetchMairieInfo.mockResolvedValueOnce(null);
+      // Mock mairie data fetch failure for valid row
+      mockInseeApiService.fetchMairieData.mockResolvedValueOnce(null);
 
       mockRepository.insertOpportunities.mockResolvedValueOnce(1);
       mockCsvParsingService.generateFailedRecordsCsv.mockReturnValueOnce(
@@ -338,11 +337,7 @@ describe('DeceasesCsvProcessor', () => {
         stats: { totalRecords: 1, recordsProcessed: 1, recordsFiltered: 0 },
       });
 
-      mockInseeApiService.fetchCommuneCoordinates.mockResolvedValueOnce({
-        latitude: 48.8566,
-        longitude: 2.3522,
-      });
-      mockInseeApiService.fetchMairieInfo.mockResolvedValueOnce(null);
+      mockInseeApiService.fetchMairieData.mockResolvedValueOnce(null);
       mockRepository.insertOpportunities.mockResolvedValueOnce(1);
       mockS3Service.uploadFile.mockResolvedValue('');
       mockS3Service.deleteFile.mockResolvedValueOnce();
@@ -370,11 +365,7 @@ describe('DeceasesCsvProcessor', () => {
         rows: [testRow],
         stats: { totalRecords: 1, recordsProcessed: 1, recordsFiltered: 0 },
       });
-      mockInseeApiService.fetchCommuneCoordinates.mockResolvedValueOnce({
-        latitude: 48,
-        longitude: 2,
-      });
-      mockInseeApiService.fetchMairieInfo.mockResolvedValueOnce(null);
+      mockInseeApiService.fetchMairieData.mockResolvedValueOnce(null);
       mockRepository.insertOpportunities.mockResolvedValueOnce(1);
       mockS3Service.uploadFile.mockResolvedValue('');
       mockS3Service.deleteFile.mockResolvedValueOnce();
@@ -398,11 +389,7 @@ describe('DeceasesCsvProcessor', () => {
         rows: [testRow],
         stats: { totalRecords: 1, recordsProcessed: 1, recordsFiltered: 0 },
       });
-      mockInseeApiService.fetchCommuneCoordinates.mockResolvedValueOnce({
-        latitude: 16,
-        longitude: -61,
-      });
-      mockInseeApiService.fetchMairieInfo.mockResolvedValueOnce(null);
+      mockInseeApiService.fetchMairieData.mockResolvedValueOnce(null);
       mockRepository.insertOpportunities.mockResolvedValueOnce(1);
       mockS3Service.uploadFile.mockResolvedValue('');
       mockS3Service.deleteFile.mockResolvedValueOnce();
@@ -428,11 +415,7 @@ describe('DeceasesCsvProcessor', () => {
         rows: [testRow],
         stats: { totalRecords: 1, recordsProcessed: 1, recordsFiltered: 0 },
       });
-      mockInseeApiService.fetchCommuneCoordinates.mockResolvedValueOnce({
-        latitude: 48,
-        longitude: 2,
-      });
-      mockInseeApiService.fetchMairieInfo.mockResolvedValueOnce(null);
+      mockInseeApiService.fetchMairieData.mockResolvedValueOnce(null);
       mockRepository.insertOpportunities.mockResolvedValueOnce(1);
       mockS3Service.uploadFile.mockResolvedValue('');
       mockS3Service.deleteFile.mockResolvedValueOnce();
