@@ -52,7 +52,7 @@ export class FailingCompaniesProcessor extends WorkerHost {
       // 4. Trigger the company buildings queue with the S3 path
       const job = await this.companyBuildingsQueue.add(
         'source-company-buildings',
-        { sourceFile: s3Path },
+        { sourceFile: s3Key },
         {
           removeOnComplete: 100,
           removeOnFail: 100,

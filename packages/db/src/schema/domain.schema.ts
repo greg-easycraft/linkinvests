@@ -20,8 +20,8 @@ export const opportunityAuctions = pgTable('opportunity_auction', {
   // Base opportunity fields
   label: varchar('label').notNull(),
   address: text('address'),
-  zipCode: integer('zip_code').notNull(),
-  department: integer('department').notNull(),
+  zipCode: varchar('zip_code').notNull(),
+  department: varchar('department').notNull(),
   latitude: doublePrecision('latitude').notNull(),
   longitude: doublePrecision('longitude').notNull(),
   opportunityDate: date('opportunity_date').notNull(),
@@ -78,8 +78,8 @@ export const opportunitySuccessions = pgTable('opportunity_succession', {
   // Base opportunity fields
   label: varchar('label').notNull(),
   address: text('address'),
-  zipCode: integer('zip_code').notNull(),
-  department: integer('department').notNull(),
+  zipCode: varchar('zip_code').notNull(),
+  department: varchar('department').notNull(),
   latitude: doublePrecision('latitude').notNull(),
   longitude: doublePrecision('longitude').notNull(),
   opportunityDate: date('opportunity_date').notNull(),
@@ -122,8 +122,8 @@ export const opportunityLiquidations = pgTable('opportunity_liquidation', {
   label: varchar('label').notNull(),
   siret: varchar('siret', { length: 14 }).notNull(),
   address: text('address'),
-  zipCode: integer('zip_code').notNull(),
-  department: integer('department').notNull(),
+  zipCode: varchar('zip_code').notNull(),
+  department: varchar('department').notNull(),
   latitude: doublePrecision('latitude').notNull(),
   longitude: doublePrecision('longitude').notNull(),
   opportunityDate: date('opportunity_date').notNull(),
@@ -162,8 +162,8 @@ export const opportunityEnergySieves = pgTable('opportunity_energy_sieve', {
   // Base opportunity fields
   label: varchar('label').notNull(),
   address: text('address'),
-  zipCode: integer('zip_code').notNull(),
-  department: integer('department').notNull(),
+  zipCode: varchar('zip_code').notNull(),
+  department: varchar('department').notNull(),
   latitude: doublePrecision('latitude').notNull(),
   longitude: doublePrecision('longitude').notNull(),
   opportunityDate: date('opportunity_date').notNull(),
@@ -196,7 +196,7 @@ export const sourcingRuns = pgTable('sourcing_run', {
   id: uuid('id').primaryKey().defaultRandom(),
   status: text('status').notNull(),
   opportunityType: text('opportunity_type').notNull(), // Now a text field instead of enum
-  department: integer('department').notNull(),
+  department: varchar('department').notNull(),
   syncDate: date('sync_date').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });

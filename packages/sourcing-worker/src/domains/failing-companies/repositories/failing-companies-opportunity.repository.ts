@@ -1,7 +1,6 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { DATABASE_CONNECTION, type DomainDbType } from '~/database';
 import { domainSchema } from '@linkinvests/db';
-import { sql } from 'drizzle-orm';
 import type { CompanyEstablishment } from '../types/failing-companies.types';
 
 @Injectable()
@@ -64,20 +63,8 @@ export class FailingCompaniesOpportunityRepository {
       await this.db
         .insert(domainSchema.opportunityLiquidations)
         .values(opportunities)
-        .onConflictDoUpdate({
-          target: [domainSchema.opportunityLiquidations.externalId],
-          set: {
-            label: sql`EXCLUDED.label`,
-            siret: sql`EXCLUDED.siret`,
-            address: sql`EXCLUDED.address`,
-            zipCode: sql`EXCLUDED.zip_code`,
-            department: sql`EXCLUDED.department`,
-            latitude: sql`EXCLUDED.latitude`,
-            longitude: sql`EXCLUDED.longitude`,
-            opportunityDate: sql`EXCLUDED.opportunity_date`,
-            companyContact: sql`EXCLUDED.company_contact`,
-            updatedAt: sql`CURRENT_TIMESTAMP`,
-          },
+        .onConflictDoNothing({
+          target: [domainSchema.opportunityLiquidations.siret],
         });
 
       this.logger.log(`Inserted ${opportunities.length} opportunities`);

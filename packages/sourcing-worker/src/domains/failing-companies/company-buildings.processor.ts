@@ -101,13 +101,17 @@ export class CompanyBuildingsProcessor extends WorkerHost {
 
           // Step 4: Geocode and transform establishments
           for (const etablissement of establishments) {
+            if (etablissement.adresse === '[NON DIFFUSIBLE]') continue;
             const transformed = await this.transformEstablishment(
               etablissement,
               row.dateparution, // Pass the parution date from CSV
               stats,
             );
             if (transformed) {
-              allEstablishments.push(transformed);
+              allEstablishments.push({
+                ...transformed,
+                companyName: row.commercant,
+              });
             } else {
               failedRows.push({
                 ...row,
@@ -231,7 +235,7 @@ export class CompanyBuildingsProcessor extends WorkerHost {
     etablissement: Etablissement,
     opportunityDate: string,
     stats: ProcessingStats,
-  ): Promise<CompanyEstablishment | null> {
+  ): Promise<Omit<CompanyEstablishment, 'name'> | null> {
     try {
       let latitude = etablissement.latitude;
       let longitude = etablissement.longitude;
@@ -268,8 +272,8 @@ export class CompanyBuildingsProcessor extends WorkerHost {
         zipCode: etablissement.code_postal,
         city: etablissement.libelle_commune,
         department,
-        latitude,
-        longitude,
+        latitude: Number(latitude),
+        longitude: Number(longitude),
         opportunityDate,
       };
     } catch (error) {
