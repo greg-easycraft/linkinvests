@@ -1,7 +1,6 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { DATABASE_CONNECTION, type DomainDbType } from '~/database';
 import { domainSchema } from '@linkinvests/db';
-import { OpportunityType, type CompanyContactData } from '@linkinvests/shared';
 import { sql } from 'drizzle-orm';
 import type { CompanyEstablishment } from '../types/failing-companies.types';
 
@@ -17,17 +16,15 @@ export class FailingCompaniesOpportunityRepository {
   ) {}
 
   /**
-   * Creates contact data from company establishment information
+   * Creates company contact JSONB object from establishment information
    */
-  private createContactData(
-    establishment: CompanyEstablishment,
-  ): CompanyContactData {
+  private createCompanyContact(establishment: CompanyEstablishment) {
     return {
-      type: 'company_headquarters',
-      companyName: establishment.companyName,
-      siret: establishment.siret,
-      address: establishment.address,
-      // Additional fields could be populated if available from API
+      name: establishment.companyName,
+      phone: undefined, // Not available in current data structure
+      email: undefined, // Not available in current data structure
+      legalRepresentative: undefined, // Not available in current data structure
+      administrateur: undefined, // Not available in current data structure
     };
   }
 
@@ -43,42 +40,42 @@ export class FailingCompaniesOpportunityRepository {
       return 0;
     }
 
-    const opportunities = establishments.map((est) => ({
-      label: est.companyName,
-      siret: est.siret,
-      address: est.address,
-      zipCode: parseInt(est.zipCode, 10),
-      department: est.department,
-      latitude: est.latitude,
-      longitude: est.longitude,
-      type: OpportunityType.LIQUIDATION,
-      status: 'pending_review',
-      opportunityDate: est.opportunityDate, // Already in string format 'YYYY-MM-DD'
-      externalId: est.siret, // Use SIRET as external ID
-      contactData: this.createContactData(est),
-      extraData: null,
-    }));
+    const opportunities = establishments.map((est) => {
+      const companyContact = this.createCompanyContact(est);
+
+      return {
+        // Base opportunity fields
+        label: est.companyName,
+        siret: est.siret, // Required for liquidations
+        address: est.address,
+        zipCode: parseInt(est.zipCode, 10),
+        department: est.department,
+        latitude: est.latitude,
+        longitude: est.longitude,
+        opportunityDate: est.opportunityDate, // Already in string format 'YYYY-MM-DD'
+        externalId: est.siret, // Use SIRET as external ID
+
+        // Company contact info as JSONB
+        companyContact,
+      };
+    });
 
     try {
       await this.db
-        .insert(domainSchema.opportunities)
+        .insert(domainSchema.opportunityLiquidations)
         .values(opportunities)
         .onConflictDoUpdate({
-          target: [
-            domainSchema.opportunities.externalId,
-            domainSchema.opportunities.type,
-          ],
+          target: [domainSchema.opportunityLiquidations.externalId],
           set: {
             label: sql`EXCLUDED.label`,
+            siret: sql`EXCLUDED.siret`,
             address: sql`EXCLUDED.address`,
             zipCode: sql`EXCLUDED.zip_code`,
             department: sql`EXCLUDED.department`,
             latitude: sql`EXCLUDED.latitude`,
             longitude: sql`EXCLUDED.longitude`,
-            status: sql`EXCLUDED.status`,
             opportunityDate: sql`EXCLUDED.opportunity_date`,
-            contactData: sql`EXCLUDED.contact_data`,
-            extraData: sql`EXCLUDED.extra_data`,
+            companyContact: sql`EXCLUDED.company_contact`,
             updatedAt: sql`CURRENT_TIMESTAMP`,
           },
         });

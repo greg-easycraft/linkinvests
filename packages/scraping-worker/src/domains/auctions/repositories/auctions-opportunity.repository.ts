@@ -1,9 +1,5 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { domainSchema } from '@linkinvests/db';
-import {
-  OpportunityType,
-  type AuctionHouseContactData,
-} from '@linkinvests/shared';
 
 import { DATABASE_CONNECTION, type DomainDbType } from '~/database';
 import type { AuctionOpportunity } from '../types';
@@ -26,18 +22,17 @@ export class AuctionsOpportunityRepository {
   }
 
   /**
-   * Converts auction venue information to contact data
+   * Creates auction house contact JSONB object from venue information
    */
-  private createContactData(
-    auctionVenue?: string
-  ): AuctionHouseContactData | null {
-    if (!auctionVenue) return null;
-
+  private createAuctionHouseContact(auctionVenue?: string) {
     return {
-      type: 'auction_house',
-      name: auctionVenue,
-      address: '', // Not available from current scraping
-      // Additional fields could be populated if available from scraping
+      name: auctionVenue || undefined,
+      address: undefined, // Not available from current scraping
+      phone: undefined,
+      email: undefined,
+      auctioneer: undefined,
+      registrationRequired: undefined,
+      depositAmount: undefined,
     };
   }
 
@@ -68,33 +63,52 @@ export class AuctionsOpportunityRepository {
           throw new Error(`Missing auction ID for opportunity: ${opp.url}`);
         }
 
-        // Add URL to extraData
-        const extraDataWithUrl = {
-          ...opp.extraData,
-          url: opp.url,
-        };
+        const auctionHouseContact = this.createAuctionHouseContact(opp.extraData?.auctionVenue);
+
+        // Extract main picture and additional pictures from images array
+        const images = opp.images || [];
+        const mainPicture = images.length > 0 ? images[0] : null;
+        const additionalPictures = images.length > 1 ? images.slice(1) : [];
 
         return {
+          // Base opportunity fields
           label: opp.label,
-          siret: null, // Not applicable for auctions
           address: opp.address,
           zipCode: opp.zipCode,
           department: opp.department,
           latitude: opp.latitude,
           longitude: opp.longitude,
-          type: OpportunityType.AUCTION,
-          status: 'pending_review',
           opportunityDate: opp.auctionDate,
           externalId: this.createExternalId(auctionId),
-          contactData: this.createContactData(opp.extraData?.auctionVenue),
-          extraData: extraDataWithUrl,
-          images: opp.images || null,
+
+          // Auction-specific fields (normalized from extraData)
+          url: opp.url,
+          auctionType: opp.extraData?.auctionType || null,
+          propertyType: opp.extraData?.propertyType || null,
+          description: opp.extraData?.description || null,
+          squareFootage: opp.extraData?.squareFootage || null,
+          rooms: opp.extraData?.rooms || null,
+          dpe: opp.extraData?.dpe || null,
+          auctionVenue: opp.extraData?.auctionVenue || null,
+
+          // Price fields (normalized from extraData)
+          currentPrice: opp.extraData?.currentPrice || null,
+          reservePrice: opp.extraData?.reservePrice || null,
+          lowerEstimate: opp.extraData?.lowerEstimate || null,
+          upperEstimate: opp.extraData?.upperEstimate || null,
+
+          // Picture fields (normalized from images array)
+          mainPicture,
+          pictures: additionalPictures.length > 0 ? additionalPictures : null,
+
+          // Auction house contact info as JSONB
+          auctionHouseContact,
         };
       });
 
       try {
         await this.db
-          .insert(domainSchema.opportunities)
+          .insert(domainSchema.opportunityAuctions)
           .values(records)
           .onConflictDoNothing();
 

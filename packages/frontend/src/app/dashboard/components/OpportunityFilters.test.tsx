@@ -10,6 +10,7 @@ describe('OpportunityFilters', () => {
   const mockOnApply = vi.fn();
   const mockOnReset = vi.fn();
   const mockOnViewTypeChange = vi.fn();
+  const mockOnTypeChange = vi.fn();
 
   const emptyFilters: IOpportunityFilters = {};
   const defaultProps = {
@@ -19,6 +20,8 @@ describe('OpportunityFilters', () => {
     onReset: mockOnReset,
     viewType: 'list' as const,
     onViewTypeChange: mockOnViewTypeChange,
+    currentType: OpportunityType.AUCTION,
+    onTypeChange: mockOnTypeChange,
   };
 
   beforeEach(() => {

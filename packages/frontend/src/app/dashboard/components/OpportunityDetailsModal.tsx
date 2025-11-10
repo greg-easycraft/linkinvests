@@ -6,9 +6,18 @@ import { X, MapPin, Calendar, Building2 } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
 import * as Dialog from "@radix-ui/react-dialog";
-import type { Opportunity } from "~/server/domains/opportunities/lib.types";
+import type {
+  Opportunity,
+  AuctionOpportunity,
+  SuccessionOpportunity,
+  LiquidationOpportunity,
+  EnergySieveOpportunity
+} from "~/server/domains/opportunities/lib.types";
 import { StreetView } from "./StreetView";
 import { AuctionDetails } from "./AuctionDetails";
+import { SuccessionDetails } from "./SuccessionDetails";
+import { LiquidationDetails } from "./LiquidationDetails";
+import { EnergySieveDetails } from "./EnergySieveDetails";
 
 interface OpportunityDetailsModalProps {
   opportunity: Opportunity | null;
@@ -82,8 +91,8 @@ export function OpportunityDetailsModal({
               </div>
             </div>
 
-            {/* SIRET */}
-            {opportunity.siret && (
+            {/* SIRET - only for liquidation opportunities */}
+            {opportunity.type === 'liquidation' && opportunity.siret && (
               <div className="flex gap-3">
                 <Building2 className="h-5 w-5 text-neutral-500 mt-0.5" />
                 <div className="flex-1">
@@ -107,8 +116,19 @@ export function OpportunityDetailsModal({
             </div>
           </div>
 
-          {/* Auction Details (only for auction opportunities) */}
-          <AuctionDetails opportunity={opportunity} />
+          {/* Type-specific Details */}
+          {opportunity.type === 'auction' && (
+            <AuctionDetails opportunity={opportunity as AuctionOpportunity & { type: 'auction' }} />
+          )}
+          {opportunity.type === 'succession' && (
+            <SuccessionDetails opportunity={opportunity as SuccessionOpportunity & { type: 'succession' }} />
+          )}
+          {opportunity.type === 'liquidation' && (
+            <LiquidationDetails opportunity={opportunity as LiquidationOpportunity & { type: 'liquidation' }} />
+          )}
+          {opportunity.type === 'energy_sieve' && (
+            <EnergySieveDetails opportunity={opportunity as EnergySieveOpportunity & { type: 'energy_sieve' }} />
+          )}
 
           {/* Timestamps */}
           <div className="pt-4 border-t border-neutral-200">

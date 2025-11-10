@@ -1,8 +1,12 @@
 import { OpportunityType } from "../constants/opportunity";
 
+// Re-export OpportunityType for backward compatibility
+export { OpportunityType };
 
-interface BaseOpportunity {
-  externalId?: string; // Made optional to match nullable database column
+// Legacy polymorphic opportunity interface for backward compatibility
+// This interface will be deprecated in favor of the new normalized types
+interface LegacyBaseOpportunity {
+  externalId?: string;
   type: OpportunityType;
   label: string;
   address: string;
@@ -16,79 +20,30 @@ interface BaseOpportunity {
   contactData?: unknown;
 }
 
-// Contact Data Types
-export interface MairieContactData {
-  type: 'mairie';
-  name: string;
-  address: string;
-  phone?: string;
-  email?: string;
-  website?: string;
-  openingHours?: string;
-}
-
-export interface CompanyContactData {
-  type: 'company_headquarters';
-  companyName: string;
-  siret: string;
-  address: string;
-  phone?: string;
-  email?: string;
-  legalRepresentative?: string;
-  administrateur?: string;
-}
-
-export interface AuctionHouseContactData {
-  type: 'auction_house';
-  name: string;
-  address: string;
-  phone?: string;
-  email?: string;
-  auctioneer?: string;
-  registrationRequired?: boolean;
-  depositAmount?: number;
-}
-
-export interface SuccessionOpportunity extends BaseOpportunity {
+// Legacy opportunity union type for backward compatibility
+export interface LegacySuccessionOpportunity extends LegacyBaseOpportunity {
   type: OpportunityType.SUCCESSION;
-  contactData?: MairieContactData;
 }
 
-export interface LiquidationOpportunity extends BaseOpportunity {
+export interface LegacyLiquidationOpportunity extends LegacyBaseOpportunity {
   type: OpportunityType.LIQUIDATION;
-  contactData?: CompanyContactData;
 }
 
-export interface AuctionExtraData {
-  price?: number;
-  propertyType?: string;
-  description?: string;
-  squareFootage?: number;
-  auctionVenue?: string;
-  url: string;
-}
-
-export interface AuctionOpportunity extends BaseOpportunity {
+export interface LegacyAuctionOpportunity extends LegacyBaseOpportunity {
   type: OpportunityType.AUCTION;
-  extraData: AuctionExtraData;
-  contactData?: AuctionHouseContactData;
 }
 
-export interface EnergySieveExtraData {
-  energyClass?: string;
-}
-
-export interface EnergySieveOpportunity extends BaseOpportunity {
-  extraData: EnergySieveExtraData;
+export interface LegacyEnergySieveOpportunity extends LegacyBaseOpportunity {
   type: OpportunityType.ENERGY_SIEVE;
 }
 
-export interface RealEstateListingOpportunity extends BaseOpportunity {
+export interface LegacyRealEstateListingOpportunity extends LegacyBaseOpportunity {
   type: OpportunityType.REAL_ESTATE_LISTING;
 }
 
-export interface DivorceOpportunity extends BaseOpportunity {
+export interface LegacyDivorceOpportunity extends LegacyBaseOpportunity {
   type: OpportunityType.DIVORCE;
 }
 
-export type Opportunity = SuccessionOpportunity | LiquidationOpportunity | AuctionOpportunity | EnergySieveOpportunity | RealEstateListingOpportunity | DivorceOpportunity;
+// Legacy union type for backward compatibility during migration
+export type Opportunity = LegacySuccessionOpportunity | LegacyLiquidationOpportunity | LegacyAuctionOpportunity | LegacyEnergySieveOpportunity | LegacyRealEstateListingOpportunity | LegacyDivorceOpportunity;

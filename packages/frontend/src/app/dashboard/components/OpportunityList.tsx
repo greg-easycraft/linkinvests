@@ -14,7 +14,7 @@ import { OpportunityListEmptyState } from "./OpportunityListEmptyState";
 
 interface OpportunityListProps {
   data: OpportunityListResult;
-  selectedId?: number;
+  selectedId?: string;
   onSelect: (opportunity: Opportunity) => void;
   onPageChange: (page: number) => void;
   filters?: OpportunityFilters;
@@ -29,11 +29,10 @@ const TYPE_LABELS: Record<string, string> = {
   divorce: "Divorce",
 };
 
-// Helper function to get URL from opportunity extraData
+// Helper function to get URL from auction opportunities
 function getOpportunityUrl(opportunity: Opportunity): string | null {
-  if (opportunity.type === "auction" && opportunity.extraData) {
-    const extraData = opportunity.extraData as { url?: string };
-    return extraData.url || null;
+  if (opportunity.type === "auction") {
+    return opportunity.url || null;
   }
   return null;
 }
@@ -135,8 +134,8 @@ export function OpportunityList({
                       </div>
                     </div>
 
-                    {/* SIRET */}
-                    {opportunity.siret && (
+                    {/* SIRET - only for liquidation opportunities */}
+                    {opportunity.type === 'liquidation' && opportunity.siret && (
                       <div className="flex items-start gap-2">
                         <Building2 className="h-4 w-4 mt-0.5 flex-shrink-0 text-[var(--primary)] opacity-70" />
                         <div className="min-w-0">

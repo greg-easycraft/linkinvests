@@ -18,39 +18,10 @@ import {
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import type { Opportunity } from "~/server/domains/opportunities/lib.types";
-import { OpportunityType } from "@linkinvests/shared";
+import type { AuctionOpportunity } from "~/server/domains/opportunities/lib.types";
 
 interface AuctionDetailsProps {
-  opportunity: Opportunity;
-}
-
-interface AuctionExtraData {
-  id?: string;
-  url?: string;
-  auctionType?: string;
-  propertyType?: string;
-  currentPrice?: number;
-  lowerEstimate?: number;
-  upperEstimate?: number;
-  reservePrice?: number;
-  price?: number;
-  description?: string;
-  dpe?: string;
-  squareFootage?: number;
-  rooms?: number;
-  auctionVenue?: string;
-}
-
-interface AuctionHouseContactData {
-  type: 'auction_house';
-  name: string;
-  address: string;
-  phone?: string;
-  email?: string;
-  auctioneer?: string;
-  registrationRequired?: boolean;
-  depositAmount?: number;
+  opportunity: AuctionOpportunity & { type: 'auction' };
 }
 
 const formatPrice = (price: number): string => {
@@ -67,14 +38,25 @@ const formatSquareFootage = (squareFootage: number): string => {
 
 export function AuctionDetails({ opportunity }: AuctionDetailsProps) {
   // Only render for auction opportunities
-  if (opportunity.type !== OpportunityType.AUCTION) {
+  if (opportunity.type !== 'auction') {
     return null;
   }
 
-  const extraData = opportunity.extraData as AuctionExtraData | null;
-  const contactData = opportunity.contactData as AuctionHouseContactData | null;
+  const hasPriceInfo = opportunity.currentPrice || opportunity.lowerEstimate ||
+                      opportunity.upperEstimate || opportunity.reservePrice;
+  const hasPropertyInfo = opportunity.propertyType || opportunity.squareFootage ||
+                         opportunity.rooms || opportunity.dpe;
+  const hasContactInfo = opportunity.auctionHouseContact && (
+    opportunity.auctionHouseContact.name ||
+    opportunity.auctionHouseContact.address ||
+    opportunity.auctionHouseContact.phone ||
+    opportunity.auctionHouseContact.email ||
+    opportunity.auctionHouseContact.auctioneer ||
+    opportunity.auctionHouseContact.registrationRequired ||
+    opportunity.auctionHouseContact.depositAmount
+  );
 
-  if (!extraData && !contactData) {
+  if (!hasPriceInfo && !hasPropertyInfo && !hasContactInfo && !opportunity.url && !opportunity.description) {
     return null;
   }
 
@@ -85,12 +67,12 @@ export function AuctionDetails({ opportunity }: AuctionDetailsProps) {
           <Gavel className="h-5 w-5" />
           Détails de l&apos;enchère
         </CardTitle>
-        {extraData?.url && (
+        {opportunity.url && (
           <div>
             <Button
               variant="outline"
               size="sm"
-              onClick={() => window.open(extraData.url, '_blank', 'noopener,noreferrer')}
+              onClick={() => window.open(opportunity.url!, '_blank', 'noopener,noreferrer')}
               title="Voir l'annonce originale"
             >
               <ExternalLink className="h-4 w-4 mr-2" />
@@ -101,40 +83,33 @@ export function AuctionDetails({ opportunity }: AuctionDetailsProps) {
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Price Information */}
-        {(extraData?.currentPrice || extraData?.lowerEstimate || extraData?.upperEstimate || extraData?.reservePrice || extraData?.price) && (
+        {hasPriceInfo && (
           <div className="space-y-3">
             <h4 className="font-medium text-sm">Prix et estimations</h4>
             <div className="grid grid-cols-1 gap-2 text-sm">
-              {extraData.currentPrice && (
+              {opportunity.currentPrice && (
                 <div className="flex items-center gap-2">
                   <Euro className="h-4 w-4 text-green-600" />
                   <span className="font-medium">Enchère actuelle:</span>
                   <Badge variant="outline" className="text-green-600 border-green-600">
-                    {formatPrice(extraData.currentPrice)}
+                    {formatPrice(Number(opportunity.currentPrice))}
                   </Badge>
                 </div>
               )}
-              {extraData.lowerEstimate && extraData.upperEstimate && (
+              {opportunity.lowerEstimate && opportunity.upperEstimate && (
                 <div className="flex items-center gap-2">
                   <Euro className="h-4 w-4 text-blue-600" />
                   <span className="font-medium">Estimation:</span>
                   <span className="text-blue-600">
-                    {formatPrice(extraData.lowerEstimate)} - {formatPrice(extraData.upperEstimate)}
+                    {formatPrice(Number(opportunity.lowerEstimate))} - {formatPrice(Number(opportunity.upperEstimate))}
                   </span>
                 </div>
               )}
-              {extraData.reservePrice && (
+              {opportunity.reservePrice && (
                 <div className="flex items-center gap-2">
                   <Euro className="h-4 w-4 text-orange-600" />
                   <span className="font-medium">Prix de réserve:</span>
-                  <span className="text-orange-600">{formatPrice(extraData.reservePrice)}</span>
-                </div>
-              )}
-              {extraData.price && !extraData.currentPrice && (
-                <div className="flex items-center gap-2">
-                  <Euro className="h-4 w-4 text-gray-600" />
-                  <span className="font-medium">Prix:</span>
-                  <span>{formatPrice(extraData.price)}</span>
+                  <span className="text-orange-600">{formatPrice(Number(opportunity.reservePrice))}</span>
                 </div>
               )}
             </div>
@@ -142,36 +117,36 @@ export function AuctionDetails({ opportunity }: AuctionDetailsProps) {
         )}
 
         {/* Property Information */}
-        {(extraData?.propertyType || extraData?.squareFootage || extraData?.rooms || extraData?.dpe) && (
+        {hasPropertyInfo && (
           <div className="space-y-3">
             <h4 className="font-medium text-sm">Informations du bien</h4>
             <div className="grid grid-cols-1 gap-2 text-sm">
-              {extraData.propertyType && (
+              {opportunity.propertyType && (
                 <div className="flex items-center gap-2">
                   <Home className="h-4 w-4 text-gray-600" />
                   <span className="font-medium">Type:</span>
-                  <span>{extraData.propertyType}</span>
+                  <span>{opportunity.propertyType}</span>
                 </div>
               )}
-              {extraData.squareFootage && (
+              {opportunity.squareFootage && (
                 <div className="flex items-center gap-2">
                   <Ruler className="h-4 w-4 text-gray-600" />
                   <span className="font-medium">Surface:</span>
-                  <span>{formatSquareFootage(extraData.squareFootage)}</span>
+                  <span>{formatSquareFootage(Number(opportunity.squareFootage))}</span>
                 </div>
               )}
-              {extraData.rooms && (
+              {opportunity.rooms && (
                 <div className="flex items-center gap-2">
                   <Home className="h-4 w-4 text-gray-600" />
                   <span className="font-medium">Nombre de pièces:</span>
-                  <span>{extraData.rooms}</span>
+                  <span>{opportunity.rooms}</span>
                 </div>
               )}
-              {extraData.dpe && (
+              {opportunity.dpe && (
                 <div className="flex items-center gap-2">
                   <FileText className="h-4 w-4 text-gray-600" />
                   <span className="font-medium">DPE:</span>
-                  <Badge variant="outline">{extraData.dpe}</Badge>
+                  <Badge variant="outline">{opportunity.dpe}</Badge>
                 </div>
               )}
             </div>
@@ -179,51 +154,57 @@ export function AuctionDetails({ opportunity }: AuctionDetailsProps) {
         )}
 
         {/* Description */}
-        {extraData?.description && (
+        {opportunity.description && (
           <div className="space-y-2">
             <h4 className="font-medium text-sm">Description</h4>
             <p className="text-sm text-gray-600 leading-relaxed">
-              {extraData.description}
+              {opportunity.description}
             </p>
           </div>
         )}
 
         {/* Auction House Contact Information */}
-        {contactData && (
+        {hasContactInfo && (
           <div className="space-y-3">
             <h4 className="font-medium text-sm">Informations de contact</h4>
             <div className="space-y-2 text-sm">
-              <div className="flex items-start gap-2">
-                <VenueIcon className="h-4 w-4 text-gray-600 mt-0.5" />
-                <div>
-                  <div className="font-medium">{contactData.name}</div>
-                  <div className="text-gray-600">{contactData.address}</div>
+              {(opportunity.auctionHouseContact?.name || opportunity.auctionHouseContact?.address) && (
+                <div className="flex items-start gap-2">
+                  <VenueIcon className="h-4 w-4 text-gray-600 mt-0.5" />
+                  <div>
+                    {opportunity.auctionHouseContact.name && (
+                      <div className="font-medium">{opportunity.auctionHouseContact.name}</div>
+                    )}
+                    {opportunity.auctionHouseContact.address && (
+                      <div className="text-gray-600">{opportunity.auctionHouseContact.address}</div>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
 
-              {contactData.phone && (
+              {opportunity.auctionHouseContact?.phone && (
                 <div className="flex items-center gap-2">
                   <Phone className="h-4 w-4 text-gray-600" />
-                  <span>{contactData.phone}</span>
+                  <span>{opportunity.auctionHouseContact.phone}</span>
                 </div>
               )}
 
-              {contactData.email && (
+              {opportunity.auctionHouseContact?.email && (
                 <div className="flex items-center gap-2">
                   <Mail className="h-4 w-4 text-gray-600" />
-                  <span>{contactData.email}</span>
+                  <span>{opportunity.auctionHouseContact.email}</span>
                 </div>
               )}
 
-              {contactData.auctioneer && (
+              {opportunity.auctionHouseContact?.auctioneer && (
                 <div className="flex items-center gap-2">
                   <UserCheck className="h-4 w-4 text-gray-600" />
                   <span className="font-medium">Commissaire-priseur:</span>
-                  <span>{contactData.auctioneer}</span>
+                  <span>{opportunity.auctionHouseContact.auctioneer}</span>
                 </div>
               )}
 
-              {contactData.registrationRequired && (
+              {opportunity.auctionHouseContact?.registrationRequired && (
                 <div className="flex items-center gap-2">
                   <FileText className="h-4 w-4 text-amber-600" />
                   <Badge variant="outline" className="text-amber-600 border-amber-600">
@@ -232,11 +213,11 @@ export function AuctionDetails({ opportunity }: AuctionDetailsProps) {
                 </div>
               )}
 
-              {contactData.depositAmount && (
+              {opportunity.auctionHouseContact?.depositAmount && (
                 <div className="flex items-center gap-2">
                   <Banknote className="h-4 w-4 text-gray-600" />
                   <span className="font-medium">Caution:</span>
-                  <span>{formatPrice(contactData.depositAmount)}</span>
+                  <span>{formatPrice(Number(opportunity.auctionHouseContact.depositAmount))}</span>
                 </div>
               )}
             </div>

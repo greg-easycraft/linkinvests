@@ -1,7 +1,6 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { DATABASE_CONNECTION, type DomainDbType } from '~/database';
 import { domainSchema } from '@linkinvests/db';
-import { OpportunityType } from '@linkinvests/shared';
 import type { EnergySieveOpportunity } from '../types/energy-sieves.types';
 
 @Injectable()
@@ -43,20 +42,21 @@ export class EnergySievesOpportunityRepository {
         }
 
         return {
+          // Base opportunity fields
           label: opp.label,
-          siret: null, // No SIRET for energy sieves
+          // Note: siret removed as it's always null for energy sieves
           address: opp.address,
           zipCode: opp.zipCode,
           department: opp.department,
           latitude: opp.latitude,
           longitude: opp.longitude,
-          type: OpportunityType.ENERGY_SIEVE,
-          status: 'pending_review',
           // Convert Date to string format 'YYYY-MM-DD' for Drizzle
           opportunityDate: formattedDate,
           externalId: opp.numeroDpe,
-          contactData: null, // As requested, energy sieves should have null contactData
-          extraData: opp.extraData || null,
+
+          // Energy-specific fields (normalized from extraData)
+          energyClass: opp.extraData?.energyClass || null,
+          dpeNumber: opp.numeroDpe, // Store DPE number in dedicated field
         };
       });
 
@@ -69,7 +69,7 @@ export class EnergySievesOpportunityRepository {
         }
 
         await this.db
-          .insert(domainSchema.opportunities)
+          .insert(domainSchema.opportunityEnergySieves)
           .values(dbOpportunities)
           .onConflictDoNothing();
 

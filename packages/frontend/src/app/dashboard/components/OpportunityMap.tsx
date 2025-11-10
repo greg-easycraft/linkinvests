@@ -10,7 +10,7 @@ import { env } from "~/lib/env";
 
 interface OpportunityMapProps {
   opportunities: Opportunity[];
-  selectedId?: number;
+  selectedId?: string;
   onSelect: (opportunity: Opportunity) => void;
   onBoundsChange?: (bounds: {
     north: number;

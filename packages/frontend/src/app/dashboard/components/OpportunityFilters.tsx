@@ -20,6 +20,8 @@ interface OpportunityFiltersProps {
   onReset: () => void;
   viewType: ViewType;
   onViewTypeChange: (viewType: ViewType) => void;
+  currentType: OpportunityType;
+  onTypeChange: (type: OpportunityType) => void;
 }
 
 const TYPE_LABELS: Record<OpportunityType, string> = {
@@ -38,6 +40,8 @@ export function OpportunityFilters({
   onReset,
   viewType,
   onViewTypeChange,
+  currentType,
+  onTypeChange,
 }: OpportunityFiltersProps): React.ReactElement {
 
   // Convert departments to MultiSelectOption format
@@ -47,11 +51,7 @@ export function OpportunityFilters({
     searchValue: `${dept.id} ${dept.name}`,
   }));
 
-  // Convert opportunity types to MultiSelectOption format
-  const typeOptions: MultiSelectOption[] = Object.values(OpportunityType).map((type) => ({
-    label: TYPE_LABELS[type],
-    value: type,
-  }));
+  // No longer needed since we use Select component directly
 
   const handleDepartmentChange = (selectedValues: string[]): void => {
     const departmentIds = selectedValues.map((value) => parseInt(value, 10));
@@ -65,9 +65,10 @@ export function OpportunityFilters({
     onFiltersChange({ ...filters, zipCodes: zipCodeNumbers.length > 0 ? zipCodeNumbers : undefined });
   };
 
-  const handleTypeMultiSelectChange = (selectedValues: string[]): void => {
-    const selectedTypes = selectedValues as OpportunityType[];
-    onFiltersChange({ ...filters, types: selectedTypes.length > 0 ? selectedTypes : undefined });
+  const handleTypeChange = (value: string): void => {
+    if (value && value in OpportunityType) {
+      onTypeChange(value as OpportunityType);
+    }
   };
 
   // Validator for zip codes (French postal codes are 5 digits)
@@ -93,17 +94,24 @@ export function OpportunityFilters({
         <div className="space-y-4">
           <CardTitle className="text-lg">Filtres</CardTitle>
 
-          {/* Type Filter - Multi-select */}
+          {/* Type Filter - Single select */}
           <div>
-            <label className="text-sm font-medium mb-2 block font-heading">Types d&apos;opportunité</label>
-            <MultiSelect
-              options={typeOptions}
-              selected={filters.types?.map(String) ?? []}
-              onChange={handleTypeMultiSelectChange}
-              placeholder="Sélectionner les types..."
-              searchPlaceholder="Rechercher un type..."
-              maxDisplayItems={2}
-            />
+            <label className="text-sm font-medium mb-2 block font-heading">Type d&apos;opportunité</label>
+            <Select
+              value={currentType}
+              onValueChange={handleTypeChange}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Sélectionner un type..." />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.values(OpportunityType).map((type) => (
+                  <SelectItem key={type} value={type}>
+                    {TYPE_LABELS[type]}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Department Filter - Multi-select with search */}

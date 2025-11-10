@@ -80,8 +80,8 @@ export function OpportunitySidebar({
             </div>
           </div>
 
-          {/* SIRET */}
-          {opportunity.siret && (
+          {/* SIRET - only for liquidation opportunities */}
+          {opportunity.type === 'liquidation' && opportunity.siret && (
             <div className="flex gap-3">
               <Building2 className="h-5 w-5 text-neutral-500 mt-0.5" />
               <div className="flex-1">
@@ -107,7 +107,9 @@ export function OpportunitySidebar({
         </div>
 
         {/* Auction Details (only for auction opportunities) */}
-        <AuctionDetails opportunity={opportunity} />
+        {opportunity.type === 'auction' && (
+          <AuctionDetails opportunity={opportunity} />
+        )}
 
         {/* Timestamps */}
         <div className="pt-4 border-t border-neutral-200">
