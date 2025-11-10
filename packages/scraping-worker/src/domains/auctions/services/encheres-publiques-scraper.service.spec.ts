@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/require-await */
 import { Test, TestingModule } from '@nestjs/testing';
 import { EncheresPubliquesScraperService } from './encheres-publiques-scraper.service';
 import { BrowserService } from './browser.service';
@@ -9,10 +10,6 @@ import type { RawAuctionOpportunity, AuctionOpportunity } from '../types';
 
 describe('EncheresPubliquesScraperService', () => {
   let service: EncheresPubliquesScraperService;
-  let browserService: BrowserService;
-  let listingExtractorService: ListingExtractorService;
-  let detailScraperService: DetailScraperService;
-  let geocodingService: AuctionsGeocodingService;
   let mockPage: jest.Mocked<Page>;
 
   const mockBrowserService = {
@@ -41,7 +38,7 @@ describe('EncheresPubliquesScraperService', () => {
       label: 'Test Property 1',
       address: '1 Rue de la Paix, Paris',
       city: 'Paris',
-      department: 75,
+      department: '75',
       latitude: 48.8566,
       longitude: 2.3522,
       auctionDate: '2025-01-15T14:00:00.000Z',
@@ -52,9 +49,9 @@ describe('EncheresPubliquesScraperService', () => {
       label: 'Test Property 2',
       address: '2 Avenue des Champs-Élysées, Paris',
       city: 'Paris',
-      department: 75,
+      department: '75',
       latitude: 48.8738,
-      longitude: 2.2950,
+      longitude: 2.295,
       auctionDate: '2025-01-20T15:30:00.000Z',
       extraData: { url: 'https://encheres-publiques.fr/lot/test-2' },
     },
@@ -63,13 +60,13 @@ describe('EncheresPubliquesScraperService', () => {
   const mockEnrichedOpportunities: AuctionOpportunity[] = [
     {
       ...mockRawOpportunities[0],
-      zipCode: 75001,
+      zipCode: '75001',
       latitude: 48.8566,
       longitude: 2.3522,
     },
     {
       ...mockRawOpportunities[1],
-      zipCode: 75008,
+      zipCode: '75008',
       latitude: 48.8698,
       longitude: 2.3075,
     },
@@ -91,15 +88,6 @@ describe('EncheresPubliquesScraperService', () => {
 
     service = module.get<EncheresPubliquesScraperService>(
       EncheresPubliquesScraperService
-    );
-    browserService = module.get<BrowserService>(BrowserService);
-    listingExtractorService = module.get<ListingExtractorService>(
-      ListingExtractorService
-    );
-    detailScraperService =
-      module.get<DetailScraperService>(DetailScraperService);
-    geocodingService = module.get<AuctionsGeocodingService>(
-      AuctionsGeocodingService
     );
 
     // Mock page object
@@ -335,14 +323,14 @@ describe('EncheresPubliquesScraperService', () => {
       const partiallyGeocodedOpportunities: AuctionOpportunity[] = [
         {
           ...mockRawOpportunities[0],
-          zipCode: 75001,
+          zipCode: '75001',
           latitude: 48.8566,
           longitude: 2.3522,
         },
         // Second opportunity failed geocoding
         {
           ...mockRawOpportunities[1],
-          zipCode: 75008,
+          zipCode: '75008',
         } as AuctionOpportunity,
       ];
 
@@ -396,7 +384,7 @@ describe('EncheresPubliquesScraperService', () => {
           label: `Property ${index}`,
           address: `Address ${index}`,
           city: 'Paris',
-          department: 75,
+          department: '75',
           latitude: 48.8566,
           longitude: 2.3522,
           auctionDate: '2025-01-15T14:00:00.000Z',
@@ -406,7 +394,7 @@ describe('EncheresPubliquesScraperService', () => {
       const largeEnrichedOpportunities: AuctionOpportunity[] =
         largeRawOpportunities.map((opp) => ({
           ...opp,
-          zipCode: 75001,
+          zipCode: '75001',
           latitude: 48.8566,
           longitude: 2.3522,
         }));
@@ -459,9 +447,6 @@ describe('EncheresPubliquesScraperService', () => {
       await service.scrapeAuctions();
 
       // Verify data flows correctly between services
-      const extractorCall =
-        mockListingExtractorService.extractAllListingsWithPagination.mock
-          .calls[0];
       const detailScraperCall =
         mockDetailScraperService.scrapeDetailsBatch.mock.calls[0];
       const geocodingCall = mockGeocodingService.geocodeBatch.mock.calls[0];

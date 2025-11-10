@@ -9,7 +9,6 @@ import exampleAddressJson from './example-address.json';
 
 describe('DetailScraperService', () => {
   let service: DetailScraperService;
-  let browserService: BrowserService;
   let mockPage: jest.Mocked<Page>;
 
   const mockBrowserService = {
@@ -27,7 +26,6 @@ describe('DetailScraperService', () => {
     }).compile();
 
     service = module.get<DetailScraperService>(DetailScraperService);
-    browserService = module.get<BrowserService>(BrowserService);
 
     // Mock page object
     mockPage = {

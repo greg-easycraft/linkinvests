@@ -76,8 +76,8 @@ export interface AuctionOpportunity {
   url: string; // URL of the auction listing (for externalId)
   label: string;
   address: string;
-  zipCode: number;
-  department: number;
+  zipCode: string;
+  department: string;
   latitude: number;
   longitude: number;
   auctionDate: string; // Will be mapped to opportunityDate in repository

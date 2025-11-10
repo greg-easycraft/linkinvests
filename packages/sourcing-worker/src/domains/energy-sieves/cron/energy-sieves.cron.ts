@@ -36,9 +36,9 @@ export class EnergySievesCron {
       const jobPromises: Promise<unknown>[] = [];
       const departments = Array.from({ length: 95 }, (_, i) => i + 1);
       for (const departmentId of departments) {
-        for (const energyClass of ['F', 'G']) {
+        for (const energyClass of ['A', 'B', 'C', 'D', 'E', 'F', 'G']) {
           const jobData: EnergySieveJobData = {
-            departmentId,
+            departmentId: departmentId.toString().padStart(2, '0'),
             sinceDate,
             energyClasses: [energyClass],
           };

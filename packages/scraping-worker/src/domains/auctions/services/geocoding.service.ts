@@ -179,7 +179,7 @@ export class AuctionsGeocodingService {
       results.push({
         ...auctionOpportunity,
         address: formattedAddress,
-        zipCode,
+        zipCode: zipCode.toString(),
         latitude,
         longitude,
       });

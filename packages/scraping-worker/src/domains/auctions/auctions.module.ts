@@ -11,8 +11,19 @@ import {
   AuctionsScrapingService,
   AbstractAuctionsRepository,
 } from './services';
+import { BullModule } from '@nestjs/bullmq';
+import { SCRAPING_QUEUE } from '@linkinvests/shared';
+import { config } from '~/config';
 
 @Module({
+  imports: [
+    BullModule.registerQueue({
+      name: SCRAPING_QUEUE,
+      connection: {
+        url: config.REDIS_URL,
+      },
+    }),
+  ],
   providers: [
     {
       provide: AbstractAuctionsRepository,

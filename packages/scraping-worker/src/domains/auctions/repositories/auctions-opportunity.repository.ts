@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { domainSchema } from '@linkinvests/db';
 
-import { DATABASE_CONNECTION, type DomainDbType } from '../../../database/database.module';
+import { DATABASE_CONNECTION, type DomainDbType } from '~/database';
 import type { AuctionOpportunity } from '../types';
 
 @Injectable()

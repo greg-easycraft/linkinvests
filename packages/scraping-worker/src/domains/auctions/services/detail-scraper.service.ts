@@ -159,7 +159,7 @@ export class DetailScraperService {
       label: this.extractTitleFromNom(lotData.nom),
       address: text,
       city,
-      department: departmentId,
+      department: departmentId.toString().padStart(2, '0'),
       latitude: latitude || 0,
       longitude: longitude || 0,
       auctionDate: this.extractAuctionDate(lotData),

@@ -9,8 +9,6 @@ import type { AuctionOpportunity } from '../types/auctions.types';
 
 describe('AuctionsScrapingService', () => {
   let processor: AuctionsScrapingService;
-  let scraperService: EncheresPubliquesScraperService;
-  let repository: AbstractAuctionsRepository;
 
   const mockScraperService = {
     scrapeAuctions: jest.fn(),
@@ -25,8 +23,8 @@ describe('AuctionsScrapingService', () => {
       url: 'https://encheres-publiques.fr/lot/test-1',
       label: 'Test Property 1',
       address: '1 Rue de la Paix, 75001 Paris, France',
-      department: 75,
-      zipCode: 75001,
+      department: '75',
+      zipCode: '75001',
       latitude: 48.8566,
       longitude: 2.3522,
       auctionDate: '2025-01-15T14:00:00.000Z',
@@ -40,8 +38,8 @@ describe('AuctionsScrapingService', () => {
       url: 'https://encheres-publiques.fr/lot/test-2',
       label: 'Test Property 2',
       address: '2 Avenue des Champs-Élysées, 75008 Paris, France',
-      department: 75,
-      zipCode: 75008,
+      department: '75',
+      zipCode: '75008',
       latitude: 48.8698,
       longitude: 2.3075,
       auctionDate: '2025-01-20T15:30:00.000Z',
@@ -66,12 +64,6 @@ describe('AuctionsScrapingService', () => {
     }).compile();
 
     processor = module.get<AuctionsScrapingService>(AuctionsScrapingService);
-    scraperService = module.get<EncheresPubliquesScraperService>(
-      EncheresPubliquesScraperService
-    );
-    repository = module.get<AbstractAuctionsRepository>(
-      AbstractAuctionsRepository
-    );
 
     // Suppress logger
     jest.spyOn(processor['logger'], 'log').mockImplementation();
@@ -98,7 +90,6 @@ describe('AuctionsScrapingService', () => {
     }) as any;
 
   describe('scrapeAuctions', () => {
-
     beforeEach(() => {
       mockScraperService.scrapeAuctions.mockResolvedValue(mockOpportunities);
       mockRepository.insertOpportunities.mockResolvedValue(undefined);
@@ -171,7 +162,9 @@ describe('AuctionsScrapingService', () => {
       mockScraperService.scrapeAuctions.mockRejectedValue(scraperError);
       const job = createMockJob('scrape-auctions');
 
-      await expect(processor.scrapeAuctions(job)).rejects.toThrow('Scraping failed');
+      await expect(processor.scrapeAuctions(job)).rejects.toThrow(
+        'Scraping failed'
+      );
 
       expect(processor['logger'].error).toHaveBeenCalledWith(
         'Failed to scrape auctions:',
@@ -266,9 +259,11 @@ describe('AuctionsScrapingService', () => {
 
       const result = await processor.scrapeAuctions(job);
 
-      expect(result.totalOpportunities).toBe(2);
-      expect(result.persistedOpportunities).toBe(2); // Assuming all were persisted
-      expect(result.success).toBe(true);
+      expect(result).toEqual({
+        success: true,
+        totalOpportunities: 2,
+        persistedOpportunities: 2,
+      });
     });
 
     it('should handle job with custom data payload', async () => {
@@ -280,7 +275,11 @@ describe('AuctionsScrapingService', () => {
 
       const result = await processor.scrapeAuctions(job);
 
-      expect(result.success).toBe(true);
+      expect(result).toEqual({
+        success: true,
+        totalOpportunities: 2,
+        persistedOpportunities: 2,
+      });
       // Custom data doesn't affect processing, but job should still succeed
       expect(mockScraperService.scrapeAuctions).toHaveBeenCalledTimes(1);
     });
@@ -313,8 +312,16 @@ describe('AuctionsScrapingService', () => {
         processor.scrapeAuctions(job2),
       ]);
 
-      expect(result1.success).toBe(true);
-      expect(result2.success).toBe(true);
+      expect(result1).toEqual({
+        success: true,
+        totalOpportunities: 2,
+        persistedOpportunities: 2,
+      });
+      expect(result2).toEqual({
+        success: true,
+        totalOpportunities: 2,
+        persistedOpportunities: 2,
+      });
       expect(mockScraperService.scrapeAuctions).toHaveBeenCalledTimes(2);
       expect(mockRepository.insertOpportunities).toHaveBeenCalledTimes(2);
     });
@@ -413,7 +420,11 @@ describe('AuctionsScrapingService', () => {
 
       const result = await processor.scrapeAuctions(job);
 
-      expect(result.success).toBe(true);
+      expect(result).toEqual({
+        success: true,
+        totalOpportunities: 2,
+        persistedOpportunities: 2,
+      });
       // Should still process normally as job data isn't used in this implementation
     });
 
@@ -422,12 +433,11 @@ describe('AuctionsScrapingService', () => {
 
       const result = await processor.scrapeAuctions(job);
 
-      expect(result).toHaveProperty('success');
-      expect(result).toHaveProperty('totalOpportunities');
-      expect(result).toHaveProperty('persistedOpportunities');
-      expect(typeof result.success).toBe('boolean');
-      expect(typeof result.totalOpportunities).toBe('number');
-      expect(typeof result.persistedOpportunities).toBe('number');
+      expect(result).toEqual({
+        success: true,
+        totalOpportunities: 2,
+        persistedOpportunities: 2,
+      });
     });
   });
 });

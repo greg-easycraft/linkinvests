@@ -69,9 +69,11 @@ export class EnergySievesOpportunityRepository {
         }
 
         await this.db
-          .insert(domainSchema.opportunityEnergySieves)
+          .insert(domainSchema.energyDiagnostics)
           .values(dbOpportunities)
-          .onConflictDoNothing();
+          .onConflictDoNothing({
+            target: [domainSchema.energyDiagnostics.dpeNumber],
+          });
 
         insertedCount += batch.length;
         this.logger.log(

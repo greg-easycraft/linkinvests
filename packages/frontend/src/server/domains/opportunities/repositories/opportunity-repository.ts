@@ -5,7 +5,7 @@ import {
   opportunityAuctions,
   opportunitySuccessions,
   opportunityLiquidations,
-  opportunityEnergySieves
+  energyDiagnostics
 } from "@linkinvests/db";
 import type {
   IOpportunityRepository,
@@ -29,7 +29,7 @@ export class DrizzleOpportunityRepository implements IOpportunityRepository {
       case OpportunityType.LIQUIDATION:
         return { table: opportunityLiquidations, typeName: 'liquidation' as const };
       case OpportunityType.ENERGY_SIEVE:
-        return { table: opportunityEnergySieves, typeName: 'energy_sieve' as const };
+        return { table: energyDiagnostics, typeName: 'energy_sieve' as const };
       default:
         throw new Error(`Unsupported opportunity type: ${type}`);
     }

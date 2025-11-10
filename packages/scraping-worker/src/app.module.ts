@@ -7,6 +7,8 @@ import { DatabaseModule } from './database';
 import { AuctionsModule } from './domains/auctions';
 import { DeceasesModule } from './domains/deceases';
 import { config, ConfigModule } from './config';
+import { SCRAPING_QUEUE } from '@linkinvests/shared';
+import { ScrapingProcessor } from './scraping.processor';
 
 @Module({
   imports: [
@@ -18,9 +20,16 @@ import { config, ConfigModule } from './config';
         url: config.REDIS_URL,
       },
     }),
+    BullModule.registerQueue({
+      name: SCRAPING_QUEUE,
+      connection: {
+        url: config.REDIS_URL,
+      },
+    }),
     AuctionsModule,
     DeceasesModule,
   ],
   controllers: [AppController],
+  providers: [ScrapingProcessor],
 })
 export class AppModule {}

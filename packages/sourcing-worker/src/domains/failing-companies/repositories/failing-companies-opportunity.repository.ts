@@ -47,7 +47,7 @@ export class FailingCompaniesOpportunityRepository {
         label: est.companyName,
         siret: est.siret, // Required for liquidations
         address: est.address,
-        zipCode: parseInt(est.zipCode, 10),
+        zipCode: est.zipCode,
         department: est.department,
         latitude: est.latitude,
         longitude: est.longitude,

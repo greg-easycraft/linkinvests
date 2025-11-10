@@ -128,7 +128,7 @@ export class EnergySievesProcessor extends WorkerHost {
    */
   private transformDpeRecord(
     record: DpeRecord,
-    departmentId: number,
+    departmentId: string,
   ): EnergySieveOpportunity | null {
     // Validate required fields
     if (!record.adresse_ban || !record.code_postal_ban || !record._geopoint) {
@@ -148,8 +148,8 @@ export class EnergySievesProcessor extends WorkerHost {
     }
 
     // Parse postal code
-    const zipCode = parseInt(record.code_postal_ban, 10);
-    if (isNaN(zipCode)) {
+    const zipCode = record.code_postal_ban;
+    if (!zipCode) {
       this.logger.warn(
         `Invalid postal code for record ${record.numero_dpe}: ${record.code_postal_ban}`,
       );

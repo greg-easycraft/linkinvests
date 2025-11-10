@@ -63,8 +63,8 @@ export class DeceasesOpportunityRepository {
           label: opportunity.label,
           // Note: siret removed as it's always null for successions
           address: opportunity.address,
-          zipCode: parseInt(opportunity.zipCode, 10),
-          department: parseInt(opportunity.department, 10),
+          zipCode: opportunity.zipCode,
+          department: opportunity.department,
           latitude: opportunity.latitude,
           longitude: opportunity.longitude,
           opportunityDate: opportunity.opportunityDate,

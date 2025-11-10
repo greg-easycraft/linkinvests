@@ -259,19 +259,13 @@ export class CompanyBuildingsProcessor extends WorkerHost {
         }
       }
 
-      // Extract department from postal code (first 2 digits)
-      const department = parseInt(
-        etablissement.code_postal.substring(0, 2),
-        10,
-      );
-
       return {
         siret: etablissement.siret,
         companyName: etablissement.commune || 'Unknown Company',
         address: etablissement.adresse,
         zipCode: etablissement.code_postal,
         city: etablissement.libelle_commune,
-        department,
+        department: etablissement.code_postal.substring(0, 2),
         latitude: Number(latitude),
         longitude: Number(longitude),
         opportunityDate,

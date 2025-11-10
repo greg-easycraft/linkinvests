@@ -15,7 +15,7 @@ import {
 import { desc } from 'drizzle-orm';
 
 // Auction Opportunities Table
-export const opportunityAuctions = pgTable('opportunity_auction', {
+export const opportunityAuctions = pgTable('auction', {
   id: uuid('id').primaryKey().defaultRandom(),
   // Base opportunity fields
   label: varchar('label').notNull(),
@@ -25,7 +25,7 @@ export const opportunityAuctions = pgTable('opportunity_auction', {
   latitude: doublePrecision('latitude').notNull(),
   longitude: doublePrecision('longitude').notNull(),
   opportunityDate: date('opportunity_date').notNull(),
-  externalId: varchar('external_id'),
+  externalId: varchar('external_id').notNull().unique(),
   // Auction-specific fields
   url: text('url').notNull(),
   auctionType: varchar('auction_type'),
@@ -73,7 +73,7 @@ export const opportunityAuctions = pgTable('opportunity_auction', {
 ]);
 
 // Succession Opportunities Table
-export const opportunitySuccessions = pgTable('opportunity_succession', {
+export const opportunitySuccessions = pgTable('succession', {
   id: uuid('id').primaryKey().defaultRandom(),
   // Base opportunity fields
   label: varchar('label').notNull(),
@@ -83,7 +83,7 @@ export const opportunitySuccessions = pgTable('opportunity_succession', {
   latitude: doublePrecision('latitude').notNull(),
   longitude: doublePrecision('longitude').notNull(),
   opportunityDate: date('opportunity_date').notNull(),
-  externalId: varchar('external_id'),
+  externalId: varchar('external_id').notNull().unique(),
   // Succession-specific fields
   firstName: varchar('first_name').notNull(),
   lastName: varchar('last_name').notNull(),
@@ -116,18 +116,17 @@ export const opportunitySuccessions = pgTable('opportunity_succession', {
 ]);
 
 // Liquidation Opportunities Table
-export const opportunityLiquidations = pgTable('opportunity_liquidation', {
+export const opportunityLiquidations = pgTable('liquidation', {
   id: uuid('id').primaryKey().defaultRandom(),
   // Base opportunity fields
   label: varchar('label').notNull(),
-  siret: varchar('siret', { length: 14 }).notNull(),
+  siret: varchar('siret', { length: 14 }).notNull().unique(),
   address: text('address'),
   zipCode: varchar('zip_code').notNull(),
   department: varchar('department').notNull(),
   latitude: doublePrecision('latitude').notNull(),
   longitude: doublePrecision('longitude').notNull(),
   opportunityDate: date('opportunity_date').notNull(),
-  externalId: varchar('external_id'),
   // Company contact info as JSONB
   companyContact: jsonb('company_contact').$type<{
     name?: string;
@@ -143,7 +142,7 @@ export const opportunityLiquidations = pgTable('opportunity_liquidation', {
     .$onUpdate(() => /* @__PURE__ */ new Date())
     .notNull(),
 }, (table) => [
-  uniqueIndex('uq_liquidation_external_id').on(table.externalId),
+  uniqueIndex('uq_liquidation_siret').on(table.siret),
   index('idx_liquidation_siret').on(table.siret),
   index('idx_liquidation_department').on(table.department),
   index('idx_liquidation_date').on(desc(table.opportunityDate)),
@@ -157,7 +156,7 @@ export const opportunityLiquidations = pgTable('opportunity_liquidation', {
 ]);
 
 // Energy Sieve Opportunities Table
-export const opportunityEnergySieves = pgTable('opportunity_energy_sieve', {
+export const energyDiagnostics = pgTable('energy_diagnostic', {
   id: uuid('id').primaryKey().defaultRandom(),
   // Base opportunity fields
   label: varchar('label').notNull(),
@@ -167,10 +166,9 @@ export const opportunityEnergySieves = pgTable('opportunity_energy_sieve', {
   latitude: doublePrecision('latitude').notNull(),
   longitude: doublePrecision('longitude').notNull(),
   opportunityDate: date('opportunity_date').notNull(),
-  externalId: varchar('external_id'),
   // Energy-specific fields
   energyClass: varchar('energy_class'),
-  dpeNumber: varchar('dpe_number'),
+  dpeNumber: varchar('dpe_number').notNull().unique(),
   // Timestamps
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at')
@@ -178,7 +176,8 @@ export const opportunityEnergySieves = pgTable('opportunity_energy_sieve', {
     .$onUpdate(() => /* @__PURE__ */ new Date())
     .notNull(),
 }, (table) => [
-  uniqueIndex('uq_energy_sieve_external_id').on(table.externalId),
+  uniqueIndex('uq_energy_sieve_dpe_number').on(table.dpeNumber),
+  index('idx_energy_sieve_energy_class').on(table.energyClass),
   index('idx_energy_sieve_department').on(table.department),
   index('idx_energy_sieve_date').on(desc(table.opportunityDate)),
   index('idx_energy_sieve_department_date')

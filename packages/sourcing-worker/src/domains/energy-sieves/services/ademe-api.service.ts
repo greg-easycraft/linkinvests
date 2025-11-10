@@ -22,7 +22,7 @@ export class AdemeApiService {
    * @returns Array of all DPE records
    */
   async fetchAllDpeRecords(
-    department: number,
+    department: string,
     sinceDate: string,
     energyClasses: string[] = ['F', 'G'],
     beforeDate?: string,
@@ -97,7 +97,7 @@ export class AdemeApiService {
    * @returns Array of DPE records for this page
    */
   private async fetchDpePage(
-    department: number,
+    department: string,
     sinceDate: string,
     energyClasses: string[],
     page: number,
@@ -188,7 +188,7 @@ export class AdemeApiService {
    * @returns Complete API URL
    */
   private buildApiUrl(
-    department: number,
+    department: string,
     sinceDate: string,
     energyClasses: string[],
     page: number,

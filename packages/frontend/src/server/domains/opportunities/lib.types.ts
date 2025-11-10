@@ -6,7 +6,7 @@ import type { OpportunityFilters } from "~/types/filters";
 export type AuctionOpportunity = typeof domainSchema.opportunityAuctions.$inferSelect;
 export type SuccessionOpportunity = typeof domainSchema.opportunitySuccessions.$inferSelect;
 export type LiquidationOpportunity = typeof domainSchema.opportunityLiquidations.$inferSelect;
-export type EnergySieveOpportunity = typeof domainSchema.opportunityEnergySieves.$inferSelect;
+export type EnergySieveOpportunity = typeof domainSchema.energyDiagnostics.$inferSelect;
 
 // Union type representing any opportunity - with type discrimination
 export type Opportunity =

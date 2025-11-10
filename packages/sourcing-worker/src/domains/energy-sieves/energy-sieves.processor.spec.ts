@@ -62,14 +62,14 @@ describe('EnergySievesProcessor', () => {
     };
 
     it('should successfully transform valid DPE record', () => {
-      const result = processor['transformDpeRecord'](validRecord, 75);
+      const result = processor['transformDpeRecord'](validRecord, '75');
 
       expect(result).toEqual({
         numeroDpe: 'DPE123',
         label: '123 Rue de Test',
         address: '123 Rue de Test',
-        zipCode: 75001,
-        department: 75,
+        zipCode: '75001',
+        department: '75',
         latitude: 48.8566,
         longitude: 2.3522,
         opportunityDate: new Date('2024-01-15'),
@@ -81,35 +81,35 @@ describe('EnergySievesProcessor', () => {
 
     it('should return null for missing adresse_ban', () => {
       const record = { ...validRecord, adresse_ban: '' };
-      const result = processor['transformDpeRecord'](record, 75);
+      const result = processor['transformDpeRecord'](record, '75');
 
       expect(result).toBeNull();
     });
 
     it('should return null for missing code_postal_ban', () => {
       const record = { ...validRecord, code_postal_ban: '' };
-      const result = processor['transformDpeRecord'](record, 75);
+      const result = processor['transformDpeRecord'](record, '75');
 
       expect(result).toBeNull();
     });
 
     it('should return null for missing _geopoint', () => {
       const record = { ...validRecord, _geopoint: '' };
-      const result = processor['transformDpeRecord'](record, 75);
+      const result = processor['transformDpeRecord'](record, '75');
 
       expect(result).toBeNull();
     });
 
     it('should return null for invalid coordinates (NaN)', () => {
       const record = { ...validRecord, _geopoint: 'invalid,coordinates' };
-      const result = processor['transformDpeRecord'](record, 75);
+      const result = processor['transformDpeRecord'](record, '75');
 
       expect(result).toBeNull();
     });
 
     it('should return null for invalid postal code (NaN)', () => {
       const record = { ...validRecord, code_postal_ban: 'INVALID' };
-      const result = processor['transformDpeRecord'](record, 75);
+      const result = processor['transformDpeRecord'](record, '75');
 
       expect(result).toBeNull();
     });
@@ -120,34 +120,34 @@ describe('EnergySievesProcessor', () => {
         date_etablissement_dpe: '',
         date_reception_dpe: '',
       };
-      const result = processor['transformDpeRecord'](record, 75);
+      const result = processor['transformDpeRecord'](record, '75');
 
       expect(result).toBeNull();
     });
 
     it('should use date_etablissement_dpe as primary date', () => {
-      const result = processor['transformDpeRecord'](validRecord, 75);
+      const result = processor['transformDpeRecord'](validRecord, '75');
 
       expect(result?.opportunityDate).toEqual(new Date('2024-01-15'));
     });
 
     it('should fall back to date_reception_dpe when etablissement missing', () => {
       const record = { ...validRecord, date_etablissement_dpe: '' };
-      const result = processor['transformDpeRecord'](record, 75);
+      const result = processor['transformDpeRecord'](record, '75');
 
       expect(result?.opportunityDate).toEqual(new Date('2024-01-16'));
     });
 
     it('should parse _geopoint correctly (lat,lon format)', () => {
       const record = { ...validRecord, _geopoint: '45.7578,4.8320' };
-      const result = processor['transformDpeRecord'](record, 75);
+      const result = processor['transformDpeRecord'](record, '75');
 
       expect(result?.latitude).toBe(45.7578);
       expect(result?.longitude).toBe(4.832);
     });
 
     it('should create label from address', () => {
-      const result = processor['transformDpeRecord'](validRecord, 75);
+      const result = processor['transformDpeRecord'](validRecord, '75');
 
       expect(result?.label).toBe('123 Rue de Test');
     });
@@ -158,13 +158,13 @@ describe('EnergySievesProcessor', () => {
         adresse_ban: '',
         nom_commune_ban: 'Paris',
       };
-      const result = processor['transformDpeRecord'](record, 75);
+      const result = processor['transformDpeRecord'](record, '75');
 
       expect(result).toBeNull(); // Will be null because adresse_ban is required
     });
 
     it('should convert date string to Date object', () => {
-      const result = processor['transformDpeRecord'](validRecord, 75);
+      const result = processor['transformDpeRecord'](validRecord, '75');
 
       expect(result?.opportunityDate).toBeInstanceOf(Date);
       expect(result?.opportunityDate.toISOString()).toContain('2024-01-15');
@@ -174,7 +174,7 @@ describe('EnergySievesProcessor', () => {
   describe('process', () => {
     const mockJob = {
       data: {
-        departmentId: 75,
+        departmentId: '75',
         sinceDate: '2024-01-01',
         energyClasses: ['F', 'G'],
       },
