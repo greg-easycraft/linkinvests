@@ -54,15 +54,11 @@ export function OpportunityFilters({
   // No longer needed since we use Select component directly
 
   const handleDepartmentChange = (selectedValues: string[]): void => {
-    const departmentIds = selectedValues.map((value) => parseInt(value, 10));
-    onFiltersChange({ ...filters, departments: departmentIds.length > 0 ? departmentIds : undefined });
+    onFiltersChange({ ...filters, departments: selectedValues });
   };
 
   const handleZipCodeChange = (zipCodes: string[]): void => {
-    const zipCodeNumbers = zipCodes
-      .map((value) => parseInt(value, 10))
-      .filter((num) => !isNaN(num) && num > 0);
-    onFiltersChange({ ...filters, zipCodes: zipCodeNumbers.length > 0 ? zipCodeNumbers : undefined });
+    onFiltersChange({ ...filters, zipCodes });
   };
 
   const handleTypeChange = (value: string): void => {

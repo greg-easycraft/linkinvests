@@ -16,18 +16,17 @@ vi.mock('./StreetView', () => ({
 
 describe('OpportunityList', () => {
   const mockOpportunity: Opportunity = {
-    id: 1,
+    id: randomUUID(),
     label: 'Opportunité Test',
     type: 'succession',
-    status: 'active',
     address: '123 Rue de Test',
-    department: 75,
-    zipCode: 75001,
+    department: '75',
+    zipCode: '75001',
     latitude: 48.8566,
     longitude: 2.3522,
     opportunityDate: '2024-01-15',
     siret: '12345678901234',
-    externalId: null,
+    externalId: '12345678901234',
     contactData: null,
     createdAt: new Date(),
     updatedAt: new Date(),

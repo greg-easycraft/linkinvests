@@ -14,6 +14,8 @@ import type {
 import type { OpportunityFilters } from "~/types/filters";
 import { calculateStartDate } from "~/constants/date-periods";
 
+type OpportunityTable = typeof opportunityAuctions | typeof opportunitySuccessions | typeof opportunityLiquidations | typeof energyDiagnostics;
+
 export class DrizzleOpportunityRepository implements IOpportunityRepository {
   constructor(private readonly db: DomainDbType) {}
 
@@ -38,7 +40,7 @@ export class DrizzleOpportunityRepository implements IOpportunityRepository {
   /**
    * Builds where clause for any table type
    */
-  private buildWhereClauseForTable(table: any, filters?: OpportunityFilters): SQL[] {
+  private buildWhereClauseForTable(table: OpportunityTable, filters?: OpportunityFilters): SQL[] {
     const conditions: SQL[] = [];
 
     if (!filters) {

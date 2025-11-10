@@ -28,8 +28,8 @@ export interface DepartmentOption {
 
 export interface OpportunityFilters {
   types?: OpportunityType[];
-  departments?: number[];
-  zipCodes?: number[];
+  departments?: string[];
+  zipCodes?: string[];
   dateRange?: DateRange; // Legacy support - uses 'from' date as threshold
   datePeriod?: DatePeriod; // New predefined period - filters for opportunities after start date
   bounds?: MapBounds;
