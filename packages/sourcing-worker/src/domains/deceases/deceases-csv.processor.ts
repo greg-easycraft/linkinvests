@@ -118,9 +118,12 @@ export class DeceasesCsvProcessor extends WorkerHost {
       // Finalize processing
       await this.finalizeCsv(fileName, stats);
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { failedRows, ...statsWithoutFailedRows } = stats;
+
       this.logger.log('CSV processing completed successfully', {
         fileName,
-        finalStats: stats,
+        finalStats: statsWithoutFailedRows,
       });
     } catch (error) {
       this.logger.error('CSV processing job failed', {
