@@ -117,10 +117,10 @@ export class DeceasesCsvProcessor extends WorkerHost {
 
       // Finalize processing
       await this.finalizeCsv(fileName, stats);
-
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { failedRows, ...statsWithoutFailedRows } = stats;
 
+      // this.logger.debug('Failed rows', { failedRows });
       this.logger.log('CSV processing completed successfully', {
         fileName,
         finalStats: statsWithoutFailedRows,

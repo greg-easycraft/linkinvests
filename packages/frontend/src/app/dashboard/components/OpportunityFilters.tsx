@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "~/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import { MultiSelect, type MultiSelectOption } from "~/components/ui/multi-select";
 import { MultiInput } from "~/components/ui/multi-input";
 import { OpportunityType } from "@linkinvests/shared";
@@ -66,7 +66,7 @@ export function OpportunityFilters({
   };
 
   const handleTypeChange = (value: string): void => {
-    if (value && value in OpportunityType) {
+    if (value && Object.values(OpportunityType).includes(value as OpportunityType)) {
       onTypeChange(value as OpportunityType);
     }
   };
@@ -92,8 +92,6 @@ export function OpportunityFilters({
       </CardHeader>
       <CardContent className="flex-1 overflow-y-auto">
         <div className="space-y-4">
-          <CardTitle className="text-lg">Filtres</CardTitle>
-
           {/* Type Filter - Single select */}
           <div>
             <label className="text-sm font-medium mb-2 block font-heading">Type d&apos;opportunité</label>

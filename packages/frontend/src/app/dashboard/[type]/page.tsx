@@ -256,13 +256,3 @@ export default function TypedDashboardPage(): React.ReactElement {
     </div>
   );
 }
-
-// Export for static generation
-export function generateStaticParams() {
-  return [
-    { type: 'auctions' },
-    { type: 'successions' },
-    { type: 'liquidations' },
-    { type: 'energy-sieves' },
-  ];
-}
