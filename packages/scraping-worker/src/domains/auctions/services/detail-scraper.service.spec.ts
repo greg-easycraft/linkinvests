@@ -230,6 +230,7 @@ describe('DetailScraperService', () => {
 
     it('should parse auction data with address object', () => {
       const result = service['parseAuctionDataFromJson'](
+        // @ts-expect-error - mockAllData is not typed correctly
         exampleAddressJson,
         testUrl
       );
@@ -248,6 +249,7 @@ describe('DetailScraperService', () => {
     });
 
     it('should parse auction data without address object', () => {
+      // @ts-expect-error - mockAllData is not typed correctly
       const result = service['parseAuctionDataFromJson'](exampleJson, testUrl);
 
       expect(result).toBeDefined();
@@ -279,6 +281,7 @@ describe('DetailScraperService', () => {
       const malformedJson = { invalid: 'structure' };
 
       const result = service['parseAuctionDataFromJson'](
+        // @ts-expect-error - mockAllData is not typed correctly
         malformedJson,
         testUrl
       );
@@ -374,12 +377,12 @@ describe('DetailScraperService', () => {
       expect(result).toBeNull();
     });
 
-    it('should handle null date values', () => {
+    it('should handle undefined date values', () => {
       const lotData = {
         id: 'test-lot-date-5',
         nom: 'Test auction 5',
-        fermeture_reelle_date: null,
-        encheres_fermeture_date: null,
+        fermeture_reelle_date: undefined,
+        encheres_fermeture_date: undefined,
         fermeture_date: 1762970400,
       };
 
@@ -401,6 +404,7 @@ describe('DetailScraperService', () => {
         nom: 'Test property',
       };
 
+      // @ts-expect-error - mockAllData is not typed correctly
       const result = service['extractAdress'](lotData, mockAllData, testUrl);
 
       expect(result).toEqual({
@@ -419,7 +423,7 @@ describe('DetailScraperService', () => {
         adresse: { _ref: 'Adresse:198825' },
         nom: 'Test property',
       };
-
+      // @ts-expect-error - mockAllData is not typed correctly
       const result = service['extractAdress'](lotData, mockAllData, testUrl);
 
       expect(result).toEqual({
@@ -438,7 +442,7 @@ describe('DetailScraperService', () => {
         adresse: undefined,
         nom: 'Une maison de 107 m² située à Oinville-Sous-Auneau',
       };
-
+      // @ts-expect-error - mockAllData is not typed correctly
       const result = service['extractAdress'](lotData, mockAllData, testUrl);
 
       expect(result).toEqual({
@@ -456,6 +460,7 @@ describe('DetailScraperService', () => {
         nom: 'Une maison moderne',
       };
 
+      // @ts-expect-error - mockAllData is not typed correctly
       const result = service['extractAdress'](lotData, mockAllData, testUrl);
 
       expect(result).toEqual({
@@ -472,6 +477,7 @@ describe('DetailScraperService', () => {
         nom: 'Test property',
       };
 
+      // @ts-expect-error - mockAllData is not typed correctly
       const result = service['extractAdress'](lotData, mockAllData, testUrl);
 
       expect(result).toEqual({
@@ -520,7 +526,7 @@ describe('DetailScraperService', () => {
           adresse: undefined,
           nom,
         };
-
+        // @ts-expect-error - mockAllData is not typed correctly
         const result = service['extractAdress'](lotData, mockAllData, testUrl);
         expect(result).toEqual(expected);
       });
@@ -537,6 +543,7 @@ describe('DetailScraperService', () => {
 
       const result = service['extractAdress'](
         lotData,
+        // @ts-expect-error - mockAllData is not typed correctly
         mockAllData,
         malformedUrl
       );
