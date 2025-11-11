@@ -11,6 +11,8 @@ import type { OpportunityFilters } from "~/types/filters";
 import { ChevronLeft, ChevronRight, MapPin, Calendar, Building2, ExternalLink } from "lucide-react";
 import { OpportunityListEmptyState } from "./OpportunityListEmptyState";
 import { StaticStreetView } from "./StaticStreetView";
+import { OpportunityType } from "@linkinvests/shared";
+import { TYPE_LABELS, TYPE_COLORS } from "~/constants/opportunity-types";
 
 interface OpportunityListProps {
   data: OpportunityListResult;
@@ -20,14 +22,6 @@ interface OpportunityListProps {
   filters?: OpportunityFilters;
 }
 
-const TYPE_LABELS: Record<string, string> = {
-  succession: "Succession",
-  liquidation: "Liquidation",
-  energy_sieve: "Passoire énergétique",
-  real_estate_listing: "Annonce immobilière",
-  auction: "Vente aux enchères",
-  divorce: "Divorce",
-};
 
 // Helper function to get URL from auction opportunities
 function getOpportunityUrl(opportunity: Opportunity): string | null {
@@ -88,7 +82,14 @@ export function OpportunityList({
                       {opportunity.label}
                     </h3>
                     <div className="flex gap-2 flex-shrink-0">
-                      <Badge variant="secondary">
+                      <Badge
+                        variant="secondary"
+                        style={{
+                          backgroundColor: TYPE_COLORS[opportunity.type as OpportunityType],
+                          color: 'white',
+                          border: 'none'
+                        }}
+                      >
                         {TYPE_LABELS[opportunity.type] ?? opportunity.type}
                       </Badge>
                       {opportunityUrl && (

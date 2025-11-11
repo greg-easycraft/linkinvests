@@ -7,6 +7,7 @@ import { X } from "lucide-react";
 import type { Opportunity } from "~/server/domains/opportunities/lib.types";
 import { OpportunityType } from "@linkinvests/shared";
 import { env } from "~/lib/env";
+import { TYPE_LABELS, TYPE_COLORS } from "~/constants/opportunity-types";
 
 interface OpportunityMapProps {
   opportunities: Opportunity[];
@@ -22,23 +23,6 @@ interface OpportunityMapProps {
   total?: number;
 }
 
-const TYPE_COLORS: Record<OpportunityType, string> = {
-  [OpportunityType.SUCCESSION]: "#3b82f6",
-  [OpportunityType.LIQUIDATION]: "#ef4444",
-  [OpportunityType.ENERGY_SIEVE]: "#10b981",
-  [OpportunityType.REAL_ESTATE_LISTING]: "#f59e0b",
-  [OpportunityType.AUCTION]: "#8b5cf6",
-  [OpportunityType.DIVORCE]: "#ec4899",
-};
-
-const TYPE_LABELS: Record<OpportunityType, string> = {
-  [OpportunityType.SUCCESSION]: "Succession",
-  [OpportunityType.LIQUIDATION]: "Liquidation",
-  [OpportunityType.ENERGY_SIEVE]: "Passoire énergétique",
-  [OpportunityType.REAL_ESTATE_LISTING]: "Annonce immobilière",
-  [OpportunityType.AUCTION]: "Vente aux enchères",
-  [OpportunityType.DIVORCE]: "Divorce",
-};
 
 export function OpportunityMap({
   opportunities,

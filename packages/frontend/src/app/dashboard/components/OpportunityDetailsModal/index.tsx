@@ -24,15 +24,6 @@ interface OpportunityDetailsModalProps {
   onClose: () => void;
 }
 
-const TYPE_LABELS: Record<string, string> = {
-  succession: "Succession",
-  liquidation: "Liquidation",
-  energy_sieve: "Passoire énergétique",
-  real_estate_listing: "Annonce immobilière",
-  auction: "Vente aux enchères",
-  divorce: "Divorce",
-};
-
 export function OpportunityDetailsModal({
   opportunity,
   isOpen,
