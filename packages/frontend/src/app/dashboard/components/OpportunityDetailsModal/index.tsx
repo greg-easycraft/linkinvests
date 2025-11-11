@@ -2,9 +2,8 @@
 
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { X, MapPin, Calendar, Building2 } from "lucide-react";
+import { X, MapPin, Calendar } from "lucide-react";
 import { Button } from "~/components/ui/button";
-import { Badge } from "~/components/ui/badge";
 import * as Dialog from "@radix-ui/react-dialog";
 import type {
   Opportunity,
@@ -13,7 +12,7 @@ import type {
   LiquidationOpportunity,
   EnergyDiagnostic
 } from "~/server/domains/opportunities/lib.types";
-import { StreetView } from "./StreetView";
+import { StreetView } from "../StreetView";
 import { AuctionDetails } from "./AuctionDetails";
 import { SuccessionDetails } from "./SuccessionDetails";
 import { LiquidationDetails } from "./LiquidationDetails";
@@ -68,13 +67,6 @@ export function OpportunityDetailsModal({
             className="w-full h-64 rounded-lg"
           />
 
-          {/* Type Badge */}
-          <div className="flex gap-2">
-            <Badge variant="secondary">
-              {TYPE_LABELS[opportunity.type] ?? opportunity.type}
-            </Badge>
-          </div>
-
           {/* Details Grid */}
           <div className="space-y-4">
             {/* Address */}
@@ -90,17 +82,6 @@ export function OpportunityDetailsModal({
                 </div>
               </div>
             </div>
-
-            {/* SIRET - only for liquidation opportunities */}
-            {opportunity.type === 'liquidation' && opportunity.siret && (
-              <div className="flex gap-3">
-                <Building2 className="h-5 w-5 text-neutral-500 mt-0.5" />
-                <div className="flex-1">
-                  <div className="text-sm font-medium mb-1 font-heading">SIRET</div>
-                  <div className="text-sm text-neutral-600">{opportunity.siret}</div>
-                </div>
-              </div>
-            )}
 
             {/* Date */}
             <div className="flex gap-3">

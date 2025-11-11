@@ -1,47 +1,79 @@
 "use client";
 import { useApiIsLoaded } from '@vis.gl/react-google-maps';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react'; // Import useState
 
 interface StreetViewProps {
-  address?: string | null;
-  latitude: number;
-  longitude: number;
+  address: string | null; // Use address as the primary input
+  latitude: number; // Remove or make optional if address is primary
+  longitude: number; // Remove or make optional if address is primary
   className?: string;
 }
 
-export function StreetView({ latitude, longitude }: StreetViewProps): React.ReactElement {
-  // Define the coordinates (Latitude and Longitude) for Street View
-  const position = { lat: latitude, lng: longitude }; // Example: Los Angeles
+// Define the LatLng literal type for the position state
+type LatLngLiteral = { lat: number; lng: number } | null;
 
-  // 1. Reference for the DOM element where the Panorama will render
+export function StreetView({ address, latitude, longitude }: StreetViewProps): React.ReactElement {
+  // 1. State to hold the resolved coordinates
+  const [position, setPosition] = useState<LatLngLiteral>({ lat: latitude, lng: longitude });
+
+  // 2. Reference for the DOM element where the Panorama will render
   const panoRef = useRef(null);
-  // 2. Check if the Maps API is loaded
+  // 3. Check if the Maps API is loaded
   const apiLoaded = useApiIsLoaded();
-  // The StreetViewPanorama is often a child of the Map component
-  // to link the map's view and the panorama.
+
+  // --- Geocoding Effect (Address to Coordinates) ---
   useEffect(() => {
-    // Check if both the API is loaded and the DOM element is available
-    if (apiLoaded && panoRef.current) {
-      // 3. Create the standard Google Maps StreetViewPanorama object
+    if (apiLoaded && address) {
+      // Create a Geocoder instance
+      const geocoder = new google.maps.Geocoder();
+
+      // Geocode the address
+      geocoder.geocode({ address: address }, (results, status) => {
+        if (status === 'OK' && results && results[0]) {
+          // Set the position state with the first result's coordinates
+          const newPosition = {
+            lat: results[0].geometry.location.lat(),
+            lng: results[0].geometry.location.lng(),
+          };
+          setPosition(newPosition);
+        } else {
+          console.error(`Geocode failed for address "${address}" due to: ${status}`);
+          // Handle error (e.g., set an error state, display a message)
+        }
+      });
+    }
+  }, [apiLoaded, address]); // Re-run effect if API loads or address changes
+
+  // --- Street View Panorama Effect (Render the Panorama) ---
+  useEffect(() => {
+    // Check if both the API is loaded, the DOM element is available, AND we have coordinates
+    if (apiLoaded && panoRef.current && position) {
+      // 4. Create the standard Google Maps StreetViewPanorama object
       new google.maps.StreetViewPanorama(
         panoRef.current,
         {
-          position: position,
+          position: position, // Use the dynamically resolved position
           pov: {
-            heading: 270, // Initial compass heading (0-360)
-            pitch: 0      // Initial up/down pitch (-90 to 90)
+            heading: 270,
+            pitch: 0
           },
           visible: true
         }
       );
     }
-  }, [apiLoaded, position]); // Re-run effect if API loads or position changes
+    // Dependency on position ensures the panorama is created/updated once coordinates are found
+  }, [apiLoaded, position]);
 
-  // 4. Return the div container
+  // 5. Return the div container
   return (
     <div
       ref={panoRef}
       style={{ height: '300px', width: '90%', border: '1px solid black', margin: '0 auto', borderRadius: '10px' }}
-    />
+    >
+        {/* Optional: Add a loading state */}
+        {!position && apiLoaded && address && <p>Loading Street View for {address}...</p>}
+        {/* Optional: Add an error/not-found message */}
+        {!position && apiLoaded && address && !panoRef.current && <p>Street View not available or address not found.</p>}
+    </div>
   );
-};
+}

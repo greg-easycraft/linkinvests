@@ -39,10 +39,9 @@ export function EnergySieveDetails({ opportunity }: EnergySieveDetailsProps) {
     return null;
   }
   const energyClassInfo = opportunity.energyClass ? ENERGY_CLASS_INFO[opportunity.energyClass] : null;
-  console.log("energyClassInfo", energyClassInfo);
 
   return (
-    <Card className="mt-6 text-[var(--primary)]">
+    <Card className="mt-6 text-[var(--primary)] border-[var(--primary)]">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Zap className="h-5 w-5" />

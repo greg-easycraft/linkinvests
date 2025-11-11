@@ -8,7 +8,7 @@ import { Badge } from "~/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import type { Opportunity } from "~/server/domains/opportunities/lib.types";
 import { StreetView } from "./StreetView";
-import { AuctionDetails } from "./AuctionDetails";
+import { AuctionDetails } from "./OpportunityDetailsModal/AuctionDetails";
 
 interface OpportunitySidebarProps {
   opportunity: Opportunity | null;
