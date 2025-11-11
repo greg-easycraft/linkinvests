@@ -15,8 +15,7 @@ import {
   getOpportunitiesForMapByType,
 } from "~/app/_actions/opportunity/queries";
 import type { OpportunityFilters as IOpportunityFilters } from "~/types/filters";
-import type { Opportunity } from "~/server/domains/opportunities/lib.types";
-import { OpportunityType } from "@linkinvests/shared";
+import { type Opportunity, OpportunityType } from "@linkinvests/shared";
 import Image from "next/image";
 import { OpportunityListSkeleton } from "../components/OpportunityListSkeleton";
 import { MapSkeleton } from "../components/MapSkeleton";
@@ -214,6 +213,7 @@ export default function TypedDashboardPage(): React.ReactElement {
               {viewType === "list" && listQuery.data && (
                 <div className="h-full overflow-y-auto rounded-md">
                   <OpportunityList
+                    type={opportunityType}
                     data={listQuery.data}
                     selectedId={selectedOpportunity?.id}
                     onSelect={handleSelectOpportunity}
@@ -226,6 +226,7 @@ export default function TypedDashboardPage(): React.ReactElement {
               {viewType === "map" && mapQuery.data && (
                 <div className="relative w-full h-full">
                   <OpportunityMap
+                    type={opportunityType}
                     opportunities={mapQuery.data.opportunities}
                     selectedId={selectedOpportunity?.id}
                     onSelect={handleSelectOpportunity}
@@ -249,6 +250,7 @@ export default function TypedDashboardPage(): React.ReactElement {
 
       {/* Opportunity Details Modal */}
       <OpportunityDetailsModal
+        type={opportunityType}
         opportunity={selectedOpportunity}
         isOpen={isModalOpen}
         onClose={handleCloseModal}

@@ -5,13 +5,14 @@ import { fr } from "date-fns/locale";
 import { X, MapPin, Calendar } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import * as Dialog from "@radix-ui/react-dialog";
-import type {
-  Opportunity,
-  AuctionOpportunity,
-  SuccessionOpportunity,
-  LiquidationOpportunity,
-  EnergyDiagnostic
-} from "~/server/domains/opportunities/lib.types";
+import {
+  type Opportunity,
+  type EnergyDiagnostic,
+  type Auction,
+  type Succession,
+  type Liquidation,
+  OpportunityType,
+} from "@linkinvests/shared";
 import { StreetView } from "../StreetView";
 import { AuctionDetails } from "./AuctionDetails";
 import { SuccessionDetails } from "./SuccessionDetails";
@@ -22,12 +23,14 @@ interface OpportunityDetailsModalProps {
   opportunity: Opportunity | null;
   isOpen: boolean;
   onClose: () => void;
+  type: OpportunityType;
 }
 
 export function OpportunityDetailsModal({
   opportunity,
   isOpen,
   onClose,
+  type,
 }: OpportunityDetailsModalProps): React.ReactElement {
   if (!opportunity) return <></>;
 
@@ -89,16 +92,16 @@ export function OpportunityDetailsModal({
           </div>
 
           {/* Type-specific Details */}
-          {opportunity.type === 'auction' && (
-            <AuctionDetails opportunity={opportunity as AuctionOpportunity & { type: 'auction' }} />
+          {type === OpportunityType.AUCTION && (
+            <AuctionDetails opportunity={opportunity as Auction} />
           )}
-          {opportunity.type === 'succession' && (
-            <SuccessionDetails opportunity={opportunity as SuccessionOpportunity & { type: 'succession' }} />
+          {type === OpportunityType.SUCCESSION && (
+            <SuccessionDetails opportunity={opportunity as Succession} />
           )}
-          {opportunity.type === 'liquidation' && (
-            <LiquidationDetails opportunity={opportunity as LiquidationOpportunity & { type: 'liquidation' }} />
+          {type === OpportunityType.LIQUIDATION && (
+            <LiquidationDetails opportunity={opportunity as Liquidation} />
           )}
-          {opportunity.type === 'energy_sieve' && (
+          {type === OpportunityType.ENERGY_SIEVE && (
             <EnergySieveDetails opportunity={opportunity as EnergyDiagnostic & { type: 'energy_sieve' }} />
           )}
 

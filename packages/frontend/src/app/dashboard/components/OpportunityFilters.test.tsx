@@ -77,7 +77,7 @@ describe('OpportunityFilters', () => {
     });
 
     it('should display selected departments', () => {
-      const filters: IOpportunityFilters = { departments: [75] };
+      const filters: IOpportunityFilters = { departments: ['75'] };
 
       render(<OpportunityFilters {...defaultProps} filters={filters} />);
 
@@ -93,7 +93,7 @@ describe('OpportunityFilters', () => {
     });
 
     it('should display selected zip codes', () => {
-      const filters: IOpportunityFilters = { zipCodes: [75001] };
+      const filters: IOpportunityFilters = { zipCodes: ['75001'] };
 
       render(<OpportunityFilters {...defaultProps} filters={filters} />);
 
@@ -146,8 +146,8 @@ describe('OpportunityFilters', () => {
     it('should handle all filters being set at once', () => {
       const filters: IOpportunityFilters = {
         types: [OpportunityType.SUCCESSION, OpportunityType.LIQUIDATION],
-        departments: [75],
-        zipCodes: [75001],
+        departments: ['75'],
+        zipCodes: ['75001'],
         datePeriod: "last_3_months",
       };
 

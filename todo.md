@@ -17,6 +17,7 @@
 - current price from bids
 - photo
 - LLMs for address from desc
+- departments "00"
 
 ## Decease scraping
 - refine address
@@ -30,3 +31,10 @@
 
 Questions: 
 - DVF uniquement transactions à titre onéreux
+
+Accounts to Open 
+- neon
+- hostinger
+- oracle
+- google maps
+- open gl ? mapbox ?

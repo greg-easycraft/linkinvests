@@ -26,6 +26,9 @@ export interface DepartmentOption {
   label: string; // Formatted as "ID - Name" for display
 }
 
+// Energy class type for energy diagnostics
+export type EnergyClass = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G';
+
 export interface OpportunityFilters {
   types?: OpportunityType[];
   departments?: string[];
@@ -37,4 +40,6 @@ export interface OpportunityFilters {
   offset?: number;
   sortBy?: string;
   sortOrder?: "asc" | "desc";
+  // Energy diagnostics specific filters
+  energyClasses?: EnergyClass[];
 }

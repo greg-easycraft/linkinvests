@@ -12,18 +12,13 @@ import {
   Calendar,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import type { SuccessionOpportunity } from "~/server/domains/opportunities/lib.types";
+import type { Succession } from "@linkinvests/shared";
 
 interface SuccessionDetailsProps {
-  opportunity: SuccessionOpportunity & { type: 'succession' };
+  opportunity: Succession;
 }
 
 export function SuccessionDetails({ opportunity }: SuccessionDetailsProps) {
-  // Only render for succession opportunities
-  if (opportunity.type !== 'succession') {
-    return null;
-  }
-
   const hasPersonInfo = opportunity.firstName || opportunity.lastName;
   const hasMairieInfo = opportunity.mairieContact && (
     opportunity.mairieContact.name ||

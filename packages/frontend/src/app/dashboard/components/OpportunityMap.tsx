@@ -4,8 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { X } from "lucide-react";
-import type { Opportunity } from "~/server/domains/opportunities/lib.types";
-import { OpportunityType } from "@linkinvests/shared";
+import { Opportunity, OpportunityType } from "@linkinvests/shared";
 import { env } from "~/lib/env";
 import { TYPE_LABELS, TYPE_COLORS } from "~/constants/opportunity-types";
 
@@ -21,6 +20,7 @@ interface OpportunityMapProps {
   }) => void;
   isLimited?: boolean;
   total?: number;
+  type: OpportunityType;
 }
 
 
@@ -31,6 +31,7 @@ export function OpportunityMap({
   onBoundsChange,
   isLimited = false,
   total = 0,
+  type,
 }: OpportunityMapProps): React.ReactElement {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
@@ -103,7 +104,7 @@ export function OpportunityMap({
 
     // Add new markers
     opportunities.forEach((opportunity) => {
-      const color = TYPE_COLORS[opportunity.type as OpportunityType];
+      const color = TYPE_COLORS[type];
 
       const el = document.createElement("div");
       el.className = "custom-marker";
@@ -130,7 +131,7 @@ export function OpportunityMap({
             `
             <div style="padding: 8px;">
               <div style="font-weight: 600; margin-bottom: 4px;">${opportunity.label}</div>
-              <div style="font-size: 12px; color: #666;">${TYPE_LABELS[opportunity.type as OpportunityType]}</div>
+              <div style="font-size: 12px; color: #666;">${TYPE_LABELS[type]}</div>
               <div style="font-size: 12px; color: #666;">${opportunity.address ?? "Non disponible"}</div>
             </div>
           `,

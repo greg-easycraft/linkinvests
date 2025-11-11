@@ -13,10 +13,10 @@ import {
 } from "lucide-react";
 import { Badge } from "~/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import type { LiquidationOpportunity } from "~/server/domains/opportunities/lib.types";
+import type { Liquidation } from "@linkinvests/shared";
 
 interface LiquidationDetailsProps {
-  opportunity: LiquidationOpportunity & { type: 'liquidation' };
+  opportunity: Liquidation;
 }
 
 const formatSiret = (siret: string): string => {
@@ -28,11 +28,6 @@ const formatSiret = (siret: string): string => {
 };
 
 export function LiquidationDetails({ opportunity }: LiquidationDetailsProps) {
-  // Only render for liquidation opportunities
-  if (opportunity.type !== 'liquidation') {
-    return null;
-  }
-
   const hasCompanyInfo = opportunity.companyContact && (
     opportunity.companyContact.name ||
     opportunity.companyContact.phone ||

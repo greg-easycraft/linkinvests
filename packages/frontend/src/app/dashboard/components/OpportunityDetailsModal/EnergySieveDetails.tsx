@@ -10,10 +10,10 @@ import {
 } from "lucide-react";
 import { Badge } from "~/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import type { EnergyDiagnostic } from "~/server/domains/opportunities/lib.types";
+import type { EnergyDiagnostic } from "@linkinvests/shared";
 
 interface EnergySieveDetailsProps {
-  opportunity: EnergyDiagnostic & { type: 'energy_sieve' };
+  opportunity: EnergyDiagnostic;
 }
 
 // Energy class colors and labels
@@ -28,11 +28,6 @@ const ENERGY_CLASS_INFO: Record<string, { color: string; label: string }> = {
 };
 
 export function EnergySieveDetails({ opportunity }: EnergySieveDetailsProps) {
-  // Only render for energy sieve opportunities
-  if (opportunity.type !== 'energy_sieve') {
-    return null;
-  }
-
   const hasEnergyInfo = opportunity.energyClass || opportunity.dpeNumber;
 
   if (!hasEnergyInfo) {

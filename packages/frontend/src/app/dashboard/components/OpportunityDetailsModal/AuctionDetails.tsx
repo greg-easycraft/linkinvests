@@ -18,10 +18,10 @@ import {
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import type { AuctionOpportunity } from "~/server/domains/opportunities/lib.types";
+import type { Auction } from "@linkinvests/shared";
 
 interface AuctionDetailsProps {
-  opportunity: AuctionOpportunity & { type: 'auction' };
+  opportunity: Auction;
 }
 
 const formatPrice = (price: number): string => {
@@ -37,11 +37,6 @@ const formatSquareFootage = (squareFootage: number): string => {
 };
 
 export function AuctionDetails({ opportunity }: AuctionDetailsProps) {
-  // Only render for auction opportunities
-  if (opportunity.type !== 'auction') {
-    return null;
-  }
-
   const hasPriceInfo = opportunity.currentPrice || opportunity.lowerEstimate ||
                       opportunity.upperEstimate || opportunity.reservePrice;
   const hasPropertyInfo = opportunity.propertyType || opportunity.squareFootage ||
