@@ -116,7 +116,7 @@ export function OpportunityFilters({
               options={departmentOptions}
               selected={filters.departments?.map(String) ?? []}
               onChange={handleDepartmentChange}
-              placeholder="Sélectionner des départements..."
+              placeholder="Départements"
               searchPlaceholder="Rechercher par numéro ou nom..."
               maxDisplayItems={3}
             />
