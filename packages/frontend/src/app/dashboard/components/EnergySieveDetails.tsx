@@ -18,13 +18,13 @@ interface EnergySieveDetailsProps {
 
 // Energy class colors and labels
 const ENERGY_CLASS_INFO: Record<string, { color: string; label: string }> = {
-  'A': { color: 'text-green-600 border-green-600', label: 'Très performant' },
-  'B': { color: 'text-green-500 border-green-500', label: 'Performant' },
-  'C': { color: 'text-yellow-500 border-yellow-500', label: 'Assez performant' },
-  'D': { color: 'text-orange-500 border-orange-500', label: 'Peu performant' },
-  'E': { color: 'text-orange-600 border-orange-600', label: 'Peu performant' },
-  'F': { color: 'text-red-500 border-red-500', label: 'Très peu performant' },
-  'G': { color: 'text-red-600 border-red-600', label: 'Extrêmement peu performant' },
+  'A': { color: 'green-600', label: 'Très performant' },
+  'B': { color: 'green-500', label: 'Performant' },
+  'C': { color: 'yellow-500', label: 'Assez performant' },
+  'D': { color: 'orange-500', label: 'Peu performant' },
+  'E': { color: 'orange-600', label: 'Peu performant' },
+  'F': { color: 'red-500', label: 'Très peu performant' },
+  'G': { color: 'red-600', label: 'Extrêmement peu performant' },
 };
 
 export function EnergySieveDetails({ opportunity }: EnergySieveDetailsProps) {
@@ -38,8 +38,8 @@ export function EnergySieveDetails({ opportunity }: EnergySieveDetailsProps) {
   if (!hasEnergyInfo) {
     return null;
   }
-
   const energyClassInfo = opportunity.energyClass ? ENERGY_CLASS_INFO[opportunity.energyClass] : null;
+  console.log("energyClassInfo", energyClassInfo);
 
   return (
     <Card className="mt-6 text-[var(--primary)]">
@@ -61,7 +61,7 @@ export function EnergySieveDetails({ opportunity }: EnergySieveDetailsProps) {
                 <div className="flex items-center gap-2">
                   <Badge
                     variant="outline"
-                    className={`font-bold ${energyClassInfo?.color || 'text-gray-600 border-gray-600'}`}
+                    className={`font-bold bg-${energyClassInfo?.color ?? '[var(--primary)]'}`}
                   >
                     {opportunity.energyClass}
                   </Badge>
@@ -78,7 +78,7 @@ export function EnergySieveDetails({ opportunity }: EnergySieveDetailsProps) {
               <div className="flex items-center gap-2">
                 <Hash className="h-4 w-4 text-gray-600" />
                 <span className="font-medium">Numéro DPE:</span>
-                <Badge variant="outline" className="font-mono">
+                <Badge variant="outline" className="font-mono bg-[var(--primary)]">
                   {opportunity.dpeNumber}
                 </Badge>
               </div>
