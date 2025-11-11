@@ -3,7 +3,7 @@
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import { MultiSelect, type MultiSelectOption } from "~/components/ui/multi-select";
-import { MultiInput } from "~/components/ui/multi-input";
+import { ZipCodeInput } from "~/components/ui/zip-code-input";
 import { OpportunityType } from "@linkinvests/shared";
 import type { OpportunityFilters as IOpportunityFilters, DatePeriod } from "~/types/filters";
 import { FRENCH_DEPARTMENTS } from "~/constants/departments";
@@ -68,11 +68,6 @@ export function OpportunityFilters({
     }
   };
 
-  // Validator for zip codes (French postal codes are 5 digits)
-  const validateZipCode = (value: string): boolean => {
-    const num = parseInt(value, 10);
-    return !isNaN(num) && num > 0 && value.length === 5;
-  };
 
   const handleDatePeriodChange = (value: string): void => {
     const datePeriod = value === "" ? undefined : (value as DatePeriod);
@@ -122,20 +117,14 @@ export function OpportunityFilters({
             />
           </div>
 
-          {/* Zip Code Filter - Multi-input */}
+          {/* Zip Code Filter - Custom input */}
           <div>
             <label className="text-sm font-medium mb-2 block font-heading">Codes postaux</label>
-            <MultiInput
-              values={filters.zipCodes?.map(String) ?? []}
+            <ZipCodeInput
+              value={filters.zipCodes ?? []}
               onChange={handleZipCodeChange}
-              placeholder="Entrez les codes postaux séparés par des virgules..."
-              type="number"
-              validator={validateZipCode}
-              maxValues={10}
+              placeholder="Entrez un code postal"
             />
-            <p className="text-xs text-muted-foreground mt-1">
-              Format: 5 chiffres (ex: 75001, 13001)
-            </p>
           </div>
 
           {/* Date Period Filter */}
