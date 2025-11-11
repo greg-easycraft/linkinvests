@@ -102,9 +102,8 @@ export class CompanyBuildingsProcessor extends WorkerHost {
           // Step 4: Geocode and transform establishments
           for (const etablissement of establishments) {
             if (etablissement.adresse.toUpperCase().includes('[N')) {
-              console.log({ etablissement });
               continue;
-            };
+            }
             const transformed = await this.transformEstablishment(
               etablissement,
               row.dateparution, // Pass the parution date from CSV
