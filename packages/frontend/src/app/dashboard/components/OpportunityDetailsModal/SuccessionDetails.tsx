@@ -9,6 +9,7 @@ import {
   Mail,
   Clock,
   Globe,
+  Calendar,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import type { SuccessionOpportunity } from "~/server/domains/opportunities/lib.types";
@@ -38,7 +39,7 @@ export function SuccessionDetails({ opportunity }: SuccessionDetailsProps) {
   }
 
   return (
-    <Card className="mt-6 text-[var(--primary)]">
+    <Card className="mt-6 text-[var(--primary)] border-[var(--primary)]">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <User className="h-5 w-5" />
@@ -128,7 +129,7 @@ export function SuccessionDetails({ opportunity }: SuccessionDetailsProps) {
         <div className="space-y-2">
           <h4 className="font-medium text-sm">Date du décès</h4>
           <div className="flex items-center gap-2 text-sm">
-            <User className="h-4 w-4 text-gray-600" />
+            <Calendar className="h-4 w-4 text-gray-600" />
             <span>
               {format(new Date(opportunity.opportunityDate), "PPPP", { locale: fr })}
             </span>

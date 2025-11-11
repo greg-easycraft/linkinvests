@@ -8,7 +8,7 @@ import { Card } from "~/components/ui/card";
 import type { Opportunity } from "~/server/domains/opportunities/lib.types";
 import type { OpportunityListResult } from "~/server/domains/opportunities/services/opportunity-service";
 import type { OpportunityFilters } from "~/types/filters";
-import { ChevronLeft, ChevronRight, MapPin, Calendar, Building2, ExternalLink } from "lucide-react";
+import { ChevronLeft, ChevronRight, MapPin, Calendar, ExternalLink } from "lucide-react";
 import { OpportunityListEmptyState } from "./OpportunityListEmptyState";
 import { StaticStreetView } from "./StaticStreetView";
 import { OpportunityType } from "@linkinvests/shared";
@@ -132,17 +132,6 @@ export function OpportunityList({
                         </div>
                       </div>
                     </div>
-
-                    {/* SIRET - only for liquidation opportunities */}
-                    {opportunity.type === 'liquidation' && opportunity.siret && (
-                      <div className="flex items-start gap-2">
-                        <Building2 className="h-4 w-4 mt-0.5 flex-shrink-0 text-[var(--primary)] opacity-70" />
-                        <div className="min-w-0">
-                          <div className="text-xs opacity-70 font-heading">SIRET</div>
-                          <div className="truncate font-mono text-xs">{opportunity.siret}</div>
-                        </div>
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>

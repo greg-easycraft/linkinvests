@@ -8,6 +8,8 @@ import {
   Mail,
   UserCheck,
   Hash,
+  Calendar,
+  FileText,
 } from "lucide-react";
 import { Badge } from "~/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
@@ -44,7 +46,7 @@ export function LiquidationDetails({ opportunity }: LiquidationDetailsProps) {
   }
 
   return (
-    <Card className="mt-6 text-[var(--primary)]">
+    <Card className="mt-6 text-[var(--primary)] border-[var(--primary)]">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Building2 className="h-5 w-5" />
@@ -60,7 +62,7 @@ export function LiquidationDetails({ opportunity }: LiquidationDetailsProps) {
               <div className="flex items-center gap-2">
                 <Hash className="h-4 w-4 text-gray-600" />
                 <span className="font-medium">SIRET:</span>
-                <Badge variant="outline" className="font-mono">
+                <Badge variant="outline" className="font-mono bg-[var(--primary)]">
                   {formatSiret(opportunity.siret)}
                 </Badge>
               </div>
@@ -68,7 +70,7 @@ export function LiquidationDetails({ opportunity }: LiquidationDetailsProps) {
 
             {opportunity.companyContact?.name && (
               <div className="flex items-center gap-2">
-                <Building2 className="h-4 w-4 text-gray-600" />
+                <FileText className="h-4 w-4 text-gray-600" />
                 <span className="font-medium">Raison sociale:</span>
                 <span>{opportunity.companyContact.name}</span>
               </div>
@@ -125,7 +127,7 @@ export function LiquidationDetails({ opportunity }: LiquidationDetailsProps) {
         <div className="space-y-2">
           <h4 className="font-medium text-sm">Date de liquidation</h4>
           <div className="flex items-center gap-2 text-sm">
-            <Building2 className="h-4 w-4 text-gray-600" />
+            <Calendar className="h-4 w-4 text-gray-600" />
             <span>
               {format(new Date(opportunity.opportunityDate), "PPPP", { locale: fr })}
             </span>

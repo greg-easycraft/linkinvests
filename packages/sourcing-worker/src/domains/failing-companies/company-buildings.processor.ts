@@ -101,7 +101,10 @@ export class CompanyBuildingsProcessor extends WorkerHost {
 
           // Step 4: Geocode and transform establishments
           for (const etablissement of establishments) {
-            if (etablissement.adresse === '[NON DIFFUSIBLE]') continue;
+            if (etablissement.adresse.toUpperCase().includes('[N')) {
+              console.log({ etablissement });
+              continue;
+            };
             const transformed = await this.transformEstablishment(
               etablissement,
               row.dateparution, // Pass the parution date from CSV
@@ -257,6 +260,13 @@ export class CompanyBuildingsProcessor extends WorkerHost {
           );
           return null; // Skip this establishment if geocoding fails
         }
+      }
+
+      if (Number.isNaN(latitude) || Number.isNaN(longitude)) {
+        this.logger.warn(
+          `Invalid coordinates for establishment ${etablissement.siret}: ${latitude}, ${longitude}. Skipping.`,
+        );
+        return null;
       }
 
       return {
