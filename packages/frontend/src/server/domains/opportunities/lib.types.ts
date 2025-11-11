@@ -6,14 +6,14 @@ import type { OpportunityFilters } from "~/types/filters";
 export type AuctionOpportunity = typeof domainSchema.opportunityAuctions.$inferSelect;
 export type SuccessionOpportunity = typeof domainSchema.opportunitySuccessions.$inferSelect;
 export type LiquidationOpportunity = typeof domainSchema.opportunityLiquidations.$inferSelect;
-export type EnergySieveOpportunity = typeof domainSchema.energyDiagnostics.$inferSelect;
+export type EnergyDiagnostic = typeof domainSchema.energyDiagnostics.$inferSelect;
 
 // Union type representing any opportunity - with type discrimination
 export type Opportunity =
   | (AuctionOpportunity & { type: 'auction' })
   | (SuccessionOpportunity & { type: 'succession' })
   | (LiquidationOpportunity & { type: 'liquidation' })
-  | (EnergySieveOpportunity & { type: 'energy_sieve' });
+  | (EnergyDiagnostic & { type: 'energy_sieve' });
 
 export interface IOpportunityRepository {
   findAll(filters?: OpportunityFilters): Promise<Opportunity[]>;

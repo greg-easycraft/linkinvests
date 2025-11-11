@@ -1,11 +1,11 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { DATABASE_CONNECTION, type DomainDbType } from '~/database';
 import { domainSchema } from '@linkinvests/db';
-import type { EnergySieveOpportunity } from '../types/energy-sieves.types';
+import type { EnergyDiagnostic } from '../types/energy-diagnostics.types';
 
 @Injectable()
-export class EnergySievesOpportunityRepository {
-  private readonly logger = new Logger(EnergySievesOpportunityRepository.name);
+export class EnergyDiagnosticsOpportunityRepository {
+  private readonly logger = new Logger(EnergyDiagnosticsOpportunityRepository.name);
 
   constructor(
     @Inject(DATABASE_CONNECTION)
@@ -19,7 +19,7 @@ export class EnergySievesOpportunityRepository {
    * @returns Number of opportunities successfully inserted
    */
   async insertOpportunities(
-    opportunities: EnergySieveOpportunity[],
+    opportunities: EnergyDiagnostic[],
     batchSize: number = 500,
   ): Promise<number> {
     if (opportunities.length === 0) {

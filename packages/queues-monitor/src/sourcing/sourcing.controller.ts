@@ -185,7 +185,7 @@ export class SourcingController {
 
   @Post('jobs/energy-sieves')
   @HttpCode(HttpStatus.ACCEPTED)
-  async enqueueEnergySieves(
+  async enqueueEnergyDiagnostics(
     @Body('departmentId') departmentId: number,
     @Body('sinceDate') sinceDate: string,
     @Body('beforeDate') beforeDate?: string,

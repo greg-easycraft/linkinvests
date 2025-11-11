@@ -16,4 +16,15 @@
 ## Auctions scraping
 - Job returns stats (valid ones opposed to the logged ones)
 - refine address geocoding to reduce failures even further
+- current price from bids
 - photo
+- LLMs for address from desc
+
+## Decease scraping
+- refine address
+- scraping job
+
+## Annonces
+- MoteurImmo
+
+## 

@@ -398,7 +398,7 @@ describe('ScrapingController', () => {
       const result = await controller.enqueueAuctionJob(75, '');
 
       expect(result.success).toBe(true); // Empty string is falsy, so validation is skipped and current date is used
-      expect(result.data.sinceDate).toBe(currentDate);
+      expect(result.data?.sinceDate).toBe(currentDate);
     });
 
     it('should handle null departmentId', async () => {

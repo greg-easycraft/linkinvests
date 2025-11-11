@@ -3,25 +3,25 @@ import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { SOURCE_ENERGY_SIEVES_QUEUE } from '@linkinvests/shared';
 import { AdemeApiService } from './services';
-import { EnergySievesOpportunityRepository } from './repositories';
+import { EnergyDiagnosticsOpportunityRepository } from './repositories';
 import type {
-  EnergySieveJobData,
+  EnergyDiagnosticJobData,
   DpeRecord,
-  EnergySieveOpportunity,
-} from './types/energy-sieves.types';
+  EnergyDiagnostic,
+} from './types/energy-diagnostics.types';
 
 @Processor(SOURCE_ENERGY_SIEVES_QUEUE, { concurrency: 1 })
-export class EnergySievesProcessor extends WorkerHost {
-  private readonly logger = new Logger(EnergySievesProcessor.name);
+export class EnergyDiagnosticsProcessor extends WorkerHost {
+  private readonly logger = new Logger(EnergyDiagnosticsProcessor.name);
 
   constructor(
     private readonly ademeApi: AdemeApiService,
-    private readonly opportunityRepository: EnergySievesOpportunityRepository,
+    private readonly opportunityRepository: EnergyDiagnosticsOpportunityRepository,
   ) {
     super();
   }
 
-  async process(job: Job<EnergySieveJobData>): Promise<void> {
+  async process(job: Job<EnergyDiagnosticJobData>): Promise<void> {
     const {
       departmentId,
       sinceDate,
@@ -59,7 +59,7 @@ export class EnergySievesProcessor extends WorkerHost {
 
       // Step 2: Transform records to opportunities
       this.logger.log('Step 2/3: Transforming DPE records to opportunities...');
-      const opportunities: EnergySieveOpportunity[] = [];
+      const opportunities: EnergyDiagnostic[] = [];
 
       for (const record of dpeRecords) {
         try {
@@ -129,7 +129,7 @@ export class EnergySievesProcessor extends WorkerHost {
   private transformDpeRecord(
     record: DpeRecord,
     departmentId: string,
-  ): EnergySieveOpportunity | null {
+  ): EnergyDiagnostic | null {
     // Validate required fields
     if (!record.adresse_ban || !record.code_postal_ban || !record._geopoint) {
       return null;

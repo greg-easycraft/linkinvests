@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AdemeApiService } from './ademe-api.service';
-import type { DpeRecord } from '../types/energy-sieves.types';
+import type { DpeRecord } from '../types/energy-diagnostics.types';
 
 // Mock global fetch
 global.fetch = jest.fn();

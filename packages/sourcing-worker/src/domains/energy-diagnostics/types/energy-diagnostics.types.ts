@@ -19,7 +19,7 @@ export interface DpeApiResponse {
   results: DpeRecord[]; // Array of DPE records
 }
 
-export interface EnergySieveJobData {
+export interface EnergyDiagnosticJobData {
   departmentId: string; // French department code (e.g., 75 for Paris)
   sinceDate: string; // Filter DPE records since this date (format: YYYY-MM-DD)
   beforeDate?: string; // Filter DPE records before this date (format: YYYY-MM-DD, optional)
@@ -27,7 +27,7 @@ export interface EnergySieveJobData {
 }
 
 // Local type for energy sieve opportunities in sourcing worker
-export interface EnergySieveOpportunity {
+export interface EnergyDiagnostic {
   numeroDpe: string; // DPE certificate number (for externalId)
   label: string;
   address: string;

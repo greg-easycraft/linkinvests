@@ -1,6 +1,6 @@
 import { BaseOpportunity, BaseOpportunityInput } from './base-opportunity.types.js';
 
-export interface AuctionOpportunity extends BaseOpportunity {
+export interface Auction extends BaseOpportunity {
   // Auction-specific fields
   url: string;
   auctionType?: string;
@@ -30,7 +30,7 @@ export interface AuctionOpportunity extends BaseOpportunity {
   };
 }
 
-export interface AuctionOpportunityInput extends BaseOpportunityInput {
+export interface AuctionInput extends BaseOpportunityInput {
   // Auction-specific fields
   url: string;
   auctionType?: string;
@@ -70,22 +70,4 @@ export interface AuctionHouseContactData {
   auctioneer?: string;
   registrationRequired?: boolean;
   depositAmount?: number;
-}
-
-// Legacy interface for backward compatibility during migration
-export interface AuctionExtraData {
-  id?: string;
-  url: string;
-  auctionType?: string;
-  propertyType?: string;
-  currentPrice?: number;
-  lowerEstimate?: number;
-  upperEstimate?: number;
-  reservePrice?: number;
-  price?: number; // Legacy field
-  description?: string;
-  dpe?: string;
-  squareFootage?: number;
-  rooms?: number;
-  auctionVenue?: string;
 }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
 import { HttpStatus } from '@nestjs/common';
 import { getQueueToken } from '@nestjs/bullmq';
@@ -13,29 +14,20 @@ import { SourcingController } from './sourcing.controller';
 
 describe('SourcingController', () => {
   let controller: SourcingController;
-  let mockCompanyBuildingsQueue: jest.Mocked<Queue>;
-  let mockDeceasesQueue: jest.Mocked<Queue>;
-  let mockEnergySievesQueue: jest.Mocked<Queue>;
-  let mockFailingCompaniesQueue: jest.Mocked<Queue>;
+  const mockCompanyBuildingsQueue = {
+    add: jest.fn(),
+  } as unknown as jest.Mocked<Queue>;
+  const mockDeceasesQueue = {
+    add: jest.fn(),
+  } as unknown as jest.Mocked<Queue>;
+  const mockEnergyDiagnosticsQueue = {
+    add: jest.fn(),
+  } as unknown as jest.Mocked<Queue>;
+  const mockFailingCompaniesQueue = {
+    add: jest.fn(),
+  } as unknown as jest.Mocked<Queue>;
 
-  beforeEach(async () => {
-    // Create mock queues
-    mockCompanyBuildingsQueue = {
-      add: jest.fn(),
-    } as any;
-
-    mockDeceasesQueue = {
-      add: jest.fn(),
-    } as any;
-
-    mockEnergySievesQueue = {
-      add: jest.fn(),
-    } as any;
-
-    mockFailingCompaniesQueue = {
-      add: jest.fn(),
-    } as any;
-
+  beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [SourcingController],
       providers: [
@@ -49,7 +41,7 @@ describe('SourcingController', () => {
         },
         {
           provide: getQueueToken(SOURCE_ENERGY_SIEVES_QUEUE),
-          useValue: mockEnergySievesQueue,
+          useValue: mockEnergyDiagnosticsQueue,
         },
         {
           provide: getQueueToken(SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE),
@@ -64,6 +56,11 @@ describe('SourcingController', () => {
     jest.spyOn(controller['logger'], 'log').mockImplementation();
     jest.spyOn(controller['logger'], 'warn').mockImplementation();
     jest.spyOn(controller['logger'], 'error').mockImplementation();
+  });
+
+  beforeEach(() => {
+    // Create mock queues
+    jest.clearAllMocks();
   });
 
   afterEach(() => {
@@ -206,12 +203,12 @@ describe('SourcingController', () => {
     });
   });
 
-  describe('enqueueDeceases', () => {
+  describe('enqueueIngestDeceasesCsv', () => {
     it('should successfully enqueue a deceases job with only sinceDate', async () => {
       const mockJobId = 'job-789';
       mockDeceasesQueue.add.mockResolvedValue({ id: mockJobId } as any);
 
-      const result = await controller.enqueueDeceases('2024-01-01');
+      const result = await controller.enqueueIngestDeceasesCsv('2024-01-01');
 
       expect(result).toEqual({
         success: true,
@@ -243,10 +240,7 @@ describe('SourcingController', () => {
       const mockJobId = 'job-789';
       mockDeceasesQueue.add.mockResolvedValue({ id: mockJobId } as any);
 
-      const result = await controller.enqueueDeceases(
-        '2024-01-01',
-        '2024-12-31',
-      );
+      const result = await controller.enqueueIngestDeceasesCsv('test-file.csv');
 
       expect(result).toEqual({
         success: true,
@@ -257,8 +251,7 @@ describe('SourcingController', () => {
       expect(mockDeceasesQueue.add).toHaveBeenCalledWith(
         'import-deceases',
         {
-          sinceDate: '2024-01-01',
-          untilDate: '2024-12-31',
+          fileName: 'test-file.csv',
         },
         {
           removeOnComplete: 100,
@@ -268,14 +261,13 @@ describe('SourcingController', () => {
 
       expect(controller['logger'].log).toHaveBeenCalledWith({
         jobId: mockJobId,
-        sinceDate: '2024-01-01',
-        untilDate: '2024-12-31',
+        fileName: 'test-file.csv',
         message: 'Deceases job enqueued',
       });
     });
 
     it('should return error when sinceDate is missing', async () => {
-      const result = await controller.enqueueDeceases('');
+      const result = await controller.enqueueIngestDeceasesCsv('');
 
       expect(result).toEqual({
         success: false,
@@ -289,7 +281,7 @@ describe('SourcingController', () => {
       const error = new Error('Database connection failed');
       mockDeceasesQueue.add.mockRejectedValue(error);
 
-      const result = await controller.enqueueDeceases('2024-01-01');
+      const result = await controller.enqueueIngestDeceasesCsv('2024-01-01');
 
       expect(result).toEqual({
         success: false,
@@ -303,12 +295,14 @@ describe('SourcingController', () => {
     });
   });
 
-  describe('enqueueEnergySieves', () => {
+  describe('enqueueEnergyDiagnostics', () => {
     it('should successfully enqueue an energy sieves job with default energy classes', async () => {
       const mockJobId = 'job-101';
-      mockEnergySievesQueue.add.mockResolvedValue({ id: mockJobId } as any);
+      mockEnergyDiagnosticsQueue.add.mockResolvedValue({
+        id: mockJobId,
+      } as any);
 
-      const result = await controller.enqueueEnergySieves(
+      const result = await controller.enqueueEnergyDiagnostics(
         75,
         '2024-01-01',
         undefined,
@@ -321,7 +315,7 @@ describe('SourcingController', () => {
         message: 'Job enqueued successfully',
       });
 
-      expect(mockEnergySievesQueue.add).toHaveBeenCalledWith(
+      expect(mockEnergyDiagnosticsQueue.add).toHaveBeenCalledWith(
         'source-energy-sieves',
         {
           departmentId: 75,
@@ -347,9 +341,11 @@ describe('SourcingController', () => {
 
     it('should successfully enqueue an energy sieves job with beforeDate', async () => {
       const mockJobId = 'job-102';
-      mockEnergySievesQueue.add.mockResolvedValue({ id: mockJobId } as any);
+      mockEnergyDiagnosticsQueue.add.mockResolvedValue({
+        id: mockJobId,
+      } as any);
 
-      const result = await controller.enqueueEnergySieves(
+      const result = await controller.enqueueEnergyDiagnostics(
         75,
         '2024-01-01',
         '2024-12-31',
@@ -362,7 +358,7 @@ describe('SourcingController', () => {
         message: 'Job enqueued successfully',
       });
 
-      expect(mockEnergySievesQueue.add).toHaveBeenCalledWith(
+      expect(mockEnergyDiagnosticsQueue.add).toHaveBeenCalledWith(
         'source-energy-sieves',
         {
           departmentId: 75,
@@ -388,9 +384,11 @@ describe('SourcingController', () => {
 
     it('should successfully enqueue an energy sieves job with custom energy classes but no beforeDate', async () => {
       const mockJobId = 'job-103';
-      mockEnergySievesQueue.add.mockResolvedValue({ id: mockJobId } as any);
+      mockEnergyDiagnosticsQueue.add.mockResolvedValue({
+        id: mockJobId,
+      } as any);
 
-      const result = await controller.enqueueEnergySieves(
+      const result = await controller.enqueueEnergyDiagnostics(
         75,
         '2024-01-01',
         undefined,
@@ -403,7 +401,7 @@ describe('SourcingController', () => {
         message: 'Job enqueued successfully',
       });
 
-      expect(mockEnergySievesQueue.add).toHaveBeenCalledWith(
+      expect(mockEnergyDiagnosticsQueue.add).toHaveBeenCalledWith(
         'source-energy-sieves',
         {
           departmentId: 75,
@@ -419,7 +417,7 @@ describe('SourcingController', () => {
     });
 
     it('should return error when departmentId is missing', async () => {
-      const result = await controller.enqueueEnergySieves(
+      const result = await controller.enqueueEnergyDiagnostics(
         undefined as any,
         '2024-01-01',
         undefined,
@@ -431,11 +429,11 @@ describe('SourcingController', () => {
         error: 'departmentId is required',
       });
 
-      expect(mockEnergySievesQueue.add).not.toHaveBeenCalled();
+      expect(mockEnergyDiagnosticsQueue.add).not.toHaveBeenCalled();
     });
 
     it('should return error when sinceDate is missing', async () => {
-      const result = await controller.enqueueEnergySieves(
+      const result = await controller.enqueueEnergyDiagnostics(
         75,
         '',
         undefined,
@@ -447,14 +445,14 @@ describe('SourcingController', () => {
         error: 'sinceDate is required (format: YYYY-MM-DD)',
       });
 
-      expect(mockEnergySievesQueue.add).not.toHaveBeenCalled();
+      expect(mockEnergyDiagnosticsQueue.add).not.toHaveBeenCalled();
     });
 
     it('should handle queue errors gracefully', async () => {
       const error = new Error('API rate limit exceeded');
-      mockEnergySievesQueue.add.mockRejectedValue(error);
+      mockEnergyDiagnosticsQueue.add.mockRejectedValue(error);
 
-      const result = await controller.enqueueEnergySieves(
+      const result = await controller.enqueueEnergyDiagnostics(
         75,
         '2024-01-01',
         undefined,

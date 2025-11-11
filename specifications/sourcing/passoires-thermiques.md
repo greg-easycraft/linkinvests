@@ -88,7 +88,7 @@ GET https://data.ademe.fr/data-fair/api/v1/datasets/dpe03existant/lines?
 #### Types
 - [ ] `types/energy-sieves.types.ts`
   - [ ] `DpeRecord` interface (ADEME API response shape)
-  - [ ] `EnergySieveJobData` interface (job parameters)
+  - [ ] `EnergyDiagnosticJobData` interface (job parameters)
   - [ ] `DpeApiResponse` interface (paginated response)
 
 #### Services
@@ -103,7 +103,7 @@ GET https://data.ademe.fr/data-fair/api/v1/datasets/dpe03existant/lines?
 #### Processor
 - [ ] `energy-sieves.processor.ts`
   - [ ] Extend `WorkerHost`
-  - [ ] Implement `process(job: Job<EnergySieveJobData>)` method
+  - [ ] Implement `process(job: Job<EnergyDiagnosticJobData>)` method
   - [ ] Fetch all DPE records for department
   - [ ] Transform records to opportunity schema
   - [ ] Batch insert into database (handle duplicates)
@@ -112,7 +112,7 @@ GET https://data.ademe.fr/data-fair/api/v1/datasets/dpe03existant/lines?
 #### Module
 - [ ] `energy-sieves.module.ts`
   - [ ] Register `SOURCE_ENERGY_SIEVES_QUEUE` with BullMQ
-  - [ ] Provide `EnergySievesProcessor`
+  - [ ] Provide `EnergyDiagnosticsProcessor`
   - [ ] Provide `AdemeApiService`
   - [ ] Export `BullModule` for queue injection
 
@@ -120,7 +120,7 @@ GET https://data.ademe.fr/data-fair/api/v1/datasets/dpe03existant/lines?
 
 ### 3. Application Integration
 - [ ] Update `app.module.ts`
-  - [ ] Import `EnergySievesModule`
+  - [ ] Import `EnergyDiagnosticsModule`
 
 - [ ] Update `app.controller.ts`
   - [ ] Add `POST /jobs/energy-sieves` endpoint

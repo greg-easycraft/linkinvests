@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import type { DpeRecord, DpeApiResponse } from '../types/energy-sieves.types';
+import type { DpeRecord, DpeApiResponse } from '../types/energy-diagnostics.types';
 
 @Injectable()
 export class AdemeApiService {

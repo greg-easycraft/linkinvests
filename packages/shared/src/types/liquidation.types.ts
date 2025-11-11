@@ -1,6 +1,6 @@
 import { BaseOpportunity, BaseOpportunityInput } from './base-opportunity.types.js';
 
-export interface LiquidationOpportunity extends BaseOpportunity {
+export interface Liquidation extends BaseOpportunity {
   siret: string; // Required for liquidations
   // Company contact info as JSONB
   companyContact?: {
@@ -12,7 +12,7 @@ export interface LiquidationOpportunity extends BaseOpportunity {
   };
 }
 
-export interface LiquidationOpportunityInput extends BaseOpportunityInput {
+export interface LiquidationInput extends BaseOpportunityInput {
   siret: string; // Required for liquidations
   // Company contact info as JSONB
   companyContact?: {

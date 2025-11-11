@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { EnergySievesOpportunityRepository } from './energy-sieves-opportunity.repository';
+import { EnergyDiagnosticsOpportunityRepository } from './energy-diagnostics.repository';
 import { DATABASE_CONNECTION } from '~/database';
 import { OpportunityType } from '@linkinvests/shared';
-import type { EnergySieveOpportunity } from '../types/energy-sieves.types';
+import type { EnergyDiagnostic } from '../types/energy-diagnostics.types';
 
-describe('EnergySievesOpportunityRepository', () => {
-  let repository: EnergySievesOpportunityRepository;
+describe('EnergyDiagnosticsOpportunityRepository', () => {
+  let repository: EnergyDiagnosticsOpportunityRepository;
   let mockDb: any;
 
   beforeEach(async () => {
@@ -17,7 +17,7 @@ describe('EnergySievesOpportunityRepository', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        EnergySievesOpportunityRepository,
+        EnergyDiagnosticsOpportunityRepository,
         {
           provide: DATABASE_CONNECTION,
           useValue: mockDb,
@@ -25,8 +25,8 @@ describe('EnergySievesOpportunityRepository', () => {
       ],
     }).compile();
 
-    repository = module.get<EnergySievesOpportunityRepository>(
-      EnergySievesOpportunityRepository,
+    repository = module.get<EnergyDiagnosticsOpportunityRepository>(
+      EnergyDiagnosticsOpportunityRepository,
     );
 
     // Suppress logger output during tests
@@ -79,7 +79,7 @@ describe('EnergySievesOpportunityRepository', () => {
     });
 
     it('should batch records (500 per batch by default)', async () => {
-      const opportunities: EnergySieveOpportunity[] = Array.from(
+      const opportunities: EnergyDiagnostic[] = Array.from(
         { length: 1500 },
         (_, i) => ({
           numeroDpe: `DPE${i.toString().padStart(6, '0')}`,
@@ -102,7 +102,7 @@ describe('EnergySievesOpportunityRepository', () => {
     });
 
     it('should allow custom batch size', async () => {
-      const opportunities: EnergySieveOpportunity[] = Array.from(
+      const opportunities: EnergyDiagnostic[] = Array.from(
         { length: 300 },
         (_, i) => ({
           numeroDpe: `DPE${i.toString().padStart(6, '0')}`,
@@ -123,7 +123,7 @@ describe('EnergySievesOpportunityRepository', () => {
     });
 
     it('should call db.insert with correctly formatted data', async () => {
-      const opportunities: EnergySieveOpportunity[] = [
+      const opportunities: EnergyDiagnostic[] = [
         {
           numeroDpe: 'DPE123456',
           label: 'Test Building',
@@ -158,7 +158,7 @@ describe('EnergySievesOpportunityRepository', () => {
     });
 
     it('should set type to OpportunityType.ENERGY_SIEVE', async () => {
-      const opportunities: EnergySieveOpportunity[] = [
+      const opportunities: EnergyDiagnostic[] = [
         {
           numeroDpe: 'DPE123456',
           label: 'Test Building',
@@ -178,7 +178,7 @@ describe('EnergySievesOpportunityRepository', () => {
     });
 
     it('should set siret to null (no SIRET for energy sieves)', async () => {
-      const opportunities: EnergySieveOpportunity[] = [
+      const opportunities: EnergyDiagnostic[] = [
         {
           numeroDpe: 'DPE123456',
           label: 'Test Building',
@@ -198,7 +198,7 @@ describe('EnergySievesOpportunityRepository', () => {
     });
 
     it('should use onConflictDoNothing() for duplicates', async () => {
-      const opportunities: EnergySieveOpportunity[] = [
+      const opportunities: EnergyDiagnostic[] = [
         {
           numeroDpe: 'DPE123456',
           label: 'Test Building',
@@ -220,7 +220,7 @@ describe('EnergySievesOpportunityRepository', () => {
       const dbError = new Error('Database connection failed');
       mockDb.onConflictDoNothing.mockRejectedValue(dbError);
 
-      const opportunities: EnergySieveOpportunity[] = [
+      const opportunities: EnergyDiagnostic[] = [
         {
           numeroDpe: 'DPE123456',
           label: 'Test Building',

@@ -4,7 +4,7 @@ import { BullModule } from '@nestjs/bullmq';
 import { AppController } from './app.controller';
 import { DatabaseModule } from './database';
 import { DeceasesModule } from './domains/deceases';
-import { EnergySievesModule } from './domains/energy-sieves';
+import { EnergyDiagnosticsModule } from './domains/energy-diagnostics';
 import { FailingCompaniesModule } from './domains/failing-companies';
 import { S3Module } from './storage';
 import { config, ConfigModule } from './config';
@@ -21,7 +21,7 @@ import { config, ConfigModule } from './config';
       },
     }),
     DeceasesModule,
-    EnergySievesModule,
+    EnergyDiagnosticsModule,
     FailingCompaniesModule,
   ],
   controllers: [AppController],

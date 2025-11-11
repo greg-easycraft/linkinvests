@@ -4,11 +4,11 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { SOURCE_ENERGY_SIEVES_QUEUE } from '@linkinvests/shared';
 
-import type { EnergySieveJobData } from '../types/energy-sieves.types';
+import type { EnergyDiagnosticJobData } from '../types/energy-diagnostics.types';
 
 @Injectable()
-export class EnergySievesCron {
-  private readonly logger = new Logger(EnergySievesCron.name);
+export class EnergyDiagnosticsCron {
+  private readonly logger = new Logger(EnergyDiagnosticsCron.name);
 
   constructor(
     @InjectQueue(SOURCE_ENERGY_SIEVES_QUEUE)
@@ -37,7 +37,7 @@ export class EnergySievesCron {
       const departments = Array.from({ length: 95 }, (_, i) => i + 1);
       for (const departmentId of departments) {
         for (const energyClass of ['A', 'B', 'C', 'D', 'E', 'F', 'G']) {
-          const jobData: EnergySieveJobData = {
+          const jobData: EnergyDiagnosticJobData = {
             departmentId: departmentId.toString().padStart(2, '0'),
             sinceDate,
             energyClasses: [energyClass],

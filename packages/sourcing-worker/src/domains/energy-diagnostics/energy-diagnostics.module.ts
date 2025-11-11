@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bullmq';
 import { SOURCE_ENERGY_SIEVES_QUEUE } from '@linkinvests/shared';
-import { EnergySievesProcessor } from './energy-sieves.processor';
+import { EnergyDiagnosticsProcessor } from './energy-diagnostics.processor';
 import { AdemeApiService } from './services';
-import { EnergySievesOpportunityRepository } from './repositories';
-import { EnergySievesCron } from './cron/energy-sieves.cron';
+import { EnergyDiagnosticsOpportunityRepository } from './repositories';
+import { EnergyDiagnosticsCron } from './cron/energy-sieves.cron';
 import { config } from '~/config';
 
 @Module({
@@ -17,11 +17,11 @@ import { config } from '~/config';
     }),
   ],
   providers: [
-    EnergySievesProcessor,
+    EnergyDiagnosticsProcessor,
     AdemeApiService,
-    EnergySievesOpportunityRepository,
-    EnergySievesCron,
+    EnergyDiagnosticsOpportunityRepository,
+    EnergyDiagnosticsCron,
   ],
   exports: [BullModule],
 })
-export class EnergySievesModule {}
+export class EnergyDiagnosticsModule {}

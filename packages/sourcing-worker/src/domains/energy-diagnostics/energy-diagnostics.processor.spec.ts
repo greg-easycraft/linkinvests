@@ -1,13 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { EnergySievesProcessor } from './energy-sieves.processor';
+import { EnergyDiagnosticsProcessor } from './energy-diagnostics.processor';
 import { AdemeApiService } from './services';
-import { EnergySievesOpportunityRepository } from './repositories';
-import type { DpeRecord } from './types/energy-sieves.types';
+import { EnergyDiagnosticsOpportunityRepository } from './repositories';
+import type { DpeRecord } from './types/energy-diagnostics.types';
 
-describe('EnergySievesProcessor', () => {
-  let processor: EnergySievesProcessor;
+describe('EnergyDiagnosticsProcessor', () => {
+  let processor: EnergyDiagnosticsProcessor;
   let mockAdemeApi: jest.Mocked<AdemeApiService>;
-  let mockRepository: jest.Mocked<EnergySievesOpportunityRepository>;
+  let mockRepository: jest.Mocked<EnergyDiagnosticsOpportunityRepository>;
 
   beforeEach(async () => {
     mockAdemeApi = {
@@ -20,19 +20,19 @@ describe('EnergySievesProcessor', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        EnergySievesProcessor,
+        EnergyDiagnosticsProcessor,
         {
           provide: AdemeApiService,
           useValue: mockAdemeApi,
         },
         {
-          provide: EnergySievesOpportunityRepository,
+          provide: EnergyDiagnosticsOpportunityRepository,
           useValue: mockRepository,
         },
       ],
     }).compile();
 
-    processor = module.get<EnergySievesProcessor>(EnergySievesProcessor);
+    processor = module.get<EnergyDiagnosticsProcessor>(EnergyDiagnosticsProcessor);
 
     // Suppress logger output during tests
     jest.spyOn(processor['logger'], 'log').mockImplementation();

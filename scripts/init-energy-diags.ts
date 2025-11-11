@@ -44,7 +44,7 @@ type Env = z.infer<typeof envSchema>;
     let errorCount = 0;
     const totalJobs = allDepartments.length * months.length;
 
-    const createEnergySievesJob = buildCreateEnergySievesJobBody(QUEUES_MONITOR_URL + ENDPOINT, headers);
+    const createEnergyDiagnosticsJob = buildCreateEnergyDiagnosticsJobBody(QUEUES_MONITOR_URL + ENDPOINT, headers);
 
     console.log('\n🚀 Starting energy sieves job creation...\n');
 
@@ -52,7 +52,7 @@ type Env = z.infer<typeof envSchema>;
         console.log(`📍 Processing department ${department}/${allDepartments.length}...`);
         for (const month of months) {
             for (const energyClass of energyClasses) {
-                const success = await createEnergySievesJob(department, month.sinceDate, month.beforeDate, [energyClass]);
+                const success = await createEnergyDiagnosticsJob(department, month.sinceDate, month.beforeDate, [energyClass]);
 
                 if (success) {
                     successCount++;
@@ -112,8 +112,8 @@ function generateMonthsForYears(startYear: number, endYear: number): { year: num
     return months;
 };
 
-function buildCreateEnergySievesJobBody(endpointUrl: string, headers: Record<string, string>) {
-    return async function createEnergySievesJob(departmentId: number, sinceDate: string, beforeDate: string, energyClasses: string[]): Promise<boolean> {
+function buildCreateEnergyDiagnosticsJobBody(endpointUrl: string, headers: Record<string, string>) {
+    return async function createEnergyDiagnosticsJob(departmentId: number, sinceDate: string, beforeDate: string, energyClasses: string[]): Promise<boolean> {
         try {
             const response = await fetch(endpointUrl, {
                 method: 'POST',

@@ -11,7 +11,7 @@ import type {
   AuctionOpportunity,
   SuccessionOpportunity,
   LiquidationOpportunity,
-  EnergySieveOpportunity
+  EnergyDiagnostic
 } from "~/server/domains/opportunities/lib.types";
 import { StreetView } from "./StreetView";
 import { AuctionDetails } from "./AuctionDetails";
@@ -127,7 +127,7 @@ export function OpportunityDetailsModal({
             <LiquidationDetails opportunity={opportunity as LiquidationOpportunity & { type: 'liquidation' }} />
           )}
           {opportunity.type === 'energy_sieve' && (
-            <EnergySieveDetails opportunity={opportunity as EnergySieveOpportunity & { type: 'energy_sieve' }} />
+            <EnergySieveDetails opportunity={opportunity as EnergyDiagnostic & { type: 'energy_sieve' }} />
           )}
 
           {/* Timestamps */}

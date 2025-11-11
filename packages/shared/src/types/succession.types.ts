@@ -1,6 +1,6 @@
 import { BaseOpportunity, BaseOpportunityInput } from './base-opportunity.types.js';
 
-export interface SuccessionOpportunity extends BaseOpportunity {
+export interface Succession extends BaseOpportunity {
   // Note: siret is not included as it's always null for successions
   // Succession-specific fields (normalized from extraData)
   firstName: string;
@@ -16,7 +16,7 @@ export interface SuccessionOpportunity extends BaseOpportunity {
   };
 }
 
-export interface SuccessionOpportunityInput extends BaseOpportunityInput {
+export interface SuccessionInput extends BaseOpportunityInput {
   // Succession-specific fields
   firstName: string;
   lastName: string;

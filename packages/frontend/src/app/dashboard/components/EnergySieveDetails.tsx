@@ -10,10 +10,10 @@ import {
 } from "lucide-react";
 import { Badge } from "~/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import type { EnergySieveOpportunity } from "~/server/domains/opportunities/lib.types";
+import type { EnergyDiagnostic } from "~/server/domains/opportunities/lib.types";
 
 interface EnergySieveDetailsProps {
-  opportunity: EnergySieveOpportunity & { type: 'energy_sieve' };
+  opportunity: EnergyDiagnostic & { type: 'energy_sieve' };
 }
 
 // Energy class colors and labels
