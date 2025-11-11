@@ -2,11 +2,10 @@
 
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader } from "~/components/ui/card";
-import { MultiSelect, type MultiSelectOption } from "~/components/ui/multi-select";
+import { DepartmentsInput } from "~/components/ui/departments-input";
 import { ZipCodeInput } from "~/components/ui/zip-code-input";
 import { OpportunityType } from "@linkinvests/shared";
 import type { OpportunityFilters as IOpportunityFilters, DatePeriod } from "~/types/filters";
-import { FRENCH_DEPARTMENTS } from "~/constants/departments";
 import { DATE_PERIOD_OPTIONS } from "~/constants/date-periods";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { ViewToggle } from "./ViewToggle";
@@ -45,14 +44,6 @@ export function OpportunityFilters({
   onTypeChange,
 }: OpportunityFiltersProps): React.ReactElement {
 
-  // Convert departments to MultiSelectOption format
-  const departmentOptions: MultiSelectOption[] = FRENCH_DEPARTMENTS.map((dept) => ({
-    label: dept.label,
-    value: dept.id.toString(),
-    searchValue: `${dept.id} ${dept.name}`,
-  }));
-
-  // No longer needed since we use Select component directly
 
   const handleDepartmentChange = (selectedValues: string[]): void => {
     onFiltersChange({ ...filters, departments: selectedValues });
@@ -104,16 +95,13 @@ export function OpportunityFilters({
             </Select>
           </div>
 
-          {/* Department Filter - Multi-select with search */}
+          {/* Department Filter - Custom input with search */}
           <div>
             <label className="text-sm font-medium mb-2 block font-heading">Départements</label>
-            <MultiSelect
-              options={departmentOptions}
-              selected={filters.departments?.map(String) ?? []}
+            <DepartmentsInput
+              value={filters.departments?.map(String) ?? []}
               onChange={handleDepartmentChange}
-              placeholder="Départements"
-              searchPlaceholder="Rechercher par numéro ou nom..."
-              maxDisplayItems={3}
+              placeholder="Rechercher par numéro ou nom..."
             />
           </div>
 

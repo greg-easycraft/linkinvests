@@ -21,7 +21,7 @@ export interface DatePeriodOption {
 }
 
 export interface DepartmentOption {
-  id: number;
+  id: string;
   name: string;
   label: string; // Formatted as "ID - Name" for display
 }
