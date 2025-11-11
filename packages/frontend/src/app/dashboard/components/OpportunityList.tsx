@@ -9,8 +9,8 @@ import type { Opportunity } from "~/server/domains/opportunities/lib.types";
 import type { OpportunityListResult } from "~/server/domains/opportunities/services/opportunity-service";
 import type { OpportunityFilters } from "~/types/filters";
 import { ChevronLeft, ChevronRight, MapPin, Calendar, Building2, ExternalLink } from "lucide-react";
-import { StreetView } from "./StreetView";
 import { OpportunityListEmptyState } from "./OpportunityListEmptyState";
+import { StaticStreetView } from "./StaticStreetView";
 
 interface OpportunityListProps {
   data: OpportunityListResult;
@@ -73,11 +73,9 @@ export function OpportunityList({
             <div className="flex gap-4 p-4">
               {/* Street View Thumbnail */}
               <div className="flex-shrink-0">
-                <StreetView
-                  address={opportunity.address}
+                <StaticStreetView
                   latitude={opportunity.latitude}
                   longitude={opportunity.longitude}
-                  className="w-48 h-32 rounded-lg"
                 />
               </div>
 

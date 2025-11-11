@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+
 import './globals.css';
 import { QueryProvider } from '~/components/providers/query-provider';
 import { AuthProvider } from '~/components/providers/auth-provider';
@@ -20,7 +21,9 @@ export default function RootLayout({
     <html lang="en">
       <body className="font-helvetica">
         <AuthProvider>
-          <QueryProvider>{children}</QueryProvider>
+          <QueryProvider>
+              {children}
+            </QueryProvider>
         </AuthProvider>
       </body>
     </html>

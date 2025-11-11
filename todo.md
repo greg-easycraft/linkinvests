@@ -14,8 +14,6 @@
 - restrain query to map boundaries
 
 ## Auctions scraping
-- Job returns stats (valid ones opposed to the logged ones)
-- refine address geocoding to reduce failures even further
 - current price from bids
 - photo
 - LLMs for address from desc
@@ -27,4 +25,8 @@
 ## Annonces
 - MoteurImmo
 
-## 
+## All Jobs
+- Job returns stats (valid ones opposed to the logged ones)
+
+Questions: 
+- DVF uniquement transactions à titre onéreux
