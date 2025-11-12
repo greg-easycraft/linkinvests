@@ -11,7 +11,7 @@ export class BrowserService {
     this.logger.log('Launching browser for notary listings scraping');
 
     this.browser = await chromium.launch({
-      headless: false,
+      headless: true,
       args: [
         '--disable-blink-features=AutomationControlled',
         '--disable-dev-shm-usage',
