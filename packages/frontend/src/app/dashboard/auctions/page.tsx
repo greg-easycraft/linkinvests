@@ -1,14 +1,41 @@
+'use client';
+import type { OpportunityFilters as IOpportunityFilters } from "~/types/filters";
+
 import { OpportunityType } from "@linkinvests/shared";
 import { getAuctionById, getAuctions, getAuctionsForMap } from "~/app/_actions/auctions/queries";
 import OpportunitiesPage from "../components/OpportunitiesPage";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+
+type ViewType = "list" | "map";
 
 export default function AuctionsPage(): React.ReactElement {
+  const [appliedFilters, setAppliedFilters] = useState<IOpportunityFilters>({});
+  const [viewType, setViewType] = useState<ViewType>("list");
+
+  const listQuery = useQuery({
+    queryKey: ['auctions', "list", appliedFilters],
+    queryFn: () => getAuctions(appliedFilters),
+    enabled: viewType === "list",
+  });
+
+  // Query for map view - using type-specific query
+  const mapQuery = useQuery({
+    queryKey: ['auctions', "map", appliedFilters],
+    queryFn: () => getAuctionsForMap(appliedFilters),
+    enabled: viewType === "map",
+  });
+
   return (
     <OpportunitiesPage 
-      opportunityType={OpportunityType.AUCTION} 
-      getOpportunities={getAuctions} 
+      listQueryResult={listQuery.data} 
+      mapQueryResult={mapQuery.data}
+      isLoading={listQuery.isLoading || mapQuery.isLoading}
       getOpportunityById={getAuctionById}
-      getOpportunitiesForMap={getAuctionsForMap}
-      />
+      viewType={viewType}
+      onViewTypeChange={setViewType}
+      onFiltersChange={setAppliedFilters}
+      opportunityType={OpportunityType.AUCTION}
+    />
   );
 }

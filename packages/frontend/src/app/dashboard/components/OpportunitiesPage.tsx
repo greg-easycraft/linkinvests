@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "~/components/ui/button";
@@ -10,7 +9,7 @@ import { OpportunityList } from "./OpportunityList";
 import { OpportunityMap } from "./OpportunityMap";
 import { OpportunityDetailsModal } from "./OpportunityDetailsModal";
 import type { OpportunityFilters as IOpportunityFilters } from "~/types/filters";
-import { Auction, EnergyDiagnostic, Liquidation, type Opportunity, OpportunityType, Succession } from "@linkinvests/shared";
+import { Auction, BaseOpportunity, EnergyDiagnostic, Liquidation, type Opportunity, OpportunityType, Succession } from "@linkinvests/shared";
 import { OpportunityListSkeleton } from "./OpportunityList/OpportunityListSkeleton";
 import { MapSkeleton } from "./OpportunityMap/MapSkeleton";
 import { MapEmptyState } from "./OpportunityMap/MapEmptyState";
@@ -29,44 +28,48 @@ const TYPE_TO_URL_MAPPING: Record<OpportunityType, string> = {
   [OpportunityType.DIVORCE]: 'divorces', // Not implemented yet
 };
 
-interface AuctionsPageProps {
+type OpportunitiesPageProps<T extends BaseOpportunity> = {
+  viewType: ViewType;
+  onViewTypeChange: (viewType: ViewType) => void;
+  onFiltersChange: (filters: IOpportunityFilters) => void;
+  isLoading: boolean;
+  listQueryResult?: OpportunitiesListQueryResult<T>;
+  mapQueryResult?: OpportunitiesMapQueryResult<T>;
+  getOpportunityById: (id: string) => Promise<T | null>;
+}
+
+type AuctionsPageProps = OpportunitiesPageProps<Auction> & {
   opportunityType: OpportunityType.AUCTION;
-  getOpportunities: (filters: IOpportunityFilters) => Promise<OpportunitiesListQueryResult<Auction>>;
-  getOpportunityById: (id: string) => Promise<Auction | null>;
-  getOpportunitiesForMap: (filters: IOpportunityFilters) => Promise<OpportunitiesMapQueryResult<Auction>>;
 }
 
-interface SuccessionsPageProps {
+type SuccessionsPageProps = OpportunitiesPageProps<Succession> & {
   opportunityType: OpportunityType.SUCCESSION;
-  getOpportunities: (filters: IOpportunityFilters) => Promise<OpportunitiesListQueryResult<Succession>>;
-  getOpportunityById: (id: string) => Promise<Succession | null>;
-  getOpportunitiesForMap: (filters: IOpportunityFilters) => Promise<OpportunitiesMapQueryResult<Succession>>;
 }
 
-interface LiquidationsPageProps {
+type LiquidationsPageProps = OpportunitiesPageProps<Liquidation> & {
   opportunityType: OpportunityType.LIQUIDATION;
-  getOpportunities: (filters: IOpportunityFilters) => Promise<OpportunitiesListQueryResult<Liquidation>>;
-  getOpportunityById: (id: string) => Promise<Liquidation | null>;
-  getOpportunitiesForMap: (filters: IOpportunityFilters) => Promise<OpportunitiesMapQueryResult<Liquidation>>;
 }
 
-interface EnergySievesPageProps {
+type EnergySievesPageProps = OpportunitiesPageProps<EnergyDiagnostic> & {
   opportunityType: OpportunityType.ENERGY_SIEVE;
-  getOpportunities: (filters: IOpportunityFilters) => Promise<OpportunitiesListQueryResult<EnergyDiagnostic>>;
-  getOpportunityById: (id: string) => Promise<EnergyDiagnostic | null>;
-  getOpportunitiesForMap: (filters: IOpportunityFilters) => Promise<OpportunitiesMapQueryResult<EnergyDiagnostic>>;
 }
 
-type OpportunitiesPageProps = AuctionsPageProps | SuccessionsPageProps | LiquidationsPageProps | EnergySievesPageProps;
+type PageProps = AuctionsPageProps | SuccessionsPageProps | LiquidationsPageProps | EnergySievesPageProps;
 
-export default function OpportunitiesPage({ opportunityType, getOpportunities, getOpportunityById, getOpportunitiesForMap }: OpportunitiesPageProps): React.ReactElement {
-  const [viewType, setViewType] = useState<ViewType>("list");
+export default function OpportunitiesPage({ 
+  viewType,
+  opportunityType, 
+  listQueryResult, 
+  mapQueryResult, 
+  isLoading, 
+  onFiltersChange,
+  onViewTypeChange
+}: PageProps): React.ReactElement {
   const [filters, setFilters] = useState<IOpportunityFilters>({
     types: [opportunityType], // Set the type from URL
     limit: 25,
     offset: 0,
   });
-  const [appliedFilters, setAppliedFilters] = useState<IOpportunityFilters>(filters);
   const [selectedOpportunity, setSelectedOpportunity] = useState<Opportunity | null>(
     null,
   );
@@ -83,25 +86,10 @@ export default function OpportunitiesPage({ opportunityType, getOpportunities, g
       types: [opportunityType]
     };
     setFilters(newFilters);
-    setAppliedFilters(newFilters);
   }, [opportunityType]);
 
-  // Query for list view - using type-specific query
-  const listQuery = useQuery({
-    queryKey: [opportunityType, "list", appliedFilters],
-    queryFn: () => getOpportunities(appliedFilters),
-    enabled: viewType === "list",
-  });
-
-  // Query for map view - using type-specific query
-  const mapQuery = useQuery({
-    queryKey: [opportunityType, "map", appliedFilters],
-    queryFn: () => getOpportunitiesForMap(appliedFilters),
-    enabled: viewType === "map",
-  });
-
   const handleApplyFilters = useCallback((): void => {
-    setAppliedFilters({ ...filters, offset: 0 });
+    onFiltersChange({ ...filters, offset: 0 });
     setSelectedOpportunity(null);
   }, [filters]);
 
@@ -112,7 +100,7 @@ export default function OpportunitiesPage({ opportunityType, getOpportunities, g
       offset: 0,
     };
     setFilters(resetFilters);
-    setAppliedFilters(resetFilters);
+    onFiltersChange(resetFilters);
     setSelectedOpportunity(null);
   }, [opportunityType]);
 
@@ -120,11 +108,11 @@ export default function OpportunitiesPage({ opportunityType, getOpportunities, g
     (page: number): void => {
       const pageSize = filters.limit ?? 25;
       const newOffset = (page - 1) * pageSize;
-      const newFilters = { ...appliedFilters, offset: newOffset };
+      const newFilters = { ...filters, offset: newOffset };
       setFilters(newFilters);
-      setAppliedFilters(newFilters);
+      onFiltersChange(newFilters);
     },
-    [filters.limit, appliedFilters],
+    [filters.limit, filters],
   );
 
   const handleSelectOpportunity = useCallback((opportunity: Opportunity): void => {
@@ -190,7 +178,7 @@ export default function OpportunitiesPage({ opportunityType, getOpportunities, g
                   onApply={handleApplyFilters}
                   onReset={handleResetFilters}
                   viewType={viewType}
-                  onViewTypeChange={setViewType}
+                  onViewTypeChange={onViewTypeChange}
                   currentType={opportunityType}
                   onTypeChange={handleTypeChange}
                 />
@@ -200,37 +188,37 @@ export default function OpportunitiesPage({ opportunityType, getOpportunities, g
           {/* Main Content */}
           <div className="flex-1 flex flex-col overflow-hidden p-6">
             <div className="flex-1 overflow-hidden">
-              {viewType === "list" && listQuery.data && (
+              {viewType === "list" && listQueryResult && (
                 <div className="h-full overflow-y-auto rounded-md">
                   <OpportunityList
                     type={opportunityType}
-                    data={listQuery.data}
+                    data={listQueryResult}
                     selectedId={selectedOpportunity?.id}
                     onSelect={handleSelectOpportunity}
                     onPageChange={handlePageChange}
-                    filters={appliedFilters}
+                    filters={filters}
                   />
                 </div>
               )}
 
-              {viewType === "map" && mapQuery.data && (
+              {viewType === "map" && mapQueryResult && (
                 <div className="relative w-full h-full">
                   <OpportunityMap
                     type={opportunityType}
-                    opportunities={mapQuery.data.opportunities}
+                    opportunities={mapQueryResult.opportunities}
                     selectedId={selectedOpportunity?.id}
                     onSelect={handleSelectOpportunity}
-                    isLimited={mapQuery.data.isLimited}
-                    total={mapQuery.data.total}
+                    isLimited={mapQueryResult.isLimited}
+                    total={mapQueryResult.total}
                   />
-                  {mapQuery.data.opportunities.length === 0 && <MapEmptyState />}
+                  {mapQueryResult.opportunities.length === 0 && <MapEmptyState />}
                 </div>
               )}
 
-              {viewType === "map" && mapQuery.isLoading && (
+              {viewType === "map" && isLoading && (
                 <MapSkeleton />
               )}
-              {viewType === "list" && listQuery.isLoading && (
+              {viewType === "list" && isLoading && (
                 <OpportunityListSkeleton />
               )}
             </div>

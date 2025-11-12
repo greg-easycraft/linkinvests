@@ -31,6 +31,7 @@
 
 Questions: 
 - DVF uniquement transactions à titre onéreux
+- video mabrikimmo
 
 Accounts to Open 
 - neon
@@ -38,3 +39,4 @@ Accounts to Open
 - oracle
 - google maps
 - open gl ? mapbox ?
+- cloudflare
