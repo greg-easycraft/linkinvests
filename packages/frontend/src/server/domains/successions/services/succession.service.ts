@@ -1,27 +1,14 @@
 import type { ISuccessionRepository } from "../lib.types";
 import type { OpportunityFilters } from "~/types/filters";
 import type { Succession } from "@linkinvests/shared";
-
-export interface SuccessionListResult {
-  opportunities: Succession[];
-  total: number;
-  page: number;
-  pageSize: number;
-  totalPages: number;
-}
-
-export interface SuccessionMapResult {
-  opportunities: Succession[];
-  total: number;
-  isLimited: boolean;
-}
+import { OpportunitiesListQueryResult, OpportunitiesMapQueryResult } from "~/types/query-result";
 
 export class SuccessionService {
   private readonly MAP_VIEW_LIMIT = 500;
 
   constructor(private readonly successionRepository: ISuccessionRepository) {}
 
-  async getSuccessions(filters?: OpportunityFilters): Promise<SuccessionListResult> {
+  async getSuccessions(filters?: OpportunityFilters): Promise<OpportunitiesListQueryResult<Succession>> {
     const pageSize = filters?.limit ?? 25;
     const page = filters?.offset ? Math.floor(filters.offset / pageSize) + 1 : 1;
 
@@ -43,7 +30,7 @@ export class SuccessionService {
     return await this.successionRepository.findById(id);
   }
 
-  async getSuccessionsForMap(filters?: OpportunityFilters): Promise<SuccessionMapResult> {
+  async getSuccessionsForMap(filters?: OpportunityFilters): Promise<OpportunitiesMapQueryResult<Succession>> {
     // For map view, limit to avoid performance issues
     const mapFilters: OpportunityFilters = {
       ...filters,

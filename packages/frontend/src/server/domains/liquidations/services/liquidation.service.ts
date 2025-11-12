@@ -1,27 +1,14 @@
 import type { ILiquidationRepository } from "../lib.types";
 import type { OpportunityFilters } from "~/types/filters";
 import type { Liquidation } from "@linkinvests/shared";
-
-export interface LiquidationListResult {
-  opportunities: Liquidation[];
-  total: number;
-  page: number;
-  pageSize: number;
-  totalPages: number;
-}
-
-export interface LiquidationMapResult {
-  opportunities: Liquidation[];
-  total: number;
-  isLimited: boolean;
-}
+import { OpportunitiesListQueryResult, OpportunitiesMapQueryResult } from "~/types/query-result";
 
 export class LiquidationService {
   private readonly MAP_VIEW_LIMIT = 500;
 
   constructor(private readonly liquidationRepository: ILiquidationRepository) {}
 
-  async getLiquidations(filters?: OpportunityFilters): Promise<LiquidationListResult> {
+  async getLiquidations(filters?: OpportunityFilters): Promise<OpportunitiesListQueryResult<Liquidation>> {
     const pageSize = filters?.limit ?? 25;
     const page = filters?.offset ? Math.floor(filters.offset / pageSize) + 1 : 1;
 
@@ -43,7 +30,7 @@ export class LiquidationService {
     return await this.liquidationRepository.findById(id);
   }
 
-  async getLiquidationsForMap(filters?: OpportunityFilters): Promise<LiquidationMapResult> {
+  async getLiquidationsForMap(filters?: OpportunityFilters): Promise<OpportunitiesMapQueryResult<Liquidation>> {
     // For map view, limit to avoid performance issues
     const mapFilters: OpportunityFilters = {
       ...filters,

@@ -1,27 +1,14 @@
 import type { IEnergyDiagnosticsRepository } from "../lib.types";
 import type { OpportunityFilters } from "~/types/filters";
 import type { EnergyDiagnostic } from "@linkinvests/shared";
-
-export interface EnergyDiagnosticsListResult {
-  opportunities: EnergyDiagnostic[];
-  total: number;
-  page: number;
-  pageSize: number;
-  totalPages: number;
-}
-
-export interface EnergyDiagnosticsMapResult {
-  opportunities: EnergyDiagnostic[];
-  total: number;
-  isLimited: boolean;
-}
+import { OpportunitiesListQueryResult, OpportunitiesMapQueryResult } from "~/types/query-result";
 
 export class EnergyDiagnosticsService {
   private readonly MAP_VIEW_LIMIT = 500;
 
   constructor(private readonly energyDiagnosticsRepository: IEnergyDiagnosticsRepository) {}
 
-  async getEnergyDiagnostics(filters?: OpportunityFilters): Promise<EnergyDiagnosticsListResult> {
+  async getEnergyDiagnostics(filters?: OpportunityFilters): Promise<OpportunitiesListQueryResult<EnergyDiagnostic>> {
     const pageSize = filters?.limit ?? 25;
     const page = filters?.offset ? Math.floor(filters.offset / pageSize) + 1 : 1;
 
@@ -43,7 +30,7 @@ export class EnergyDiagnosticsService {
     return await this.energyDiagnosticsRepository.findById(id);
   }
 
-  async getEnergyDiagnosticsForMap(filters?: OpportunityFilters): Promise<EnergyDiagnosticsMapResult> {
+  async getEnergyDiagnosticsForMap(filters?: OpportunityFilters): Promise<OpportunitiesMapQueryResult<EnergyDiagnostic>> {
     // For map view, limit to avoid performance issues
     const mapFilters: OpportunityFilters = {
       ...filters,
