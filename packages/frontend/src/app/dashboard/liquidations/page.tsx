@@ -2,10 +2,11 @@
 import type { OpportunityFilters as IOpportunityFilters } from "~/types/filters";
 
 import { OpportunityType } from "@linkinvests/shared";
-import { getLiquidationById, getLiquidations, getLiquidationsForMap } from "~/app/_actions/liquidations/queries";
+import { getLiquidationById, getLiquidations, getLiquidationsForMap, exportLiquidations } from "~/app/_actions/liquidations/queries";
 import OpportunitiesPage from "../components/OpportunitiesPage";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { useState } from "react";
+import type { ExportFormat } from "~/server/services/export.service";
 
 type ViewType = "list" | "map";
 
@@ -26,6 +27,13 @@ export default function LiquidationsPage(): React.ReactElement {
     enabled: viewType === "map",
   });
 
+  // Export mutation
+  const exportMutation = useMutation({
+    mutationFn: async ({ format, filters }: { format: ExportFormat; filters: IOpportunityFilters }) => {
+      return await exportLiquidations(filters, format);
+    },
+  });
+
   return (
     <OpportunitiesPage
       listQueryResult={listQuery.data}
@@ -36,6 +44,7 @@ export default function LiquidationsPage(): React.ReactElement {
       onViewTypeChange={setViewType}
       onFiltersChange={setAppliedFilters}
       opportunityType={OpportunityType.LIQUIDATION}
+      exportMutation={exportMutation}
     />
   );
 }

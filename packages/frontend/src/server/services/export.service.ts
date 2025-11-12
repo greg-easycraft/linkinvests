@@ -38,9 +38,8 @@ export class ExportService implements IExportService {
     if (!firstRow) {
       throw new Error("No data to export");
     }
-    console.log(firstRow);
+
     const headers = this.getHeadersRow(firstRow);
-    console.log(headers);
     const flattenedData = data.map((item) => this.flattenObject(headers, item));
 
     // Create workbook and worksheet

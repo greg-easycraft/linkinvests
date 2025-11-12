@@ -2,10 +2,11 @@
 import type { OpportunityFilters as IOpportunityFilters } from "~/types/filters";
 
 import { OpportunityType } from "@linkinvests/shared";
-import { getSuccessionById, getSuccessions, getSuccessionsForMap } from "~/app/_actions/successions/queries";
+import { getSuccessionById, getSuccessions, getSuccessionsForMap, exportSuccessions } from "~/app/_actions/successions/queries";
 import OpportunitiesPage from "../components/OpportunitiesPage";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { useState } from "react";
+import type { ExportFormat } from "~/server/services/export.service";
 
 type ViewType = "list" | "map";
 
@@ -26,6 +27,13 @@ export default function SuccessionsPage(): React.ReactElement {
     enabled: viewType === "map",
   });
 
+  // Export mutation
+  const exportMutation = useMutation({
+    mutationFn: async ({ format, filters }: { format: ExportFormat; filters: IOpportunityFilters }) => {
+      return await exportSuccessions(filters, format);
+    },
+  });
+
   return (
     <OpportunitiesPage
       listQueryResult={listQuery.data}
@@ -36,6 +44,7 @@ export default function SuccessionsPage(): React.ReactElement {
       onViewTypeChange={setViewType}
       onFiltersChange={setAppliedFilters}
       opportunityType={OpportunityType.SUCCESSION}
+      exportMutation={exportMutation}
     />
   );
 }

@@ -28,7 +28,7 @@ const TYPE_LABELS: Record<OpportunityType, string> = {
   [OpportunityType.SUCCESSION]: "Succession",
   [OpportunityType.LIQUIDATION]: "Liquidation",
   [OpportunityType.ENERGY_SIEVE]: "Passoire énergétique",
-  // [OpportunityType.REAL_ESTATE_LISTING]: "Annonce immobilière",
+  [OpportunityType.REAL_ESTATE_LISTING]: "Annonce immobilière",
   [OpportunityType.AUCTION]: "Vente aux enchères",
   // [OpportunityType.DIVORCE]: "Divorce",
 };

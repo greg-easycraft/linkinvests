@@ -2,7 +2,7 @@
 import type { OpportunityFilters as IOpportunityFilters } from "~/types/filters";
 
 import { OpportunityType } from "@linkinvests/shared";
-import { getEnergyDiagnosticById, getEnergyDiagnostics, getEnergyDiagnosticsForMap, exportEnergyDiagnostics } from "~/app/_actions/energy-sieves/queries";
+import { getListingById, getListings, getListingsForMap, exportListings } from "~/app/_actions/listings/queries";
 import OpportunitiesPage from "../components/OpportunitiesPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useState } from "react";
@@ -10,27 +10,27 @@ import type { ExportFormat } from "~/server/services/export.service";
 
 type ViewType = "list" | "map";
 
-export default function EnergySievesPage(): React.ReactElement {
+export default function ListingsPage(): React.ReactElement {
   const [appliedFilters, setAppliedFilters] = useState<IOpportunityFilters>({});
   const [viewType, setViewType] = useState<ViewType>("list");
 
   const listQuery = useQuery({
-    queryKey: ['energy-sieves', "list", appliedFilters],
-    queryFn: () => getEnergyDiagnostics(appliedFilters),
+    queryKey: ['listings', "list", appliedFilters],
+    queryFn: () => getListings(appliedFilters),
     enabled: viewType === "list",
   });
 
   // Query for map view - using type-specific query
   const mapQuery = useQuery({
-    queryKey: ['energy-sieves', "map", appliedFilters],
-    queryFn: () => getEnergyDiagnosticsForMap(appliedFilters),
+    queryKey: ['listings', "map", appliedFilters],
+    queryFn: () => getListingsForMap(appliedFilters),
     enabled: viewType === "map",
   });
 
   // Export mutation
   const exportMutation = useMutation({
     mutationFn: async ({ format, filters }: { format: ExportFormat; filters: IOpportunityFilters }) => {
-      return await exportEnergyDiagnostics(filters, format);
+      return await exportListings(filters, format);
     },
   });
 
@@ -39,11 +39,11 @@ export default function EnergySievesPage(): React.ReactElement {
       listQueryResult={listQuery.data}
       mapQueryResult={mapQuery.data}
       isLoading={listQuery.isLoading || mapQuery.isLoading}
-      getOpportunityById={getEnergyDiagnosticById}
+      getOpportunityById={getListingById}
       viewType={viewType}
       onViewTypeChange={setViewType}
       onFiltersChange={setAppliedFilters}
-      opportunityType={OpportunityType.ENERGY_SIEVE}
+      opportunityType={OpportunityType.REAL_ESTATE_LISTING}
       exportMutation={exportMutation}
     />
   );

@@ -2,10 +2,11 @@
 import type { OpportunityFilters as IOpportunityFilters } from "~/types/filters";
 
 import { OpportunityType } from "@linkinvests/shared";
-import { getAuctionById, getAuctions, getAuctionsForMap } from "~/app/_actions/auctions/queries";
+import { getAuctionById, getAuctions, getAuctionsForMap, exportAuctions } from "~/app/_actions/auctions/queries";
 import OpportunitiesPage from "../components/OpportunitiesPage";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { useState } from "react";
+import type { ExportFormat } from "~/server/services/export.service";
 
 type ViewType = "list" | "map";
 
@@ -26,9 +27,16 @@ export default function AuctionsPage(): React.ReactElement {
     enabled: viewType === "map",
   });
 
+  // Export mutation
+  const exportMutation = useMutation({
+    mutationFn: async ({ format, filters }: { format: ExportFormat; filters: IOpportunityFilters }) => {
+      return await exportAuctions(filters, format);
+    },
+  });
+
   return (
-    <OpportunitiesPage 
-      listQueryResult={listQuery.data} 
+    <OpportunitiesPage
+      listQueryResult={listQuery.data}
       mapQueryResult={mapQuery.data}
       isLoading={listQuery.isLoading || mapQuery.isLoading}
       getOpportunityById={getAuctionById}
@@ -36,6 +44,7 @@ export default function AuctionsPage(): React.ReactElement {
       onViewTypeChange={setViewType}
       onFiltersChange={setAppliedFilters}
       opportunityType={OpportunityType.AUCTION}
+      exportMutation={exportMutation}
     />
   );
 }

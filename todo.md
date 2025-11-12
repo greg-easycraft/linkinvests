@@ -9,7 +9,6 @@
 ## Features
 - favoris
 - view mode & filters in URL
-- list view cleaner
 - approximative address bool & display
 - restrain query to map boundaries
 
@@ -24,6 +23,7 @@
 - scraping job
 
 ## Annonces
+- notaires
 - MoteurImmo
 
 ## All Jobs
@@ -40,3 +40,15 @@ Accounts to Open
 - google maps
 - open gl ? mapbox ?
 - cloudflare
+
+## Semaine pro
+- Notaires OK
+- Select & Actions
+- Setup Prod + All data
+- photos sur annonces & encheres
+- favoris
+- auctions depts 00
+- deces CP mairies clean
+- Auctions price from bids
+- Auctions address from desc ?
+- Moteur Immo ?

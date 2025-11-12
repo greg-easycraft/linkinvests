@@ -9,18 +9,14 @@ import { OpportunityList } from "./OpportunityList";
 import { OpportunityMap } from "./OpportunityMap";
 import { OpportunityDetailsModal } from "./OpportunityDetailsModal";
 import type { OpportunityFilters as IOpportunityFilters } from "~/types/filters";
-import { Auction, BaseOpportunity, EnergyDiagnostic, Liquidation, type Opportunity, OpportunityType, Succession } from "@linkinvests/shared";
+import { Auction, BaseOpportunity, EnergyDiagnostic, Liquidation, Listing, type Opportunity, OpportunityType, Succession } from "@linkinvests/shared";
 import { OpportunityListSkeleton } from "./OpportunityList/OpportunityListSkeleton";
 import { MapSkeleton } from "./OpportunityMap/MapSkeleton";
 import { MapEmptyState } from "./OpportunityMap/MapEmptyState";
 import { OpportunitiesListQueryResult, OpportunitiesMapQueryResult } from "~/types/query-result";
 import { PageHeader } from "./PageHeader";
-import { useMutation } from "@tanstack/react-query";
 import type { ExportFormat } from "~/server/services/export.service";
-import { exportAuctions } from "~/app/_actions/auctions/queries";
-import { exportSuccessions } from "~/app/_actions/successions/queries";
-import { exportLiquidations } from "~/app/_actions/liquidations/queries";
-import { exportEnergyDiagnostics } from "~/app/_actions/energy-sieves/queries";
+import type { UseMutationResult } from "@tanstack/react-query";
 
 type ViewType = "list" | "map";
 
@@ -30,8 +26,14 @@ const TYPE_TO_URL_MAPPING: Record<OpportunityType, string> = {
   [OpportunityType.SUCCESSION]: 'successions',
   [OpportunityType.LIQUIDATION]: 'liquidations',
   [OpportunityType.ENERGY_SIEVE]: 'energy-sieves',
-  [OpportunityType.REAL_ESTATE_LISTING]: 'real-estate-listings', // Not implemented yet
+  [OpportunityType.REAL_ESTATE_LISTING]: 'listings',
   [OpportunityType.DIVORCE]: 'divorces', // Not implemented yet
+};
+
+type ExportMutationResult = {
+  success: boolean;
+  error?: string;
+  blob?: Blob;
 };
 
 type OpportunitiesPageProps<T extends BaseOpportunity> = {
@@ -42,6 +44,7 @@ type OpportunitiesPageProps<T extends BaseOpportunity> = {
   listQueryResult?: OpportunitiesListQueryResult<T>;
   mapQueryResult?: OpportunitiesMapQueryResult<T>;
   getOpportunityById: (id: string) => Promise<T | null>;
+  exportMutation: UseMutationResult<ExportMutationResult, Error, { format: ExportFormat; filters: IOpportunityFilters }>;
 }
 
 type AuctionsPageProps = OpportunitiesPageProps<Auction> & {
@@ -60,16 +63,21 @@ type EnergySievesPageProps = OpportunitiesPageProps<EnergyDiagnostic> & {
   opportunityType: OpportunityType.ENERGY_SIEVE;
 }
 
-type PageProps = AuctionsPageProps | SuccessionsPageProps | LiquidationsPageProps | EnergySievesPageProps;
+type ListingsPageProps = OpportunitiesPageProps<Listing> & {
+  opportunityType: OpportunityType.REAL_ESTATE_LISTING;
+}
 
-export default function OpportunitiesPage({ 
+type PageProps = AuctionsPageProps | SuccessionsPageProps | LiquidationsPageProps | EnergySievesPageProps | ListingsPageProps;
+
+export default function OpportunitiesPage({
   viewType,
-  opportunityType, 
-  listQueryResult, 
-  mapQueryResult, 
-  isLoading, 
+  opportunityType,
+  listQueryResult,
+  mapQueryResult,
+  isLoading,
   onFiltersChange,
-  onViewTypeChange
+  onViewTypeChange,
+  exportMutation
 }: PageProps): React.ReactElement {
   const [filters, setFilters] = useState<IOpportunityFilters>({
     types: [opportunityType], // Set the type from URL
@@ -147,30 +155,11 @@ export default function OpportunitiesPage({
     }
   }, [router]);
 
-  // Export mutation
-  const exportMutation = useMutation({
-    mutationFn: async ({ format }: { format: ExportFormat }) => {
-      const exportFilters = { ...filters, limit: undefined, offset: undefined };
-
-      switch (opportunityType) {
-        case OpportunityType.AUCTION:
-          return exportAuctions(exportFilters, format);
-        case OpportunityType.SUCCESSION:
-          return exportSuccessions(exportFilters, format);
-        case OpportunityType.LIQUIDATION:
-          return exportLiquidations(exportFilters, format);
-        case OpportunityType.ENERGY_SIEVE:
-          return exportEnergyDiagnostics(exportFilters, format);
-        default:
-          throw new Error(`Export not implemented for type: ${opportunityType}`);
-      }
-    },
-  });
-
   // Handle export
   const handleExport = useCallback(async (format: ExportFormat): Promise<{ success: boolean; error?: string; blob?: Blob }> => {
     try {
-      const result = await exportMutation.mutateAsync({ format });
+      const exportFilters = { ...filters, limit: undefined, offset: undefined };
+      const result = await exportMutation.mutateAsync({ format, filters: exportFilters });
       return result;
     } catch (error) {
       return {
@@ -178,7 +167,7 @@ export default function OpportunitiesPage({
         error: error instanceof Error ? error.message : "Export failed"
       };
     }
-  }, [exportMutation]);
+  }, [exportMutation, filters]);
 
   return (
     <div className="flex h-screen overflow-hidden">
