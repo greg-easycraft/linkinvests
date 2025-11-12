@@ -71,7 +71,7 @@ export class SuccessionService {
     };
 
     // Fetch all matching auctions
-    const successions = await this.successionRepository.findAll(exportFilters);
+    const successions = (await this.successionRepository.findAll(exportFilters)) as unknown as Record<string, unknown>[];
 
     // Export data based on format
     if (format === "csv") {

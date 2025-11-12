@@ -71,7 +71,7 @@ export class LiquidationService {
     };
 
     // Fetch all matching auctions
-    const liquidations = await this.liquidationRepository.findAll(exportFilters);
+    const liquidations = (await this.liquidationRepository.findAll(exportFilters)) as unknown as Record<string, unknown>[];
 
     // Export data based on format
     if (format === "csv") {

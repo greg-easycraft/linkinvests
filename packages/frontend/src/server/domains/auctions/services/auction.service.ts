@@ -71,7 +71,7 @@ export class AuctionService {
     };
 
     // Fetch all matching auctions
-    const auctions = await this.auctionRepository.findAll(exportFilters);
+    const auctions = (await this.auctionRepository.findAll(exportFilters)) as unknown as Record<string, unknown>[];
 
     // Export data based on format
     if (format === "csv") {

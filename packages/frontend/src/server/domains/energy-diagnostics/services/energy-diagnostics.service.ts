@@ -71,7 +71,7 @@ export class EnergyDiagnosticsService {
     };
 
     // Fetch all matching auctions
-    const energyDiagnostics = await this.energyDiagnosticsRepository.findAll(exportFilters);
+    const energyDiagnostics = (await this.energyDiagnosticsRepository.findAll(exportFilters)) as unknown as Record<string, unknown>[];
 
     // Export data based on format
     if (format === "csv") {
