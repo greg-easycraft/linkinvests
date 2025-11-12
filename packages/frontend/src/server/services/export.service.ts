@@ -15,15 +15,16 @@ export class ExportService implements IExportService {
    */
   async exportToCSV<T extends Record<string, unknown>>(data: T[]): Promise<Blob> {
     const firstRow = data[0];
-    if(!firstRow) {
+    if (!firstRow) {
       throw new Error("No data to export");
     }
     const headers = this.getHeadersRow(firstRow);
     const flattenedData = data.map((item) => this.flattenObject(headers, item));
 
-    const csv = unparse(flattenedData, {
+    const csv = unparse([ headers, ...flattenedData], {
       header: true,
       skipEmptyLines: true,
+      delimiter: ";",
     });
 
     return new Blob([csv], { type: "text/csv;charset=utf-8;" });
@@ -34,18 +35,20 @@ export class ExportService implements IExportService {
    */
   async exportToXLSX<T extends Record<string, unknown>>(data: T[]): Promise<Blob> {
     const firstRow = data[0];
-    if(!firstRow) {
+    if (!firstRow) {
       throw new Error("No data to export");
     }
+    console.log(firstRow);
     const headers = this.getHeadersRow(firstRow);
+    console.log(headers);
     const flattenedData = data.map((item) => this.flattenObject(headers, item));
 
     // Create workbook and worksheet
     const workbook = XLSX.utils.book_new();
-    const worksheet = XLSX.utils.json_to_sheet(flattenedData);
+    const worksheet = XLSX.utils.json_to_sheet([headers, ...flattenedData]);
 
     const firstFlattenedRow = flattenedData[0];
-    if(!firstFlattenedRow) {
+    if (!firstFlattenedRow) {
       throw new Error("No data to export");
     }
     // Auto-size columns
@@ -126,7 +129,7 @@ export class ExportService implements IExportService {
   /**
    * Calculate optimal column widths for Excel export
    */
-  private calculateColumnWidths( headers: string[], firstRow: string[]): { wch: number }[] {
+  private calculateColumnWidths(headers: string[], firstRow: string[]): { wch: number }[] {
     const columnWidths = headers.map((header, index) => {
       const maxLength = Math.max(
         header.length,
