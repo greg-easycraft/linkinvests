@@ -102,10 +102,10 @@ export default function OpportunitiesPage({
     setFilters(newFilters);
   }, [opportunityType]);
 
-  const handleApplyFilters = useCallback((): void => {
-    onFiltersChange({ ...filters, offset: 0 });
+  const handleApplyFilters = useCallback((filtersToApply: IOpportunityFilters): void => {
+    onFiltersChange({ ...filtersToApply, offset: 0 });
     setSelectedOpportunity(null);
-  }, [filters]);
+  }, [onFiltersChange]);
 
   const handleResetFilters = useCallback((): void => {
     const resetFilters: IOpportunityFilters = {
@@ -116,7 +116,7 @@ export default function OpportunitiesPage({
     setFilters(resetFilters);
     onFiltersChange(resetFilters);
     setSelectedOpportunity(null);
-  }, [opportunityType]);
+  }, [opportunityType, onFiltersChange]);
 
   const handlePageChange = useCallback(
     (page: number): void => {
@@ -126,7 +126,7 @@ export default function OpportunitiesPage({
       setFilters(newFilters);
       onFiltersChange(newFilters);
     },
-    [filters.limit, filters],
+    [filters, onFiltersChange],
   );
 
   const handleSelectOpportunity = useCallback((opportunity: Opportunity): void => {
@@ -203,7 +203,7 @@ export default function OpportunitiesPage({
                 <OpportunityFilters
                   filters={filters}
                   onFiltersChange={setFilters}
-                  onApply={handleApplyFilters}
+                  onFiltersApply={handleApplyFilters}
                   onReset={handleResetFilters}
                   viewType={viewType}
                   onViewTypeChange={onViewTypeChange}

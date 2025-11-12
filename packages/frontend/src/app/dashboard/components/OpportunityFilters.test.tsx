@@ -7,7 +7,7 @@ import type { OpportunityFilters as IOpportunityFilters } from '~/types/filters'
 
 describe('OpportunityFilters', () => {
   const mockOnFiltersChange = vi.fn();
-  const mockOnApply = vi.fn();
+  const mockOnFiltersApply = vi.fn();
   const mockOnReset = vi.fn();
   const mockOnViewTypeChange = vi.fn();
   const mockOnTypeChange = vi.fn();
@@ -16,7 +16,7 @@ describe('OpportunityFilters', () => {
   const defaultProps = {
     filters: emptyFilters,
     onFiltersChange: mockOnFiltersChange,
-    onApply: mockOnApply,
+    onFiltersApply: mockOnFiltersApply,
     onReset: mockOnReset,
     viewType: 'list' as const,
     onViewTypeChange: mockOnViewTypeChange,
@@ -29,26 +29,20 @@ describe('OpportunityFilters', () => {
   });
 
   describe('Rendering', () => {
-    it('should render filter title', () => {
-      render(<OpportunityFilters {...defaultProps} />);
-
-      expect(screen.getByText('Filtres')).toBeInTheDocument();
-    });
-
     it('should render all filter sections', () => {
       render(<OpportunityFilters {...defaultProps} />);
 
-      expect(screen.getByText("Types d'opportunité")).toBeInTheDocument();
+      expect(screen.getByText("Type d'opportunité")).toBeInTheDocument();
       expect(screen.getByText('Départements')).toBeInTheDocument();
       expect(screen.getByText('Codes postaux')).toBeInTheDocument();
       expect(screen.getByText('Opportunités depuis')).toBeInTheDocument();
     });
 
-    it('should render action buttons', () => {
+    it('should render reset button', () => {
       render(<OpportunityFilters {...defaultProps} />);
 
-      expect(screen.getByText('Appliquer')).toBeInTheDocument();
       expect(screen.getByText('Réinitialiser')).toBeInTheDocument();
+      expect(screen.queryByText('Appliquer')).not.toBeInTheDocument();
     });
 
     it('should render filter components', () => {
@@ -59,21 +53,19 @@ describe('OpportunityFilters', () => {
   });
 
   describe('Type Filter', () => {
-    it('should display selected types', () => {
-      const filters: IOpportunityFilters = { types: [OpportunityType.SUCCESSION] };
+    it('should display type filter section', () => {
+      render(<OpportunityFilters {...defaultProps} />);
 
-      render(<OpportunityFilters {...defaultProps} filters={filters} />);
-
-      // Check that the multi-select shows selected state (implementation will vary)
-      expect(screen.getByText("Types d'opportunité")).toBeInTheDocument();
+      // Check that the type filter section is present
+      expect(screen.getByText("Type d'opportunité")).toBeInTheDocument();
     });
   });
 
   describe('Department Filter', () => {
-    it('should display departments multi-select', () => {
+    it('should display departments input', () => {
       render(<OpportunityFilters {...defaultProps} />);
 
-      expect(screen.getByText('Sélectionner des départements...')).toBeInTheDocument();
+      expect(screen.getByPlaceholderText('Rechercher par numéro ou nom...')).toBeInTheDocument();
     });
 
     it('should display selected departments', () => {
@@ -121,16 +113,6 @@ describe('OpportunityFilters', () => {
   });
 
   describe('Action Buttons', () => {
-    it('should call onApply when Apply button is clicked', async () => {
-      const user = userEvent.setup();
-      render(<OpportunityFilters {...defaultProps} />);
-
-      const applyButton = screen.getByText('Appliquer');
-      await user.click(applyButton);
-
-      expect(mockOnApply).toHaveBeenCalledTimes(1);
-    });
-
     it('should call onReset when Reset button is clicked', async () => {
       const user = userEvent.setup();
       render(<OpportunityFilters {...defaultProps} />);
@@ -139,6 +121,19 @@ describe('OpportunityFilters', () => {
       await user.click(resetButton);
 
       expect(mockOnReset).toHaveBeenCalledTimes(1);
+    });
+
+    it('should call onFiltersApply with debounce when filters change', async () => {
+      vi.useFakeTimers();
+
+      render(<OpportunityFilters {...defaultProps} />);
+
+      // Fast-forward time to trigger the debounce
+      vi.advanceTimersByTime(500);
+
+      expect(mockOnFiltersApply).toHaveBeenCalledWith(emptyFilters);
+
+      vi.useRealTimers();
     });
   });
 
@@ -154,7 +149,7 @@ describe('OpportunityFilters', () => {
       render(<OpportunityFilters {...defaultProps} filters={filters} />);
 
       // Check that all sections are rendered
-      expect(screen.getByText("Types d'opportunité")).toBeInTheDocument();
+      expect(screen.getByText("Type d'opportunité")).toBeInTheDocument();
       expect(screen.getByText('Départements')).toBeInTheDocument();
       expect(screen.getByText('Codes postaux')).toBeInTheDocument();
       expect(screen.getByText('Opportunités depuis')).toBeInTheDocument();

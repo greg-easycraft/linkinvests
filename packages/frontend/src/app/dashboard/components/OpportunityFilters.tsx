@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import { DepartmentsInput } from "~/components/ui/departments-input";
@@ -15,7 +16,7 @@ type ViewType = "list" | "map";
 interface OpportunityFiltersProps {
   filters: IOpportunityFilters;
   onFiltersChange: (filters: IOpportunityFilters) => void;
-  onApply: () => void;
+  onFiltersApply: (filters: IOpportunityFilters) => void;
   onReset: () => void;
   viewType: ViewType;
   onViewTypeChange: (viewType: ViewType) => void;
@@ -36,7 +37,7 @@ const TYPE_LABELS: Record<OpportunityType, string> = {
 export function OpportunityFilters({
   filters,
   onFiltersChange,
-  onApply,
+  onFiltersApply,
   onReset,
   viewType,
   onViewTypeChange,
@@ -44,6 +45,14 @@ export function OpportunityFilters({
   onTypeChange,
 }: OpportunityFiltersProps): React.ReactElement {
 
+  // Debounce filter changes and auto-apply after 500ms of no changes
+  useEffect(() => {
+    const debounceTimer = setTimeout(() => {
+      onFiltersApply(filters);
+    }, 500);
+
+    return () => clearTimeout(debounceTimer);
+  }, [filters, onFiltersApply]);
 
   const handleDepartmentChange = (selectedValues: string[]): void => {
     onFiltersChange({ ...filters, departments: selectedValues });
@@ -140,10 +149,7 @@ export function OpportunityFilters({
       {/* Fixed Action Buttons */}
       <div className="flex-shrink-0 p-6 pt-0">
         <div className="flex gap-2">
-          <Button onClick={onApply} className="flex-1">
-            Appliquer
-          </Button>
-          <Button onClick={onReset} variant="outline">
+          <Button onClick={onReset} variant="outline" className="flex-1">
             Réinitialiser
           </Button>
         </div>
