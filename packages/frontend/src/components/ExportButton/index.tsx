@@ -75,11 +75,11 @@ export function ExportButton({
               <ExportDropdown className={className} onExport={handleExport} disabled={isButtonDisabled} isExporting={isExporting} exportingFormat={exportingFormat} />
             </div>
           </TooltipTrigger>
-          <TooltipContent>
-            <p>
-              Too many results ({totalCount.toLocaleString()}).
-              Maximum {EXPORT_LIMIT} items allowed.
-              Please refine your filters.
+          <TooltipContent className="bg-[var(--primary)] text-[var(--secundary)] border-2 border-[var(--secundary)]">
+            <p className="text-base">
+              Trop de résultats ({totalCount.toLocaleString()}).
+              Maximum {EXPORT_LIMIT} éléments autorisés.
+              Veuillez affiner vos filtres.
             </p>
           </TooltipContent>
         </Tooltip>

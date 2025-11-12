@@ -36,12 +36,12 @@ export function ExportDropdown({
                     {isExporting ? (
                         <>
                             <Loader2 className="h-4 w-4 animate-spin" />
-                            Exporting {exportingFormat?.toUpperCase()}...
+                            Export {exportingFormat?.toUpperCase()}...
                         </>
                     ) : (
                         <>
                             <Download className="h-4 w-4" />
-                            Export
+                            Exporter
                         </>
                     )}
                 </Button>
@@ -53,7 +53,7 @@ export function ExportDropdown({
                     className="cursor-pointer hover:bg-[var(--secundary)] hover:text-[var(--primary)]"
                 >
                     <FileText className="h-4 w-4 mr-2" />
-                    Export as CSV
+                    Exporter en CSV
                 </DropdownMenuItem>
                 <DropdownMenuItem
                     onClick={() => onExport("xlsx")}
@@ -61,7 +61,7 @@ export function ExportDropdown({
                     className="cursor-pointer hover:bg-[var(--secundary)] hover:text-[var(--primary)]"
                 >
                     <FileSpreadsheet className="h-4 w-4 mr-2" />
-                    Export as XLSX
+                    Exporter en XLSX
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
