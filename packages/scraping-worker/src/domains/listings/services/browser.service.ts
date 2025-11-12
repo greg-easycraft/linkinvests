@@ -1,7 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { chromium, type Browser, type Page } from 'playwright';
-import fs from 'fs';
-import path from 'path';
 
 @Injectable()
 export class BrowserService {
@@ -67,38 +65,22 @@ export class BrowserService {
     );
   }
 
-  async handleTarteaucitronCookieConsent(): Promise<void> {
+  async handleTarteaucitronCookieConsent(): Promise<boolean> {
     if (!this.page) {
       throw new Error('Browser not initialized');
     }
 
+    await this.page.waitForLoadState('domcontentloaded', { timeout: 5000 });
+    this.logger.debug('Looking for tarteaucitron cookie consent modal');
+
     try {
-      this.logger.debug('Looking for tarteaucitron cookie consent modal');
-
-      const content = await this.page.content();
-      const filePath = path.join(process.cwd(), 'page.html')
-      fs.writeFileSync(filePath, content);
-      console.log(`page.html written to ${filePath}`);
-
       // Wait for the specific tarteaucitron button to appear
-      const cookieButtons = this.page.getByRole('button');
+      const cookieButton = this.page.getByText(/.*Tout.*refuser.*/i);
 
-      // Wait for the button to be visible
-      await cookieButtons.waitFor({ state: 'visible', timeout: 15000 });
-      console.log('cookieButtons found');
+      await cookieButton.click();
 
-      if (await cookieButtons.isVisible()) {
-        this.logger.log(
-          'Found tarteaucitron cookie buttons, clicking...'
-        );
-        await cookieButtons.first().click();
-        this.logger.log(
-          'Successfully clicked "Deny All" cookie refusal button'
-        );
-
-        // Wait for the modal to disappear
-        await this.page.waitForTimeout(2000);
-      }
+      this.logger.log('cookieButton found & clicked');
+      return true;
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error: unknown) {
       this.logger.debug(
@@ -106,6 +88,42 @@ export class BrowserService {
       );
       // Don't throw error as cookie modal might not always be present
     }
+
+    try {
+      // Wait for the specific tarteaucitron button to appear
+      const cookieButton = this.page.getByText(/.*Deny.*all.*/i);
+
+      await cookieButton.click();
+
+      this.logger.log('cookieButton found & clicked');
+      return true;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error: unknown) {
+      this.logger.debug(
+        'No tarteaucitron cookie modal found or already handled'
+      );
+      // Don't throw error as cookie modal might not always be present
+    }
+
+    try {
+      // Wait for the specific tarteaucitron button to appear
+      const cookieButton = await this.page.waitForSelector(
+        '#tarteaucitronAllDenied2',
+        { timeout: 1500 }
+      );
+
+      await cookieButton.click();
+
+      this.logger.log('cookieButton found & clicked');
+      return true;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error: unknown) {
+      this.logger.debug(
+        'No tarteaucitron cookie modal found or already handled'
+      );
+      // Don't throw error as cookie modal might not always be present
+    }
+    return false;
   }
 
   async waitForContent(timeout: number = 5000): Promise<void> {
@@ -147,6 +165,7 @@ export class BrowserService {
         await this.page.waitForTimeout(3000); // Wait for new content
         return true;
       }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error: unknown) {
       this.logger.debug('No "Load More" button found or not clickable');
     }

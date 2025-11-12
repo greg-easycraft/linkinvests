@@ -43,6 +43,7 @@ describe('OpportunityList', () => {
 
   const mockOnSelect = vi.fn();
   const mockOnPageChange = vi.fn();
+  const mockOnPageSizeChange = vi.fn();
   const mockOnExport = vi.fn().mockResolvedValue({ success: true });
 
   beforeEach(() => {
@@ -57,6 +58,7 @@ describe('OpportunityList', () => {
           data={mockData}
           onSelect={mockOnSelect}
           onPageChange={mockOnPageChange}
+          onPageSizeChange={mockOnPageSizeChange}
           onExport={mockOnExport}
           filters={{}}
         />
@@ -82,6 +84,7 @@ describe('OpportunityList', () => {
           data={emptyData}
           onSelect={mockOnSelect}
           onPageChange={mockOnPageChange}
+          onPageSizeChange={mockOnPageSizeChange}
           onExport={mockOnExport}
         />
       );
@@ -98,6 +101,7 @@ describe('OpportunityList', () => {
           data={mockData}
           onSelect={mockOnSelect}
           onPageChange={mockOnPageChange}
+          onPageSizeChange={mockOnPageSizeChange}
           onExport={mockOnExport}
         />
       );
@@ -114,6 +118,7 @@ describe('OpportunityList', () => {
           data={mockData}
           onSelect={mockOnSelect}
           onPageChange={mockOnPageChange}
+          onPageSizeChange={mockOnPageSizeChange}
           onExport={mockOnExport}
         />
       );
@@ -128,6 +133,7 @@ describe('OpportunityList', () => {
           data={mockData}
           onSelect={mockOnSelect}
           onPageChange={mockOnPageChange}
+          onPageSizeChange={mockOnPageSizeChange}
           onExport={mockOnExport}
         />
       );
@@ -142,6 +148,7 @@ describe('OpportunityList', () => {
           data={mockData}
           onSelect={mockOnSelect}
           onPageChange={mockOnPageChange}
+          onPageSizeChange={mockOnPageSizeChange}
           onExport={mockOnExport}
         />
       );
@@ -156,6 +163,7 @@ describe('OpportunityList', () => {
           data={mockData}
           onSelect={mockOnSelect}
           onPageChange={mockOnPageChange}
+          onPageSizeChange={mockOnPageSizeChange}
           onExport={mockOnExport}
         />
       );
@@ -173,6 +181,7 @@ describe('OpportunityList', () => {
           data={dataWithoutExternalId}
           onSelect={mockOnSelect}
           onPageChange={mockOnPageChange}
+          onPageSizeChange={mockOnPageSizeChange}
           onExport={mockOnExport}
         />
       );
@@ -190,6 +199,7 @@ describe('OpportunityList', () => {
           data={dataWithoutAddress}
           onSelect={mockOnSelect}
           onPageChange={mockOnPageChange}
+          onPageSizeChange={mockOnPageSizeChange}
           onExport={mockOnExport}
         />
       );
@@ -204,6 +214,7 @@ describe('OpportunityList', () => {
           data={mockData}
           onSelect={mockOnSelect}
           onPageChange={mockOnPageChange}
+          onPageSizeChange={mockOnPageSizeChange}
           onExport={mockOnExport}
         />
       );
@@ -288,6 +299,7 @@ describe('OpportunityList', () => {
           data={multiData}
           onSelect={mockOnSelect}
           onPageChange={mockOnPageChange}
+          onPageSizeChange={mockOnPageSizeChange}
           onExport={mockOnExport}
         />
       );
@@ -308,6 +320,7 @@ describe('OpportunityList', () => {
           data={mockData}
           onSelect={mockOnSelect}
           onPageChange={mockOnPageChange}
+          onPageSizeChange={mockOnPageSizeChange}
           onExport={mockOnExport}
         />
       );
@@ -329,6 +342,7 @@ describe('OpportunityList', () => {
           selectedId={mockOpportunity.id}
           onSelect={mockOnSelect}
           onPageChange={mockOnPageChange}
+          onPageSizeChange={mockOnPageSizeChange}
           onExport={mockOnExport}
         />
       );
@@ -345,6 +359,7 @@ describe('OpportunityList', () => {
           selectedId={randomUUID()}
           onSelect={mockOnSelect}
           onPageChange={mockOnPageChange}
+          onPageSizeChange={mockOnPageSizeChange}
           onExport={mockOnExport}
         />
       );
@@ -369,6 +384,7 @@ describe('OpportunityList', () => {
           data={mockData}
           onSelect={mockOnSelect}
           onPageChange={mockOnPageChange}
+          onPageSizeChange={mockOnPageSizeChange}
           onExport={mockOnExport}
           type={OpportunityType.AUCTION}
         />
@@ -384,6 +400,7 @@ describe('OpportunityList', () => {
           data={paginatedData}
           onSelect={mockOnSelect}
           onPageChange={mockOnPageChange}
+          onPageSizeChange={mockOnPageSizeChange}
           onExport={mockOnExport}
         />
       );
@@ -399,6 +416,7 @@ describe('OpportunityList', () => {
           data={paginatedData}
           onSelect={mockOnSelect}
           onPageChange={mockOnPageChange}
+          onPageSizeChange={mockOnPageSizeChange}
           onExport={mockOnExport}
         />
       );
@@ -417,6 +435,7 @@ describe('OpportunityList', () => {
           data={paginatedData}
           onSelect={mockOnSelect}
           onPageChange={mockOnPageChange}
+          onPageSizeChange={mockOnPageSizeChange}
           onExport={mockOnExport}
         />
       );
@@ -436,6 +455,7 @@ describe('OpportunityList', () => {
           data={firstPageData}
           onSelect={mockOnSelect}
           onPageChange={mockOnPageChange}
+          onPageSizeChange={mockOnPageSizeChange}
           onExport={mockOnExport}
         />
       );
@@ -453,6 +473,7 @@ describe('OpportunityList', () => {
           data={lastPageData}
           onSelect={mockOnSelect}
           onPageChange={mockOnPageChange}
+          onPageSizeChange={mockOnPageSizeChange}
           onExport={mockOnExport}
         />
       );
@@ -484,6 +505,7 @@ describe('OpportunityList', () => {
           data={multiData}
           onSelect={mockOnSelect}
           onPageChange={mockOnPageChange}
+          onPageSizeChange={mockOnPageSizeChange}
           onExport={mockOnExport}
         />
       );

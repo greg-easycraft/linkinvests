@@ -4,10 +4,11 @@ export interface RawListingOpportunity {
   label: string;
   address: string;
   city: string;
+  zipCode: string;
   department: string; // e.g., "75", "92"
   latitude?: number;
   longitude?: number;
-  opportunityDate: string; // ISO date string
+  opportunityDate: Date; // ISO date string
   externalId: string; // Generated from notary listing ID
   // Listing-specific fields
   transactionType: string; // "VENTE", "VNI", "VAE"

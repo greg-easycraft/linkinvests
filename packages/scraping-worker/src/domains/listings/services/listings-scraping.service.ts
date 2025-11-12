@@ -117,7 +117,7 @@ export class ListingsScrapingService {
       department: parseInt(opp.department, 10),
       latitude: opp.latitude,
       longitude: opp.longitude,
-      opportunityDate: opp.opportunityDate,
+      opportunityDate: opp.opportunityDate.toISOString().split('T')[0],
       externalId: opp.externalId,
       url: opp.url,
       createdAt: new Date(),

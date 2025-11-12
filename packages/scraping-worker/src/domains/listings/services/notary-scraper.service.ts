@@ -24,7 +24,7 @@ export class NotaryScraperService {
     const config: ListingScrapingConfig = {
       baseUrl:
         'https://www.immobilier.notaires.fr/fr/annonces-immobilieres-liste?typeBien=APP,MAI&typeTransaction=VENTE,VNI,VAE',
-      maxPages: 50, // Limit to reasonable number for initial implementation
+      maxPages: 5, // Limit to reasonable number for initial implementation
       delayBetweenPages: 2000, // 2 seconds between pages
       delayBetweenListings: 2000, // 2 seconds between listing details
       maxRetries: 3,

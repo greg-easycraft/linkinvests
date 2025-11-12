@@ -2,7 +2,6 @@ import { Injectable, Logger } from '@nestjs/common';
 import { BrowserService } from './browser.service.js';
 import type {
   ListingExtractionResult,
-  ListingPageInfo,
   ListingScrapingConfig,
 } from '~/domains/listings/types/listings.types.js';
 import { Page } from 'playwright';

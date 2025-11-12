@@ -129,6 +129,15 @@ export default function OpportunitiesPage({
     [filters, onFiltersChange],
   );
 
+  const handlePageSizeChange = useCallback(
+    (pageSize: number): void => {
+      const newFilters = { ...filters, limit: pageSize, offset: 0 };
+      setFilters(newFilters);
+      onFiltersChange(newFilters);
+    },
+    [filters, onFiltersChange],
+  );
+
   const handleSelectOpportunity = useCallback((opportunity: Opportunity): void => {
     setSelectedOpportunity(opportunity);
     setIsModalOpen(true);
@@ -217,17 +226,16 @@ export default function OpportunitiesPage({
           <div className="flex-1 flex flex-col overflow-hidden p-6">
             <div className="flex-1 overflow-hidden">
               {viewType === "list" && listQueryResult && (
-                <div className="h-full overflow-y-auto rounded-md">
-                  <OpportunityList
-                    type={opportunityType}
-                    data={listQueryResult}
-                    selectedId={selectedOpportunity?.id}
-                    onSelect={handleSelectOpportunity}
-                    onPageChange={handlePageChange}
-                    onExport={handleExport}
-                    filters={filters}
-                  />
-                </div>
+                <OpportunityList
+                  type={opportunityType}
+                  data={listQueryResult}
+                  selectedId={selectedOpportunity?.id}
+                  onSelect={handleSelectOpportunity}
+                  onPageChange={handlePageChange}
+                  onPageSizeChange={handlePageSizeChange}
+                  onExport={handleExport}
+                  filters={filters}
+                />
               )}
 
               {viewType === "map" && mapQueryResult && (

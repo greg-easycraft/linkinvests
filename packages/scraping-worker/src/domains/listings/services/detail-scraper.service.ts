@@ -3,11 +3,54 @@ import { BrowserService } from './browser.service.js';
 import type { RawListingOpportunity } from '~/domains/listings/types/listings.types.js';
 import { Page } from 'playwright';
 
+// Intermediate data structures for extraction
+interface TitleInfo {
+  transactionType: string;
+  propertyType: string;
+  city: string;
+  department: string;
+  address: string;
+  zipCode: string;
+}
+
+interface PricingInfo {
+  price?: number;
+  priceType?: string;
+}
+
+interface PropertyDetails {
+  squareFootage?: number;
+  landArea?: number;
+  rooms?: number;
+  bedrooms?: number;
+  floor?: number;
+  totalFloors?: number;
+  constructionYear?: number;
+}
+
+interface PropertyFeatures {
+  balcony?: boolean;
+  terrace?: boolean;
+  garden?: boolean;
+  garage?: boolean;
+  parking?: boolean;
+  elevator?: boolean;
+}
+
+interface NotaryOfficeInfo {
+  name?: string;
+  address?: string;
+  phone?: string;
+  email?: string;
+  website?: string;
+  contact?: string;
+}
+
 @Injectable()
 export class DetailScraperService {
   private readonly logger = new Logger(DetailScraperService.name);
 
-  constructor(private readonly browserService: BrowserService) {}
+  constructor(private readonly browserService: BrowserService) { }
 
   async scrapeListingDetails(urls: string[]): Promise<RawListingOpportunity[]> {
     const listings: RawListingOpportunity[] = [];
@@ -85,123 +128,121 @@ export class DetailScraperService {
       // Navigate to the listing page
       await this.browserService.navigateToUrl(url);
       await this.browserService.waitForContent(8000);
-
       const page = this.browserService.getPage();
+      try {
+        await page.waitForSelector('#container_galerie_formulaire', {
+          timeout: 10000,
+        });
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (error: unknown) {
+        await this.discardCookies(this.browserService);
+      }
 
-      // Extract basic information
-      const listing: Partial<RawListingOpportunity> = {
+      await page.waitForSelector('#container_galerie_formulaire', {
+        timeout: 10000,
+      });
+
+      this.logger.debug({ url }, 'Starting extraction for listing');
+
+      // Phase 1: Extract basic required information
+      const label = await this.extractLabel(page);
+      const externalId = this.extractExternalIdFromUrl(url);
+      const opportunityDate = await this.extractOpportunityDate(page);
+      const description = await this.extractDescription(page);
+
+      // Phase 2: Extract title/location information (complex parsing)
+      const titleInfo = await this.extractTitleInfo(page);
+
+      // Phase 3: Extract property details
+      const propertyDetails = await this.extractPropertyDetails(page);
+      const features = await this.extractFeatures(page);
+
+      // Phase 4: Extract complex data
+      const pricing = await this.extractPricing(page);
+      const images = await this.extractImages(page);
+      const notaryOffice = await this.extractNotaryOffice(page);
+      const dpe = await this.extractDPE(page);
+
+      // Phase 5: Combine all extracted data
+      const listing: RawListingOpportunity = {
+        // Basic info
         url,
-        opportunityDate: new Date().toISOString().split('T')[0], // Default to today
-        externalId: this.extractExternalIdFromUrl(url),
+        label,
+        externalId,
+        opportunityDate,
+        description,
+
+        // Location info from title parsing
+        address: titleInfo.address,
+        city: titleInfo.city,
+        zipCode: titleInfo.zipCode,
+        department: titleInfo.department,
+
+        // Transaction info
+        transactionType: titleInfo.transactionType,
+        propertyType: titleInfo.propertyType,
+
+        // Pricing
+        price: pricing.price,
+        priceType: pricing.priceType,
+
+        // Property details
+        squareFootage: propertyDetails.squareFootage,
+        landArea: propertyDetails.landArea,
+        rooms: propertyDetails.rooms,
+        bedrooms: propertyDetails.bedrooms,
+        floor: propertyDetails.floor,
+        totalFloors: propertyDetails.totalFloors,
+        constructionYear: propertyDetails.constructionYear,
+
+        // Features
+        balcony: features.balcony,
+        terrace: features.terrace,
+        garden: features.garden,
+        garage: features.garage,
+        parking: features.parking,
+        elevator: features.elevator,
+
+        // Complex data
+        images,
+        notaryOffice,
+        dpe,
       };
 
-      // Extract title/label
-      const titleSelectors = [
-        'h1',
-        '[data-testid="listing-title"]',
-        '.listing-title',
-        '.property-title',
-        '.bien-titre',
-      ];
-
-      for (const selector of titleSelectors) {
-        try {
-          const title = await page.$eval(selector, (el) =>
-            el.textContent?.trim()
-          );
-          if (title) {
-            listing.label = title;
-            break;
-          }
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        } catch (error: unknown) {
-          continue;
-        }
-      }
-
-      // Extract price
-      const priceSelectors = [
-        '[data-testid="price"]',
-        '.price',
-        '.prix',
-        '.price-value',
-        '.montant',
-      ];
-
-      for (const selector of priceSelectors) {
-        try {
-          const priceText = await page.$eval(selector, (el) =>
-            el.textContent?.trim()
-          );
-          if (priceText) {
-            const price = this.extractPriceFromText(priceText);
-            if (price) {
-              listing.price = price.amount;
-              listing.priceType = price.type;
-              break;
-            }
-          }
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        } catch (error: unknown) {
-          continue;
-        }
-      }
-
-      // Extract description
-      const descriptionSelectors = [
-        '[data-testid="description"]',
-        '.description',
-        '.bien-description',
-        '.property-description',
-        '.descriptif',
-      ];
-
-      for (const selector of descriptionSelectors) {
-        try {
-          const description = await page.$eval(selector, (el) =>
-            el.textContent?.trim()
-          );
-          if (description && description.length > 20) {
-            listing.description = description;
-            break;
-          }
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        } catch (error: unknown) {
-          continue;
-        }
-      }
-
-      // Extract property details from various sources
-      await this.extractPropertyDetails(page, listing);
-
-      // Extract address and location
-      await this.extractAddressInfo(page, listing);
-
-      // Extract images
-      listing.images = await this.extractImages(page);
-
-      // Extract notary contact information
-      listing.notaryOffice = await this.extractNotaryContact(page);
-
       // Validate required fields
-      if (!listing.label || !listing.address) {
-        this.logger.debug({ url }, 'Missing required fields, skipping listing');
+      if (!listing.label || !listing.city || !listing.department) {
+        this.logger.warn(
+          {
+            url,
+            label: listing.label,
+            city: listing.city,
+            department: listing.department,
+          },
+          'Missing required fields'
+        );
         return null;
       }
 
-      // Set defaults for missing required fields
-      listing.department =
-        listing.department ||
-        this.extractDepartmentFromAddress(listing.address || '');
-      listing.city =
-        listing.city || this.extractCityFromAddress(listing.address || '');
+      this.logger.debug(
+        {
+          url,
+          label: listing.label,
+          city: listing.city,
+          price: listing.price,
+          rooms: listing.rooms,
+          imagesCount: listing.images?.length || 0,
+          hasNotaryInfo: !!listing.notaryOffice,
+        },
+        'Successfully extracted listing data'
+      );
 
-      return listing as RawListingOpportunity;
+      return listing;
     } catch (error: unknown) {
       this.logger.error(
         {
           url,
           error: error instanceof Error ? error.message : 'Unknown error',
+          stack: error instanceof Error ? error.stack : undefined,
         },
         'Error scraping individual listing'
       );
@@ -210,364 +251,450 @@ export class DetailScraperService {
     }
   }
 
-  private async extractPropertyDetails(
-    page: Page,
-    listing: Partial<RawListingOpportunity>
-  ): Promise<void> {
-    // Try to extract property details from structured data or description lists
-    const detailSelectors = [
-      '.property-details',
-      '.characteristics',
-      '.caracteristiques',
-      '.details-list',
-      '.bien-details',
-    ];
-
-    for (const containerSelector of detailSelectors) {
-      try {
-        const container = await page.$(containerSelector);
-        if (!container) continue;
-
-        // Extract key-value pairs
-        const details = await container.$$eval(
-          'dt, dd, .detail-item, .characteristic',
-          (elements) => {
-            const pairs: { key: string; value: string }[] = [];
-
-            for (let i = 0; i < elements.length; i++) {
-              const el = elements[i];
-              const text = el.textContent?.trim() || '';
-
-              if (el.tagName === 'DT' && i + 1 < elements.length) {
-                const nextEl = elements[i + 1];
-                if (nextEl.tagName === 'DD') {
-                  pairs.push({
-                    key: text.toLowerCase(),
-                    value: nextEl.textContent?.trim() || '',
-                  });
-                }
-              } else if (text.includes(':')) {
-                const [key, ...valueParts] = text.split(':');
-                pairs.push({
-                  key: key.trim().toLowerCase(),
-                  value: valueParts.join(':').trim(),
-                });
-              }
-            }
-
-            return pairs;
-          }
-        );
-
-        // Map extracted details to listing fields
-        for (const detail of details) {
-          this.mapDetailToListing(detail.key, detail.value, listing);
-        }
-
-        break; // Found details, stop searching
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      } catch (error: unknown) {
-        continue;
-      }
-    }
-
-    // Also try to extract from meta tags or JSON-LD
+  private async discardCookies(browserService: BrowserService): Promise<void> {
     try {
-      const jsonLd = await page.$eval(
-        'script[type="application/ld+json"]',
-        (el) => JSON.parse(el.textContent || '{}')
+      await browserService.handleTarteaucitronCookieConsent();
+    } catch (error) {
+      this.logger.warn(
+        { error: error instanceof Error ? error.message : 'Unknown error' },
+        'Failed to discard cookies'
       );
-
-      if (jsonLd) {
-        this.mapJsonLdToListing(jsonLd, listing);
-      }
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error: unknown) {
-      // No JSON-LD found
     }
   }
 
-  private mapDetailToListing(
-    key: string,
-    value: string,
-    listing: Partial<RawListingOpportunity>
-  ): void {
-    const lowerKey = key.toLowerCase();
-
-    if (
-      lowerKey.includes('surface') ||
-      lowerKey.includes('m²') ||
-      lowerKey.includes('superficie')
-    ) {
-      const surface = this.extractNumberFromText(value);
-      if (surface) listing.squareFootage = surface;
-    } else if (lowerKey.includes('terrain') || lowerKey.includes('parcelle')) {
-      const landArea = this.extractNumberFromText(value);
-      if (landArea) listing.landArea = landArea;
-    } else if (lowerKey.includes('pièce') || lowerKey.includes('room')) {
-      const rooms = this.extractNumberFromText(value);
-      if (rooms) listing.rooms = rooms;
-    } else if (lowerKey.includes('chambre') || lowerKey.includes('bedroom')) {
-      const bedrooms = this.extractNumberFromText(value);
-      if (bedrooms) listing.bedrooms = bedrooms;
-    } else if (lowerKey.includes('dpe') || lowerKey.includes('énerg')) {
-      listing.dpe = value.charAt(0).toUpperCase();
-    } else if (lowerKey.includes('étage') || lowerKey.includes('floor')) {
-      const floor = this.extractNumberFromText(value);
-      if (floor !== null) listing.floor = floor;
-    } else if (
-      lowerKey.includes('construction') ||
-      lowerKey.includes('année')
-    ) {
-      const year = this.extractNumberFromText(value);
-      if (year && year > 1800 && year <= new Date().getFullYear()) {
-        listing.constructionYear = year;
-      }
-    } else if (lowerKey.includes('balcon')) {
-      listing.balcony = this.extractBooleanFromText(value);
-    } else if (lowerKey.includes('terrasse')) {
-      listing.terrace = this.extractBooleanFromText(value);
-    } else if (lowerKey.includes('jardin')) {
-      listing.garden = this.extractBooleanFromText(value);
-    } else if (lowerKey.includes('garage')) {
-      listing.garage = this.extractBooleanFromText(value);
-    } else if (lowerKey.includes('parking')) {
-      listing.parking = this.extractBooleanFromText(value);
-    } else if (
-      lowerKey.includes('ascenseur') ||
-      lowerKey.includes('elevator')
-    ) {
-      listing.elevator = this.extractBooleanFromText(value);
-    }
+  // Text processing utility methods
+  private cleanText(text: string): string {
+    if (!text) return '';
+    return text
+      .replace(/&nbsp;/g, ' ')
+      .replace(/\u00a0/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
   }
 
-  private mapJsonLdToListing(
-    jsonLd: any,
-    listing: Partial<RawListingOpportunity>
-  ): void {
-    if (
-      jsonLd['@type'] === 'RealEstateListing' ||
-      jsonLd['@type'] === 'Product'
-    ) {
-      if (jsonLd.name && !listing.label) {
-        listing.label = jsonLd.name;
-      }
+  private parsePrice(priceText: string): number | undefined {
+    if (!priceText) return undefined;
 
-      if (jsonLd.description && !listing.description) {
-        listing.description = jsonLd.description;
-      }
+    // Remove €, spaces, and other non-numeric characters except comma and dot
+    const cleaned = priceText.replace(/[€\s]/g, '').replace(/,/g, '.');
 
-      if (jsonLd.offers?.price && !listing.price) {
-        listing.price = parseFloat(jsonLd.offers.price);
-      }
-
-      if (jsonLd.address) {
-        const address = jsonLd.address;
-        if (address.streetAddress && !listing.address) {
-          listing.address = `${address.streetAddress}, ${address.addressLocality}`;
-        }
-        if (address.addressLocality && !listing.city) {
-          listing.city = address.addressLocality;
-        }
-      }
-
-      // Extract property features
-      if (jsonLd.numberOfRooms && !listing.rooms) {
-        listing.rooms = parseInt(jsonLd.numberOfRooms);
-      }
-
-      if (jsonLd.floorSize && !listing.squareFootage) {
-        listing.squareFootage = parseFloat(
-          jsonLd.floorSize.value || jsonLd.floorSize
-        );
-      }
-    }
+    const number = parseFloat(cleaned);
+    return isNaN(number) ? undefined : number;
   }
 
-  private async extractAddressInfo(
-    page: Page,
-    listing: Partial<RawListingOpportunity>
-  ): Promise<void> {
-    const addressSelectors = [
-      '[data-testid="address"]',
-      '.address',
-      '.adresse',
-      '.location',
-      '.localisation',
-    ];
+  private parseSurface(surfaceText: string): number | undefined {
+    if (!surfaceText) return undefined;
 
-    for (const selector of addressSelectors) {
-      try {
-        const addressText = await page.$eval(selector, (el) =>
-          el.textContent?.trim()
-        );
-        if (addressText) {
-          listing.address = addressText;
+    // Extract number from text like "243 m²" or "833 m<sup>2</sup>"
+    const match = surfaceText.match(/(\d+(?:[.,]\d+)?)/);
+    if (!match) return undefined;
 
-          // Try to extract city and department
-          const cityMatch = addressText.match(/(\d{5})\s+([^,]+)/);
-          if (cityMatch) {
-            const zipCode = cityMatch[1];
-            listing.city = cityMatch[2].trim();
-            listing.department = zipCode.substring(0, 2);
-          }
-
-          break;
-        }
-      } catch (e) {
-        continue;
-      }
-    }
+    const number = parseFloat(match[1].replace(',', '.'));
+    return isNaN(number) ? undefined : number;
   }
 
-  private async extractImages(page: Page): Promise<string[]> {
-    const imageSelectors = [
-      'img[src*="photo"], img[src*="image"]',
-      '.gallery img',
-      '.photos img',
-      '.images img',
-      '[data-testid="gallery"] img',
-    ];
+  private parseDate(dateText: string): Date | undefined {
+    if (!dateText) return undefined;
 
-    for (const selector of imageSelectors) {
-      try {
-        const images = await page.$$eval(
-          selector,
-          (imgs) =>
-            imgs
-              .map((img: HTMLImageElement) => img.src)
-              .filter(
-                (src) =>
-                  src &&
-                  !src.includes('placeholder') &&
-                  !src.includes('default')
-              )
-              .slice(0, 20) // Limit to 20 images
-        );
-
-        if (images.length > 0) {
-          return images;
-        }
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      } catch (error: unknown) {
-        continue;
-      }
-    }
-
-    return [];
-  }
-
-  private async extractNotaryContact(
-    page: Page
-  ): Promise<RawListingOpportunity['notaryOffice']> {
     try {
-      const contactSelectors = [
-        '.notary-contact',
-        '.contact-notaire',
-        '.office-details',
-        '.agence-details',
-      ];
-
-      for (const selector of contactSelectors) {
-        try {
-          const contactInfo = await page.$eval(selector, (el) => {
-            const text = el.textContent || '';
-            const links = Array.from(el.querySelectorAll('a'));
-
-            return {
-              text,
-              phone: links
-                .find((a) => a.href.startsWith('tel:'))
-                ?.href.replace('tel:', ''),
-              email: links
-                .find((a) => a.href.startsWith('mailto:'))
-                ?.href.replace('mailto:', ''),
-              website: links.find((a) => a.href.startsWith('http'))?.href,
-            };
-          });
-
-          if (contactInfo.text) {
-            return {
-              name: this.extractNotaryNameFromText(contactInfo.text),
-              phone: contactInfo.phone,
-              email: contactInfo.email,
-              website: contactInfo.website,
-              contact: contactInfo.text.trim(),
-            };
-          }
-        } catch (e) {
-          continue;
-        }
-      }
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error: unknown) {
-      // No contact info found
+      const date = new Date(dateText);
+      return isNaN(date.getTime()) ? undefined : date;
+    } catch {
+      return undefined;
     }
+  }
 
+  private parseBoolean(text: string): boolean | undefined {
+    if (!text) return undefined;
+
+    const cleaned = text.toLowerCase().trim();
+    if (
+      cleaned === 'oui' ||
+      cleaned === 'yes' ||
+      cleaned === 'true' ||
+      cleaned === '1'
+    ) {
+      return true;
+    }
+    if (
+      cleaned === 'non' ||
+      cleaned === 'no' ||
+      cleaned === 'false' ||
+      cleaned === '0'
+    ) {
+      return false;
+    }
     return undefined;
   }
 
+  private extractNumberFromText(text: string): number | undefined {
+    if (!text) return undefined;
+
+    const match = text.match(/(\d+)/);
+    if (!match) return undefined;
+
+    const number = parseInt(match[1], 10);
+    return isNaN(number) ? undefined : number;
+  }
+
   private extractExternalIdFromUrl(url: string): string {
-    // Extract ID from URL patterns like /annonce/123456 or /bien/abc123
-    const idMatch = url.match(
-      /\/(?:annonce|bien|property|listing)\/([^\/\?]+)/
-    );
+    // Extract ID from URL patterns like /fr/annonce-immo/vente/maison/guingamp-22/1821467
+    const idMatch = url.match(/\/(\d+)$/);
     return idMatch ? `notary-${idMatch[1]}` : `notary-${Date.now()}`;
   }
 
-  private extractPriceFromText(
-    text: string
-  ): { amount: number; type?: string } | null {
-    const priceMatch = text.match(/([\d\s]+)\s*€/);
-    if (priceMatch) {
-      const amount = parseInt(priceMatch[1].replace(/\s/g, ''), 10);
-      const type = text.includes('FAI')
-        ? 'FAI'
-        : text.includes('CC')
-          ? 'CC'
-          : undefined;
-      return { amount, type };
-    }
-    return null;
-  }
-
-  private extractNumberFromText(text: string): number | null {
-    const match = text.match(/(\d+(?:[.,]\d+)?)/);
-    return match ? parseFloat(match[1].replace(',', '.')) : null;
-  }
-
-  private extractBooleanFromText(text: string): boolean {
-    const lowerText = text.toLowerCase();
-    return (
-      lowerText.includes('oui') ||
-      lowerText.includes('yes') ||
-      lowerText.includes('✓') ||
-      lowerText.includes('disponible')
-    );
-  }
-
-  private extractDepartmentFromAddress(address: string): string {
-    const zipMatch = address.match(/(\d{5})/);
-    return zipMatch ? zipMatch[1].substring(0, 2) : '75'; // Default to Paris
-  }
-
-  private extractCityFromAddress(address: string): string {
-    const cityMatch = address.match(/\d{5}\s+([^,]+)/);
-    return cityMatch ? cityMatch[1].trim() : 'Unknown';
-  }
-
-  private extractNotaryNameFromText(text: string): string {
-    // Try to extract notary name from contact text
-    const lines = text.split('\n');
-    for (const line of lines) {
-      if (
-        line.includes('Notaire') ||
-        line.includes('Maître') ||
-        line.includes('SCP')
-      ) {
-        return line.trim();
+  // Basic Information extraction methods
+  private async extractLabel(page: Page): Promise<string> {
+    try {
+      const labelElement = await page.$('[data-titre-annonce]');
+      if (labelElement) {
+        const labelText = await labelElement.textContent();
+        return this.cleanText(labelText || '');
       }
+    } catch (error) {
+      this.logger.warn(
+        { error: error instanceof Error ? error.message : 'Unknown error' },
+        'Failed to extract label'
+      );
     }
-    return 'Notaire'; // Default fallback
+    return 'Listing'; // Fallback
+  }
+
+  private async extractDescription(page: Page): Promise<string | undefined> {
+    try {
+      const descElement = await page.$('[data-description-contenu] p');
+      if (descElement) {
+        const descText = await descElement.textContent();
+        return this.cleanText(descText || '');
+      }
+    } catch (error) {
+      this.logger.warn(
+        { error: error instanceof Error ? error.message : 'Unknown error' },
+        'Failed to extract description'
+      );
+    }
+    return undefined;
+  }
+
+  private async extractOpportunityDate(page: Page): Promise<Date> {
+    try {
+      const dateElement = await page.$('[data-description-maj]');
+      if (dateElement) {
+        const dateText = await dateElement.textContent();
+        const parsed = this.parseDate(this.cleanText(dateText || ''));
+        if (parsed) return parsed;
+      }
+    } catch (error) {
+      this.logger.warn(
+        { error: error instanceof Error ? error.message : 'Unknown error' },
+        'Failed to extract opportunity date'
+      );
+    }
+    return new Date(); // Fallback to current date
+  }
+
+  // Title and location extraction (complex parsing)
+  private async extractTitleInfo(page: Page): Promise<TitleInfo> {
+    try {
+      const titleElement = await page.$('[data-titre-annonce]');
+      if (titleElement) {
+        const titleText = await titleElement.textContent();
+        const cleaned = this.cleanText(titleText || '');
+
+        // Parse title components
+        return this.parseTitleComponents(cleaned);
+      }
+    } catch (error) {
+      this.logger.warn(
+        { error: error instanceof Error ? error.message : 'Unknown error' },
+        'Failed to extract title info'
+      );
+    }
+
+    // Fallback
+    return {
+      transactionType: 'VENTE',
+      propertyType: 'UNKNOWN',
+      city: '',
+      department: '',
+      address: '',
+      zipCode: '',
+    };
+  }
+
+  private parseTitleComponents(titleText: string): TitleInfo {
+    // Example title: "Vente Maison 10 pièces - Guingamp - Côtes-d'Armor (22)"
+    const result: TitleInfo = {
+      transactionType: 'VENTE',
+      propertyType: 'UNKNOWN',
+      city: '',
+      department: '',
+      address: '',
+      zipCode: '',
+    };
+
+    try {
+      // Extract transaction type (first word)
+      const parts = titleText.split(' ');
+      if (parts.length > 0) {
+        result.transactionType = parts[0].toUpperCase();
+      }
+
+      // Extract property type (second word)
+      if (parts.length > 1) {
+        const propType = parts[1].toLowerCase();
+        if (propType.includes('maison')) result.propertyType = 'MAI';
+        else if (propType.includes('appartement')) result.propertyType = 'APP';
+        else if (propType.includes('terrain')) result.propertyType = 'TER';
+        else result.propertyType = propType.substring(0, 3).toUpperCase();
+      }
+
+      // Extract location: " - City - Department (XX)"
+      const locationMatch = titleText.match(/- ([^-]+) - ([^(]+)\((\d+)\)/);
+      if (locationMatch) {
+        result.city = this.cleanText(locationMatch[1]);
+        result.department = locationMatch[3];
+        result.address = result.city; // Use city as default address
+        result.zipCode = locationMatch[3] + '000'; // Approximate zipCode
+      }
+    } catch (error) {
+      this.logger.warn(
+        {
+          error: error instanceof Error ? error.message : 'Unknown error',
+          titleText,
+        },
+        'Failed to parse title components'
+      );
+    }
+
+    return result;
+  }
+
+  // Price extraction
+  private async extractPricing(page: Page): Promise<PricingInfo> {
+    const result: PricingInfo = {};
+
+    try {
+      // Extract main price
+      const priceElement = await page.$('[data-prix-prioritaire]');
+      if (priceElement) {
+        const priceText = await priceElement.textContent();
+        result.price = this.parsePrice(this.cleanText(priceText || ''));
+      }
+
+      // Try to determine price type (FAI, CC, etc.) from context
+      result.priceType = 'FAI'; // Default assumption for notary listings
+    } catch (error) {
+      this.logger.warn(
+        { error: error instanceof Error ? error.message : 'Unknown error' },
+        'Failed to extract pricing'
+      );
+    }
+
+    return result;
+  }
+
+  // Property details extraction
+  private async extractPropertyDetails(page: Page): Promise<PropertyDetails> {
+    const result: PropertyDetails = {};
+
+    try {
+      // Extract rooms
+      const roomsElement = await page.$('#data-description-nbPieces\\.texte');
+      if (roomsElement) {
+        const roomsText = await roomsElement.textContent();
+        result.rooms = this.extractNumberFromText(
+          this.cleanText(roomsText || '')
+        );
+      }
+
+      // Extract bedrooms
+      const bedroomsElement = await page.$('#data-description-nbChambres');
+      if (bedroomsElement) {
+        const bedroomsText = await bedroomsElement.textContent();
+        result.bedrooms = this.extractNumberFromText(
+          this.cleanText(bedroomsText || '')
+        );
+      }
+
+      // Extract surface area
+      const surfaceElement = await page.$('#data-description-surfaceHabitable');
+      if (surfaceElement) {
+        const surfaceText = await surfaceElement.textContent();
+        result.squareFootage = this.parseSurface(
+          this.cleanText(surfaceText || '')
+        );
+      }
+
+      // Extract land area
+      const landElement = await page.$('[data-description-surfaceterrain]');
+      if (landElement) {
+        const landText = await landElement.textContent();
+        result.landArea = this.parseSurface(this.cleanText(landText || ''));
+      }
+
+      // Extract construction period and try to get year
+      const constructionElement = await page.$(
+        '[data-description-epoqueconstruction]'
+      );
+      if (constructionElement) {
+        const constructionText = await constructionElement.textContent();
+        const yearMatch = this.cleanText(constructionText || '').match(
+          /(\d{4})/
+        );
+        if (yearMatch) {
+          result.constructionYear = parseInt(yearMatch[1], 10);
+        }
+      }
+    } catch (error) {
+      this.logger.warn(
+        { error: error instanceof Error ? error.message : 'Unknown error' },
+        'Failed to extract property details'
+      );
+    }
+
+    return result;
+  }
+
+  // Property features extraction
+  private async extractFeatures(page: Page): Promise<PropertyFeatures> {
+    const result: PropertyFeatures = {};
+
+    try {
+      // Extract parking info
+      const parkingElement = await page.$('[data-description-stationnement]');
+      if (parkingElement) {
+        const parkingText = await parkingElement.textContent();
+        result.parking = this.parseBoolean(this.cleanText(parkingText || ''));
+      }
+
+      // Extract pool info (available but not in current interface)
+      const poolElement = await page.$('[data-description-piscine]');
+      if (poolElement) {
+        // const poolText = await poolElement.textContent();
+        // Note: Pool info is available but not in our interface - could be added to extraData later
+      }
+
+      // Note: Other features like balcony, terrace, garden, garage, elevator
+      // are not available in the current HTML structure but could be added
+      // when the HTML structure is updated
+    } catch (error) {
+      this.logger.warn(
+        { error: error instanceof Error ? error.message : 'Unknown error' },
+        'Failed to extract features'
+      );
+    }
+
+    return result;
+  }
+
+  // Notary office extraction
+  private async extractNotaryOffice(
+    page: Page
+  ): Promise<NotaryOfficeInfo | undefined> {
+    try {
+      const result: NotaryOfficeInfo = {};
+
+      // Extract office name
+      const nameElement = await page.$('[data-nom-office] a');
+      if (nameElement) {
+        const nameText = await nameElement.textContent();
+        result.name = this.cleanText(nameText || '');
+      }
+
+      // Extract office address
+      const addressElement = await page.$('[data-adresse-office]');
+      if (addressElement) {
+        const addressText = await addressElement.textContent();
+        result.address = this.cleanText(addressText || '');
+      }
+
+      // Extract contact name
+      const contactElement = await page.$('[data-contact-nom]');
+      if (contactElement) {
+        const contactText = await contactElement.textContent();
+        result.contact = this.cleanText(contactText || '');
+      }
+
+      // Extract phone (though it might be behind a click)
+      const phoneElement = await page.$('[data-contact-tel]');
+      if (phoneElement) {
+        const phoneText =
+          (await phoneElement.getAttribute('data-phone')) ||
+          (await phoneElement.textContent());
+        if (phoneText) {
+          result.phone = this.cleanText(phoneText);
+        }
+      }
+
+      return Object.keys(result).length > 0 ? result : undefined;
+    } catch (error) {
+      this.logger.warn(
+        { error: error instanceof Error ? error.message : 'Unknown error' },
+        'Failed to extract notary office'
+      );
+      return undefined;
+    }
+  }
+
+  // Images extraction
+  private async extractImages(page: Page): Promise<string[]> {
+    try {
+      const images: string[] = [];
+
+      // Look for images in the gallery/slider component
+      const imageElements = await page.$$(
+        'ng-image-slider .custom-image-main img'
+      );
+
+      for (const img of imageElements) {
+        const src = await img.getAttribute('src');
+        if (src && !src.includes('data:image')) {
+          // Exclude placeholder images
+          images.push(src);
+        }
+      }
+
+      return images;
+    } catch (error) {
+      this.logger.warn(
+        { error: error instanceof Error ? error.message : 'Unknown error' },
+        'Failed to extract images'
+      );
+      return [];
+    }
+  }
+
+  // DPE extraction
+  private async extractDPE(page: Page): Promise<string | undefined> {
+    try {
+      // Look for DPE container with class patterns like dpe_g ges_g
+      const dpeContainer = await page.$('.container_dpe_ges_nouveau');
+      if (dpeContainer) {
+        const classList = await dpeContainer.getAttribute('class');
+        if (classList) {
+          // Extract DPE letter from class like "dpe_g"
+          const dpeMatch = classList.match(/dpe_([a-g])/i);
+          if (dpeMatch) {
+            return dpeMatch[1].toUpperCase();
+          }
+        }
+
+        // Fallback: look for letter in .lettres element
+        const letterElement = await dpeContainer.$('.lettres[letter]');
+        if (letterElement) {
+          const letter = await letterElement.getAttribute('letter');
+          if (letter) {
+            return letter.toUpperCase();
+          }
+        }
+      }
+    } catch (error) {
+      this.logger.warn(
+        { error: error instanceof Error ? error.message : 'Unknown error' },
+        'Failed to extract DPE'
+      );
+    }
+    return undefined;
   }
 }
