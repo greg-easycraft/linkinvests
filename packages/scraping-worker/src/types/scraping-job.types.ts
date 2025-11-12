@@ -1,3 +1,3 @@
 export interface ScrapingJobData {
-  jobName: 'auctions' | 'deceases';
+  jobName: 'auctions' | 'deceases' | 'notary-listings';
 }

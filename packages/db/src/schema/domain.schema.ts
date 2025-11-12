@@ -190,6 +190,77 @@ export const energyDiagnostics = pgTable('energy_diagnostic', {
   index('idx_energy_sieve_location').on(table.latitude, table.longitude),
 ]);
 
+// Listing Opportunities Table
+export const opportunityListings = pgTable('listing', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  // Base opportunity fields
+  label: varchar('label').notNull(),
+  address: text('address'),
+  zipCode: varchar('zip_code').notNull(),
+  department: varchar('department').notNull(),
+  latitude: doublePrecision('latitude').notNull(),
+  longitude: doublePrecision('longitude').notNull(),
+  opportunityDate: date('opportunity_date').notNull(),
+  externalId: varchar('external_id').notNull().unique(),
+  // Listing-specific fields
+  url: text('url').notNull(),
+  transactionType: varchar('transaction_type').notNull(),
+  propertyType: varchar('property_type').notNull(),
+  description: text('description'),
+  squareFootage: numeric('square_footage'),
+  landArea: numeric('land_area'),
+  rooms: integer('rooms'),
+  bedrooms: integer('bedrooms'),
+  dpe: varchar('dpe'),
+  constructionYear: integer('construction_year'),
+  floor: integer('floor'),
+  totalFloors: integer('total_floors'),
+  balcony: jsonb('balcony').$type<boolean>(),
+  terrace: jsonb('terrace').$type<boolean>(),
+  garden: jsonb('garden').$type<boolean>(),
+  garage: jsonb('garage').$type<boolean>(),
+  parking: jsonb('parking').$type<boolean>(),
+  elevator: jsonb('elevator').$type<boolean>(),
+  // Price fields
+  price: numeric('price'),
+  priceType: varchar('price_type'),
+  fees: numeric('fees'),
+  charges: numeric('charges'),
+  // Picture fields
+  mainPicture: text('main_picture'),
+  pictures: text('pictures').array(),
+  // Notary contact info as JSONB
+  notaryContact: jsonb('notary_contact').$type<{
+    name?: string;
+    address?: string;
+    phone?: string;
+    email?: string;
+    website?: string;
+    contact?: string;
+    siret?: string;
+  }>(),
+  // Timestamps
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at')
+    .defaultNow()
+    .$onUpdate(() => /* @__PURE__ */ new Date())
+    .notNull(),
+}, (table) => [
+  uniqueIndex('uq_listing_external_id').on(table.externalId),
+  index('idx_listing_department').on(table.department),
+  index('idx_listing_date').on(desc(table.opportunityDate)),
+  index('idx_listing_department_date')
+    .on(table.department, desc(table.opportunityDate)),
+  index('idx_listing_zip_code').on(table.zipCode),
+  index('idx_listing_address').on(table.address),
+  index('idx_listing_latitude').on(table.latitude),
+  index('idx_listing_longitude').on(table.longitude),
+  index('idx_listing_location').on(table.latitude, table.longitude),
+  index('idx_listing_transaction_type').on(table.transactionType),
+  index('idx_listing_property_type').on(table.propertyType),
+  index('idx_listing_price').on(table.price),
+]);
+
 // Sourcing Tables
 export const sourcingRuns = pgTable('sourcing_run', {
   id: uuid('id').primaryKey().defaultRandom(),

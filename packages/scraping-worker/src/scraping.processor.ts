@@ -6,6 +6,7 @@ import type { Job } from 'bullmq';
 import type { ScrapingJobData } from '~/types/scraping-job.types';
 import { AuctionsScrapingService } from './domains/auctions';
 import { DeceasesScrapingService } from './domains/deceases';
+import { ListingsScrapingService } from './domains/listings';
 
 @Processor(SCRAPING_QUEUE, {
   concurrency: 1, // Process ONE job at a time
@@ -15,7 +16,8 @@ export class ScrapingProcessor extends WorkerHost {
 
   constructor(
     private readonly auctionsScrapingService: AuctionsScrapingService,
-    private readonly deceasesScrapingService: DeceasesScrapingService
+    private readonly deceasesScrapingService: DeceasesScrapingService,
+    private readonly listingsScrapingService: ListingsScrapingService
   ) {
     super();
   }
@@ -40,7 +42,12 @@ export class ScrapingProcessor extends WorkerHost {
         return;
       }
 
-      const errorMsg = `Unsupported job name: ${jobName as string}. Only 'auctions' is supported.`;
+      if (jobName === 'notary-listings') {
+        await this.listingsScrapingService.processNotaryListings();
+        return;
+      }
+
+      const errorMsg = `Unsupported job name: ${jobName as string}. Supported job names: 'auctions', 'deceases', 'notary-listings'.`;
       this.logger.error(errorMsg, { jobId: job.id, jobName });
     } catch (error: unknown) {
       const errorMessage =
