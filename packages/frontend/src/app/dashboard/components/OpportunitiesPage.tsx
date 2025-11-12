@@ -15,6 +15,12 @@ import { MapSkeleton } from "./OpportunityMap/MapSkeleton";
 import { MapEmptyState } from "./OpportunityMap/MapEmptyState";
 import { OpportunitiesListQueryResult, OpportunitiesMapQueryResult } from "~/types/query-result";
 import { PageHeader } from "./PageHeader";
+import { useMutation } from "@tanstack/react-query";
+import type { ExportFormat } from "~/server/services/export.service";
+import { exportAuctions } from "~/app/_actions/auctions/queries";
+import { exportSuccessions } from "~/app/_actions/successions/queries";
+import { exportLiquidations } from "~/app/_actions/liquidations/queries";
+import { exportEnergyDiagnostics } from "~/app/_actions/energy-sieves/queries";
 
 type ViewType = "list" | "map";
 
@@ -141,6 +147,39 @@ export default function OpportunitiesPage({
     }
   }, [router]);
 
+  // Export mutation
+  const exportMutation = useMutation({
+    mutationFn: async ({ format }: { format: ExportFormat }) => {
+      const exportFilters = { ...filters, limit: undefined, offset: undefined };
+
+      switch (opportunityType) {
+        case OpportunityType.AUCTION:
+          return exportAuctions(exportFilters, format);
+        case OpportunityType.SUCCESSION:
+          return exportSuccessions(exportFilters, format);
+        case OpportunityType.LIQUIDATION:
+          return exportLiquidations(exportFilters, format);
+        case OpportunityType.ENERGY_SIEVE:
+          return exportEnergyDiagnostics(exportFilters, format);
+        default:
+          throw new Error(`Export not implemented for type: ${opportunityType}`);
+      }
+    },
+  });
+
+  // Handle export
+  const handleExport = useCallback(async (format: ExportFormat): Promise<{ success: boolean; error?: string; blob?: Blob }> => {
+    try {
+      const result = await exportMutation.mutateAsync({ format });
+      return result;
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : "Export failed"
+      };
+    }
+  }, [exportMutation]);
+
   return (
     <div className="flex h-screen overflow-hidden">
       {/* Toggle Button for Filters */}
@@ -196,6 +235,7 @@ export default function OpportunitiesPage({
                     selectedId={selectedOpportunity?.id}
                     onSelect={handleSelectOpportunity}
                     onPageChange={handlePageChange}
+                    onExport={handleExport}
                     filters={filters}
                   />
                 </div>

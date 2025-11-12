@@ -48,11 +48,20 @@ export interface EnergyDiagnosticFilters extends OpportunityFilters {
   energyClasses?: EnergyClass[];
 }
 
+// Placeholder for future auction-specific filters
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface AuctionFilters extends OpportunityFilters {
+  // Future: Add auction-specific filter properties here
 }
 
+// Placeholder for future succession-specific filters
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface SuccessionFilters extends OpportunityFilters {
+  // Future: Add succession-specific filter properties here
 }
 
+// Placeholder for future liquidation-specific filters
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface LiquidationFilters extends OpportunityFilters {
+  // Future: Add liquidation-specific filter properties here
 }

@@ -4,7 +4,7 @@ import { render, screen } from '~/test-utils/test-helpers';
 import userEvent from '@testing-library/user-event';
 import { OpportunityList } from '../OpportunityList';
 import { OpportunityType, Opportunity } from '@linkinvests/shared';
-import type { OpportunitiesQueryResult } from '~/types/query-result';
+import type { OpportunitiesListQueryResult } from '~/types/query-result';
 
 // Mock StreetView component
 vi.mock('./StreetView', () => ({
@@ -33,7 +33,7 @@ describe('OpportunityList', () => {
     mairieContact: undefined,
   };
 
-  const mockData: OpportunitiesQueryResult = {
+  const mockData: OpportunitiesListQueryResult<Opportunity> = {
     opportunities: [mockOpportunity],
     total: 1,
     page: 1,
@@ -43,6 +43,7 @@ describe('OpportunityList', () => {
 
   const mockOnSelect = vi.fn();
   const mockOnPageChange = vi.fn();
+  const mockOnExport = vi.fn().mockResolvedValue({ success: true });
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -56,6 +57,7 @@ describe('OpportunityList', () => {
           data={mockData}
           onSelect={mockOnSelect}
           onPageChange={mockOnPageChange}
+          onExport={mockOnExport}
           filters={{}}
         />
       );
@@ -66,7 +68,7 @@ describe('OpportunityList', () => {
 
   describe('Empty State', () => {
     it('should show empty message when no opportunities', () => {
-      const emptyData: OpportunitiesQueryResult = {
+      const emptyData: OpportunitiesListQueryResult<Opportunity> = {
         opportunities: [],
         total: 0,
         page: 1,
@@ -80,6 +82,7 @@ describe('OpportunityList', () => {
           data={emptyData}
           onSelect={mockOnSelect}
           onPageChange={mockOnPageChange}
+          onExport={mockOnExport}
         />
       );
 
@@ -95,6 +98,7 @@ describe('OpportunityList', () => {
           data={mockData}
           onSelect={mockOnSelect}
           onPageChange={mockOnPageChange}
+          onExport={mockOnExport}
         />
       );
 
@@ -110,6 +114,7 @@ describe('OpportunityList', () => {
           data={mockData}
           onSelect={mockOnSelect}
           onPageChange={mockOnPageChange}
+          onExport={mockOnExport}
         />
       );
 
@@ -123,6 +128,7 @@ describe('OpportunityList', () => {
           data={mockData}
           onSelect={mockOnSelect}
           onPageChange={mockOnPageChange}
+          onExport={mockOnExport}
         />
       );
 
@@ -136,6 +142,7 @@ describe('OpportunityList', () => {
           data={mockData}
           onSelect={mockOnSelect}
           onPageChange={mockOnPageChange}
+          onExport={mockOnExport}
         />
       );
 
@@ -149,6 +156,7 @@ describe('OpportunityList', () => {
           data={mockData}
           onSelect={mockOnSelect}
           onPageChange={mockOnPageChange}
+          onExport={mockOnExport}
         />
       );
 
@@ -165,6 +173,7 @@ describe('OpportunityList', () => {
           data={dataWithoutExternalId}
           onSelect={mockOnSelect}
           onPageChange={mockOnPageChange}
+          onExport={mockOnExport}
         />
       );
 
@@ -181,6 +190,7 @@ describe('OpportunityList', () => {
           data={dataWithoutAddress}
           onSelect={mockOnSelect}
           onPageChange={mockOnPageChange}
+          onExport={mockOnExport}
         />
       );
 
@@ -194,6 +204,7 @@ describe('OpportunityList', () => {
           data={mockData}
           onSelect={mockOnSelect}
           onPageChange={mockOnPageChange}
+          onExport={mockOnExport}
         />
       );
 
@@ -263,7 +274,7 @@ describe('OpportunityList', () => {
         },
       ];
 
-      const multiData: OpportunitiesQueryResult = {
+      const multiData: OpportunitiesListQueryResult<Opportunity> = {
         opportunities,
         total: 4,
         page: 1,
@@ -277,6 +288,7 @@ describe('OpportunityList', () => {
           data={multiData}
           onSelect={mockOnSelect}
           onPageChange={mockOnPageChange}
+          onExport={mockOnExport}
         />
       );
 
@@ -296,6 +308,7 @@ describe('OpportunityList', () => {
           data={mockData}
           onSelect={mockOnSelect}
           onPageChange={mockOnPageChange}
+          onExport={mockOnExport}
         />
       );
 
@@ -316,6 +329,7 @@ describe('OpportunityList', () => {
           selectedId={mockOpportunity.id}
           onSelect={mockOnSelect}
           onPageChange={mockOnPageChange}
+          onExport={mockOnExport}
         />
       );
 
@@ -331,6 +345,7 @@ describe('OpportunityList', () => {
           selectedId={randomUUID()}
           onSelect={mockOnSelect}
           onPageChange={mockOnPageChange}
+          onExport={mockOnExport}
         />
       );
 
@@ -340,7 +355,7 @@ describe('OpportunityList', () => {
   });
 
   describe('Pagination', () => {
-    const paginatedData: OpportunitiesQueryResult = {
+    const paginatedData: OpportunitiesListQueryResult<Opportunity> = {
       opportunities: [mockOpportunity],
       total: 30,
       page: 2,
@@ -354,6 +369,7 @@ describe('OpportunityList', () => {
           data={mockData}
           onSelect={mockOnSelect}
           onPageChange={mockOnPageChange}
+          onExport={mockOnExport}
           type={OpportunityType.AUCTION}
         />
       );
@@ -368,6 +384,7 @@ describe('OpportunityList', () => {
           data={paginatedData}
           onSelect={mockOnSelect}
           onPageChange={mockOnPageChange}
+          onExport={mockOnExport}
         />
       );
 
@@ -382,6 +399,7 @@ describe('OpportunityList', () => {
           data={paginatedData}
           onSelect={mockOnSelect}
           onPageChange={mockOnPageChange}
+          onExport={mockOnExport}
         />
       );
 
@@ -399,6 +417,7 @@ describe('OpportunityList', () => {
           data={paginatedData}
           onSelect={mockOnSelect}
           onPageChange={mockOnPageChange}
+          onExport={mockOnExport}
         />
       );
 
@@ -417,6 +436,7 @@ describe('OpportunityList', () => {
           data={firstPageData}
           onSelect={mockOnSelect}
           onPageChange={mockOnPageChange}
+          onExport={mockOnExport}
         />
       );
 
@@ -433,6 +453,7 @@ describe('OpportunityList', () => {
           data={lastPageData}
           onSelect={mockOnSelect}
           onPageChange={mockOnPageChange}
+          onExport={mockOnExport}
         />
       );
 
@@ -449,7 +470,7 @@ describe('OpportunityList', () => {
         { ...mockOpportunity, id: randomUUID(), label: 'Third' },
       ];
 
-      const multiData: OpportunitiesQueryResult = {
+      const multiData: OpportunitiesListQueryResult<Opportunity> = {
         opportunities,
         total: 3,
         page: 1,
@@ -463,6 +484,7 @@ describe('OpportunityList', () => {
           data={multiData}
           onSelect={mockOnSelect}
           onPageChange={mockOnPageChange}
+          onExport={mockOnExport}
         />
       );
 

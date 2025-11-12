@@ -6,6 +6,8 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { OpportunityListEmptyState } from "./OpportunityListEmptyState";
 import { Auction, OpportunityType, type Opportunity } from "@linkinvests/shared";
 import { OpportunityCard } from "./OpportunityCard";
+import { ExportButton } from "~/components/ExportButton";
+import type { ExportFormat } from "~/server/services/export.service";
 
 interface OpportunityListProps {
   data: {
@@ -18,6 +20,7 @@ interface OpportunityListProps {
   selectedId?: string;
   onSelect: (opportunity: Opportunity) => void;
   onPageChange: (page: number) => void;
+  onExport: (format: ExportFormat) => Promise<{ success: boolean; error?: string; blob?: Blob }>;
   filters?: OpportunityFilters;
   type: OpportunityType;
 }
@@ -33,6 +36,7 @@ export function OpportunityList({
   selectedId,
   onSelect,
   onPageChange,
+  onExport,
   type,
 }: OpportunityListProps): React.ReactElement {
   if (data.opportunities.length === 0) {
@@ -45,6 +49,10 @@ export function OpportunityList({
         <div className="text-sm text-[var(--secundary)]">
           Affichage de {data.opportunities.length} sur {data.total} opportunités
         </div>
+        <ExportButton
+          onExport={onExport}
+          totalCount={data.total}
+        />
       </div>
 
       {/* Cards Grid */}

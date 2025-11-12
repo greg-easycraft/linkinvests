@@ -7,10 +7,16 @@ import { SuccessionService, DrizzleSuccessionRepository } from '~/server/domains
 import { LiquidationService, DrizzleLiquidationRepository } from '~/server/domains/liquidations';
 import { EnergyDiagnosticsService, DrizzleEnergyDiagnosticsRepository } from '~/server/domains/energy-diagnostics';
 
+// Shared services
+import { ExportService } from '~/server/services/export.service';
+
 // Type definitions for DI container
 export interface DIContainer {
   // Database
   db: typeof db;
+
+  // Shared services
+  exportService: ExportService;
 
   // Domain-specific repositories
   auctionRepository: DrizzleAuctionRepository;
@@ -33,6 +39,9 @@ function createDIContainer(): AwilixContainer<DIContainer> {
     // Database instance
     db: asValue(db),
 
+    // Shared services
+    exportService: asFunction(() => new ExportService()),
+
     // Domain-specific repositories
     auctionRepository: asFunction(() => new DrizzleAuctionRepository(container.resolve('db'))),
     successionRepository: asFunction(() => new DrizzleSuccessionRepository(container.resolve('db'))),
@@ -40,10 +49,10 @@ function createDIContainer(): AwilixContainer<DIContainer> {
     energyDiagnosticsRepository: asFunction(() => new DrizzleEnergyDiagnosticsRepository(container.resolve('db'))),
 
     // Domain-specific services
-    auctionService: asFunction(() => new AuctionService(container.resolve('auctionRepository'))),
-    successionService: asFunction(() => new SuccessionService(container.resolve('successionRepository'))),
-    liquidationService: asFunction(() => new LiquidationService(container.resolve('liquidationRepository'))),
-    energyDiagnosticsService: asFunction(() => new EnergyDiagnosticsService(container.resolve('energyDiagnosticsRepository'))),
+    auctionService: asFunction(() => new AuctionService(container.resolve('auctionRepository'), container.resolve('exportService'))),
+    successionService: asFunction(() => new SuccessionService(container.resolve('successionRepository'), container.resolve('exportService'))),
+    liquidationService: asFunction(() => new LiquidationService(container.resolve('liquidationRepository'), container.resolve('exportService'))),
+    energyDiagnosticsService: asFunction(() => new EnergyDiagnosticsService(container.resolve('energyDiagnosticsRepository'), container.resolve('exportService'))),
   });
 
   return container;
