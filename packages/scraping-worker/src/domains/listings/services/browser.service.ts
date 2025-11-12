@@ -188,7 +188,7 @@ export class BrowserService {
     return await this.page.title();
   }
 
-  async getPageUrl(): Promise<string> {
+  getPageUrl(): string {
     if (!this.page) {
       throw new Error('Browser not initialized');
     }
