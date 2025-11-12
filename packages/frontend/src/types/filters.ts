@@ -43,3 +43,16 @@ export interface OpportunityFilters {
   // Energy diagnostics specific filters
   energyClasses?: EnergyClass[];
 }
+
+export interface EnergyDiagnosticFilters extends OpportunityFilters {
+  energyClasses?: EnergyClass[];
+}
+
+export interface AuctionFilters extends OpportunityFilters {
+}
+
+export interface SuccessionFilters extends OpportunityFilters {
+}
+
+export interface LiquidationFilters extends OpportunityFilters {
+}

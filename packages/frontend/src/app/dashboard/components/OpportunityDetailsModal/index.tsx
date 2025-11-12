@@ -13,7 +13,7 @@ import {
   type Liquidation,
   OpportunityType,
 } from "@linkinvests/shared";
-import { StreetView } from "../StreetView";
+import { StreetView } from "./StreetView";
 import { AuctionDetails } from "./AuctionDetails";
 import { SuccessionDetails } from "./SuccessionDetails";
 import { LiquidationDetails } from "./LiquidationDetails";

@@ -2,35 +2,22 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "~/components/ui/button";
-import { OpportunityFilters } from "../components/OpportunityFilters";
-import { OpportunityList } from "../components/OpportunityList";
-import { OpportunityMap } from "../components/OpportunityMap";
-import { OpportunityDetailsModal } from "../components/OpportunityDetailsModal";
-import { UserInfo } from "../components/PageHeader/UserInfo";
-import {
-  getOpportunitiesByType,
-  getOpportunitiesForMapByType,
-} from "~/app/_actions/opportunity/queries";
+import { OpportunityFilters } from "./OpportunityFilters";
+import { OpportunityList } from "./OpportunityList";
+import { OpportunityMap } from "./OpportunityMap";
+import { OpportunityDetailsModal } from "./OpportunityDetailsModal";
 import type { OpportunityFilters as IOpportunityFilters } from "~/types/filters";
-import { type Opportunity, OpportunityType } from "@linkinvests/shared";
-import Image from "next/image";
-import { OpportunityListSkeleton } from "../components/OpportunityList/OpportunityListSkeleton";
-import { MapSkeleton } from "../components/OpportunityMap/MapSkeleton";
-import { MapEmptyState } from "../components/OpportunityMap/MapEmptyState";
-import { notFound } from "next/navigation";
+import { Auction, EnergyDiagnostic, Liquidation, type Opportunity, OpportunityType, Succession } from "@linkinvests/shared";
+import { OpportunityListSkeleton } from "./OpportunityList/OpportunityListSkeleton";
+import { MapSkeleton } from "./OpportunityMap/MapSkeleton";
+import { MapEmptyState } from "./OpportunityMap/MapEmptyState";
+import { OpportunitiesListQueryResult, OpportunitiesMapQueryResult } from "~/types/query-result";
+import { PageHeader } from "./PageHeader";
 
 type ViewType = "list" | "map";
-
-// Map URL segments to OpportunityType enum values
-const TYPE_URL_MAPPING: Record<string, OpportunityType> = {
-  'auctions': OpportunityType.AUCTION,
-  'successions': OpportunityType.SUCCESSION,
-  'liquidations': OpportunityType.LIQUIDATION,
-  'energy-sieves': OpportunityType.ENERGY_SIEVE,
-};
 
 // Map OpportunityType enum values back to URL segments
 const TYPE_TO_URL_MAPPING: Record<OpportunityType, string> = {
@@ -42,19 +29,37 @@ const TYPE_TO_URL_MAPPING: Record<OpportunityType, string> = {
   [OpportunityType.DIVORCE]: 'divorces', // Not implemented yet
 };
 
-// Removed unused interface - params are accessed via useParams hook
+interface AuctionsPageProps {
+  opportunityType: OpportunityType.AUCTION;
+  getOpportunities: (filters: IOpportunityFilters) => Promise<OpportunitiesListQueryResult<Auction>>;
+  getOpportunityById: (id: string) => Promise<Auction | null>;
+  getOpportunitiesForMap: (filters: IOpportunityFilters) => Promise<OpportunitiesMapQueryResult<Auction>>;
+}
 
-export default function TypedDashboardPage(): React.ReactElement {
-  const params = useParams();
-  const router = useRouter();
-  const typeParam = params?.type as string;
+interface SuccessionsPageProps {
+  opportunityType: OpportunityType.SUCCESSION;
+  getOpportunities: (filters: IOpportunityFilters) => Promise<OpportunitiesListQueryResult<Succession>>;
+  getOpportunityById: (id: string) => Promise<Succession | null>;
+  getOpportunitiesForMap: (filters: IOpportunityFilters) => Promise<OpportunitiesMapQueryResult<Succession>>;
+}
 
-  // Validate and get opportunity type from URL parameter
-  const opportunityType = TYPE_URL_MAPPING[typeParam];
-  if (!opportunityType) {
-    notFound();
-  }
+interface LiquidationsPageProps {
+  opportunityType: OpportunityType.LIQUIDATION;
+  getOpportunities: (filters: IOpportunityFilters) => Promise<OpportunitiesListQueryResult<Liquidation>>;
+  getOpportunityById: (id: string) => Promise<Liquidation | null>;
+  getOpportunitiesForMap: (filters: IOpportunityFilters) => Promise<OpportunitiesMapQueryResult<Liquidation>>;
+}
 
+interface EnergySievesPageProps {
+  opportunityType: OpportunityType.ENERGY_SIEVE;
+  getOpportunities: (filters: IOpportunityFilters) => Promise<OpportunitiesListQueryResult<EnergyDiagnostic>>;
+  getOpportunityById: (id: string) => Promise<EnergyDiagnostic | null>;
+  getOpportunitiesForMap: (filters: IOpportunityFilters) => Promise<OpportunitiesMapQueryResult<EnergyDiagnostic>>;
+}
+
+type OpportunitiesPageProps = AuctionsPageProps | SuccessionsPageProps | LiquidationsPageProps | EnergySievesPageProps;
+
+export default function OpportunitiesPage({ opportunityType, getOpportunities, getOpportunityById, getOpportunitiesForMap }: OpportunitiesPageProps): React.ReactElement {
   const [viewType, setViewType] = useState<ViewType>("list");
   const [filters, setFilters] = useState<IOpportunityFilters>({
     types: [opportunityType], // Set the type from URL
@@ -67,6 +72,8 @@ export default function TypedDashboardPage(): React.ReactElement {
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isFiltersSidebarOpen, setIsFiltersSidebarOpen] = useState(true);
+
+  const router = useRouter();
 
   // Update filters when URL type changes
   useEffect(() => {
@@ -81,15 +88,15 @@ export default function TypedDashboardPage(): React.ReactElement {
 
   // Query for list view - using type-specific query
   const listQuery = useQuery({
-    queryKey: ["opportunities", "list", opportunityType, appliedFilters],
-    queryFn: () => getOpportunitiesByType(opportunityType, appliedFilters),
+    queryKey: [opportunityType, "list", appliedFilters],
+    queryFn: () => getOpportunities(appliedFilters),
     enabled: viewType === "list",
   });
 
   // Query for map view - using type-specific query
   const mapQuery = useQuery({
-    queryKey: ["opportunities", "map", opportunityType, appliedFilters],
-    queryFn: () => getOpportunitiesForMapByType(opportunityType, appliedFilters),
+    queryKey: [opportunityType, "map", appliedFilters],
+    queryFn: () => getOpportunitiesForMap(appliedFilters),
     enabled: viewType === "map",
   });
 
@@ -166,24 +173,7 @@ export default function TypedDashboardPage(): React.ReactElement {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="border-b border-[var(--secundary)] px-6 py-3">
-          <div className="flex items-center justify-between">
-            <a
-              href="https://linkinvests.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-3 hover:opacity-80 transition-opacity"
-            >
-              <Image
-                src="/logo.svg"
-                alt="LinkInvests Logo"
-                width={20}
-                height={20}
-              />
-            </a>
-            <UserInfo />
-          </div>
-        </div>
+       <PageHeader />
 
         {/* Content Grid */}
         <div className="flex-1 flex overflow-hidden bg-(--secundary)">

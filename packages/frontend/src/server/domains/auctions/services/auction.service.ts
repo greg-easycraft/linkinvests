@@ -1,27 +1,14 @@
 import type { IAuctionRepository } from "../lib.types";
 import type { OpportunityFilters } from "~/types/filters";
 import type { Auction } from "@linkinvests/shared";
-
-export interface AuctionListResult {
-  opportunities: Auction[];
-  total: number;
-  page: number;
-  pageSize: number;
-  totalPages: number;
-}
-
-export interface AuctionMapResult {
-  opportunities: Auction[];
-  total: number;
-  isLimited: boolean;
-}
+import { OpportunitiesListQueryResult, OpportunitiesMapQueryResult } from "~/types/query-result";
 
 export class AuctionService {
   private readonly MAP_VIEW_LIMIT = 500;
 
   constructor(private readonly auctionRepository: IAuctionRepository) {}
 
-  async getAuctions(filters?: OpportunityFilters): Promise<AuctionListResult> {
+  async getAuctions(filters?: OpportunityFilters): Promise<OpportunitiesListQueryResult<Auction>> {
     const pageSize = filters?.limit ?? 25;
     const page = filters?.offset ? Math.floor(filters.offset / pageSize) + 1 : 1;
 
@@ -43,7 +30,7 @@ export class AuctionService {
     return await this.auctionRepository.findById(id);
   }
 
-  async getAuctionsForMap(filters?: OpportunityFilters): Promise<AuctionMapResult> {
+  async getAuctionsForMap(filters?: OpportunityFilters): Promise<OpportunitiesMapQueryResult<Auction>> {
     // For map view, limit to avoid performance issues
     const mapFilters: OpportunityFilters = {
       ...filters,

@@ -2,9 +2,9 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { randomUUID } from 'crypto';
 import { render, screen } from '~/test-utils/test-helpers';
 import userEvent from '@testing-library/user-event';
-import { OpportunityList } from './OpportunityList';
+import { OpportunityList } from '../OpportunityList';
 import { OpportunityType, Opportunity } from '@linkinvests/shared';
-import type { OpportunityListResult } from '~/types/query-result';
+import type { OpportunitiesQueryResult } from '~/types/query-result';
 
 // Mock StreetView component
 vi.mock('./StreetView', () => ({
@@ -33,7 +33,7 @@ describe('OpportunityList', () => {
     mairieContact: undefined,
   };
 
-  const mockData: OpportunityListResult = {
+  const mockData: OpportunitiesQueryResult = {
     opportunities: [mockOpportunity],
     total: 1,
     page: 1,
@@ -66,7 +66,7 @@ describe('OpportunityList', () => {
 
   describe('Empty State', () => {
     it('should show empty message when no opportunities', () => {
-      const emptyData: OpportunityListResult = {
+      const emptyData: OpportunitiesQueryResult = {
         opportunities: [],
         total: 0,
         page: 1,
@@ -263,7 +263,7 @@ describe('OpportunityList', () => {
         },
       ];
 
-      const multiData: OpportunityListResult = {
+      const multiData: OpportunitiesQueryResult = {
         opportunities,
         total: 4,
         page: 1,
@@ -340,7 +340,7 @@ describe('OpportunityList', () => {
   });
 
   describe('Pagination', () => {
-    const paginatedData: OpportunityListResult = {
+    const paginatedData: OpportunitiesQueryResult = {
       opportunities: [mockOpportunity],
       total: 30,
       page: 2,
@@ -449,7 +449,7 @@ describe('OpportunityList', () => {
         { ...mockOpportunity, id: randomUUID(), label: 'Third' },
       ];
 
-      const multiData: OpportunityListResult = {
+      const multiData: OpportunitiesQueryResult = {
         opportunities,
         total: 3,
         page: 1,

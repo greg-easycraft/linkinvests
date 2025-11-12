@@ -9,6 +9,7 @@ export interface BaseOpportunity {
   longitude: number;
   opportunityDate: string;
   externalId?: string; // Made optional to match nullable database column
+  url?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -23,4 +24,5 @@ export interface BaseOpportunityInput {
   longitude: number;
   opportunityDate: string;
   externalId?: string;
+  url?: string;
 }

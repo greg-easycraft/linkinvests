@@ -2,24 +2,24 @@
 
 import { resolve } from "~/server/di/di.container";
 import type { OpportunityFilters } from "~/types/filters";
-import type { AuctionListResult, AuctionMapResult } from "~/server/domains/auctions/services/auction.service";
 import type { Auction } from "@linkinvests/shared";
+import { OpportunitiesListQueryResult, OpportunitiesMapQueryResult } from "~/types/query-result";
 
-export async function getAuctions(
+export function getAuctions(
   filters?: OpportunityFilters,
-): Promise<AuctionListResult> {
+): Promise<OpportunitiesListQueryResult<Auction>> {
   const auctionService = resolve('auctionService');
-  return await auctionService.getAuctions(filters);
+  return auctionService.getAuctions(filters);
 }
 
-export async function getAuctionsForMap(
+export function getAuctionsForMap(
   filters?: OpportunityFilters,
-): Promise<AuctionMapResult> {
+): Promise<OpportunitiesMapQueryResult<Auction>> {
   const auctionService = resolve('auctionService');
-  return await auctionService.getAuctionsForMap(filters);
+  return auctionService.getAuctionsForMap(filters);
 }
 
-export async function getAuctionById(id: string): Promise<Auction | null> {
+export function getAuctionById(id: string): Promise<Auction | null> {
   const auctionService = resolve('auctionService');
-  return await auctionService.getAuctionById(id);
+  return auctionService.getAuctionById(id);
 }

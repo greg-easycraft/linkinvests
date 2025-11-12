@@ -1,17 +1,15 @@
-import { Opportunity } from "@linkinvests/shared";
+import { BaseOpportunity } from "@linkinvests/shared";
 
-export type OpportunityListResult = {
-  opportunities: Opportunity[];
+export type OpportunitiesListQueryResult<T extends BaseOpportunity> = {
+  opportunities: T[];
   total: number;
   page: number;
   pageSize: number;
   totalPages: number;
 };
 
-export type OpportunityMapResult = {
-  opportunities: Opportunity[];
+export type OpportunitiesMapQueryResult<T extends BaseOpportunity> = {
+  opportunities: T[];
   total: number;
-  page: number;
-  pageSize: number;
-  totalPages: number;
+  isLimited: boolean;
 };
