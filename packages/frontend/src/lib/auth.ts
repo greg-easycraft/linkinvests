@@ -36,10 +36,10 @@ export const auth = betterAuth({
     },
   },
 
-  trustedOrigins: [
-    env.BETTER_AUTH_URL,
-    "https://linkinvests.easycraft.cloud"
-  ],
+  // trustedOrigins: [
+  //   env.BETTER_AUTH_URL,
+  //   "https://linkinvests.easycraft.cloud"
+  // ],
 
   advanced: {
     disableCSRFCheck: true,
