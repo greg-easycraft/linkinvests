@@ -24,8 +24,10 @@ export class ListingsCron {
       this.logger.log('Scheduling daily listings scraping job');
 
       await this.scrapingQueue.add(
-        'listings', // Job name
-        {}, // Job data (empty for now)
+        'daily-notary-listings', // Job name
+        {
+          jobName: 'notary-listings',
+        }, // Job data (empty for now)
         {
           // Job options
           attempts: 3,

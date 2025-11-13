@@ -41,14 +41,70 @@ Accounts to Open
 - open gl ? mapbox ?
 - cloudflare
 
-## Semaine pro
-- Notaires OK
-- Select & Actions
-- Setup Prod + All data
-- photos sur annonces & encheres
-- favoris
+## AVANT EVENT
+- Setup Prod + All data (2j)
+
+Encheres (2j)
 - auctions depts 00
-- deces CP mairies clean
 - Auctions price from bids
 - Auctions address from desc ?
+- photos sur annonces & encheres
+
+Passoires Energétiques (0.5j)
+- restreindre sur E,F,G
+- max 2 ans
+- filtres par coches sur classes spécifiques
+
+Successions (0.5j)
+- Verif email
+
+Encheres - filtres (0.5j)
+- type de bien
+- prix réserve
+Encheres - display
+- dpe
+- m2
+
+Liquidations (0)
+- Max 1 an historique + Filtre
+
+Filtres Annonces (0.5j)
+- particuliers vs pro
+- source pour annonces
+- type de biens
+- prix
+
+Export (0.5j)
+- labels FR sur export
+
+Intégration annonces Moteur Immo (2j)
+- DPEs E,F,G depuis 24 mois
+- tout DPE depuis 3 mois
+- uniquement ancien
+
+Recherche d'adresse (affiner) (3j)
+- lien d'une enchere chez nous
+- lien d'une annonce chez nous
+
+## APRES EVENT
+
+Recherche adresse -(comparaison des photos) (1.5j)
+Panier (demande actes décès auto) (0.5j)
+Favoris (0.5j)
+
+---------
+
+
+- filtres
+- type de bien
+- DPEs
+
+- Notaires OK
+- Select & Actions
+- favoris
+- deces CP mairies clean
 - Moteur Immo ?
+- DVF 
+- recherche d'adresse
+
+- RAYON DE RECHERCHE
