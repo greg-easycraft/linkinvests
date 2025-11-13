@@ -58,7 +58,7 @@ export function OpportunityList({
   return (
     <div className="flex flex-col h-full">
       {/* Fixed Header */}
-      <div className="flex-shrink-0 border-b border-[var(--primary)]/20 pb-4 mb-4">
+      <div className="flex-shrink-0 pb-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-6">
             <div className="text-sm text-[var(--secundary)]">

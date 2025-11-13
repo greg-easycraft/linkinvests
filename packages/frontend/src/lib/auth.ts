@@ -40,6 +40,10 @@ export const auth = betterAuth({
     env.BETTER_AUTH_URL,
     "https://linkinvests.easycraft.cloud"
   ],
+
+  advanced: {
+    disableCSRFCheck: true,
+  },
 });
 
 export type Session = typeof auth.$Infer.Session.session & {

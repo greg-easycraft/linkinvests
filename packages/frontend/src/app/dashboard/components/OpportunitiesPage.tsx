@@ -223,7 +223,7 @@ export default function OpportunitiesPage({
             )}
           </div>
           {/* Main Content */}
-          <div className="flex-1 flex flex-col overflow-hidden p-6">
+          <div className="flex-1 flex flex-col overflow-hidden p-4">
             <div className="flex-1 overflow-hidden">
               {viewType === "list" && listQueryResult && (
                 <OpportunityList
