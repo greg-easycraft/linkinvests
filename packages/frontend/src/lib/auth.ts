@@ -38,6 +38,7 @@ export const auth = betterAuth({
 
   trustedOrigins: [
     env.BETTER_AUTH_URL,
+    "https://linkinvests.easycraft.cloud"
   ],
 });
 
