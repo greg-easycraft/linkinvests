@@ -10,6 +10,7 @@ import {
 interface FailingCompaniesJobData {
   departmentId: number;
   sinceDate: string;
+  beforeDate?: string;
 }
 
 @Processor(SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE)
@@ -25,14 +26,17 @@ export class FailingCompaniesProcessor extends WorkerHost {
   }
 
   async process(job: Job<FailingCompaniesJobData>): Promise<void> {
-    const { departmentId, sinceDate } = job.data;
+    const { departmentId, sinceDate, beforeDate } = job.data;
+    const dateRangeText = beforeDate
+      ? `from ${sinceDate} to ${beforeDate}`
+      : `since ${sinceDate}`;
     this.logger.log(
-      `Starting to process failing companies for department ${departmentId} since ${sinceDate}`,
+      `Starting to process failing companies for department ${departmentId} ${dateRangeText}`,
     );
 
     try {
       // 1. Build the OpenDatasoft API URL
-      const apiUrl = this.buildApiUrl(departmentId, sinceDate);
+      const apiUrl = this.buildApiUrl(departmentId, sinceDate, beforeDate);
       this.logger.log(`Fetching data from: ${apiUrl}`);
 
       // 2. Fetch CSV data from the API
@@ -75,12 +79,18 @@ export class FailingCompaniesProcessor extends WorkerHost {
   /**
    * Build the OpenDatasoft API URL with the required filters
    */
-  private buildApiUrl(departmentId: number, sinceDate: string): string {
+  private buildApiUrl(departmentId: number, sinceDate: string, beforeDate?: string): string {
     const baseUrl =
       'https://bodacc-datadila.opendatasoft.com/api/explore/v2.1/catalog/datasets/annonces-commerciales/exports/csv';
 
+    // Build date filter conditionally
+    let dateFilter = `dateparution>="${sinceDate}"`;
+    if (beforeDate) {
+      dateFilter += ` AND dateparution<="${beforeDate}"`;
+    }
+
     const params = new URLSearchParams({
-      where: `familleavis:"collective" AND numerodepartement:${departmentId} AND dateparution>="${sinceDate}"`,
+      where: `familleavis:"collective" AND numerodepartement:${departmentId} AND ${dateFilter}`,
       limit: '-1', // Get all records
       select:
         'numerodepartement,departement_nom_officiel,familleavis_lib,typeavis_lib,dateparution,commercant,ville,cp,listepersonnes,jugement',

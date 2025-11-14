@@ -17,7 +17,8 @@
     "typecheck": "pnpm --filter './packages/*' typecheck",
     "dev": "pnpm --filter './packages/*' dev",
     "init-energy-diags": "tsx scripts/init-energy-diags.ts",
-    "init-deceases": "tsx scripts/init-deceases.ts"
+    "init-deceases": "tsx scripts/init-deceases.ts",
+    "init-liquidations": "tsx scripts/init-liquidations.ts"
   },
   "keywords": [
     "real-estate",

@@ -85,6 +85,7 @@ describe('SourcingController', () => {
         {
           departmentId: 75,
           sinceDate: '2024-01-01',
+          beforeDate: undefined,
         },
         {
           removeOnComplete: 100,
@@ -96,6 +97,41 @@ describe('SourcingController', () => {
         jobId: mockJobId,
         departmentId: 75,
         sinceDate: '2024-01-01',
+        beforeDate: undefined,
+        message: 'Failing companies job enqueued',
+      });
+    });
+
+    it('should successfully enqueue a failing companies job with beforeDate', async () => {
+      const mockJobId = 'job-456';
+      mockFailingCompaniesQueue.add.mockResolvedValue({ id: mockJobId } as any);
+
+      const result = await controller.enqueueFailingCompanies(75, '2024-01-01', '2024-01-31');
+
+      expect(result).toEqual({
+        success: true,
+        jobId: mockJobId,
+        message: 'Job enqueued successfully',
+      });
+
+      expect(mockFailingCompaniesQueue.add).toHaveBeenCalledWith(
+        'source-failing-companies',
+        {
+          departmentId: 75,
+          sinceDate: '2024-01-01',
+          beforeDate: '2024-01-31',
+        },
+        {
+          removeOnComplete: 100,
+          removeOnFail: 100,
+        },
+      );
+
+      expect(controller['logger'].log).toHaveBeenCalledWith({
+        jobId: mockJobId,
+        departmentId: 75,
+        sinceDate: '2024-01-01',
+        beforeDate: '2024-01-31',
         message: 'Failing companies job enqueued',
       });
     });

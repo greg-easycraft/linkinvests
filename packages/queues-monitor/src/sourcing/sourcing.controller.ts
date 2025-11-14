@@ -35,6 +35,7 @@ export class SourcingController {
   async enqueueFailingCompanies(
     @Body('departmentId') departmentId: number,
     @Body('sinceDate') sinceDate: string,
+    @Body('beforeDate') beforeDate?: string,
   ) {
     try {
       if (!departmentId) {
@@ -56,6 +57,7 @@ export class SourcingController {
         {
           departmentId,
           sinceDate,
+          beforeDate,
         },
         {
           removeOnComplete: 100,
@@ -67,6 +69,7 @@ export class SourcingController {
         jobId,
         departmentId,
         sinceDate,
+        beforeDate,
         message: 'Failing companies job enqueued',
       });
 

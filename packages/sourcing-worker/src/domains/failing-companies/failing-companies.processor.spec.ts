@@ -95,6 +95,21 @@ describe('FailingCompaniesProcessor', () => {
       expect(url).toContain('listepersonnes');
       expect(url).toContain('jugement');
     });
+
+    it('should construct URL with beforeDate parameter when provided', () => {
+      const url = processor['buildApiUrl'](75, '2024-01-01', '2024-01-31');
+
+      expect(url).toContain('dateparution%3E%3D%222024-01-01%22');
+      expect(url).toContain('dateparution%3C%3D%222024-01-31%22');
+      expect(url).toContain('AND');
+    });
+
+    it('should construct URL without beforeDate when not provided', () => {
+      const url = processor['buildApiUrl'](75, '2024-01-01');
+
+      expect(url).toContain('dateparution%3E%3D%222024-01-01%22');
+      expect(url).not.toContain('dateparution%3C%3D');
+    });
   });
 
   describe('fetchCsvData', () => {
