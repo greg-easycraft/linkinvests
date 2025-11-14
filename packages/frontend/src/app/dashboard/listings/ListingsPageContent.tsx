@@ -1,30 +1,32 @@
 'use client';
 
 import { OpportunityType } from "@linkinvests/shared";
-import { getListingById, getListings, getListingsForMap, exportListings } from "~/app/_actions/listings/queries";
+import { getListingById, getListingsData, getListingsCount, exportListings } from "~/app/_actions/listings/queries";
 import OpportunitiesPage from "../components/OpportunitiesPage";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { ListingFilters } from "../components/ListingFilters";
+import { useMutation } from "@tanstack/react-query";
 import { useQueryParamFilters } from "~/hooks/useQueryParamFilters";
+import { useOpportunityData } from "~/hooks/useOpportunityData";
 import type { ExportFormat } from "~/server/services/export.service";
 import type { OpportunityFilters } from "~/types/filters";
 
 export default function ListingsPageContent(): React.ReactElement {
-  // Use query param hook instead of useState for filters and view type
+  // Use query param hook for filters and view type
   const { filters: appliedFilters, viewType, setFilters: setAppliedFilters, setViewType } =
     useQueryParamFilters(OpportunityType.REAL_ESTATE_LISTING);
 
-  const listQuery = useQuery({
-    queryKey: ['listings', "list", appliedFilters],
-    queryFn: () => getListings(appliedFilters),
-    enabled: viewType === "list",
-  });
-
-  // Query for map view - using type-specific query
-  const mapQuery = useQuery({
-    queryKey: ['listings', "map", appliedFilters],
-    queryFn: () => getListingsForMap(appliedFilters),
-    enabled: viewType === "map",
-  });
+  // Use unified data fetching - single queries for both list and map views
+  const {
+    data,
+    count,
+    isCountLoading,
+    isLoading
+  } = useOpportunityData(
+    OpportunityType.REAL_ESTATE_LISTING,
+    appliedFilters,
+    getListingsData,
+    getListingsCount
+  );
 
   // Export mutation
   const exportMutation = useMutation({
@@ -35,9 +37,10 @@ export default function ListingsPageContent(): React.ReactElement {
 
   return (
     <OpportunitiesPage
-      listQueryResult={listQuery.data}
-      mapQueryResult={mapQuery.data}
-      isLoading={listQuery.isLoading || mapQuery.isLoading}
+      data={data}
+      count={count}
+      isCountLoading={isCountLoading}
+      isLoading={isLoading}
       getOpportunityById={getListingById}
       viewType={viewType}
       onViewTypeChange={setViewType}
@@ -45,6 +48,7 @@ export default function ListingsPageContent(): React.ReactElement {
       onFiltersChange={setAppliedFilters}
       opportunityType={OpportunityType.REAL_ESTATE_LISTING}
       exportMutation={exportMutation}
+      FiltersComponent={ListingFilters}
     />
   );
 }

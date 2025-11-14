@@ -10,6 +10,7 @@ import { ExportButton } from "~/components/ExportButton";
 import type { ExportFormat } from "~/server/services/export.service";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { formatNumber } from "~/lib/utils";
+import { CountSkeleton } from "./CountSkeleton";
 
 interface OpportunityListProps {
   data: {
@@ -26,12 +27,27 @@ interface OpportunityListProps {
   onExport: (format: ExportFormat) => Promise<{ success: boolean; error?: string; blob?: Blob }>;
   filters?: OpportunityFilters;
   type: OpportunityType;
+  // Optional props for separate count loading state
+  isCountLoading?: boolean;
 }
 
 
 // Helper function to get URL from auction opportunities
 function getAuctionUrl(auction: Auction): string | null {
   return auction.url || null;
+}
+
+// Helper function to get opportunity type string for export filenames
+function getOpportunityTypeString(type: OpportunityType): string {
+  const typeMapping: Record<OpportunityType, string> = {
+    [OpportunityType.AUCTION]: 'auctions',
+    [OpportunityType.SUCCESSION]: 'successions',
+    [OpportunityType.LIQUIDATION]: 'liquidations',
+    [OpportunityType.ENERGY_SIEVE]: 'energy-sieves',
+    [OpportunityType.REAL_ESTATE_LISTING]: 'listings',
+    [OpportunityType.DIVORCE]: 'divorces',
+  };
+  return typeMapping[type] || 'opportunities';
 }
 
 export function OpportunityList({
@@ -42,6 +58,7 @@ export function OpportunityList({
   onPageSizeChange,
   onExport,
   type,
+  isCountLoading = false,
 }: OpportunityListProps): React.ReactElement {
   if (data.opportunities.length === 0) {
     return <OpportunityListEmptyState />;
@@ -63,7 +80,13 @@ export function OpportunityList({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-6">
             <div className="text-sm text-[var(--secundary)]">
-              Affichage de <span className="font-bold">{startItem}-{endItem}</span> sur <span className="font-bold">{formatNumber(data.total)}</span> opportunités
+              Affichage de <span className="font-bold">{startItem}-{endItem}</span> sur{' '}
+              {isCountLoading ? (
+                <CountSkeleton />
+              ) : (
+                <span className="font-bold">{formatNumber(data.total)}</span>
+              )}{' '}
+              opportunités
             </div>
             <div className="flex items-center gap-2">
               <span className="text-sm text-[var(--secundary)]">Éléments par page:</span>
@@ -84,6 +107,7 @@ export function OpportunityList({
           <ExportButton
             onExport={onExport}
             totalCount={data.total}
+            opportunityType={getOpportunityTypeString(type)}
           />
         </div>
       </div>

@@ -4,7 +4,15 @@ import { render, screen } from '~/test-utils/test-helpers';
 import userEvent from '@testing-library/user-event';
 import { OpportunityList } from '../OpportunityList';
 import { OpportunityType, Opportunity } from '@linkinvests/shared';
-import type { OpportunitiesListQueryResult } from '~/types/query-result';
+
+// Define test types matching the current OpportunityList interface
+type TestOpportunityListData = {
+  opportunities: Opportunity[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+};
 
 // Mock StreetView component
 vi.mock('./StreetView', () => ({
@@ -33,7 +41,7 @@ describe('OpportunityList', () => {
     mairieContact: undefined,
   };
 
-  const mockData: OpportunitiesListQueryResult<Opportunity> = {
+  const mockData: TestOpportunityListData = {
     opportunities: [mockOpportunity],
     total: 1,
     page: 1,
@@ -70,7 +78,7 @@ describe('OpportunityList', () => {
 
   describe('Empty State', () => {
     it('should show empty message when no opportunities', () => {
-      const emptyData: OpportunitiesListQueryResult<Opportunity> = {
+      const emptyData: TestOpportunityListData = {
         opportunities: [],
         total: 0,
         page: 1,
@@ -285,7 +293,7 @@ describe('OpportunityList', () => {
         },
       ];
 
-      const multiData: OpportunitiesListQueryResult<Opportunity> = {
+      const multiData: TestOpportunityListData = {
         opportunities,
         total: 4,
         page: 1,
@@ -370,7 +378,7 @@ describe('OpportunityList', () => {
   });
 
   describe('Pagination', () => {
-    const paginatedData: OpportunitiesListQueryResult<Opportunity> = {
+    const paginatedData: TestOpportunityListData = {
       opportunities: [mockOpportunity],
       total: 30,
       page: 2,
@@ -491,7 +499,7 @@ describe('OpportunityList', () => {
         { ...mockOpportunity, id: randomUUID(), label: 'Third' },
       ];
 
-      const multiData: OpportunitiesListQueryResult<Opportunity> = {
+      const multiData: TestOpportunityListData = {
         opportunities,
         total: 3,
         page: 1,

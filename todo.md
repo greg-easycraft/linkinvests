@@ -42,48 +42,49 @@ Accounts to Open
 - cloudflare
 
 ## AVANT EVENT
-- Setup Prod + All data (2j)
+[ ] Setup Prod + All data (2j)
+[ ] Handle DOM TOM + Corse properly everywhere
 
 Encheres (2j)
-- auctions depts 00
-- Auctions price from bids
-- Auctions address from desc ?
-- photos sur annonces & encheres
+[x] auctions depts 00
+[ ] Auctions price from bids
+[ ] Auctions address from desc ?
+[ ] photos sur annonces & encheres
 
 Passoires Energétiques (0.5j)
-- max 2 ans
-- filtres par coches sur classes spécifiques
+[X] max 2 ans
+[ ] filtres par coches sur classes spécifiques
 
 Successions (0.5j)
-- Verif email
+[ ] Verif email mairie
 
-Encheres - filtres (0.5j)
-- type de bien
-- prix réserve
-Encheres - display
-- dpe
-- m2
+Encheres filtres (0.5j)
+[ ] type de bien
+[ ] prix réserve
+Encheres display
+[ ] dpe
+[ ] m2
 
 Liquidations (0)
-- Max 1 an historique + Filtre
+[ ] Max 1 an historique + Filtre
 
 Filtres Annonces (0.5j)
-- particuliers vs pro
-- source pour annonces
-- type de biens
-- prix
+[ ] particuliers vs pro
+[ ] source pour annonces
+[ ] type de biens
+[ ] prix
 
 Export (0.5j)
-- labels FR sur export
+[ ] labels FR sur export
 
 Intégration annonces Moteur Immo (2j)
-- DPEs E,F,G depuis 24 mois
-- tout DPE depuis 3 mois
-- uniquement ancien
+[ ] DPEs E,F,G depuis 24 mois
+[ ] tout DPE depuis 3 mois
+[ ] uniquement ancien
 
 Recherche d'adresse (affiner) (3j)
-- lien d'une enchere chez nous
-- lien d'une annonce chez nous
+[ ] lien d'une enchere chez nous
+[ ] lien d'une annonce chez nous
 
 ## APRES EVENT
 

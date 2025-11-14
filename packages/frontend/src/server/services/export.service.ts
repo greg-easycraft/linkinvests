@@ -4,24 +4,24 @@ import { unparse } from "papaparse";
 export type ExportFormat = "csv" | "xlsx";
 
 export interface IExportService {
-  exportToCSV<T extends Record<string, unknown>>(data: T[]): Promise<Blob>;
-  exportToXLSX<T extends Record<string, unknown>>(data: T[]): Promise<Blob>;
-  generateFilename(domain: string, format: ExportFormat): string;
+  exportToCSV<T extends Record<string, unknown>>(data: T[], customHeaders?: Record<string, string>): Promise<Blob>;
+  exportToXLSX<T extends Record<string, unknown>>(data: T[], customHeaders?: Record<string, string>): Promise<Blob>;
+  generateFilename(domain: string, format: ExportFormat, timestamp?: string): string;
 }
 
 export class ExportService implements IExportService {
   /**
    * Export data to CSV format
    */
-  async exportToCSV<T extends Record<string, unknown>>(data: T[]): Promise<Blob> {
+  async exportToCSV<T extends Record<string, unknown>>(data: T[], customHeaders?: Record<string, string>): Promise<Blob> {
     const firstRow = data[0];
     if (!firstRow) {
       throw new Error("No data to export");
     }
-    const headers = this.getHeadersRow(firstRow);
-    const flattenedData = data.map((item) => this.flattenObject(headers, item));
+    const headers = this.getHeadersWithLabels(firstRow, customHeaders);
+    const flattenedData = data.map((item) => this.flattenObject(headers.keys, item));
 
-    const csv = unparse([ headers, ...flattenedData], {
+    const csv = unparse([headers.labels, ...flattenedData], {
       header: true,
       skipEmptyLines: true,
       delimiter: ";",
@@ -33,25 +33,25 @@ export class ExportService implements IExportService {
   /**
    * Export data to XLSX format
    */
-  async exportToXLSX<T extends Record<string, unknown>>(data: T[]): Promise<Blob> {
+  async exportToXLSX<T extends Record<string, unknown>>(data: T[], customHeaders?: Record<string, string>): Promise<Blob> {
     const firstRow = data[0];
     if (!firstRow) {
       throw new Error("No data to export");
     }
 
-    const headers = this.getHeadersRow(firstRow);
-    const flattenedData = data.map((item) => this.flattenObject(headers, item));
+    const headers = this.getHeadersWithLabels(firstRow, customHeaders);
+    const flattenedData = data.map((item) => this.flattenObject(headers.keys, item));
 
     // Create workbook and worksheet
     const workbook = XLSX.utils.book_new();
-    const worksheet = XLSX.utils.json_to_sheet([headers, ...flattenedData]);
+    const worksheet = XLSX.utils.json_to_sheet([headers.labels, ...flattenedData]);
 
     const firstFlattenedRow = flattenedData[0];
     if (!firstFlattenedRow) {
       throw new Error("No data to export");
     }
     // Auto-size columns
-    const columnWidths = this.calculateColumnWidths(headers, firstFlattenedRow);
+    const columnWidths = this.calculateColumnWidths(headers.labels, firstFlattenedRow);
     worksheet["!cols"] = columnWidths;
 
     // Add worksheet to workbook
@@ -71,8 +71,9 @@ export class ExportService implements IExportService {
   /**
    * Generate standardized filename for exports
    */
-  generateFilename(domain: string, format: ExportFormat): string {
-    return `${domain}_export.${format}`;
+  generateFilename(domain: string, format: ExportFormat, timestamp?: string): string {
+    const ts = timestamp || Date.now().toString();
+    return `${domain}_export_${ts}.${format}`;
   }
 
   /**
@@ -142,7 +143,12 @@ export class ExportService implements IExportService {
     return columnWidths;
   }
 
-  private getHeadersRow(row: Record<string, unknown>): string[] {
-    return Object.keys(row);
+  private getHeadersWithLabels(
+    row: Record<string, unknown>,
+    customHeaders?: Record<string, string>
+  ): { keys: string[]; labels: string[] } {
+    const keys = Object.keys(row);
+    const labels = keys.map(key => customHeaders?.[key] || key);
+    return { keys, labels };
   }
 }
