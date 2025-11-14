@@ -17,7 +17,7 @@ export class DrizzleEnergyDiagnosticsRepository implements IEnergyDiagnosticsRep
     const conditions: SQL[] = [];
 
     // ALWAYS filter for F and G energy classes only
-    conditions.push(inArray(energyDiagnostics.energyClass, ['F', 'G']));
+    conditions.push(inArray(energyDiagnostics.energyClass, ['E', 'F', 'G']));
 
     if (!filters) {
       return conditions;

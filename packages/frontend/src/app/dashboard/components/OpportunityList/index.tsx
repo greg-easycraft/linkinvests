@@ -62,7 +62,7 @@ export function OpportunityList({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-6">
             <div className="text-sm text-[var(--secundary)]">
-              Affichage de <span className="font-medium">{startItem}-{endItem}</span> sur <span className="font-medium">{data.total}</span> opportunités
+              Affichage de <span className="font-bold">{startItem}-{endItem}</span> sur <span className="font-bold">{data.total}</span> opportunités
             </div>
             <div className="flex items-center gap-2">
               <span className="text-sm text-[var(--secundary)]">Éléments par page:</span>

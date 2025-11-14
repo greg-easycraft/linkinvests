@@ -15,6 +15,7 @@ export class AuctionsGeocodingService {
   private readonly minRequestInterval = 25; // 25ms between requests (40 req/sec - buffer for 50/sec limit)
 
   private async geocodeAddress(address: string): Promise<{
+    department: string;
     formattedAddress: string;
     zipCode: number;
     latitude: number;
@@ -105,13 +106,14 @@ export class AuctionsGeocodingService {
           const zipCode = feature.properties.postcode
             ? parseInt(feature.properties.postcode, 10)
             : 0;
+          const department = feature.properties.citycode?.slice(0, 2) ?? '00';
 
           this.logger.debug(
             { address, formattedAddress, zipCode, latitude, longitude, score },
             'Successfully geocoded address'
           );
 
-          return { formattedAddress, zipCode, latitude, longitude };
+          return { formattedAddress, zipCode, latitude, longitude, department };
         } catch (error: unknown) {
           lastError = error as Error;
           if (attempt < this.maxRetries) {
@@ -175,13 +177,15 @@ export class AuctionsGeocodingService {
         continue;
       }
 
-      const { formattedAddress, zipCode, latitude, longitude } = addressData;
+      const { formattedAddress, zipCode, latitude, longitude, department } =
+        addressData;
       results.push({
         ...auctionOpportunity,
         address: formattedAddress,
         zipCode: zipCode.toString(),
         latitude,
         longitude,
+        department,
       });
 
       if ((i + 1) % 100 === 0) {
@@ -216,6 +220,6 @@ export class AuctionsGeocodingService {
   }
 
   private formatAddressForRequest(opportunity: RawAuctionOpportunity): string {
-    return `${opportunity.address} ${DEPARTMENT_NAMES_MAP[opportunity.department]?.split('-').join(' ') ?? ''}`.trim();
+    return `${opportunity.address} ${DEPARTMENT_NAMES_MAP[Number(opportunity.department)]?.split('-').join(' ') ?? ''}`.trim();
   }
 }
