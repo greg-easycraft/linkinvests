@@ -50,9 +50,19 @@ Encheres (2j)
 - Auctions address from desc ?
 - photos sur annonces & encheres
 
+Liquidations (0.5j)
+[ ] problem on Departments < 10
+[X] max 1 ans
+
 Passoires Energétiques (0.5j)
+<<<<<<< Updated upstream
 - max 2 ans
 - filtres par coches sur classes spécifiques
+=======
+[ ] problem on Departments < 10
+[X] max 2 ans
+[ ] filtres par coches sur classes spécifiques
+>>>>>>> Stashed changes
 
 Successions (0.5j)
 - Verif email
@@ -74,7 +84,11 @@ Filtres Annonces (0.5j)
 - prix
 
 Export (0.5j)
+<<<<<<< Updated upstream
 - labels FR sur export
+=======
+[x] labels FR sur export
+>>>>>>> Stashed changes
 
 Intégration annonces Moteur Immo (2j)
 - DPEs E,F,G depuis 24 mois
