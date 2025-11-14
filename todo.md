@@ -45,50 +45,45 @@ Accounts to Open
 - Setup Prod + All data (2j)
 
 Encheres (2j)
-- auctions depts 00
-- Auctions price from bids
-- Auctions address from desc ?
-- photos sur annonces & encheres
+[x] auctions depts 00
+[ ] Auctions price from bids
+[ ] Auctions address from desc ?
+[ ] photos sur annonces & encheres
 
 Liquidations (0.5j)
-[ ] problem on Departments < 10
+[x] problem on Departments < 10
 [X] max 1 ans
 
 Passoires Energétiques (0.5j)
-<<<<<<< Updated upstream
-- max 2 ans
-- filtres par coches sur classes spécifiques
-=======
-[ ] problem on Departments < 10
+[x] problem on Departments < 10
 [X] max 2 ans
 [ ] filtres par coches sur classes spécifiques
->>>>>>> Stashed changes
 
 Successions (0.5j)
-- Verif email
+[ ] Verif email
 
 Encheres - filtres (0.5j)
-- type de bien
-- prix réserve
+[ ] type de bien
+[ ] prix réserve
 Encheres - display
-- dpe
-- m2
+[ ] dpe
+[ ] m2
 
 Liquidations (0)
-- Max 1 an historique + Filtre
+[x] Max 1 an historique
+[ ] Filtre max 1 an
 
 Filtres Annonces (0.5j)
-- particuliers vs pro
-- source pour annonces
-- type de biens
-- prix
+[-] particuliers vs pro
+[-] source pour annonces
+[x] type de biens
+[-] prix
 
 Export (0.5j)
-<<<<<<< Updated upstream
-- labels FR sur export
-=======
 [x] labels FR sur export
->>>>>>> Stashed changes
+
+
+DERNIERE SEMAINE
 
 Intégration annonces Moteur Immo (2j)
 - DPEs E,F,G depuis 24 mois

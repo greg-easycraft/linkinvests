@@ -5,7 +5,9 @@ import type { EnergyDiagnostic } from '../types/energy-diagnostics.types';
 
 @Injectable()
 export class EnergyDiagnosticsOpportunityRepository {
-  private readonly logger = new Logger(EnergyDiagnosticsOpportunityRepository.name);
+  private readonly logger = new Logger(
+    EnergyDiagnosticsOpportunityRepository.name,
+  );
 
   constructor(
     @Inject(DATABASE_CONNECTION)
