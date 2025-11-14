@@ -50,7 +50,7 @@ type Env = z.infer<typeof envSchema>;
 
     for (const department of allDepartments) {
         console.log(`📍 Processing department ${department}/${allDepartments.length}...`);
-        const success = await createLiquidationJob(department, sinceDate);
+        await createLiquidationJob(department, sinceDate);
 
         // Small delay to avoid overwhelming the server
         await new Promise(resolve => setTimeout(resolve, 40));
