@@ -18,7 +18,6 @@ import { PageHeader } from "./PageHeader";
 import type { ExportFormat } from "~/server/services/export.service";
 import type { UseMutationResult } from "@tanstack/react-query";
 import { useDelayedSkeleton } from "~/hooks/useDelayedSkeleton";
-import { parseURLSearchParams } from "~/utils/query-params";
 
 type ViewType = "list" | "map";
 
@@ -163,7 +162,18 @@ export default function OpportunitiesPage({
     const newUrlSegment = TYPE_TO_URL_MAPPING[newType];
     if (newUrlSegment) {
       // Parse current query params
-      const queryString = parseURLSearchParams(searchParams);
+      const nextParams = new URLSearchParams(searchParams);
+
+      // Preserve generic query params that make sense across all opportunity types
+      const paramsToRemove = ["page"]
+
+      // Remove undefined values to keep URL clean
+      paramsToRemove.forEach(param => {
+        nextParams.delete(param);
+      });
+
+      // Construct URL with preserved params
+      const queryString = nextParams.toString();
       const newUrl = `/dashboard/${newUrlSegment}${queryString ? `?${queryString}` : ''}`;
 
       router.push(newUrl);
