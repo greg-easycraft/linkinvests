@@ -32,11 +32,7 @@ type Env = z.infer<typeof envSchema>;
     };
 
     const allDepartments = Array
-<<<<<<< Updated upstream
         .from({ length: 95 }, (_, i) => i + 1);
-=======
-        .from({ length: 9 }, (_, i) => i + 1);
->>>>>>> Stashed changes
     const months = generateMonthsForYears(2024, 2025);
     const energyClasses = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
     console.log(`Generated ${months.length} months for processing`);
