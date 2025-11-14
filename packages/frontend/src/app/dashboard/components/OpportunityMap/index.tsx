@@ -7,6 +7,7 @@ import { X } from "lucide-react";
 import { Opportunity, OpportunityType } from "@linkinvests/shared";
 import { env } from "~/lib/env";
 import { TYPE_LABELS, TYPE_COLORS } from "~/constants/opportunity-types";
+import { formatNumber } from "~/lib/utils";
 
 interface OpportunityMapProps {
   opportunities: Opportunity[];
@@ -180,7 +181,7 @@ export function OpportunityMap({
             <div className="flex-1">
               <div className="font-semibold mb-1 font-heading">Affichage limité</div>
               <div className="text-sm">
-                {total} opportunités correspondent à vos critères, mais seules les 500
+                {formatNumber(total)} opportunités correspondent à vos critères, mais seules les 500
                 premières sont affichées. Veuillez affiner vos filtres pour voir des
                 résultats plus précis.
               </div>

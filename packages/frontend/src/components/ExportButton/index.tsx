@@ -10,6 +10,7 @@ import {
 import type { ExportFormat } from "~/server/services/export.service";
 import type { OpportunityFilters } from "~/types/filters";
 import { ExportDropdown } from "./ExportDropDown";
+import { formatNumber } from "~/lib/utils";
 
 interface ExportButtonProps {
   onExport: (format: ExportFormat) => Promise<{ success: boolean; error?: string; blob?: Blob }>;
@@ -77,7 +78,7 @@ export function ExportButton({
           </TooltipTrigger>
           <TooltipContent className="bg-[var(--primary)] text-[var(--secundary)] border-2 border-[var(--secundary)]">
             <p className="text-base">
-              Trop de résultats ({totalCount.toLocaleString()}).
+              Trop de résultats ({formatNumber(totalCount)}).
               Maximum {EXPORT_LIMIT} éléments autorisés.
               Veuillez affiner vos filtres.
             </p>

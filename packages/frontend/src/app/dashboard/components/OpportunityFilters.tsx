@@ -34,6 +34,15 @@ const TYPE_LABELS: Record<OpportunityType, string> = {
   // [OpportunityType.DIVORCE]: "Divorce",
 };
 
+// Custom order for dropdown display - Succession last
+const TYPE_DISPLAY_ORDER: OpportunityType[] = [
+  OpportunityType.LIQUIDATION,
+  OpportunityType.ENERGY_SIEVE,
+  OpportunityType.REAL_ESTATE_LISTING,
+  OpportunityType.AUCTION,
+  OpportunityType.SUCCESSION, // Last
+];
+
 export function OpportunityFilters({
   filters,
   onFiltersChange,
@@ -95,7 +104,7 @@ export function OpportunityFilters({
                 <SelectValue placeholder="Sélectionner un type..." />
               </SelectTrigger>
               <SelectContent>
-                {Object.values(OpportunityType).map((type) => (
+                {TYPE_DISPLAY_ORDER.map((type) => (
                   <SelectItem key={type} value={type}>
                     {TYPE_LABELS[type]}
                   </SelectItem>

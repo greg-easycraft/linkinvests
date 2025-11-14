@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "~/components/ui/button";
@@ -17,6 +17,7 @@ import { OpportunitiesListQueryResult, OpportunitiesMapQueryResult } from "~/typ
 import { PageHeader } from "./PageHeader";
 import type { ExportFormat } from "~/server/services/export.service";
 import type { UseMutationResult } from "@tanstack/react-query";
+import { useDelayedSkeleton } from "~/hooks/useDelayedSkeleton";
 
 type ViewType = "list" | "map";
 
@@ -36,15 +37,28 @@ type ExportMutationResult = {
   blob?: Blob;
 };
 
+type FiltersComponentProps = {
+  filters: IOpportunityFilters;
+  onFiltersChange: (filters: IOpportunityFilters) => void;
+  onFiltersApply: (filters: IOpportunityFilters) => void;
+  onReset: () => void;
+  viewType: ViewType;
+  onViewTypeChange: (viewType: ViewType) => void;
+  currentType: OpportunityType;
+  onTypeChange: (type: OpportunityType) => void;
+};
+
 type OpportunitiesPageProps<T extends BaseOpportunity> = {
   viewType: ViewType;
   onViewTypeChange: (viewType: ViewType) => void;
+  currentFilters: IOpportunityFilters; // Current filters from query params
   onFiltersChange: (filters: IOpportunityFilters) => void;
   isLoading: boolean;
   listQueryResult?: OpportunitiesListQueryResult<T>;
   mapQueryResult?: OpportunitiesMapQueryResult<T>;
   getOpportunityById: (id: string) => Promise<T | null>;
   exportMutation: UseMutationResult<ExportMutationResult, Error, { format: ExportFormat; filters: IOpportunityFilters }>;
+  FiltersComponent?: React.ComponentType<FiltersComponentProps>;
 }
 
 type AuctionsPageProps = OpportunitiesPageProps<Auction> & {
@@ -72,18 +86,17 @@ type PageProps = AuctionsPageProps | SuccessionsPageProps | LiquidationsPageProp
 export default function OpportunitiesPage({
   viewType,
   opportunityType,
+  currentFilters,
   listQueryResult,
   mapQueryResult,
   isLoading,
   onFiltersChange,
   onViewTypeChange,
-  exportMutation
+  exportMutation,
+  FiltersComponent = OpportunityFilters
 }: PageProps): React.ReactElement {
-  const [filters, setFilters] = useState<IOpportunityFilters>({
-    types: [opportunityType], // Set the type from URL
-    limit: 25,
-    offset: 0,
-  });
+  // Use delayed skeleton to prevent flashing when data loads quickly
+  const showSkeleton = useDelayedSkeleton(isLoading);
   const [selectedOpportunity, setSelectedOpportunity] = useState<Opportunity | null>(
     null,
   );
@@ -91,16 +104,6 @@ export default function OpportunitiesPage({
   const [isFiltersSidebarOpen, setIsFiltersSidebarOpen] = useState(true);
 
   const router = useRouter();
-
-  // Update filters when URL type changes
-  useEffect(() => {
-    const newFilters = {
-      limit: 25,
-      offset: 0,
-      types: [opportunityType]
-    };
-    setFilters(newFilters);
-  }, [opportunityType]);
 
   const handleApplyFilters = useCallback((filtersToApply: IOpportunityFilters): void => {
     onFiltersChange({ ...filtersToApply, offset: 0 });
@@ -113,29 +116,26 @@ export default function OpportunitiesPage({
       limit: 25,
       offset: 0,
     };
-    setFilters(resetFilters);
     onFiltersChange(resetFilters);
     setSelectedOpportunity(null);
   }, [opportunityType, onFiltersChange]);
 
   const handlePageChange = useCallback(
     (page: number): void => {
-      const pageSize = filters.limit ?? 25;
+      const pageSize = currentFilters.limit ?? 25;
       const newOffset = (page - 1) * pageSize;
-      const newFilters = { ...filters, offset: newOffset };
-      setFilters(newFilters);
+      const newFilters = { ...currentFilters, offset: newOffset };
       onFiltersChange(newFilters);
     },
-    [filters, onFiltersChange],
+    [currentFilters, onFiltersChange],
   );
 
   const handlePageSizeChange = useCallback(
     (pageSize: number): void => {
-      const newFilters = { ...filters, limit: pageSize, offset: 0 };
-      setFilters(newFilters);
+      const newFilters = { ...currentFilters, limit: pageSize, offset: 0 };
       onFiltersChange(newFilters);
     },
-    [filters, onFiltersChange],
+    [currentFilters, onFiltersChange],
   );
 
   const handleSelectOpportunity = useCallback((opportunity: Opportunity): void => {
@@ -167,7 +167,7 @@ export default function OpportunitiesPage({
   // Handle export
   const handleExport = useCallback(async (format: ExportFormat): Promise<{ success: boolean; error?: string; blob?: Blob }> => {
     try {
-      const exportFilters = { ...filters, limit: undefined, offset: undefined };
+      const exportFilters = { ...currentFilters, limit: undefined, offset: undefined };
       const result = await exportMutation.mutateAsync({ format, filters: exportFilters });
       return result;
     } catch (error) {
@@ -176,7 +176,7 @@ export default function OpportunitiesPage({
         error: error instanceof Error ? error.message : "Export failed"
       };
     }
-  }, [exportMutation, filters]);
+  }, [exportMutation, currentFilters]);
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -209,9 +209,9 @@ export default function OpportunitiesPage({
           >
             {isFiltersSidebarOpen && (
               <div className="p-4 h-full">
-                <OpportunityFilters
-                  filters={filters}
-                  onFiltersChange={setFilters}
+                <FiltersComponent
+                  filters={currentFilters}
+                  onFiltersChange={onFiltersChange}
                   onFiltersApply={handleApplyFilters}
                   onReset={handleResetFilters}
                   viewType={viewType}
@@ -234,7 +234,7 @@ export default function OpportunitiesPage({
                   onPageChange={handlePageChange}
                   onPageSizeChange={handlePageSizeChange}
                   onExport={handleExport}
-                  filters={filters}
+                  filters={currentFilters}
                 />
               )}
 
@@ -252,10 +252,10 @@ export default function OpportunitiesPage({
                 </div>
               )}
 
-              {viewType === "map" && isLoading && (
+              {viewType === "map" && showSkeleton && (
                 <MapSkeleton />
               )}
-              {viewType === "list" && isLoading && (
+              {viewType === "list" && showSkeleton && (
                 <OpportunityListSkeleton />
               )}
             </div>

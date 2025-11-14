@@ -1,18 +1,17 @@
 'use client';
-import type { OpportunityFilters as IOpportunityFilters } from "~/types/filters";
 
 import { OpportunityType } from "@linkinvests/shared";
 import { getSuccessionById, getSuccessions, getSuccessionsForMap, exportSuccessions } from "~/app/_actions/successions/queries";
 import OpportunitiesPage from "../components/OpportunitiesPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { useState } from "react";
+import { useQueryParamFilters } from "~/hooks/useQueryParamFilters";
 import type { ExportFormat } from "~/server/services/export.service";
-
-type ViewType = "list" | "map";
+import type { OpportunityFilters } from "~/types/filters";
 
 export default function SuccessionsPage(): React.ReactElement {
-  const [appliedFilters, setAppliedFilters] = useState<IOpportunityFilters>({});
-  const [viewType, setViewType] = useState<ViewType>("list");
+  // Use query param hook instead of useState for filters and view type
+  const { filters: appliedFilters, viewType, setFilters: setAppliedFilters, setViewType } =
+    useQueryParamFilters(OpportunityType.SUCCESSION);
 
   const listQuery = useQuery({
     queryKey: ['successions', "list", appliedFilters],
@@ -29,7 +28,7 @@ export default function SuccessionsPage(): React.ReactElement {
 
   // Export mutation
   const exportMutation = useMutation({
-    mutationFn: async ({ format, filters }: { format: ExportFormat; filters: IOpportunityFilters }) => {
+    mutationFn: async ({ format, filters }: { format: ExportFormat; filters: OpportunityFilters }) => {
       return await exportSuccessions(filters, format);
     },
   });
@@ -42,6 +41,7 @@ export default function SuccessionsPage(): React.ReactElement {
       getOpportunityById={getSuccessionById}
       viewType={viewType}
       onViewTypeChange={setViewType}
+      currentFilters={appliedFilters}
       onFiltersChange={setAppliedFilters}
       opportunityType={OpportunityType.SUCCESSION}
       exportMutation={exportMutation}

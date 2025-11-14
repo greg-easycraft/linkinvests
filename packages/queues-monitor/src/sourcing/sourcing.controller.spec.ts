@@ -106,7 +106,11 @@ describe('SourcingController', () => {
       const mockJobId = 'job-456';
       mockFailingCompaniesQueue.add.mockResolvedValue({ id: mockJobId } as any);
 
-      const result = await controller.enqueueFailingCompanies(75, '2024-01-01', '2024-01-31');
+      const result = await controller.enqueueFailingCompanies(
+        75,
+        '2024-01-01',
+        '2024-01-31',
+      );
 
       expect(result).toEqual({
         success: true,

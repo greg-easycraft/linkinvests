@@ -32,46 +32,41 @@ type Env = z.infer<typeof envSchema>;
 
     const allDepartments = Array
         .from({ length: 95 }, (_, i) => i + 1);
-    const months = generateMonthsFromOneYearAgo();
-    console.log(`Generated ${months.length} months for processing (from one year ago to now)`);
-    console.log(`Will process ${allDepartments.length} departments x ${months.length} months = ${allDepartments.length * months.length} total requests`);
+    console.log(`Will process ${allDepartments.length} departments s`);
 
     // Process all departments and weeks sequentially
     let successCount = 0;
     let errorCount = 0;
-    const totalJobs = allDepartments.length * months.length;
+    const totalJobs = allDepartments.length;
 
     const createLiquidationJob = buildCreateLiquidationJobBody(QUEUES_MONITOR_URL + '/sourcing/jobs/failing-companies', headers);
 
     console.log('\\n🚀 Starting liquidation job creation...\\n');
 
+    const now = new Date();
+    const oneYearAgo = new Date();
+    oneYearAgo.setFullYear(now.getFullYear() - 1);
+    const sinceDate = oneYearAgo.toISOString().split('T')[0];
+
     for (const department of allDepartments) {
         console.log(`📍 Processing department ${department}/${allDepartments.length}...`);
-        for (const month of months) {
-            const success = await createLiquidationJob(department, month.sinceDate, month.beforeDate);
+        const success = await createLiquidationJob(department, sinceDate);
 
-            if (success) {
-                successCount++;
-            } else {
-                errorCount++;
-            }
-
-            // Small delay to avoid overwhelming the server
-            await new Promise(resolve => setTimeout(resolve, 40));
-        }
-
-        console.log(`✅ Completed department ${department}\\n`);
+        // Small delay to avoid overwhelming the server
+        await new Promise(resolve => setTimeout(resolve, 40));
     }
+
+    console.log(`✅ Completed all departments\\n`);
 
     // Summary
     console.log('🎉 Liquidation job creation completed!');
-    console.log(`📊 Summary:`);
-    console.log(`   ✅ Successful jobs: ${successCount}`);
-    console.log(`   ❌ Failed jobs: ${errorCount}`);
-    console.log(`   📈 Total jobs: ${totalJobs}`);
-    console.log(`   🎯 Success rate: ${((successCount / totalJobs) * 100).toFixed(1)}%`);
+console.log(`📊 Summary:`);
+console.log(`   ✅ Successful jobs: ${successCount}`);
+console.log(`   ❌ Failed jobs: ${errorCount}`);
+console.log(`   📈 Total jobs: ${totalJobs}`);
+console.log(`   🎯 Success rate: ${((successCount / totalJobs) * 100).toFixed(1)}%`);
 
-})();
+}) ();
 
 function getEnv(): Env {
     const envResult = envSchema.safeParse({
@@ -89,47 +84,9 @@ function getEnv(): Env {
     process.exit(1);
 }
 
-function generateMonthsFromOneYearAgo(): { month: number, sinceDate: string, beforeDate: string }[] {
-    const months: { month: number, sinceDate: string, beforeDate: string }[] = [];
-    const now = new Date();
-    const oneYearAgo = new Date();
-    oneYearAgo.setFullYear(now.getFullYear() - 1);
-
-    // Start from the Monday of the week containing the one-year-ago date
-    const startDate = new Date(oneYearAgo);
-    const dayOfWeek = startDate.getDay();
-    const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // 0 = Sunday, 1 = Monday
-    startDate.setDate(startDate.getDate() + mondayOffset);
-
-    let currentDate = new Date(startDate);
-    let month = 1;
-
-    while (currentDate <= now) {
-        const weekStart = new Date(currentDate);
-        const weekEnd = new Date(currentDate);
-        weekEnd.setDate(weekEnd.getDate() + 6); // Sunday of the same week
-
-        // Don't go beyond today
-        if (weekEnd > now) {
-            weekEnd.setTime(now.getTime());
-        }
-
-        months.push({
-            month,
-            sinceDate: weekStart.toISOString().split('T')[0], // YYYY-MM-DD format
-            beforeDate: weekEnd.toISOString().split('T')[0]
-        });
-
-        // Move to next week (next Monday)
-        currentDate.setDate(currentDate.getDate() + 30);
-        month++;
-    }
-
-    return months;
-}
 
 function buildCreateLiquidationJobBody(endpointUrl: string, headers: Record<string, string>) {
-    return async function createLiquidationJob(departmentId: number, sinceDate: string, beforeDate: string): Promise<boolean> {
+    return async function createLiquidationJob(departmentId: number, sinceDate: string): Promise<boolean> {
         try {
             const response = await fetch(endpointUrl, {
                 method: 'POST',
@@ -137,22 +94,21 @@ function buildCreateLiquidationJobBody(endpointUrl: string, headers: Record<stri
                 body: JSON.stringify({
                     departmentId,
                     sinceDate,
-                    beforeDate
                 })
             });
 
             if (!response.ok) {
                 const errorText = await response.text();
-                console.error(`Failed to create job for department ${departmentId}, week ${sinceDate}-${beforeDate}: ${response.status} ${response.statusText} - ${errorText}`);
+                console.error(`Failed to create job for department ${departmentId}, since ${sinceDate}: ${response.status} ${response.statusText} - ${errorText}`);
                 return false;
             }
 
             await response.text();
-            console.log(`✅ Created liquidation job for department ${departmentId}, period ${sinceDate} to ${beforeDate}`);
+            console.log(`✅ Created liquidation job for department ${departmentId}, since ${sinceDate}`);
             return true;
 
         } catch (error) {
-            console.error(`❌ Error creating job for department ${departmentId}, week ${sinceDate}-${beforeDate}:`, error);
+            console.error(`❌ Error creating job for department ${departmentId}, since ${sinceDate}:`, error);
             return false;
         }
     };
