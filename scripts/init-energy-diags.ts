@@ -9,18 +9,17 @@ const envSchema = z.object({
     QUEUES_MONITOR_URL: z.url('Invalid URL'),
     QUEUES_MONITOR_USERNAME: z.string('Invalid username').min(1, 'Username is required'),
     QUEUES_MONITOR_PASSWORD: z.string('Invalid password').min(1, 'Password is required'),
-    ENDPOINT: z.string('Invalid endpoint').min(1, 'Endpoint is required'),
 });
 
 type Env = z.infer<typeof envSchema>;
 
 
 (async () => {
-    const { QUEUES_MONITOR_URL, QUEUES_MONITOR_USERNAME, QUEUES_MONITOR_PASSWORD, ENDPOINT } = getEnv();
+    const { QUEUES_MONITOR_URL, QUEUES_MONITOR_USERNAME, QUEUES_MONITOR_PASSWORD } = getEnv();
 
     // Display configuration
     console.log('🔧 Configuration loaded:');
-    console.log(`   📡 Queues Monitor URL: ${QUEUES_MONITOR_URL}${ENDPOINT}`);
+    console.log(`   📡 Queues Monitor URL: ${QUEUES_MONITOR_URL}`);
     console.log(`   👤 Username: ${QUEUES_MONITOR_USERNAME}`);
     console.log(`   🔐 Password: ${'*'.repeat(QUEUES_MONITOR_PASSWORD.length)}`);
     console.log('');
@@ -35,16 +34,16 @@ type Env = z.infer<typeof envSchema>;
     const allDepartments = Array
         .from({ length: 95 }, (_, i) => i + 1);
     const months = generateMonthsForYears(2024, 2025);
-    const energyClasses = ['F', 'G'];
+    const energyClasses = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
     console.log(`Generated ${months.length} months for processing`);
-    console.log(`Will process 2 classes x ${allDepartments.length} departments x ${months.length} months = ${2 * allDepartments.length * months.length} total requests`);
+    console.log(`Will process ${energyClasses.length} classes x ${allDepartments.length} departments x ${months.length} months = ${energyClasses.length * allDepartments.length * months.length} total requests`);
 
     // Process all departments and months sequentially
     let successCount = 0;
     let errorCount = 0;
     const totalJobs = allDepartments.length * months.length;
 
-    const createEnergyDiagnosticsJob = buildCreateEnergyDiagnosticsJobBody(QUEUES_MONITOR_URL + ENDPOINT, headers);
+    const createEnergyDiagnosticsJob = buildCreateEnergyDiagnosticsJobBody(QUEUES_MONITOR_URL + '/sourcing/jobs/energy-sieves', headers);
 
     console.log('\n🚀 Starting energy sieves job creation...\n');
 
@@ -79,8 +78,7 @@ type Env = z.infer<typeof envSchema>;
 
 function getEnv(): Env {
     const envResult = envSchema.safeParse({
-        QUEUES_MONITOR_HOST: process.env.QUEUES_MONITOR_HOST,
-        QUEUES_MONITOR_PORT: process.env.QUEUES_MONITOR_PORT,
+        QUEUES_MONITOR_URL: process.env.QUEUES_MONITOR_URL,
         QUEUES_MONITOR_USERNAME: process.env.QUEUES_MONITOR_USERNAME || process.env.BASIC_AUTH_USERNAME,
         QUEUES_MONITOR_PASSWORD: process.env.QUEUES_MONITOR_PASSWORD || process.env.BASIC_AUTH_PASSWORD,
     });
