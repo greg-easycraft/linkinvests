@@ -209,7 +209,7 @@ export class AdemeApiService {
 
     // Query string: department AND energy class AND date filter
     // Using qs syntax: field:value, AND/OR operators, >= and <= for date comparison
-    const queryString = `code_departement_ban:${departmentStr} AND etiquette_dpe:${energyClassesFilter} AND ${dateFilter}`;
+    const queryString = `code_departement_ban:"${departmentStr}" AND etiquette_dpe:${energyClassesFilter} AND ${dateFilter}`;
 
     // Fields to select - only request the fields we need
     const selectFields = [

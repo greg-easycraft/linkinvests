@@ -56,7 +56,7 @@ describe('FailingCompaniesProcessor', () => {
 
   describe('buildApiUrl', () => {
     it('should construct correct OpenDatasoft URL with filters', () => {
-      const url = processor['buildApiUrl'](75, '2024-01-01');
+      const url = processor['buildApiUrl']('75', '2024-01-01');
 
       expect(url).toContain(
         'https://bodacc-datadila.opendatasoft.com/api/explore/v2.1/catalog/datasets/annonces-commerciales/exports/csv',
@@ -68,20 +68,20 @@ describe('FailingCompaniesProcessor', () => {
     });
 
     it('should use limit=-1 to get all records', () => {
-      const url = processor['buildApiUrl'](75, '2024-01-01');
+      const url = processor['buildApiUrl']('75', '2024-01-01');
 
       expect(url).toContain('limit=-1');
     });
 
     it('should encode department and date in where clause', () => {
-      const url = processor['buildApiUrl'](93, '2024-06-15');
+      const url = processor['buildApiUrl']('93', '2024-06-15');
 
       expect(url).toContain('numerodepartement%3A93');
       expect(url).toContain('dateparution%3E%3D%222024-06-15%22');
     });
 
     it('should select correct CSV columns', () => {
-      const url = processor['buildApiUrl'](75, '2024-01-01');
+      const url = processor['buildApiUrl']('75', '2024-01-01');
 
       expect(url).toContain('select=');
       expect(url).toContain('numerodepartement');
@@ -97,7 +97,7 @@ describe('FailingCompaniesProcessor', () => {
     });
 
     it('should construct URL with beforeDate parameter when provided', () => {
-      const url = processor['buildApiUrl'](75, '2024-01-01', '2024-01-31');
+      const url = processor['buildApiUrl']('75', '2024-01-01', '2024-01-31');
 
       expect(url).toContain('dateparution%3E%3D%222024-01-01%22');
       expect(url).toContain('dateparution%3C%3D%222024-01-31%22');
@@ -105,7 +105,7 @@ describe('FailingCompaniesProcessor', () => {
     });
 
     it('should construct URL without beforeDate when not provided', () => {
-      const url = processor['buildApiUrl'](75, '2024-01-01');
+      const url = processor['buildApiUrl']('75', '2024-01-01');
 
       expect(url).toContain('dateparution%3E%3D%222024-01-01%22');
       expect(url).not.toContain('dateparution%3C%3D');
@@ -163,7 +163,7 @@ describe('FailingCompaniesProcessor', () => {
   describe('process', () => {
     const mockJob = {
       data: {
-        departmentId: 75,
+        departmentId: '75',
         sinceDate: '2024-01-01',
       },
     } as any;
@@ -182,10 +182,10 @@ describe('FailingCompaniesProcessor', () => {
       } as any);
 
       mockS3Service.generateFailingCompaniesKey.mockReturnValue(
-        'failing-companies/75/2024-01-01.csv',
+        'failing-companies/75/2024-01-01/75.csv',
       );
       mockS3Service.uploadFile.mockResolvedValue(
-        's3://bucket/failing-companies/75/2024-01-01.csv',
+        's3://bucket/failing-companies/75/2024-01-01/75.csv',
       );
       mockCompanyBuildingsQueue.add.mockResolvedValue({
         id: 'job-123',

@@ -192,7 +192,10 @@ export class S3Service {
    * @param departmentId - Department number
    * @param date - Date string for the file
    */
-  generateFailingCompaniesKey(departmentId: number, date: string): string {
-    return `failing-companies/dept-${departmentId}/${date}.csv`;
+  generateFailingCompaniesKey(
+    departmentId: number | string,
+    date: string,
+  ): string {
+    return `failing-companies/dept-${departmentId.toString().padStart(2, '0')}/${date}.csv`;
   }
 }

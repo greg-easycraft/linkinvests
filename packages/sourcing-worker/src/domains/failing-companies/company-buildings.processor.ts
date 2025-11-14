@@ -194,7 +194,7 @@ export class CompanyBuildingsProcessor extends WorkerHost {
   ): Promise<void> {
     try {
       // Generate failed file path
-      const failedFilePath = sourceFile.replace(/\.csv$/, '_failed.csv');
+      const failedFileKey = sourceFile.replace(/\.csv$/, '_failed.csv');
 
       if (!failedRows[0]) {
         return;
@@ -208,20 +208,9 @@ export class CompanyBuildingsProcessor extends WorkerHost {
       ].join('\n');
 
       const buffer = Buffer.from(csvData, 'utf-8');
+      await this.s3Service.uploadFile(buffer, failedFileKey);
 
-      // Extract S3 key from full path
-      const match = failedFilePath.match(/^s3:\/\/[^/]+\/(.+)$/);
-      if (!match) {
-        throw new Error(`Invalid S3 path format: ${failedFilePath}`);
-      }
-
-      const key = match[1];
-      if (!key) {
-        throw new Error(`Invalid S3 key: ${failedFilePath}`);
-      }
-      await this.s3Service.uploadFile(buffer, key);
-
-      this.logger.log(`Uploaded failed rows to: ${failedFilePath}`);
+      this.logger.log(`Uploaded failed rows to: ${failedFileKey}`);
     } catch (error) {
       this.logger.error(
         `Failed to upload failed rows: ${(error as Error).message}`,

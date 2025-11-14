@@ -8,7 +8,7 @@ import {
 } from '@linkinvests/shared';
 
 interface FailingCompaniesJobData {
-  departmentId: number;
+  departmentId: string;
   sinceDate: string;
   beforeDate?: string;
 }
@@ -27,27 +27,32 @@ export class FailingCompaniesProcessor extends WorkerHost {
 
   async process(job: Job<FailingCompaniesJobData>): Promise<void> {
     const { departmentId, sinceDate, beforeDate } = job.data;
+    const formattedDepartmentId = departmentId.toString().padStart(2, '0');
     const dateRangeText = beforeDate
       ? `from ${sinceDate} to ${beforeDate}`
       : `since ${sinceDate}`;
     this.logger.log(
-      `Starting to process failing companies for department ${departmentId} ${dateRangeText}`,
+      `Starting to process failing companies for department ${formattedDepartmentId} ${dateRangeText}`,
     );
 
     try {
       // 1. Build the OpenDatasoft API URL
-      const apiUrl = this.buildApiUrl(departmentId, sinceDate, beforeDate);
+      const apiUrl = this.buildApiUrl(
+        formattedDepartmentId,
+        sinceDate,
+        beforeDate,
+      );
       this.logger.log(`Fetching data from: ${apiUrl}`);
 
       // 2. Fetch CSV data from the API
       const csvData = await this.fetchCsvData(apiUrl);
       this.logger.log(
-        `Fetched CSV data: ${csvData.length} bytes for department ${departmentId}`,
+        `Fetched CSV data: ${csvData.length} bytes for department ${formattedDepartmentId}`,
       );
 
       // 3. Upload CSV to S3
       const s3Key = this.s3Service.generateFailingCompaniesKey(
-        departmentId,
+        formattedDepartmentId,
         sinceDate,
       );
       const s3Path = await this.s3Service.uploadFile(csvData, s3Key);
@@ -63,7 +68,7 @@ export class FailingCompaniesProcessor extends WorkerHost {
         },
       );
       this.logger.log(
-        `Enqueued company buildings job: ${job.id} for file: ${s3Path}`,
+        `Enqueued company buildings job: ${job.id} for file: ${s3Path} for department ${formattedDepartmentId}`,
       );
 
       this.logger.log('Successfully processed failing companies');
@@ -79,7 +84,11 @@ export class FailingCompaniesProcessor extends WorkerHost {
   /**
    * Build the OpenDatasoft API URL with the required filters
    */
-  private buildApiUrl(departmentId: number, sinceDate: string, beforeDate?: string): string {
+  private buildApiUrl(
+    departmentId: string,
+    sinceDate: string,
+    beforeDate?: string,
+  ): string {
     const baseUrl =
       'https://bodacc-datadila.opendatasoft.com/api/explore/v2.1/catalog/datasets/annonces-commerciales/exports/csv';
 
@@ -90,7 +99,7 @@ export class FailingCompaniesProcessor extends WorkerHost {
     }
 
     const params = new URLSearchParams({
-      where: `familleavis:"collective" AND numerodepartement:${departmentId} AND ${dateFilter}`,
+      where: `familleavis:"collective" AND numerodepartement:"${departmentId.toString().padStart(2, '0')}" AND ${dateFilter}`,
       limit: '-1', // Get all records
       select:
         'numerodepartement,departement_nom_officiel,familleavis_lib,typeavis_lib,dateparution,commercant,ville,cp,listepersonnes,jugement',
