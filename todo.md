@@ -51,7 +51,6 @@ Encheres (2j)
 - photos sur annonces & encheres
 
 Passoires Energétiques (0.5j)
-- restreindre sur E,F,G
 - max 2 ans
 - filtres par coches sur classes spécifiques
 
