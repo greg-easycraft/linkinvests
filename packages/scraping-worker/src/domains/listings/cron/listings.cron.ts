@@ -27,7 +27,9 @@ export class ListingsCron {
         'daily-notary-listings', // Job name
         {
           jobName: 'notary-listings',
-        }, // Job data (empty for now)
+          startPage: 1,
+          endPage: 50,
+        }, // Job data with default pagination
         {
           // Job options
           attempts: 3,
@@ -63,8 +65,12 @@ export class ListingsCron {
       this.logger.log('Triggering manual listings scraping job');
 
       await this.scrapingQueue.add(
-        'listings',
-        { manual: true }, // Mark as manual trigger
+        'manual-notary-listings',
+        {
+          jobName: 'notary-listings',
+          startPage: 1,
+          endPage: 50,
+        }, // Manual trigger with default pagination
         {
           attempts: 3,
           backoff: {

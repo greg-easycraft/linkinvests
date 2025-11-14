@@ -23,7 +23,7 @@ export class ScrapingProcessor extends WorkerHost {
   }
 
   async process(job: Job<ScrapingJobData>): Promise<void> {
-    const { jobName } = job.data;
+    const { jobName, startPage, endPage } = job.data;
 
     this.logger.log({
       jobId: job.id,
@@ -43,7 +43,7 @@ export class ScrapingProcessor extends WorkerHost {
       }
 
       if (jobName === 'notary-listings') {
-        await this.listingsScrapingService.processNotaryListings();
+        await this.listingsScrapingService.processNotaryListings(startPage, endPage);
         return;
       }
 

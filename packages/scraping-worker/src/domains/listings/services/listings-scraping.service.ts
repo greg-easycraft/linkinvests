@@ -13,7 +13,10 @@ export class ListingsScrapingService {
     private readonly listingsOpportunityRepository: ListingsOpportunityRepository
   ) {}
 
-  async processNotaryListings(): Promise<void> {
+  async processNotaryListings(
+    startPage?: number,
+    endPage?: number
+  ): Promise<void> {
     const jobStartTime = new Date();
     let totalListings = 0;
     let savedListings = 0;
@@ -25,7 +28,7 @@ export class ListingsScrapingService {
 
       // Scrape listings from notary website
       const opportunities =
-        await this.notaryScraperService.scrapeNotaryListings();
+        await this.notaryScraperService.scrapeNotaryListings(startPage, endPage);
       totalListings = opportunities.length;
 
       if (opportunities.length === 0) {

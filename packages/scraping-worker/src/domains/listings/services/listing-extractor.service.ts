@@ -13,13 +13,14 @@ export class ListingExtractorService {
   constructor(private readonly browserService: BrowserService) {}
 
   async extractAllListingUrls(
-    config: ListingScrapingConfig
+    config: ListingScrapingConfig,
+    startPage: number = 1
   ): Promise<string[]> {
     const allUrls = new Set<string>();
-    let currentPage = 1;
+    let currentPage = startPage;
     let hasMorePages = true;
 
-    this.logger.log('Starting listing URL extraction');
+    this.logger.log(`Starting listing URL extraction from page ${startPage}`);
 
     try {
       while (
@@ -32,8 +33,8 @@ export class ListingExtractorService {
         await this.browserService.navigateToUrl(pageUrl);
         await this.browserService.waitForContent(10000);
 
-        // Handle cookie consent on first page
-        if (currentPage === 1) {
+        // Handle cookie consent on first page of the scraping session
+        if (currentPage === startPage) {
           await this.browserService.handleTarteaucitronCookieConsent();
           await this.browserService.waitForContent(3000);
         }
@@ -59,7 +60,7 @@ export class ListingExtractorService {
         hasMorePages = extractionResult.pageInfo.hasNextPage;
 
         // If no new URLs found for 2 consecutive pages, stop
-        if (newUrlsFound === 0 && currentPage > 1) {
+        if (newUrlsFound === 0 && currentPage > startPage) {
           this.logger.log('No new URLs found, likely reached the end');
           break;
         }
@@ -75,7 +76,9 @@ export class ListingExtractorService {
       const finalUrls = Array.from(allUrls);
       this.logger.log(
         {
-          totalPages: currentPage - 1,
+          startPage,
+          endPage: currentPage - 1,
+          totalPages: currentPage - startPage,
           totalUrls: finalUrls.length,
         },
         'Listing URL extraction completed'

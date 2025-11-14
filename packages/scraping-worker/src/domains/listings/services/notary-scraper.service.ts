@@ -20,11 +20,14 @@ export class NotaryScraperService {
     private readonly geocodingService: ListingsGeocodingService
   ) {}
 
-  async scrapeNotaryListings(): Promise<ListingOpportunity[]> {
+  async scrapeNotaryListings(
+    startPage: number = 1,
+    endPage: number = 50
+  ): Promise<ListingOpportunity[]> {
     const config: ListingScrapingConfig = {
       baseUrl:
         'https://www.immobilier.notaires.fr/fr/annonces-immobilieres-liste?typeBien=APP,MAI&typeTransaction=VENTE,VNI,VAE',
-      maxPages: 100, // Limit to reasonable number for initial implementation
+      maxPages: endPage - startPage + 1, // Calculate pages to fetch based on range
       delayBetweenPages: 2000, // 2 seconds between pages
       delayBetweenListings: 2000, // 2 seconds between listing details
       maxRetries: 3,
@@ -51,9 +54,9 @@ export class NotaryScraperService {
       this.logger.log('Browser initialized for notary scraping');
 
       // Step 1: Extract all listing URLs from paginated pages
-      this.logger.log('Step 1: Extracting listing URLs from pages');
+      this.logger.log(`Step 1: Extracting listing URLs from pages ${startPage} to ${endPage}`);
       const listingUrls =
-        await this.listingExtractorService.extractAllListingUrls(config);
+        await this.listingExtractorService.extractAllListingUrls(config, startPage);
 
       stats.totalListingsFound = listingUrls.length;
       this.logger.log(
