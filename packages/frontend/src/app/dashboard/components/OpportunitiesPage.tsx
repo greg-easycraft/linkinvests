@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { OpportunityFilters } from "./OpportunityFilters";
@@ -18,6 +18,7 @@ import { PageHeader } from "./PageHeader";
 import type { ExportFormat } from "~/server/services/export.service";
 import type { UseMutationResult } from "@tanstack/react-query";
 import { useDelayedSkeleton } from "~/hooks/useDelayedSkeleton";
+import { parseURLSearchParams } from "~/utils/query-params";
 
 type ViewType = "list" | "map";
 
@@ -104,6 +105,7 @@ export default function OpportunitiesPage({
   const [isFiltersSidebarOpen, setIsFiltersSidebarOpen] = useState(true);
 
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const handleApplyFilters = useCallback((filtersToApply: IOpportunityFilters): void => {
     onFiltersChange({ ...filtersToApply, offset: 0 });
@@ -156,13 +158,17 @@ export default function OpportunitiesPage({
     }, 300); // Match the transition duration
   }, [isFiltersSidebarOpen]);
 
-  // Handle type change - navigate to new URL
+  // Handle type change - navigate to new URL while preserving relevant query params
   const handleTypeChange = useCallback((newType: OpportunityType): void => {
     const newUrlSegment = TYPE_TO_URL_MAPPING[newType];
     if (newUrlSegment) {
-      router.push(`/dashboard/${newUrlSegment}`);
+      // Parse current query params
+      const queryString = parseURLSearchParams(searchParams);
+      const newUrl = `/dashboard/${newUrlSegment}${queryString ? `?${queryString}` : ''}`;
+
+      router.push(newUrl);
     }
-  }, [router]);
+  }, [router, searchParams]);
 
   // Handle export
   const handleExport = useCallback(async (format: ExportFormat): Promise<{ success: boolean; error?: string; blob?: Blob }> => {
