@@ -11,7 +11,7 @@ import { useCallback } from "react";
 
 export default function AuctionsPageContent(): React.ReactElement {
   // Use query param hook for filters and view type
-  const { filters: appliedFilters } =
+  const { filters: appliedFilters, setFilters: setAppliedFilters } =
     useQueryParamFilters(OpportunityType.AUCTION);
 
   // Use unified data fetching - single queries for both list and map views
@@ -41,7 +41,12 @@ export default function AuctionsPageContent(): React.ReactElement {
       getOpportunityById={getAuctionById}
       opportunityType={OpportunityType.AUCTION}
       onExport={handleExport}
-      FiltersComponent={AuctionFilters}
+      FiltersComponent={
+        <AuctionFilters 
+          filters={appliedFilters} 
+          onFiltersChange={setAppliedFilters}
+        />
+      }
     />
   );
 }

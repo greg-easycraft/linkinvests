@@ -1,27 +1,25 @@
 "use client";
 
-import { useEffect } from "react";
+import { useCallback, useMemo } from "react";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import { DepartmentsInput } from "~/components/ui/departments-input";
 import { ZipCodeInput } from "~/components/ui/zip-code-input";
 import { OpportunityType } from "@linkinvests/shared";
-import type { OpportunityFilters as IOpportunityFilters, DatePeriod } from "~/types/filters";
+import type { OpportunityFilters as IOpportunityFilters, DatePeriod, DatePeriodOption } from "~/types/filters";
 import { DATE_PERIOD_OPTIONS } from "~/constants/date-periods";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { ViewToggle } from "../ViewToggle";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 type ViewType = "list" | "map";
 
 interface OpportunityFiltersProps {
   filters: IOpportunityFilters;
   onFiltersChange: (filters: IOpportunityFilters) => void;
-  onFiltersApply: (filters: IOpportunityFilters) => void;
-  onReset: () => void;
-  viewType: ViewType;
-  onViewTypeChange: (viewType: ViewType) => void;
   currentType: OpportunityType;
-  onTypeChange: (type: OpportunityType) => void;
+  ExtraFilters?: React.ReactNode;
+  datePeriodOptions?: DatePeriodOption[];
 }
 
 // @ts-expect-error - TODO: Add real estate listing and divorce types
@@ -43,52 +41,44 @@ const TYPE_DISPLAY_ORDER: OpportunityType[] = [
   OpportunityType.SUCCESSION, // Last
 ];
 
-export function OpportunityFilters({
+export function BaseFilters({
   filters,
-  onFiltersChange,
-  onFiltersApply,
-  onReset,
-  viewType,
-  onViewTypeChange,
   currentType,
-  onTypeChange,
+  onFiltersChange,
+  ExtraFilters,
+  datePeriodOptions = DATE_PERIOD_OPTIONS
 }: OpportunityFiltersProps): React.ReactElement {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
 
-  // Debounce filter changes and auto-apply after 500ms of no changes
-  useEffect(() => {
-    const debounceTimer = setTimeout(() => {
-      onFiltersApply(filters);
-    }, 500);
+  const viewType = useMemo(() => {
+    const param = searchParams.get("view") as ViewType;
+    if(param === "map") return "map";
+    return "list";
+  }, [searchParams]);
 
-    return () => clearTimeout(debounceTimer);
-  }, [filters, onFiltersApply]);
+  const handleViewTypeChange = useCallback((value: ViewType): void => {
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set("view", value);
+    router.push(`/dashboard/${currentType}?${newParams.toString()}`);
+  }, [router, currentType, searchParams]);
 
-  const handleDepartmentChange = (selectedValues: string[]): void => {
-    onFiltersChange({ ...filters, departments: selectedValues });
-  };
-
-  const handleZipCodeChange = (zipCodes: string[]): void => {
-    onFiltersChange({ ...filters, zipCodes });
-  };
-
-  const handleTypeChange = (value: string): void => {
-    if (value && Object.values(OpportunityType).includes(value as OpportunityType)) {
-      onTypeChange(value as OpportunityType);
-    }
-  };
+  const handleTypeChange = useCallback((value: string): void => {
+    router.push(`/dashboard/${value}?${searchParams.toString()}`);
+  }, [router, searchParams]);
 
 
-  const handleDatePeriodChange = (value: string): void => {
-    const datePeriod = value === "" ? undefined : (value as DatePeriod);
-    onFiltersChange({ ...filters, datePeriod, dateRange: undefined }); // Clear old dateRange when using period
-  };
+  const handleReset = useCallback(() => {
+    router.push(pathname);
+  }, [router, pathname]);
 
   return (
     <Card className="bg-[var(--secundary)] text-[var(--primary)] h-full flex flex-col">
       <CardHeader className="flex-shrink-0">
         {/* View Toggle */}
         <div>
-          <ViewToggle value={viewType} onValueChange={onViewTypeChange} />
+          <ViewToggle value={viewType} onValueChange={handleViewTypeChange} />
         </div>
       </CardHeader>
       <CardContent className="flex-1 overflow-y-auto">
@@ -118,7 +108,7 @@ export function OpportunityFilters({
             <label className="text-sm font-medium mb-2 block font-heading">Départements</label>
             <DepartmentsInput
               value={filters.departments?.map(String) ?? []}
-              onChange={handleDepartmentChange}
+              onChange={(value) => onFiltersChange({ ...filters, departments: value })}
               placeholder="Rechercher par numéro ou nom..."
             />
           </div>
@@ -128,7 +118,7 @@ export function OpportunityFilters({
             <label className="text-sm font-medium mb-2 block font-heading">Codes postaux</label>
             <ZipCodeInput
               value={filters.zipCodes ?? []}
-              onChange={handleZipCodeChange}
+              onChange={(value) => onFiltersChange({ ...filters, zipCodes: value })}
               placeholder="Entrez un code postal"
             />
           </div>
@@ -138,13 +128,13 @@ export function OpportunityFilters({
             <label className="text-sm font-medium mb-2 block font-heading">Opportunités depuis</label>
             <Select
               value={filters.datePeriod ?? ""}
-              onValueChange={handleDatePeriodChange}
+              onValueChange={(value) => onFiltersChange({ ...filters, datePeriod: value as DatePeriod })}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Toutes les opportunités" />
               </SelectTrigger>
               <SelectContent>
-                {DATE_PERIOD_OPTIONS.map((option) => (
+                {datePeriodOptions.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
@@ -152,13 +142,15 @@ export function OpportunityFilters({
               </SelectContent>
             </Select>
           </div>
+
+          {ExtraFilters && <div className="space-y-4">{ExtraFilters}</div>}
         </div>
       </CardContent>
 
       {/* Fixed Action Buttons */}
       <div className="flex-shrink-0 p-6 pt-0">
         <div className="flex gap-2">
-          <Button onClick={onReset} variant="outline" className="flex-1">
+          <Button onClick={handleReset} variant="outline" className="flex-1">
             Réinitialiser
           </Button>
         </div>
