@@ -3,7 +3,7 @@
 import { OpportunityType } from "@linkinvests/shared";
 import { getEnergyDiagnosticById, getEnergyDiagnosticsData, getEnergyDiagnosticsCount, exportEnergyDiagnostics } from "~/app/_actions/energy-sieves/queries";
 import OpportunitiesPage from "../components/OpportunitiesPage";
-import { EnergyDiagnosticFilters } from "../components/EnergyDiagnosticFilters";
+import { EnergyDiagnosticFilters } from "../components/OpportunityFilters/EnergyDiagnosticFilters";
 import { useMutation } from "@tanstack/react-query";
 import { useQueryParamFilters } from "~/hooks/useQueryParamFilters";
 import { useOpportunityData } from "~/hooks/useOpportunityData";

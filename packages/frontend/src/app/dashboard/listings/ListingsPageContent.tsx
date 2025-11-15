@@ -3,7 +3,7 @@
 import { OpportunityType } from "@linkinvests/shared";
 import { getListingById, getListingsData, getListingsCount, exportListings } from "~/app/_actions/listings/queries";
 import OpportunitiesPage from "../components/OpportunitiesPage";
-import { ListingFilters } from "../components/ListingFilters";
+import { ListingFilters } from "../components/OpportunityFilters/ListingFilters";
 import { useMutation } from "@tanstack/react-query";
 import { useQueryParamFilters } from "~/hooks/useQueryParamFilters";
 import { useOpportunityData } from "~/hooks/useOpportunityData";

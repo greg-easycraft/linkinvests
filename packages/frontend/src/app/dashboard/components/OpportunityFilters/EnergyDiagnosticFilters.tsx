@@ -5,15 +5,16 @@ import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import { DepartmentsInput } from "~/components/ui/departments-input";
 import { ZipCodeInput } from "~/components/ui/zip-code-input";
+// Using HTML input checkbox since no checkbox UI component exists
 import { OpportunityType } from "@linkinvests/shared";
-import type { OpportunityFilters as IOpportunityFilters, DatePeriod } from "~/types/filters";
+import type { OpportunityFilters as IOpportunityFilters, DatePeriod, EnergyClass } from "~/types/filters";
 import { DATE_PERIOD_OPTIONS } from "~/constants/date-periods";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
-import { ViewToggle } from "./ViewToggle";
+import { ViewToggle } from "../ViewToggle";
 
 type ViewType = "list" | "map";
 
-interface OpportunityFiltersProps {
+interface EnergyDiagnosticFiltersProps {
   filters: IOpportunityFilters;
   onFiltersChange: (filters: IOpportunityFilters) => void;
   onFiltersApply: (filters: IOpportunityFilters) => void;
@@ -43,7 +44,18 @@ const TYPE_DISPLAY_ORDER: OpportunityType[] = [
   OpportunityType.SUCCESSION, // Last
 ];
 
-export function OpportunityFilters({
+// Energy classes with labels
+const ENERGY_CLASSES: { value: EnergyClass; label: string; color: string }[] = [
+  { value: 'A', label: 'A (Très économe)', color: 'text-green-600' },
+  { value: 'B', label: 'B (Économe)', color: 'text-green-500' },
+  { value: 'C', label: 'C (Conventionnel)', color: 'text-yellow-500' },
+  { value: 'D', label: 'D (Peu économe)', color: 'text-orange-400' },
+  { value: 'E', label: 'E (Peu économe)', color: 'text-orange-600' },
+  { value: 'F', label: 'F (Énergivore)', color: 'text-red-500' },
+  { value: 'G', label: 'G (Très énergivore)', color: 'text-red-700' },
+];
+
+export function EnergyDiagnosticFilters({
   filters,
   onFiltersChange,
   onFiltersApply,
@@ -52,7 +64,7 @@ export function OpportunityFilters({
   onViewTypeChange,
   currentType,
   onTypeChange,
-}: OpportunityFiltersProps): React.ReactElement {
+}: EnergyDiagnosticFiltersProps): React.ReactElement {
 
   // Debounce filter changes and auto-apply after 500ms of no changes
   useEffect(() => {
@@ -77,10 +89,18 @@ export function OpportunityFilters({
     }
   };
 
-
   const handleDatePeriodChange = (value: string): void => {
     const datePeriod = value === "" ? undefined : (value as DatePeriod);
     onFiltersChange({ ...filters, datePeriod, dateRange: undefined }); // Clear old dateRange when using period
+  };
+
+  const handleEnergyClassChange = (energyClass: EnergyClass, checked: boolean): void => {
+    const currentClasses = filters.energyClasses ?? [];
+    const updatedClasses = checked
+      ? [...currentClasses, energyClass]
+      : currentClasses.filter(c => c !== energyClass);
+
+    onFiltersChange({ ...filters, energyClasses: updatedClasses.length > 0 ? updatedClasses : undefined });
   };
 
   return (
@@ -111,6 +131,33 @@ export function OpportunityFilters({
                 ))}
               </SelectContent>
             </Select>
+          </div>
+
+          {/* Energy Class Filter - Multiple checkboxes */}
+          <div>
+            <label className="text-sm font-medium mb-2 block font-heading">Classes énergétiques</label>
+            <div className="space-y-2">
+              {ENERGY_CLASSES.map((energyClass) => {
+                const isChecked = filters.energyClasses?.includes(energyClass.value) ?? false;
+                return (
+                  <div key={energyClass.value} className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      id={`energy-class-${energyClass.value}`}
+                      checked={isChecked}
+                      onChange={(e) => handleEnergyClassChange(energyClass.value, e.target.checked)}
+                      className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    />
+                    <label
+                      htmlFor={`energy-class-${energyClass.value}`}
+                      className={`text-sm cursor-pointer ${energyClass.color} font-medium`}
+                    >
+                      {energyClass.label}
+                    </label>
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
           {/* Department Filter - Custom input with search */}

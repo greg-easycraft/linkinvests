@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '~/test-utils/test-helpers';
 import userEvent from '@testing-library/user-event';
-import { OpportunityFilters } from './OpportunityFilters';
+import { OpportunityFilters } from './BaseFilters';
 import { OpportunityType } from '@linkinvests/shared';
 import type { OpportunityFilters as IOpportunityFilters } from '~/types/filters';
 

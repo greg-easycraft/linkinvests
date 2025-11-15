@@ -10,7 +10,7 @@ import { OpportunityType } from "@linkinvests/shared";
 import type { DatePeriod, EnergyClass, ListingFilters as IListingFilters } from "~/types/filters";
 import { DATE_PERIOD_OPTIONS } from "~/constants/date-periods";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
-import { ViewToggle } from "./ViewToggle";
+import { ViewToggle } from "../ViewToggle";
 
 type ViewType = "list" | "map";
 

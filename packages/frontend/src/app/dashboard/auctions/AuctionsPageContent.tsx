@@ -3,16 +3,15 @@
 import { OpportunityType } from "@linkinvests/shared";
 import { getAuctionById, getAuctionsData, getAuctionsCount, exportAuctions } from "~/app/_actions/auctions/queries";
 import OpportunitiesPage from "../components/OpportunitiesPage";
-import { AuctionFilters } from "../components/AuctionFilters";
-import { useMutation } from "@tanstack/react-query";
+import { AuctionFilters } from "../components/OpportunityFilters/AuctionFilters";
 import { useQueryParamFilters } from "~/hooks/useQueryParamFilters";
 import { useOpportunityData } from "~/hooks/useOpportunityData";
 import type { ExportFormat } from "~/server/services/export.service";
-import type { OpportunityFilters } from "~/types/filters";
+import { useCallback } from "react";
 
 export default function AuctionsPageContent(): React.ReactElement {
   // Use query param hook for filters and view type
-  const { filters: appliedFilters, viewType, setFilters: setAppliedFilters, setViewType } =
+  const { filters: appliedFilters } =
     useQueryParamFilters(OpportunityType.AUCTION);
 
   // Use unified data fetching - single queries for both list and map views
@@ -28,13 +27,10 @@ export default function AuctionsPageContent(): React.ReactElement {
     getAuctionsCount
   );
 
-
-  // Export mutation
-  const exportMutation = useMutation({
-    mutationFn: async ({ format, filters }: { format: ExportFormat; filters: OpportunityFilters }) => {
-      return await exportAuctions(filters, format);
-    },
-  });
+  const handleExport = useCallback(async (format: ExportFormat) => {
+    const result = await exportAuctions(appliedFilters, format);
+    return result;
+  }, [appliedFilters]);
 
   return (
     <OpportunitiesPage
@@ -43,12 +39,8 @@ export default function AuctionsPageContent(): React.ReactElement {
       isCountLoading={isCountLoading}
       isLoading={isLoading}
       getOpportunityById={getAuctionById}
-      viewType={viewType}
-      onViewTypeChange={setViewType}
-      currentFilters={appliedFilters}
-      onFiltersChange={setAppliedFilters}
       opportunityType={OpportunityType.AUCTION}
-      exportMutation={exportMutation}
+      onExport={handleExport}
       FiltersComponent={AuctionFilters}
     />
   );
