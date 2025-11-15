@@ -52,6 +52,13 @@ Encheres (2j)
 [ ] photos sur annonces & encheres
 
 Passoires Energétiques (0.5j)
+
+Liquidations (0.5j)
+[x] problem on Departments < 10
+[X] max 1 ans
+
+Passoires Energétiques (0.5j)
+[x] problem on Departments < 10
 [X] max 2 ans
 [ ] filtres par coches sur classes spécifiques
 
@@ -62,6 +69,12 @@ Encheres filtres (0.5j)
 [ ] type de bien
 [ ] prix réserve
 Encheres display
+[ ] Verif email
+
+Encheres - filtres (0.5j)
+[ ] type de bien
+[ ] prix réserve
+Encheres - display
 [ ] dpe
 [ ] m2
 
@@ -76,6 +89,20 @@ Filtres Annonces (0.5j)
 
 Export (0.5j)
 [ ] labels FR sur export
+[x] Max 1 an historique
+[ ] Filtre max 1 an
+
+Filtres Annonces (0.5j)
+[-] particuliers vs pro
+[-] source pour annonces
+[x] type de biens
+[-] prix
+
+Export (0.5j)
+[x] labels FR sur export
+
+
+DERNIERE SEMAINE
 
 Intégration annonces Moteur Immo (2j)
 [ ] DPEs E,F,G depuis 24 mois

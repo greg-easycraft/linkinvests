@@ -62,7 +62,7 @@ export class ListingsOpportunityRepository {
           label: opp.label,
           address: opp.address,
           zipCode: opp.zipCode.toString(),
-          department: opp.department.toString(),
+          department: opp.department.toString().padStart(2, '0'),
           latitude: opp.latitude,
           longitude: opp.longitude,
           opportunityDate: opp.opportunityDate,
