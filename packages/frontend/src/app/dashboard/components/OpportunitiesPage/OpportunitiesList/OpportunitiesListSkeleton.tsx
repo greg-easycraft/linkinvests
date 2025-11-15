@@ -47,7 +47,7 @@ function OpportunityCardSkeleton(): React.ReactElement {
   );
 }
 
-export function OpportunityListSkeleton(): React.ReactElement {
+export function OpportunitiesListSkeleton(): React.ReactElement {
   return (
     <div className="space-y-4">
       {/* Stats skeleton */}

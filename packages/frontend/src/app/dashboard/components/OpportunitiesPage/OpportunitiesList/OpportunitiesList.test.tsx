@@ -2,11 +2,11 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { randomUUID } from 'crypto';
 import { render, screen } from '~/test-utils/test-helpers';
 import userEvent from '@testing-library/user-event';
-import { OpportunityList } from '../OpportunityList';
+import { OpportunitiesList } from '.';
 import { OpportunityType, Opportunity } from '@linkinvests/shared';
 
-// Define test types matching the current OpportunityList interface
-type TestOpportunityListData = {
+// Define test types matching the current OpportunitiesList interface
+type TestOpportunitiesListData = {
   opportunities: Opportunity[];
   total: number;
   page: number;
@@ -23,7 +23,7 @@ vi.mock('./StreetView', () => ({
   ),
 }));
 
-describe('OpportunityList', () => {
+describe('OpportunitiesList', () => {
   const mockOpportunity: Opportunity = {
     id: randomUUID(),
     label: 'Opportunité Test',
@@ -41,7 +41,7 @@ describe('OpportunityList', () => {
     mairieContact: undefined,
   };
 
-  const mockData: TestOpportunityListData = {
+  const mockData: TestOpportunitiesListData = {
     opportunities: [mockOpportunity],
     total: 1,
     page: 1,
@@ -61,7 +61,7 @@ describe('OpportunityList', () => {
   describe('Rendering', () => {
     it('should render opportunity list', () => {
       render(
-        <OpportunityList
+        <OpportunitiesList
         type={OpportunityType.ENERGY_SIEVE}
           data={mockData}
           onSelect={mockOnSelect}
@@ -78,7 +78,7 @@ describe('OpportunityList', () => {
 
   describe('Empty State', () => {
     it('should show empty message when no opportunities', () => {
-      const emptyData: TestOpportunityListData = {
+      const emptyData: TestOpportunitiesListData = {
         opportunities: [],
         total: 0,
         page: 1,
@@ -87,7 +87,7 @@ describe('OpportunityList', () => {
       };
 
       render(
-        <OpportunityList
+        <OpportunitiesList
         type={OpportunityType.ENERGY_SIEVE}
           data={emptyData}
           onSelect={mockOnSelect}
@@ -104,7 +104,7 @@ describe('OpportunityList', () => {
   describe('Opportunity Display', () => {
     it('should render opportunity list with correct data', () => {
       render(
-        <OpportunityList
+        <OpportunitiesList
         type={OpportunityType.ENERGY_SIEVE}
           data={mockData}
           onSelect={mockOnSelect}
@@ -121,7 +121,7 @@ describe('OpportunityList', () => {
 
     it('should show total count', () => {
       render(
-        <OpportunityList
+        <OpportunitiesList
         type={OpportunityType.ENERGY_SIEVE}
           data={mockData}
           onSelect={mockOnSelect}
@@ -136,7 +136,7 @@ describe('OpportunityList', () => {
 
     it('should display opportunity date in French format', () => {
       render(
-        <OpportunityList
+        <OpportunitiesList
         type={OpportunityType.ENERGY_SIEVE}
           data={mockData}
           onSelect={mockOnSelect}
@@ -151,7 +151,7 @@ describe('OpportunityList', () => {
 
     it('should display department and zip code', () => {
       render(
-        <OpportunityList
+        <OpportunitiesList
         type={OpportunityType.ENERGY_SIEVE}
           data={mockData}
           onSelect={mockOnSelect}
@@ -166,7 +166,7 @@ describe('OpportunityList', () => {
 
     it('should display SIRET when available', () => {
       render(
-        <OpportunityList
+        <OpportunitiesList
         type={OpportunityType.ENERGY_SIEVE}
           data={mockData}
           onSelect={mockOnSelect}
@@ -184,7 +184,7 @@ describe('OpportunityList', () => {
       const dataWithoutExternalId = { ...mockData, opportunities: [opportunityWithoutExternalId] };
 
       render(
-        <OpportunityList
+        <OpportunitiesList
         type={OpportunityType.ENERGY_SIEVE}
           data={dataWithoutExternalId}
           onSelect={mockOnSelect}
@@ -202,7 +202,7 @@ describe('OpportunityList', () => {
       const dataWithoutAddress = { ...mockData, opportunities: [opportunityWithoutAddress] };
 
       render(
-        <OpportunityList
+        <OpportunitiesList
         type={OpportunityType.ENERGY_SIEVE}
           data={dataWithoutAddress}
           onSelect={mockOnSelect}
@@ -217,7 +217,7 @@ describe('OpportunityList', () => {
 
     it('should render StreetView component for each opportunity', () => {
       render(
-        <OpportunityList
+        <OpportunitiesList
         type={OpportunityType.ENERGY_SIEVE}
           data={mockData}
           onSelect={mockOnSelect}
@@ -293,7 +293,7 @@ describe('OpportunityList', () => {
         },
       ];
 
-      const multiData: TestOpportunityListData = {
+      const multiData: TestOpportunitiesListData = {
         opportunities,
         total: 4,
         page: 1,
@@ -302,7 +302,7 @@ describe('OpportunityList', () => {
       };
 
       render(
-        <OpportunityList
+        <OpportunitiesList
         type={OpportunityType.ENERGY_SIEVE}
           data={multiData}
           onSelect={mockOnSelect}
@@ -323,7 +323,7 @@ describe('OpportunityList', () => {
     it('should call onSelect when opportunity is clicked', async () => {
       const user = userEvent.setup();
       render(
-        <OpportunityList
+        <OpportunitiesList
         type={OpportunityType.ENERGY_SIEVE}
           data={mockData}
           onSelect={mockOnSelect}
@@ -344,7 +344,7 @@ describe('OpportunityList', () => {
 
     it('should highlight selected opportunity', () => {
       const { container } = render(
-        <OpportunityList
+        <OpportunitiesList
         type={OpportunityType.ENERGY_SIEVE}
           data={mockData}
           selectedId={mockOpportunity.id}
@@ -361,7 +361,7 @@ describe('OpportunityList', () => {
 
     it('should not highlight non-selected opportunities', () => {
       const { container } = render(
-        <OpportunityList
+        <OpportunitiesList
         type={OpportunityType.ENERGY_SIEVE}
           data={mockData}
           selectedId={randomUUID()}
@@ -378,7 +378,7 @@ describe('OpportunityList', () => {
   });
 
   describe('Pagination', () => {
-    const paginatedData: TestOpportunityListData = {
+    const paginatedData: TestOpportunitiesListData = {
       opportunities: [mockOpportunity],
       total: 30,
       page: 2,
@@ -388,7 +388,7 @@ describe('OpportunityList', () => {
 
     it('should not show pagination when only one page', () => {
       render(
-        <OpportunityList
+        <OpportunitiesList
           data={mockData}
           onSelect={mockOnSelect}
           onPageChange={mockOnPageChange}
@@ -403,7 +403,7 @@ describe('OpportunityList', () => {
 
     it('should show pagination when multiple pages', () => {
       render(
-        <OpportunityList
+        <OpportunitiesList
           type={OpportunityType.AUCTION}
           data={paginatedData}
           onSelect={mockOnSelect}
@@ -419,7 +419,7 @@ describe('OpportunityList', () => {
     it('should call onPageChange when next button is clicked', async () => {
       const user = userEvent.setup();
       render(
-        <OpportunityList
+        <OpportunitiesList
           type={OpportunityType.AUCTION}
           data={paginatedData}
           onSelect={mockOnSelect}
@@ -438,7 +438,7 @@ describe('OpportunityList', () => {
     it('should call onPageChange when previous button is clicked', async () => {
       const user = userEvent.setup();
       render(
-        <OpportunityList
+        <OpportunitiesList
         type={OpportunityType.ENERGY_SIEVE}
           data={paginatedData}
           onSelect={mockOnSelect}
@@ -458,7 +458,7 @@ describe('OpportunityList', () => {
       const firstPageData = { ...paginatedData, page: 1 };
 
       render(
-        <OpportunityList
+        <OpportunitiesList
         type={OpportunityType.ENERGY_SIEVE}
           data={firstPageData}
           onSelect={mockOnSelect}
@@ -476,7 +476,7 @@ describe('OpportunityList', () => {
       const lastPageData = { ...paginatedData, page: 3 };
 
       render(
-        <OpportunityList
+        <OpportunitiesList
         type={OpportunityType.ENERGY_SIEVE}
           data={lastPageData}
           onSelect={mockOnSelect}
@@ -499,7 +499,7 @@ describe('OpportunityList', () => {
         { ...mockOpportunity, id: randomUUID(), label: 'Third' },
       ];
 
-      const multiData: TestOpportunityListData = {
+      const multiData: TestOpportunitiesListData = {
         opportunities,
         total: 3,
         page: 1,
@@ -508,7 +508,7 @@ describe('OpportunityList', () => {
       };
 
       render(
-        <OpportunityList
+        <OpportunitiesList
         type={OpportunityType.ENERGY_SIEVE}
           data={multiData}
           onSelect={mockOnSelect}

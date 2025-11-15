@@ -6,8 +6,10 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import { Opportunity, OpportunityType } from "@linkinvests/shared";
 import { env } from "~/lib/env";
 import { TYPE_LABELS, TYPE_COLORS } from "~/constants/opportunity-types";
+import { MapSkeleton } from "./MapSkeleton";
+import { MapEmptyState } from "./MapEmptyState";
 
-interface OpportunityMapProps {
+interface OpportunitiesMapProps {
   opportunities: Opportunity[];
   selectedId?: string;
   onSelect: (opportunity: Opportunity) => void;
@@ -18,16 +20,18 @@ interface OpportunityMapProps {
     west: number;
   }) => void;
   type: OpportunityType;
+  isLoading: boolean;
 }
 
 
-export function OpportunityMap({
+export function OpportunitiesMap({
   opportunities,
   selectedId,
   onSelect,
   onBoundsChange,
   type,
-}: OpportunityMapProps): React.ReactElement {
+  isLoading,
+}: OpportunitiesMapProps): React.ReactElement {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const markersRef = useRef<mapboxgl.Marker[]>([]);
@@ -150,8 +154,14 @@ export function OpportunityMap({
     }
   }, [opportunities, selectedId, onSelect, mapLoaded]);
 
+  if (isLoading || !mapLoaded) {
+    return <MapSkeleton />;
+  }
+
   return (
     <div className="relative w-full h-full">
+
+      {opportunities.length === 0 && <MapEmptyState />}
       <div ref={mapContainer} className="w-full h-full rounded-lg" />
 
       {/* Legend */}
