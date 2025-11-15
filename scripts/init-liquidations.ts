@@ -31,7 +31,7 @@ type Env = z.infer<typeof envSchema>;
     };
 
     const allDepartments = Array
-        .from({ length: 95 }, (_, i) => i + 1);
+        .from({ length: 98 }, (_, i) => i + 1);
     console.log(`Will process ${allDepartments.length} departments s`);
 
     // Process all departments and weeks sequentially
@@ -53,7 +53,7 @@ type Env = z.infer<typeof envSchema>;
         await createLiquidationJob(department, sinceDate);
 
         // Small delay to avoid overwhelming the server
-        await new Promise(resolve => setTimeout(resolve, 40));
+        await new Promise(resolve => setTimeout(resolve, 10));
     }
 
     console.log(`✅ Completed all departments\\n`);

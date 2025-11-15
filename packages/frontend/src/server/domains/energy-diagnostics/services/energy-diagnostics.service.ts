@@ -1,11 +1,12 @@
 import type { IEnergyDiagnosticsRepository } from "../lib.types";
 import type { OpportunityFilters } from "~/types/filters";
 import type { EnergyDiagnostic } from "@linkinvests/shared";
-import { OpportunitiesListQueryResult, OpportunitiesMapQueryResult } from "~/types/query-result";
+import { OpportunityType } from "@linkinvests/shared";
+import { OpportunitiesDataQueryResult } from "~/types/query-result";
 import type { IExportService, ExportFormat } from "~/server/services/export.service";
+import { getOpportunityHeaders } from "~/server/services/export-headers.service";
 
 export class EnergyDiagnosticsService {
-  private readonly MAP_VIEW_LIMIT = 500;
   private readonly EXPORT_LIMIT = 500;
 
   constructor(
@@ -13,46 +14,25 @@ export class EnergyDiagnosticsService {
     private readonly exportService: IExportService
   ) {}
 
-  async getEnergyDiagnostics(filters?: OpportunityFilters): Promise<OpportunitiesListQueryResult<EnergyDiagnostic>> {
+  async getEnergyDiagnosticsData(filters?: OpportunityFilters): Promise<OpportunitiesDataQueryResult<EnergyDiagnostic>> {
     const pageSize = filters?.limit ?? 25;
     const page = filters?.offset ? Math.floor(filters.offset / pageSize) + 1 : 1;
 
-    const [opportunities, total] = await Promise.all([
-      this.energyDiagnosticsRepository.findAll(filters),
-      this.energyDiagnosticsRepository.count(filters),
-    ]);
+    const opportunities = await this.energyDiagnosticsRepository.findAll(filters);
 
     return {
       opportunities,
-      total,
       page,
       pageSize,
-      totalPages: Math.ceil(total / pageSize),
     };
+  }
+
+  async getEnergyDiagnosticsCount(filters?: OpportunityFilters): Promise<number> {
+    return await this.energyDiagnosticsRepository.count(filters);
   }
 
   async getEnergyDiagnosticById(id: string): Promise<EnergyDiagnostic | null> {
     return await this.energyDiagnosticsRepository.findById(id);
-  }
-
-  async getEnergyDiagnosticsForMap(filters?: OpportunityFilters): Promise<OpportunitiesMapQueryResult<EnergyDiagnostic>> {
-    // For map view, limit to avoid performance issues
-    const mapFilters: OpportunityFilters = {
-      ...filters,
-      limit: this.MAP_VIEW_LIMIT,
-      offset: 0,
-    };
-
-    const [opportunities, total] = await Promise.all([
-      this.energyDiagnosticsRepository.findAll(mapFilters),
-      this.energyDiagnosticsRepository.count(filters),
-    ]);
-
-    return {
-      opportunities,
-      total,
-      isLimited: total > this.MAP_VIEW_LIMIT,
-    };
   }
 
   async exportList(filters: OpportunityFilters, format: ExportFormat): Promise<Blob> {
@@ -70,15 +50,18 @@ export class EnergyDiagnosticsService {
       offset: undefined,
     };
 
-    // Fetch all matching auctions
+    // Fetch all matching energy diagnostics
     const energyDiagnostics = (await this.energyDiagnosticsRepository.findAll(exportFilters)) as unknown as Record<string, unknown>[];
+
+    // Get French headers for energy diagnostics
+    const customHeaders = getOpportunityHeaders(OpportunityType.ENERGY_SIEVE);
 
     // Export data based on format
     if (format === "csv") {
-      return this.exportService.exportToCSV(energyDiagnostics);
-    } 
+      return this.exportService.exportToCSV(energyDiagnostics, customHeaders);
+    }
     if (format === "xlsx") {
-      return this.exportService.exportToXLSX(energyDiagnostics);
+      return this.exportService.exportToXLSX(energyDiagnostics, customHeaders);
     }
       throw new Error(`Unsupported export format: ${format}`);
   }

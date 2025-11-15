@@ -18,13 +18,15 @@ interface ExportButtonProps {
   totalCount: number;
   disabled?: boolean;
   className?: string;
+  opportunityType?: string;
 }
 
 export function ExportButton({
   onExport,
   totalCount,
   disabled = false,
-  className = ""
+  className = "",
+  opportunityType
 }: Omit<ExportButtonProps, 'filters'>) {
   const [isExporting, setIsExporting] = useState(false);
   const [exportingFormat, setExportingFormat] = useState<ExportFormat | null>(null);
@@ -52,7 +54,11 @@ export function ExportButton({
       const url = URL.createObjectURL(result.blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `export_${Date.now()}.${format}`;
+      const timestamp = Date.now().toString();
+      const filename = opportunityType
+        ? `${opportunityType}_export_${timestamp}.${format}`
+        : `export_${timestamp}.${format}`;
+      link.download = filename;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);

@@ -1,30 +1,31 @@
 'use client';
 
 import { OpportunityType } from "@linkinvests/shared";
-import { getLiquidationById, getLiquidations, getLiquidationsForMap, exportLiquidations } from "~/app/_actions/liquidations/queries";
+import { getLiquidationById, getLiquidationsData, getLiquidationsCount, exportLiquidations } from "~/app/_actions/liquidations/queries";
 import OpportunitiesPage from "../components/OpportunitiesPage";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useQueryParamFilters } from "~/hooks/useQueryParamFilters";
+import { useOpportunityData } from "~/hooks/useOpportunityData";
 import type { ExportFormat } from "~/server/services/export.service";
 import type { OpportunityFilters } from "~/types/filters";
 
 export default function LiquidationsPageContent(): React.ReactElement {
-  // Use query param hook instead of useState for filters and view type
+  // Use query param hook for filters and view type
   const { filters: appliedFilters, viewType, setFilters: setAppliedFilters, setViewType } =
     useQueryParamFilters(OpportunityType.LIQUIDATION);
 
-  const listQuery = useQuery({
-    queryKey: ['liquidations', "list", appliedFilters],
-    queryFn: () => getLiquidations(appliedFilters),
-    enabled: viewType === "list",
-  });
-
-  // Query for map view - using type-specific query
-  const mapQuery = useQuery({
-    queryKey: ['liquidations', "map", appliedFilters],
-    queryFn: () => getLiquidationsForMap(appliedFilters),
-    enabled: viewType === "map",
-  });
+  // Use unified data fetching - single queries for both list and map views
+  const {
+    data,
+    count,
+    isCountLoading,
+    isLoading
+  } = useOpportunityData(
+    OpportunityType.LIQUIDATION,
+    appliedFilters,
+    getLiquidationsData,
+    getLiquidationsCount
+  );
 
   // Export mutation
   const exportMutation = useMutation({
@@ -35,9 +36,10 @@ export default function LiquidationsPageContent(): React.ReactElement {
 
   return (
     <OpportunitiesPage
-      listQueryResult={listQuery.data}
-      mapQueryResult={mapQuery.data}
-      isLoading={listQuery.isLoading || mapQuery.isLoading}
+      data={data}
+      count={count}
+      isCountLoading={isCountLoading}
+      isLoading={isLoading}
       getOpportunityById={getLiquidationById}
       viewType={viewType}
       onViewTypeChange={setViewType}

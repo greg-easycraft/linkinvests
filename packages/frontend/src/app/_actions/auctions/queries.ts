@@ -3,22 +3,25 @@
 import { resolve } from "~/server/di/di.container";
 import type { OpportunityFilters } from "~/types/filters";
 import type { Auction } from "@linkinvests/shared";
-import { OpportunitiesListQueryResult, OpportunitiesMapQueryResult } from "~/types/query-result";
+import { OpportunitiesDataQueryResult } from "~/types/query-result";
 import type { ExportFormat } from "~/server/services/export.service";
 
-export async function getAuctions(
+
+
+export async function getAuctionsData(
   filters?: OpportunityFilters,
-): Promise<OpportunitiesListQueryResult<Auction>> {
+): Promise<OpportunitiesDataQueryResult<Auction>> {
   const auctionService = resolve('auctionService');
-  return await auctionService.getAuctions(filters);
+  return await auctionService.getAuctionsData(filters);
 }
 
-export async function getAuctionsForMap(
+export async function getAuctionsCount(
   filters?: OpportunityFilters,
-): Promise<OpportunitiesMapQueryResult<Auction>> {
+): Promise<number> {
   const auctionService = resolve('auctionService');
-  return await auctionService.getAuctionsForMap(filters);
+  return await auctionService.getAuctionsCount(filters);
 }
+
 
 export async function getAuctionById(id: string): Promise<Auction | null> {
   const auctionService = resolve('auctionService');

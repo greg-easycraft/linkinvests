@@ -39,11 +39,11 @@ export class ScrapingController {
       if (
         typeof departmentId !== 'number' ||
         departmentId < 1 ||
-        departmentId > 95
+        departmentId > 98
       ) {
         return {
           success: false,
-          error: 'departmentId must be a number between 1 and 95',
+          error: 'departmentId must be a number between 1 and 98',
         };
       }
 

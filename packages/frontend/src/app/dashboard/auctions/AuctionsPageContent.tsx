@@ -1,30 +1,33 @@
 'use client';
 
 import { OpportunityType } from "@linkinvests/shared";
-import { getAuctionById, getAuctions, getAuctionsForMap, exportAuctions } from "~/app/_actions/auctions/queries";
+import { getAuctionById, getAuctionsData, getAuctionsCount, exportAuctions } from "~/app/_actions/auctions/queries";
 import OpportunitiesPage from "../components/OpportunitiesPage";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { AuctionFilters } from "../components/AuctionFilters";
+import { useMutation } from "@tanstack/react-query";
 import { useQueryParamFilters } from "~/hooks/useQueryParamFilters";
+import { useOpportunityData } from "~/hooks/useOpportunityData";
 import type { ExportFormat } from "~/server/services/export.service";
 import type { OpportunityFilters } from "~/types/filters";
 
 export default function AuctionsPageContent(): React.ReactElement {
-  // Use query param hook instead of useState for filters and view type
+  // Use query param hook for filters and view type
   const { filters: appliedFilters, viewType, setFilters: setAppliedFilters, setViewType } =
     useQueryParamFilters(OpportunityType.AUCTION);
 
-  const listQuery = useQuery({
-    queryKey: ['auctions', "list", appliedFilters],
-    queryFn: () => getAuctions(appliedFilters),
-    enabled: viewType === "list",
-  });
+  // Use unified data fetching - single queries for both list and map views
+  const {
+    data,
+    count,
+    isCountLoading,
+    isLoading
+  } = useOpportunityData(
+    OpportunityType.AUCTION,
+    appliedFilters,
+    getAuctionsData,
+    getAuctionsCount
+  );
 
-  // Query for map view - using type-specific query
-  const mapQuery = useQuery({
-    queryKey: ['auctions', "map", appliedFilters],
-    queryFn: () => getAuctionsForMap(appliedFilters),
-    enabled: viewType === "map",
-  });
 
   // Export mutation
   const exportMutation = useMutation({
@@ -35,9 +38,10 @@ export default function AuctionsPageContent(): React.ReactElement {
 
   return (
     <OpportunitiesPage
-      listQueryResult={listQuery.data}
-      mapQueryResult={mapQuery.data}
-      isLoading={listQuery.isLoading || mapQuery.isLoading}
+      data={data}
+      count={count}
+      isCountLoading={isCountLoading}
+      isLoading={isLoading}
       getOpportunityById={getAuctionById}
       viewType={viewType}
       onViewTypeChange={setViewType}
@@ -45,6 +49,7 @@ export default function AuctionsPageContent(): React.ReactElement {
       onFiltersChange={setAppliedFilters}
       opportunityType={OpportunityType.AUCTION}
       exportMutation={exportMutation}
+      FiltersComponent={AuctionFilters}
     />
   );
 }

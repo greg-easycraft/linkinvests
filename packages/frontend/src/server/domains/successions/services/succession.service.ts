@@ -1,11 +1,12 @@
 import type { ISuccessionRepository } from "../lib.types";
 import type { OpportunityFilters } from "~/types/filters";
 import type { Succession } from "@linkinvests/shared";
-import { OpportunitiesListQueryResult, OpportunitiesMapQueryResult } from "~/types/query-result";
+import { OpportunityType } from "@linkinvests/shared";
+import { OpportunitiesDataQueryResult } from "~/types/query-result";
 import type { IExportService, ExportFormat } from "~/server/services/export.service";
+import { getOpportunityHeaders } from "~/server/services/export-headers.service";
 
 export class SuccessionService {
-  private readonly MAP_VIEW_LIMIT = 500;
   private readonly EXPORT_LIMIT = 500;
 
   constructor(
@@ -13,46 +14,25 @@ export class SuccessionService {
     private readonly exportService: IExportService
   ) {}
 
-  async getSuccessions(filters?: OpportunityFilters): Promise<OpportunitiesListQueryResult<Succession>> {
+  async getSuccessionsData(filters?: OpportunityFilters): Promise<OpportunitiesDataQueryResult<Succession>> {
     const pageSize = filters?.limit ?? 25;
     const page = filters?.offset ? Math.floor(filters.offset / pageSize) + 1 : 1;
 
-    const [opportunities, total] = await Promise.all([
-      this.successionRepository.findAll(filters),
-      this.successionRepository.count(filters),
-    ]);
+    const opportunities = await this.successionRepository.findAll(filters);
 
     return {
       opportunities,
-      total,
       page,
       pageSize,
-      totalPages: Math.ceil(total / pageSize),
     };
+  }
+
+  async getSuccessionsCount(filters?: OpportunityFilters): Promise<number> {
+    return await this.successionRepository.count(filters);
   }
 
   async getSuccessionById(id: string): Promise<Succession | null> {
     return await this.successionRepository.findById(id);
-  }
-
-  async getSuccessionsForMap(filters?: OpportunityFilters): Promise<OpportunitiesMapQueryResult<Succession>> {
-    // For map view, limit to avoid performance issues
-    const mapFilters: OpportunityFilters = {
-      ...filters,
-      limit: this.MAP_VIEW_LIMIT,
-      offset: 0,
-    };
-
-    const [opportunities, total] = await Promise.all([
-      this.successionRepository.findAll(mapFilters),
-      this.successionRepository.count(filters),
-    ]);
-
-    return {
-      opportunities,
-      total,
-      isLimited: total > this.MAP_VIEW_LIMIT,
-    };
   }
 
   async exportList(filters: OpportunityFilters, format: ExportFormat): Promise<Blob> {
@@ -70,15 +50,18 @@ export class SuccessionService {
       offset: undefined,
     };
 
-    // Fetch all matching auctions
+    // Fetch all matching successions
     const successions = (await this.successionRepository.findAll(exportFilters)) as unknown as Record<string, unknown>[];
+
+    // Get French headers for successions
+    const customHeaders = getOpportunityHeaders(OpportunityType.SUCCESSION);
 
     // Export data based on format
     if (format === "csv") {
-      return this.exportService.exportToCSV(successions);
-    } 
+      return this.exportService.exportToCSV(successions, customHeaders);
+    }
     if (format === "xlsx") {
-      return this.exportService.exportToXLSX(successions);
+      return this.exportService.exportToXLSX(successions, customHeaders);
     }
       throw new Error(`Unsupported export format: ${format}`);
   }

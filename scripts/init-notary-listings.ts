@@ -31,7 +31,7 @@ type Env = z.infer<typeof envSchema>;
     };
 
     // Pagination configuration
-    const maxPage = 10000;
+    const maxPage = 2250;
     const batchSize = 100;
 
     console.log(`Will process pages 1 to ${maxPage} in batches of ${batchSize}`);
@@ -59,7 +59,7 @@ type Env = z.infer<typeof envSchema>;
         }
 
         // Small delay to avoid overwhelming the server
-        await new Promise(resolve => setTimeout(resolve, 50));
+        await new Promise(resolve => setTimeout(resolve, 10));
     }
 
     // Summary

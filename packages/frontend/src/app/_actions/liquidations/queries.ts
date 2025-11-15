@@ -3,22 +3,23 @@
 import { resolve } from "~/server/di/di.container";
 import type { OpportunityFilters } from "~/types/filters";
 import type { Liquidation } from "@linkinvests/shared";
-import { OpportunitiesListQueryResult, OpportunitiesMapQueryResult } from "~/types/query-result";
+import { OpportunitiesDataQueryResult } from "~/types/query-result";
 import type { ExportFormat } from "~/server/services/export.service";
 
-export async function getLiquidations(
+export async function getLiquidationsData(
   filters?: OpportunityFilters,
-): Promise<OpportunitiesListQueryResult<Liquidation>> {
+): Promise<OpportunitiesDataQueryResult<Liquidation>> {
   const liquidationService = resolve('liquidationService');
-  return await liquidationService.getLiquidations(filters);
+  return await liquidationService.getLiquidationsData(filters);
 }
 
-export async function getLiquidationsForMap(
+export async function getLiquidationsCount(
   filters?: OpportunityFilters,
-): Promise<OpportunitiesMapQueryResult<Liquidation>> {
+): Promise<number> {
   const liquidationService = resolve('liquidationService');
-  return await liquidationService.getLiquidationsForMap(filters);
+  return await liquidationService.getLiquidationsCount(filters);
 }
+
 
 export async function getLiquidationById(id: string): Promise<Liquidation | null> {
   const liquidationService = resolve('liquidationService');

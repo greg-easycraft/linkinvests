@@ -141,7 +141,7 @@ describe('ScrapingController', () => {
 
         expect(result).toEqual({
           success: false,
-          error: 'departmentId must be a number between 1 and 95',
+          error: 'departmentId must be a number between 1 and 98',
         });
 
         expect(mockScrapingQueue.add).not.toHaveBeenCalled();
@@ -158,12 +158,12 @@ describe('ScrapingController', () => {
         expect(mockScrapingQueue.add).not.toHaveBeenCalled();
       });
 
-      it('should return error when departmentId is greater than 95', async () => {
+      it('should return error when departmentId is greater than 98', async () => {
         const result = await controller.enqueueAuctionJob(96);
 
         expect(result).toEqual({
           success: false,
-          error: 'departmentId must be a number between 1 and 95',
+          error: 'departmentId must be a number between 1 and 98',
         });
 
         expect(mockScrapingQueue.add).not.toHaveBeenCalled();
@@ -177,7 +177,7 @@ describe('ScrapingController', () => {
         expect(result1.success).toBe(true);
 
         // Test upper boundary
-        const result2 = await controller.enqueueAuctionJob(95);
+        const result2 = await controller.enqueueAuctionJob(98);
         expect(result2.success).toBe(true);
 
         expect(mockScrapingQueue.add).toHaveBeenCalledTimes(2);
@@ -424,7 +424,7 @@ describe('ScrapingController', () => {
 
       expect(result).toEqual({
         success: false,
-        error: 'departmentId must be a number between 1 and 95',
+        error: 'departmentId must be a number between 1 and 98',
       });
     });
 
@@ -432,7 +432,7 @@ describe('ScrapingController', () => {
       const result = await controller.enqueueAuctionJob(75.5);
 
       // Since the validation checks typeof === 'number', this should pass type check
-      // but fail range check since 75.5 is between 1 and 95
+      // but fail range check since 75.5 is between 1 and 98
       mockScrapingQueue.add.mockResolvedValue({ id: 'test-job' } as any);
 
       const successResult = await controller.enqueueAuctionJob(75.5);

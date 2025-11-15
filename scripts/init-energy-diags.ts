@@ -32,7 +32,7 @@ type Env = z.infer<typeof envSchema>;
     };
 
     const allDepartments = Array
-        .from({ length: 95 }, (_, i) => i + 1);
+        .from({ length: 98 }, (_, i) => i + 1);
     const months = generateMonthsForYears(2024, 2025);
     const energyClasses = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
     console.log(`Generated ${months.length} months for processing`);
@@ -59,7 +59,7 @@ type Env = z.infer<typeof envSchema>;
                     errorCount++;
                 }
 
-                await new Promise(resolve => setTimeout(resolve, 40));
+                await new Promise(resolve => setTimeout(resolve, 10));
             }
         }
 

@@ -3,22 +3,23 @@
 import { resolve } from "~/server/di/di.container";
 import type { OpportunityFilters } from "~/types/filters";
 import type { Listing } from "@linkinvests/shared";
-import { OpportunitiesListQueryResult, OpportunitiesMapQueryResult } from "~/types/query-result";
+import { OpportunitiesDataQueryResult } from "~/types/query-result";
 import type { ExportFormat } from "~/server/services/export.service";
 
-export async function getListings(
+export async function getListingsData(
   filters?: OpportunityFilters,
-): Promise<OpportunitiesListQueryResult<Listing>> {
+): Promise<OpportunitiesDataQueryResult<Listing>> {
   const listingService = resolve('listingService');
-  return await listingService.getListings(filters);
+  return await listingService.getListingsData(filters);
 }
 
-export async function getListingsForMap(
+export async function getListingsCount(
   filters?: OpportunityFilters,
-): Promise<OpportunitiesMapQueryResult<Listing>> {
+): Promise<number> {
   const listingService = resolve('listingService');
-  return await listingService.getListingsForMap(filters);
+  return await listingService.getListingsCount(filters);
 }
+
 
 export async function getListingById(id: string): Promise<Listing | null> {
   const listingService = resolve('listingService');

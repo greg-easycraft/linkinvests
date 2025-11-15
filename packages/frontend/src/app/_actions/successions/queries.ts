@@ -3,22 +3,23 @@
 import { resolve } from "~/server/di/di.container";
 import type { OpportunityFilters } from "~/types/filters";
 import type { Succession } from "@linkinvests/shared";
-import { OpportunitiesListQueryResult, OpportunitiesMapQueryResult } from "~/types/query-result";
+import { OpportunitiesDataQueryResult } from "~/types/query-result";
 import type { ExportFormat } from "~/server/services/export.service";
 
-export async function getSuccessions(
+export async function getSuccessionsData(
   filters?: OpportunityFilters,
-): Promise<OpportunitiesListQueryResult<Succession>> {
+): Promise<OpportunitiesDataQueryResult<Succession>> {
   const successionService = resolve('successionService');
-  return await successionService.getSuccessions(filters);
+  return await successionService.getSuccessionsData(filters);
 }
 
-export async function getSuccessionsForMap(
+export async function getSuccessionsCount(
   filters?: OpportunityFilters,
-): Promise<OpportunitiesMapQueryResult<Succession>> {
+): Promise<number> {
   const successionService = resolve('successionService');
-  return await successionService.getSuccessionsForMap(filters);
+  return await successionService.getSuccessionsCount(filters);
 }
+
 
 export async function getSuccessionById(id: string): Promise<Succession | null> {
   const successionService = resolve('successionService');

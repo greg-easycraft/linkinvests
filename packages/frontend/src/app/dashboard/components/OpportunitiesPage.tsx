@@ -5,15 +5,16 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { OpportunityFilters } from "./OpportunityFilters";
-import { OpportunityList } from "./OpportunityList";
 import { OpportunityMap } from "./OpportunityMap";
+import { OpportunityCard } from "./OpportunityList/OpportunityCard";
 import { OpportunityDetailsModal } from "./OpportunityDetailsModal";
 import type { OpportunityFilters as IOpportunityFilters } from "~/types/filters";
 import { Auction, BaseOpportunity, EnergyDiagnostic, Liquidation, Listing, type Opportunity, OpportunityType, Succession } from "@linkinvests/shared";
 import { OpportunityListSkeleton } from "./OpportunityList/OpportunityListSkeleton";
 import { MapSkeleton } from "./OpportunityMap/MapSkeleton";
 import { MapEmptyState } from "./OpportunityMap/MapEmptyState";
-import { OpportunitiesListQueryResult, OpportunitiesMapQueryResult } from "~/types/query-result";
+import { OpportunitiesDataQueryResult } from "~/types/query-result";
+import { OpportunityHeader } from "./OpportunityHeader";
 import { PageHeader } from "./PageHeader";
 import type { ExportFormat } from "~/server/services/export.service";
 import type { UseMutationResult } from "@tanstack/react-query";
@@ -51,11 +52,13 @@ type FiltersComponentProps = {
 type OpportunitiesPageProps<T extends BaseOpportunity> = {
   viewType: ViewType;
   onViewTypeChange: (viewType: ViewType) => void;
-  currentFilters: IOpportunityFilters; // Current filters from query params
+  currentFilters: IOpportunityFilters;
   onFiltersChange: (filters: IOpportunityFilters) => void;
+  // Unified data structure
+  data?: OpportunitiesDataQueryResult<T>;
+  count?: number;
+  isCountLoading?: boolean;
   isLoading: boolean;
-  listQueryResult?: OpportunitiesListQueryResult<T>;
-  mapQueryResult?: OpportunitiesMapQueryResult<T>;
   getOpportunityById: (id: string) => Promise<T | null>;
   exportMutation: UseMutationResult<ExportMutationResult, Error, { format: ExportFormat; filters: IOpportunityFilters }>;
   FiltersComponent?: React.ComponentType<FiltersComponentProps>;
@@ -87,8 +90,9 @@ export default function OpportunitiesPage({
   viewType,
   opportunityType,
   currentFilters,
-  listQueryResult,
-  mapQueryResult,
+  data,
+  count,
+  isCountLoading,
   isLoading,
   onFiltersChange,
   onViewTypeChange,
@@ -240,39 +244,61 @@ export default function OpportunitiesPage({
           </div>
           {/* Main Content */}
           <div className="flex-1 flex flex-col overflow-hidden p-4">
-            <div className="flex-1 overflow-hidden">
-              {viewType === "list" && listQueryResult && (
-                <OpportunityList
-                  type={opportunityType}
-                  data={listQueryResult}
-                  selectedId={selectedOpportunity?.id}
-                  onSelect={handleSelectOpportunity}
-                  onPageChange={handlePageChange}
-                  onPageSizeChange={handlePageSizeChange}
-                  onExport={handleExport}
-                  filters={currentFilters}
-                />
-              )}
+            {/* Common Header with pagination and controls */}
+            {data && count !== undefined && (
+              <OpportunityHeader
+                opportunityType={opportunityType}
+                total={count}
+                isCountLoading={isCountLoading}
+                currentPage={data.page}
+                pageSize={data.pageSize}
+                totalPages={Math.ceil(count / data.pageSize)}
+                itemsOnPage={data.opportunities.length}
+                onPageChange={handlePageChange}
+                onPageSizeChange={handlePageSizeChange}
+                onExport={handleExport}
+              />
+            )}
 
-              {viewType === "map" && mapQueryResult && (
-                <div className="relative w-full h-full">
-                  <OpportunityMap
-                    type={opportunityType}
-                    opportunities={mapQueryResult.opportunities}
-                    selectedId={selectedOpportunity?.id}
-                    onSelect={handleSelectOpportunity}
-                    isLimited={mapQueryResult.isLimited}
-                    total={mapQueryResult.total}
-                  />
-                  {mapQueryResult.opportunities.length === 0 && <MapEmptyState />}
+            {/* Content Area */}
+            <div className="flex-1 overflow-hidden">
+              {/* List View */}
+              {viewType === "list" && data && (
+                <div className="h-full overflow-y-auto">
+                  <div className="space-y-3 pb-4">
+                    {data.opportunities.map((opportunity: Opportunity) => (
+                      <OpportunityCard
+                        key={opportunity.id}
+                        opportunity={opportunity}
+                        selectedId={selectedOpportunity?.id}
+                        onSelect={handleSelectOpportunity}
+                        type={opportunityType}
+                      />
+                    ))}
+                  </div>
                 </div>
               )}
 
-              {viewType === "map" && showSkeleton && (
-                <MapSkeleton />
+              {/* Map View */}
+              {viewType === "map" && data && (
+                <div className="relative w-full h-full">
+                  <OpportunityMap
+                    type={opportunityType}
+                    opportunities={data.opportunities}
+                    selectedId={selectedOpportunity?.id}
+                    onSelect={handleSelectOpportunity}
+                  />
+                  {data.opportunities.length === 0 && <MapEmptyState />}
+                </div>
               )}
-              {viewType === "list" && showSkeleton && (
+
+              {/* Loading Skeletons */}
+              {showSkeleton && viewType === "list" && (
                 <OpportunityListSkeleton />
+              )}
+
+              {showSkeleton && viewType === "map" && (
+                <MapSkeleton />
               )}
             </div>
           </div>

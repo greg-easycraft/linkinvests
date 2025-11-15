@@ -1,4 +1,4 @@
-import type { OpportunityFilters, DatePeriod, EnergyClass } from "~/types/filters";
+import type { OpportunityFilters, DatePeriod, EnergyClass, AuctionFilters, ListingFilters } from "~/types/filters";
 import { OpportunityType } from "@linkinvests/shared";
 
 export type ViewType = "list" | "map";
@@ -15,6 +15,27 @@ export interface OpportunityQueryParams {
   zipCodes?: string; // Comma-separated zip codes
   datePeriod?: DatePeriod;
   energyClasses?: string; // Comma-separated energy classes (A-G)
+
+  // Auction-specific filters
+  auctionTypes?: string; // Comma-separated auction types
+  propertyTypes?: string; // Comma-separated property types
+  priceRange?: string; // Format: "min,max" (e.g. "100000,500000")
+  reservePriceRange?: string; // Format: "min,max"
+  squareFootageRange?: string; // Format: "min,max"
+  roomsRange?: string; // Format: "min,max"
+  auctionVenues?: string; // Comma-separated auction venues
+
+  // Listing-specific filters
+  transactionTypes?: string; // Comma-separated transaction types
+  listingPropertyTypes?: string; // Comma-separated property types for listings
+  listingPriceRange?: string; // Format: "min,max"
+  listingSquareFootageRange?: string; // Format: "min,max"
+  landAreaRange?: string; // Format: "min,max"
+  listingRoomsRange?: string; // Format: "min,max"
+  bedroomsRange?: string; // Format: "min,max"
+  constructionYearRange?: string; // Format: "min,max"
+  dpe?: string; // Comma-separated energy classes (A-G) for listings
+  features?: string; // Comma-separated features like "balcony,garage"
 
   // Pagination
   page?: string; // Page number (1-based)
@@ -57,6 +78,107 @@ export function filtersToQueryParams(
   // Add energy classes (comma-separated)
   if (filters.energyClasses && filters.energyClasses.length > 0) {
     params.energyClasses = filters.energyClasses.join(",");
+  }
+
+  // Cast to AuctionFilters to access auction-specific properties
+  const auctionFilters = filters as AuctionFilters;
+
+  // Add auction-specific filters
+  if (auctionFilters.auctionTypes && auctionFilters.auctionTypes.length > 0) {
+    params.auctionTypes = auctionFilters.auctionTypes.join(",");
+  }
+
+  if (auctionFilters.propertyTypes && auctionFilters.propertyTypes.length > 0) {
+    params.propertyTypes = auctionFilters.propertyTypes.join(",");
+  }
+
+  if (auctionFilters.priceRange && (auctionFilters.priceRange.min !== undefined || auctionFilters.priceRange.max !== undefined)) {
+    const min = auctionFilters.priceRange.min ?? '';
+    const max = auctionFilters.priceRange.max ?? '';
+    params.priceRange = `${min},${max}`;
+  }
+
+  if (auctionFilters.reservePriceRange && (auctionFilters.reservePriceRange.min !== undefined || auctionFilters.reservePriceRange.max !== undefined)) {
+    const min = auctionFilters.reservePriceRange.min ?? '';
+    const max = auctionFilters.reservePriceRange.max ?? '';
+    params.reservePriceRange = `${min},${max}`;
+  }
+
+  if (auctionFilters.squareFootageRange && (auctionFilters.squareFootageRange.min !== undefined || auctionFilters.squareFootageRange.max !== undefined)) {
+    const min = auctionFilters.squareFootageRange.min ?? '';
+    const max = auctionFilters.squareFootageRange.max ?? '';
+    params.squareFootageRange = `${min},${max}`;
+  }
+
+  if (auctionFilters.roomsRange && (auctionFilters.roomsRange.min !== undefined || auctionFilters.roomsRange.max !== undefined)) {
+    const min = auctionFilters.roomsRange.min ?? '';
+    const max = auctionFilters.roomsRange.max ?? '';
+    params.roomsRange = `${min},${max}`;
+  }
+
+  if (auctionFilters.auctionVenues && auctionFilters.auctionVenues.length > 0) {
+    params.auctionVenues = auctionFilters.auctionVenues.join(",");
+  }
+
+  // Cast to ListingFilters to access listing-specific properties
+  const listingFilters = filters as ListingFilters;
+
+  // Add listing-specific filters
+  if (listingFilters.transactionTypes && listingFilters.transactionTypes.length > 0) {
+    params.transactionTypes = listingFilters.transactionTypes.join(",");
+  }
+
+  if (listingFilters.propertyTypes && listingFilters.propertyTypes.length > 0) {
+    params.listingPropertyTypes = listingFilters.propertyTypes.join(",");
+  }
+
+  if (listingFilters.priceRange && (listingFilters.priceRange.min !== undefined || listingFilters.priceRange.max !== undefined)) {
+    const min = listingFilters.priceRange.min ?? '';
+    const max = listingFilters.priceRange.max ?? '';
+    params.listingPriceRange = `${min},${max}`;
+  }
+
+  if (listingFilters.squareFootageRange && (listingFilters.squareFootageRange.min !== undefined || listingFilters.squareFootageRange.max !== undefined)) {
+    const min = listingFilters.squareFootageRange.min ?? '';
+    const max = listingFilters.squareFootageRange.max ?? '';
+    params.listingSquareFootageRange = `${min},${max}`;
+  }
+
+  if (listingFilters.landAreaRange && (listingFilters.landAreaRange.min !== undefined || listingFilters.landAreaRange.max !== undefined)) {
+    const min = listingFilters.landAreaRange.min ?? '';
+    const max = listingFilters.landAreaRange.max ?? '';
+    params.landAreaRange = `${min},${max}`;
+  }
+
+  if (listingFilters.roomsRange && (listingFilters.roomsRange.min !== undefined || listingFilters.roomsRange.max !== undefined)) {
+    const min = listingFilters.roomsRange.min ?? '';
+    const max = listingFilters.roomsRange.max ?? '';
+    params.listingRoomsRange = `${min},${max}`;
+  }
+
+  if (listingFilters.bedroomsRange && (listingFilters.bedroomsRange.min !== undefined || listingFilters.bedroomsRange.max !== undefined)) {
+    const min = listingFilters.bedroomsRange.min ?? '';
+    const max = listingFilters.bedroomsRange.max ?? '';
+    params.bedroomsRange = `${min},${max}`;
+  }
+
+  if (listingFilters.constructionYearRange && (listingFilters.constructionYearRange.min !== undefined || listingFilters.constructionYearRange.max !== undefined)) {
+    const min = listingFilters.constructionYearRange.min ?? '';
+    const max = listingFilters.constructionYearRange.max ?? '';
+    params.constructionYearRange = `${min},${max}`;
+  }
+
+  if (listingFilters.dpe && listingFilters.dpe.length > 0) {
+    params.dpe = listingFilters.dpe.join(",");
+  }
+
+  if (listingFilters.features && Object.keys(listingFilters.features).length > 0) {
+    const enabledFeatures = Object.entries(listingFilters.features)
+      .filter(([, enabled]) => enabled)
+      .map(([key]) => key);
+    if (enabledFeatures.length > 0) {
+      params.features = enabledFeatures.join(",");
+    }
   }
 
   // Add pagination (convert offset/limit to page/pageSize)
@@ -126,6 +248,162 @@ export function queryParamsToFilters(
       );
     if (energyClasses.length > 0) {
       filters.energyClasses = energyClasses;
+    }
+  }
+
+  // Cast to AuctionFilters to add auction-specific properties
+  const auctionFilters = filters as AuctionFilters;
+
+  // Parse auction-specific filters
+  if (params.auctionTypes) {
+    const auctionTypes = params.auctionTypes.split(",").filter(Boolean);
+    if (auctionTypes.length > 0) {
+      auctionFilters.auctionTypes = auctionTypes;
+    }
+  }
+
+  if (params.propertyTypes) {
+    const propertyTypes = params.propertyTypes.split(",").filter(Boolean);
+    if (propertyTypes.length > 0) {
+      auctionFilters.propertyTypes = propertyTypes;
+    }
+  }
+
+  if (params.priceRange) {
+    const [minStr, maxStr] = params.priceRange.split(",");
+    const min = minStr ? parseFloat(minStr) : undefined;
+    const max = maxStr ? parseFloat(maxStr) : undefined;
+    if (!isNaN(min!) || !isNaN(max!)) {
+      auctionFilters.priceRange = { min: isNaN(min!) ? undefined : min, max: isNaN(max!) ? undefined : max };
+    }
+  }
+
+  if (params.reservePriceRange) {
+    const [minStr, maxStr] = params.reservePriceRange.split(",");
+    const min = minStr ? parseFloat(minStr) : undefined;
+    const max = maxStr ? parseFloat(maxStr) : undefined;
+    if (!isNaN(min!) || !isNaN(max!)) {
+      auctionFilters.reservePriceRange = { min: isNaN(min!) ? undefined : min, max: isNaN(max!) ? undefined : max };
+    }
+  }
+
+  if (params.squareFootageRange) {
+    const [minStr, maxStr] = params.squareFootageRange.split(",");
+    const min = minStr ? parseFloat(minStr) : undefined;
+    const max = maxStr ? parseFloat(maxStr) : undefined;
+    if (!isNaN(min!) || !isNaN(max!)) {
+      auctionFilters.squareFootageRange = { min: isNaN(min!) ? undefined : min, max: isNaN(max!) ? undefined : max };
+    }
+  }
+
+  if (params.roomsRange) {
+    const [minStr, maxStr] = params.roomsRange.split(",");
+    const min = minStr ? parseFloat(minStr) : undefined;
+    const max = maxStr ? parseFloat(maxStr) : undefined;
+    if (!isNaN(min!) || !isNaN(max!)) {
+      auctionFilters.roomsRange = { min: isNaN(min!) ? undefined : min, max: isNaN(max!) ? undefined : max };
+    }
+  }
+
+  if (params.auctionVenues) {
+    const auctionVenues = params.auctionVenues.split(",").filter(Boolean);
+    if (auctionVenues.length > 0) {
+      auctionFilters.auctionVenues = auctionVenues;
+    }
+  }
+
+  // Cast to ListingFilters to add listing-specific properties
+  const listingFilters = filters as ListingFilters;
+
+  // Parse listing-specific filters
+  if (params.transactionTypes) {
+    const transactionTypes = params.transactionTypes.split(",").filter(Boolean);
+    if (transactionTypes.length > 0) {
+      listingFilters.transactionTypes = transactionTypes;
+    }
+  }
+
+  if (params.listingPropertyTypes) {
+    const propertyTypes = params.listingPropertyTypes.split(",").filter(Boolean);
+    if (propertyTypes.length > 0) {
+      listingFilters.propertyTypes = propertyTypes;
+    }
+  }
+
+  if (params.listingPriceRange) {
+    const [minStr, maxStr] = params.listingPriceRange.split(",");
+    const min = minStr ? parseFloat(minStr) : undefined;
+    const max = maxStr ? parseFloat(maxStr) : undefined;
+    if (!isNaN(min!) || !isNaN(max!)) {
+      listingFilters.priceRange = { min: isNaN(min!) ? undefined : min, max: isNaN(max!) ? undefined : max };
+    }
+  }
+
+  if (params.listingSquareFootageRange) {
+    const [minStr, maxStr] = params.listingSquareFootageRange.split(",");
+    const min = minStr ? parseFloat(minStr) : undefined;
+    const max = maxStr ? parseFloat(maxStr) : undefined;
+    if (!isNaN(min!) || !isNaN(max!)) {
+      listingFilters.squareFootageRange = { min: isNaN(min!) ? undefined : min, max: isNaN(max!) ? undefined : max };
+    }
+  }
+
+  if (params.landAreaRange) {
+    const [minStr, maxStr] = params.landAreaRange.split(",");
+    const min = minStr ? parseFloat(minStr) : undefined;
+    const max = maxStr ? parseFloat(maxStr) : undefined;
+    if (!isNaN(min!) || !isNaN(max!)) {
+      listingFilters.landAreaRange = { min: isNaN(min!) ? undefined : min, max: isNaN(max!) ? undefined : max };
+    }
+  }
+
+  if (params.listingRoomsRange) {
+    const [minStr, maxStr] = params.listingRoomsRange.split(",");
+    const min = minStr ? parseFloat(minStr) : undefined;
+    const max = maxStr ? parseFloat(maxStr) : undefined;
+    if (!isNaN(min!) || !isNaN(max!)) {
+      listingFilters.roomsRange = { min: isNaN(min!) ? undefined : min, max: isNaN(max!) ? undefined : max };
+    }
+  }
+
+  if (params.bedroomsRange) {
+    const [minStr, maxStr] = params.bedroomsRange.split(",");
+    const min = minStr ? parseFloat(minStr) : undefined;
+    const max = maxStr ? parseFloat(maxStr) : undefined;
+    if (!isNaN(min!) || !isNaN(max!)) {
+      listingFilters.bedroomsRange = { min: isNaN(min!) ? undefined : min, max: isNaN(max!) ? undefined : max };
+    }
+  }
+
+  if (params.constructionYearRange) {
+    const [minStr, maxStr] = params.constructionYearRange.split(",");
+    const min = minStr ? parseFloat(minStr) : undefined;
+    const max = maxStr ? parseFloat(maxStr) : undefined;
+    if (!isNaN(min!) || !isNaN(max!)) {
+      listingFilters.constructionYearRange = { min: isNaN(min!) ? undefined : min, max: isNaN(max!) ? undefined : max };
+    }
+  }
+
+  if (params.dpe) {
+    const dpe = params.dpe
+      .split(",")
+      .filter(Boolean)
+      .filter((cls): cls is EnergyClass =>
+        ["A", "B", "C", "D", "E", "F", "G"].includes(cls)
+      );
+    if (dpe.length > 0) {
+      listingFilters.dpe = dpe;
+    }
+  }
+
+  if (params.features) {
+    const featureKeys = params.features.split(",").filter(Boolean);
+    if (featureKeys.length > 0) {
+      const features: any = {};
+      featureKeys.forEach(key => {
+        features[key] = true;
+      });
+      listingFilters.features = features;
     }
   }
 
@@ -200,6 +478,23 @@ export function parseURLSearchParams(searchParams: URLSearchParams): Opportunity
       case "departments":
       case "zipCodes":
       case "energyClasses":
+      case "auctionTypes":
+      case "propertyTypes":
+      case "priceRange":
+      case "reservePriceRange":
+      case "squareFootageRange":
+      case "roomsRange":
+      case "auctionVenues":
+      case "transactionTypes":
+      case "listingPropertyTypes":
+      case "listingPriceRange":
+      case "listingSquareFootageRange":
+      case "landAreaRange":
+      case "listingRoomsRange":
+      case "bedroomsRange":
+      case "constructionYearRange":
+      case "dpe":
+      case "features":
         params[key] = value;
         break;
       case "datePeriod":

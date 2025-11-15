@@ -3,22 +3,23 @@
 import { resolve } from "~/server/di/di.container";
 import type { OpportunityFilters } from "~/types/filters";
 import type { EnergyDiagnostic } from "@linkinvests/shared";
-import { OpportunitiesListQueryResult, OpportunitiesMapQueryResult } from "~/types/query-result";
+import { OpportunitiesDataQueryResult } from "~/types/query-result";
 import type { ExportFormat } from "~/server/services/export.service";
 
-export async function getEnergyDiagnostics(
+export async function getEnergyDiagnosticsData(
   filters?: OpportunityFilters,
-): Promise<OpportunitiesListQueryResult<EnergyDiagnostic>> {
+): Promise<OpportunitiesDataQueryResult<EnergyDiagnostic>> {
   const energyDiagnosticsService = resolve('energyDiagnosticsService');
-  return await energyDiagnosticsService.getEnergyDiagnostics(filters);
+  return await energyDiagnosticsService.getEnergyDiagnosticsData(filters);
 }
 
-export async function getEnergyDiagnosticsForMap(
+export async function getEnergyDiagnosticsCount(
   filters?: OpportunityFilters,
-): Promise<OpportunitiesMapQueryResult<EnergyDiagnostic>> {
+): Promise<number> {
   const energyDiagnosticsService = resolve('energyDiagnosticsService');
-  return await energyDiagnosticsService.getEnergyDiagnosticsForMap(filters);
+  return await energyDiagnosticsService.getEnergyDiagnosticsCount(filters);
 }
+
 
 export async function getEnergyDiagnosticById(id: string): Promise<EnergyDiagnostic | null> {
   const energyDiagnosticsService = resolve('energyDiagnosticsService');
