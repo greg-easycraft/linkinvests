@@ -4,16 +4,16 @@ import { OpportunityType } from "@linkinvests/shared";
 import { getEnergyDiagnosticById, getEnergyDiagnosticsData, getEnergyDiagnosticsCount, exportEnergyDiagnostics } from "~/app/_actions/energy-sieves/queries";
 import OpportunitiesPage from "../components/OpportunitiesPage";
 import { EnergyDiagnosticFilters } from "../components/OpportunityFilters/EnergyDiagnosticFilters";
-import { useMutation } from "@tanstack/react-query";
 import { useQueryParamFilters } from "~/hooks/useQueryParamFilters";
 import { useOpportunityData } from "~/hooks/useOpportunityData";
 import type { ExportFormat } from "~/server/services/export.service";
-import type { OpportunityFilters } from "~/types/filters";
+import { useCallback } from "react";
+import { energyDiagnosticFiltersSchema } from "~/utils/filters/filters.schema";
 
 export default function EnergySievesPageContent(): React.ReactElement {
   // Use query param hook for filters and view type
-  const { filters: appliedFilters, viewType, setFilters: setAppliedFilters, setViewType } =
-    useQueryParamFilters(OpportunityType.ENERGY_SIEVE);
+  const { filters: appliedFilters, setFilters: setAppliedFilters } =
+    useQueryParamFilters(energyDiagnosticFiltersSchema);
 
   // Use unified data fetching - single queries for both list and map views
   const {
@@ -28,12 +28,10 @@ export default function EnergySievesPageContent(): React.ReactElement {
     getEnergyDiagnosticsCount
   );
 
-  // Export mutation
-  const exportMutation = useMutation({
-    mutationFn: async ({ format, filters }: { format: ExportFormat; filters: OpportunityFilters }) => {
-      return await exportEnergyDiagnostics(filters, format);
-    },
-  });
+  const handleExport = useCallback(async (format: ExportFormat) => {
+    const result = await exportEnergyDiagnostics(appliedFilters, format);
+    return result;
+  }, [appliedFilters]);
 
   return (
     <OpportunitiesPage
@@ -42,13 +40,14 @@ export default function EnergySievesPageContent(): React.ReactElement {
       isCountLoading={isCountLoading}
       isLoading={isLoading}
       getOpportunityById={getEnergyDiagnosticById}
-      viewType={viewType}
-      onViewTypeChange={setViewType}
-      currentFilters={appliedFilters}
-      onFiltersChange={setAppliedFilters}
       opportunityType={OpportunityType.ENERGY_SIEVE}
-      exportMutation={exportMutation}
-      FiltersComponent={EnergyDiagnosticFilters}
+      onExport={handleExport}
+      FiltersComponent={
+        <EnergyDiagnosticFilters
+          filters={appliedFilters}
+          onFiltersChange={setAppliedFilters}
+        />
+      }
     />
   );
 }

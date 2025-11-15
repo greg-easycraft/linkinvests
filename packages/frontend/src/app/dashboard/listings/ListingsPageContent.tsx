@@ -4,16 +4,16 @@ import { OpportunityType } from "@linkinvests/shared";
 import { getListingById, getListingsData, getListingsCount, exportListings } from "~/app/_actions/listings/queries";
 import OpportunitiesPage from "../components/OpportunitiesPage";
 import { ListingFilters } from "../components/OpportunityFilters/ListingFilters";
-import { useMutation } from "@tanstack/react-query";
 import { useQueryParamFilters } from "~/hooks/useQueryParamFilters";
 import { useOpportunityData } from "~/hooks/useOpportunityData";
 import type { ExportFormat } from "~/server/services/export.service";
-import type { OpportunityFilters } from "~/types/filters";
+import { useCallback } from "react";
+import { listingFiltersSchema } from "~/utils/filters/filters.schema";
 
 export default function ListingsPageContent(): React.ReactElement {
   // Use query param hook for filters and view type
-  const { filters: appliedFilters, viewType, setFilters: setAppliedFilters, setViewType } =
-    useQueryParamFilters(OpportunityType.REAL_ESTATE_LISTING);
+  const { filters: appliedFilters, setFilters: setAppliedFilters } =
+    useQueryParamFilters(listingFiltersSchema);
 
   // Use unified data fetching - single queries for both list and map views
   const {
@@ -28,12 +28,10 @@ export default function ListingsPageContent(): React.ReactElement {
     getListingsCount
   );
 
-  // Export mutation
-  const exportMutation = useMutation({
-    mutationFn: async ({ format, filters }: { format: ExportFormat; filters: OpportunityFilters }) => {
-      return await exportListings(filters, format);
-    },
-  });
+  const handleExport = useCallback(async (format: ExportFormat) => {
+    const result = await exportListings(appliedFilters, format);
+    return result;
+  }, [appliedFilters]);
 
   return (
     <OpportunitiesPage
@@ -42,13 +40,14 @@ export default function ListingsPageContent(): React.ReactElement {
       isCountLoading={isCountLoading}
       isLoading={isLoading}
       getOpportunityById={getListingById}
-      viewType={viewType}
-      onViewTypeChange={setViewType}
-      currentFilters={appliedFilters}
-      onFiltersChange={setAppliedFilters}
       opportunityType={OpportunityType.REAL_ESTATE_LISTING}
-      exportMutation={exportMutation}
-      FiltersComponent={ListingFilters}
+      onExport={handleExport}
+      FiltersComponent={
+        <ListingFilters
+          filters={appliedFilters}
+          onFiltersChange={setAppliedFilters}
+        />
+      }
     />
   );
 }
