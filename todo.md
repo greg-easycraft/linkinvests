@@ -61,12 +61,7 @@ Passoires Energétiques (0.5j)
 - [x] filtres par coches sur classes spécifiques
 
 Data fetching
-- annonces source
-- annonces type de bien
-- annonce source
 - annonce occupé vs libre
-- annonce DPE
-- annonce addresse refined
 -----
 - enchere source
 - enchere type de bien

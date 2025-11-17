@@ -13,6 +13,7 @@ interface TitleInfo {
   department: string;
   zipCode: string;
   price: number;
+  squareFootage?: number;
 }
 
 interface PropertyDetails {
@@ -47,7 +48,7 @@ interface NotaryOfficeInfo {
 export class DetailScraperService {
   private readonly logger = new Logger(DetailScraperService.name);
 
-  constructor(private readonly browserService: BrowserService) {}
+  constructor(private readonly browserService: BrowserService) { }
 
   async scrapeListingDetails(urls: string[]): Promise<RawListingOpportunity[]> {
     const listings: RawListingOpportunity[] = [];
@@ -179,7 +180,7 @@ export class DetailScraperService {
         price: titleInfo.price,
 
         // Property details
-        squareFootage: propertyDetails.squareFootage,
+        squareFootage: titleInfo.squareFootage ?? propertyDetails.squareFootage,
         landArea: propertyDetails.landArea,
         rooms: propertyDetails.rooms,
         bedrooms: propertyDetails.bedrooms,
@@ -264,16 +265,6 @@ export class DetailScraperService {
       .trim();
   }
 
-  private parsePrice(priceText: string): number | undefined {
-    if (!priceText) return undefined;
-
-    // Remove €, spaces, and other non-numeric characters except comma and dot
-    const cleaned = priceText.replace(/[€\s]/g, '').replace(/,/g, '.');
-
-    const number = parseFloat(cleaned);
-    return isNaN(number) ? undefined : number;
-  }
-
   private parseSurface(surfaceText: string): number | undefined {
     if (!surfaceText) return undefined;
 
@@ -352,12 +343,19 @@ export class DetailScraperService {
       throw new Error('Invalid title');
     }
 
+    const squareFooterRegex = /(\d+(?:[.,]\d+)?) m²/;
+    const squareFooterMatch = info.match(squareFooterRegex);
+    const squareFootage = squareFooterMatch
+      ? Number(squareFooterMatch[1])
+      : undefined;
+
     return {
       label: info,
       price: Number(price),
       city,
       zipCode,
       department,
+      squareFootage,
       ...this.parseTitleComponents(info),
     };
   }
@@ -374,9 +372,10 @@ export class DetailScraperService {
       transactionType: 'VENTE',
       propertyType: 'UNKNOWN',
     };
-    if (titleText.includes('maison')) result.propertyType = 'MAI';
-    else if (titleText.includes('appartement')) result.propertyType = 'APP';
-    else if (titleText.includes('terrain')) result.propertyType = 'TER';
+    const formattedText = titleText.toLowerCase();
+    if (formattedText.includes('maison')) result.propertyType = 'MAI';
+    else if (formattedText.includes('appartement')) result.propertyType = 'APP';
+    else if (formattedText.includes('terrain')) result.propertyType = 'TER';
 
     return result;
   }
@@ -588,25 +587,12 @@ export class DetailScraperService {
   // DPE extraction
   private async extractDPE(page: Page): Promise<string | undefined> {
     try {
-      // Look for DPE container with class patterns like dpe_g ges_g
-      const dpeContainer = await page.$('.container_dpe_ges_nouveau');
-      if (dpeContainer) {
-        const classList = await dpeContainer.getAttribute('class');
-        if (classList) {
-          // Extract DPE letter from class like "dpe_g"
-          const dpeMatch = classList.match(/dpe_([a-g])/i);
-          if (dpeMatch) {
-            return dpeMatch[1].toUpperCase();
-          }
-        }
-
-        // Fallback: look for letter in .lettres element
-        const letterElement = await dpeContainer.$('.lettres[letter]');
-        if (letterElement) {
-          const letter = await letterElement.getAttribute('letter');
-          if (letter) {
-            return letter.toUpperCase();
-          }
+      // Fallback: look for letter in .lettres element
+      const letterElement = await page.$('.lettres');
+      if (letterElement) {
+        const letter = await letterElement.getAttribute('letter');
+        if (letter) {
+          return letter.toUpperCase();
         }
       }
     } catch (error) {
