@@ -65,6 +65,7 @@ const successionHeaders: Record<string, string> = {
 // Listing headers
 const listingHeaders: Record<string, string> = {
   ...baseOpportunityHeaders,
+  source: "Source",
   transactionType: "Type de transaction",
   propertyType: "Type de bien",
   description: "Description",
@@ -88,7 +89,7 @@ const listingHeaders: Record<string, string> = {
   charges: "Charges (€)",
   mainPicture: "Photo principale",
   pictures: "Photos",
-  notaryContact: "Contact notaire"
+  sellerContact: "Contact vendeur"
 };
 
 /**

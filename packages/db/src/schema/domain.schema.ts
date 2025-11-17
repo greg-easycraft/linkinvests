@@ -230,7 +230,7 @@ export const opportunityListings = pgTable('listing', {
   mainPicture: text('main_picture'),
   pictures: text('pictures').array(),
   // Notary contact info as JSONB
-  notaryContact: jsonb('notary_contact').$type<{
+  sellerContact: jsonb('seller_contact').$type<{
     name?: string;
     address?: string;
     phone?: string;
@@ -239,6 +239,7 @@ export const opportunityListings = pgTable('listing', {
     contact?: string;
     siret?: string;
   }>(),
+  source: varchar('source').notNull(),
   // Timestamps
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at')

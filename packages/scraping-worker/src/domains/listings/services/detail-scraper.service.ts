@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { BrowserService } from './browser.service.js';
 import type { RawListingOpportunity } from '~/domains/listings/types/listings.types.js';
 import { Page } from 'playwright';
+import { ListingSource } from '@linkinvests/shared';
 
 // Intermediate data structures for extraction
 interface TitleInfo {
@@ -159,6 +160,7 @@ export class DetailScraperService {
       const listing: RawListingOpportunity = {
         // Basic info
         url,
+        source: ListingSource.NOTAIRES,
         label: titleInfo.label,
         externalId,
         opportunityDate,

@@ -135,7 +135,7 @@ export class DrizzleListingRepository implements IListingRepository {
       price: listing.price ? Number(listing.price) : undefined,
       mainPicture: listing.mainPicture ?? undefined,
       pictures: listing.pictures ?? undefined,
-      notaryContact: listing.notaryContact ?? undefined,
+      sellerContact: listing.sellerContact ?? undefined,
     };
   }
 }

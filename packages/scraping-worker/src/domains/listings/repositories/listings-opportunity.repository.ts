@@ -17,15 +17,15 @@ export class ListingsOpportunityRepository {
   /**
    * Creates notary contact JSONB object from opportunity data
    */
-  private createNotaryContact(opportunity: Listing) {
+  private createsellerContact(opportunity: Listing) {
     return {
-      name: opportunity.notaryContact?.name || undefined,
-      address: opportunity.notaryContact?.address || undefined,
-      phone: opportunity.notaryContact?.phone || undefined,
-      email: opportunity.notaryContact?.email || undefined,
-      website: opportunity.notaryContact?.website || undefined,
-      contact: opportunity.notaryContact?.contact || undefined,
-      siret: opportunity.notaryContact?.siret || undefined,
+      name: opportunity.sellerContact?.name || undefined,
+      address: opportunity.sellerContact?.address || undefined,
+      phone: opportunity.sellerContact?.phone || undefined,
+      email: opportunity.sellerContact?.email || undefined,
+      website: opportunity.sellerContact?.website || undefined,
+      contact: opportunity.sellerContact?.contact || undefined,
+      siret: opportunity.sellerContact?.siret || undefined,
     };
   }
 
@@ -55,9 +55,10 @@ export class ListingsOpportunityRepository {
         const mainPicture = opp.mainPicture || null;
         const additionalPictures = pictures;
 
-        const notaryContact = this.createNotaryContact(opp);
+        const sellerContact = this.createsellerContact(opp);
 
         return {
+          source: opp.source,
           // Base opportunity fields
           label: opp.label,
           address: opp.address,
@@ -103,7 +104,7 @@ export class ListingsOpportunityRepository {
           pictures: additionalPictures.length > 0 ? additionalPictures : null,
 
           // Notary contact info as JSONB
-          notaryContact,
+          sellerContact,
         };
       });
 

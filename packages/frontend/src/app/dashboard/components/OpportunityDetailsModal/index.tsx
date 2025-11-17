@@ -11,6 +11,7 @@ import {
   type Auction,
   type Succession,
   type Liquidation,
+  type Listing,
   OpportunityType,
 } from "@linkinvests/shared";
 import { StreetView } from "./StreetView";
@@ -19,6 +20,7 @@ import { AuctionDetails } from "./AuctionDetails";
 import { SuccessionDetails } from "./SuccessionDetails";
 import { LiquidationDetails } from "./LiquidationDetails";
 import { EnergySieveDetails } from "./EnergySieveDetails";
+import { ListingDetails } from "./ListingDetails";
 
 interface OpportunityDetailsModalProps {
   opportunity: Opportunity | null;
@@ -110,6 +112,9 @@ export function OpportunityDetailsModal({
           {/* Type-specific Details */}
           {type === OpportunityType.AUCTION && (
             <AuctionDetails opportunity={opportunity as Auction} />
+          )}
+          {type === OpportunityType.REAL_ESTATE_LISTING && (
+            <ListingDetails opportunity={opportunity as Listing} />
           )}
           {type === OpportunityType.SUCCESSION && (
             <SuccessionDetails opportunity={opportunity as Succession} />

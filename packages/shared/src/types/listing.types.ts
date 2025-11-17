@@ -1,8 +1,16 @@
 import { BaseOpportunity, BaseOpportunityInput } from './base-opportunity.types.js';
 
+export enum ListingSource {
+  LEBONCOIN = 'leboncoin',
+  SELOGER = 'seloger',
+  NOTAIRES = 'notaires',
+  AUTRE = 'autre',
+}
+
 export interface Listing extends BaseOpportunity {
   // Listing-specific fields
   url: string;
+  source: ListingSource;
   transactionType: string; // "VENTE", "VENTE_EN_L_ETAT_FUTUR_D_ACHEVEMENT", "VENTE_AUX_ENCHERES", etc.
   propertyType: string; // "APP" (apartment), "MAI" (house), etc.
   description?: string;
@@ -32,7 +40,7 @@ export interface Listing extends BaseOpportunity {
   pictures?: string[];
 
   // Notary office contact info as JSONB
-  notaryContact?: {
+  sellerContact?: {
     name?: string;
     address?: string;
     phone?: string;
@@ -75,7 +83,7 @@ export interface ListingInput extends BaseOpportunityInput {
   pictures?: string[];
 
   // Notary office contact info as JSONB
-  notaryContact?: {
+  sellerContact?: {
     name?: string;
     address?: string;
     phone?: string;
@@ -87,7 +95,7 @@ export interface ListingInput extends BaseOpportunityInput {
 }
 
 // Legacy interface for backward compatibility during migration
-export interface NotaryContactData {
+export interface sellerContactData {
   type: 'notary';
   name: string;
   address: string;
