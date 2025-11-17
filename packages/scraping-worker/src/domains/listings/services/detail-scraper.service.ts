@@ -5,17 +5,13 @@ import { Page } from 'playwright';
 
 // Intermediate data structures for extraction
 interface TitleInfo {
+  label: string;
   transactionType: string;
   propertyType: string;
   city: string;
   department: string;
-  address: string;
   zipCode: string;
-}
-
-interface PricingInfo {
-  price?: number;
-  priceType?: string;
+  price: number;
 }
 
 interface PropertyDetails {
@@ -50,7 +46,7 @@ interface NotaryOfficeInfo {
 export class DetailScraperService {
   private readonly logger = new Logger(DetailScraperService.name);
 
-  constructor(private readonly browserService: BrowserService) { }
+  constructor(private readonly browserService: BrowserService) {}
 
   async scrapeListingDetails(urls: string[]): Promise<RawListingOpportunity[]> {
     const listings: RawListingOpportunity[] = [];
@@ -130,7 +126,7 @@ export class DetailScraperService {
       await this.browserService.waitForContent(8000);
       const page = this.browserService.getPage();
       try {
-        await page.waitForSelector('#container_galerie_formulaire', {
+        await page.waitForLoadState('networkidle', {
           timeout: 10000,
         });
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -138,27 +134,23 @@ export class DetailScraperService {
         await this.discardCookies(this.browserService);
       }
 
-      await page.waitForSelector('#container_galerie_formulaire', {
+      await page.waitForLoadState('networkidle', {
         timeout: 10000,
       });
 
       this.logger.debug({ url }, 'Starting extraction for listing');
 
       // Phase 1: Extract basic required information
-      const label = await this.extractLabel(page);
+      const titleInfo = await this.extractTitleInfo(page);
       const externalId = this.extractExternalIdFromUrl(url);
       const opportunityDate = await this.extractOpportunityDate(page);
       const description = await this.extractDescription(page);
 
-      // Phase 2: Extract title/location information (complex parsing)
-      const titleInfo = await this.extractTitleInfo(page);
-
-      // Phase 3: Extract property details
+      // Phase 2: Extract property details
       const propertyDetails = await this.extractPropertyDetails(page);
       const features = await this.extractFeatures(page);
 
       // Phase 4: Extract complex data
-      const pricing = await this.extractPricing(page);
       const images = await this.extractImages(page);
       const notaryOffice = await this.extractNotaryOffice(page);
       const dpe = await this.extractDPE(page);
@@ -167,13 +159,12 @@ export class DetailScraperService {
       const listing: RawListingOpportunity = {
         // Basic info
         url,
-        label,
+        label: titleInfo.label,
         externalId,
         opportunityDate,
         description,
 
         // Location info from title parsing
-        address: titleInfo.address,
         city: titleInfo.city,
         zipCode: titleInfo.zipCode,
         department: titleInfo.department,
@@ -183,8 +174,7 @@ export class DetailScraperService {
         propertyType: titleInfo.propertyType,
 
         // Pricing
-        price: pricing.price,
-        priceType: pricing.priceType,
+        price: titleInfo.price,
 
         // Property details
         squareFootage: propertyDetails.squareFootage,
@@ -344,20 +334,49 @@ export class DetailScraperService {
   }
 
   // Basic Information extraction methods
-  private async extractLabel(page: Page): Promise<string> {
-    try {
-      const labelElement = await page.$('[data-titre-annonce]');
-      if (labelElement) {
-        const labelText = await labelElement.textContent();
-        return this.cleanText(labelText || '');
-      }
-    } catch (error) {
-      this.logger.warn(
-        { error: error instanceof Error ? error.message : 'Unknown error' },
-        'Failed to extract label'
-      );
+  private async extractTitleInfo(page: Page): Promise<TitleInfo> {
+    const labelElement = page.locator('title');
+    const titleText = await labelElement.textContent();
+    // Maison / villa à A vendre 5 pièces (135 m²) - CHATEAU RENARD 45220 - 168 000 €
+    const [info, location, rawPrice] = titleText?.split(' - ') || [];
+    const price = rawPrice?.replace(/€/g, '').replace(/\s+/g, '').trim();
+
+    const locationRegex = /(\w+) (\d{5})/;
+    const locationMatch = location.match(locationRegex);
+    const city = locationMatch ? locationMatch[1] : undefined;
+    const zipCode = locationMatch ? locationMatch[2] : undefined;
+    const department = zipCode ? zipCode.substring(0, 2) : undefined;
+    if (!department || !city || !zipCode || !price || !info) {
+      throw new Error('Invalid title');
     }
-    return 'Listing'; // Fallback
+
+    return {
+      label: info,
+      price: Number(price),
+      city,
+      zipCode,
+      department,
+      ...this.parseTitleComponents(info),
+    };
+  }
+
+  private parseTitleComponents(titleText: string): {
+    propertyType: string;
+    transactionType: string;
+  } {
+    // Example title: "Vente Maison 10 pièces - Guingamp - Côtes-d'Armor (22)"
+    const result: {
+      propertyType: string;
+      transactionType: string;
+    } = {
+      transactionType: 'VENTE',
+      propertyType: 'UNKNOWN',
+    };
+    if (titleText.includes('maison')) result.propertyType = 'MAI';
+    else if (titleText.includes('appartement')) result.propertyType = 'APP';
+    else if (titleText.includes('terrain')) result.propertyType = 'TER';
+
+    return result;
   }
 
   private async extractDescription(page: Page): Promise<string | undefined> {
@@ -391,107 +410,6 @@ export class DetailScraperService {
       );
     }
     return new Date(); // Fallback to current date
-  }
-
-  // Title and location extraction (complex parsing)
-  private async extractTitleInfo(page: Page): Promise<TitleInfo> {
-    try {
-      const titleElement = await page.$('[data-titre-annonce]');
-      if (titleElement) {
-        const titleText = await titleElement.textContent();
-        const cleaned = this.cleanText(titleText || '');
-
-        // Parse title components
-        return this.parseTitleComponents(cleaned);
-      }
-    } catch (error) {
-      this.logger.warn(
-        { error: error instanceof Error ? error.message : 'Unknown error' },
-        'Failed to extract title info'
-      );
-    }
-
-    // Fallback
-    return {
-      transactionType: 'VENTE',
-      propertyType: 'UNKNOWN',
-      city: '',
-      department: '',
-      address: '',
-      zipCode: '',
-    };
-  }
-
-  private parseTitleComponents(titleText: string): TitleInfo {
-    // Example title: "Vente Maison 10 pièces - Guingamp - Côtes-d'Armor (22)"
-    const result: TitleInfo = {
-      transactionType: 'VENTE',
-      propertyType: 'UNKNOWN',
-      city: '',
-      department: '',
-      address: '',
-      zipCode: '',
-    };
-
-    try {
-      // Extract transaction type (first word)
-      const parts = titleText.split(' ');
-      if (parts.length > 0) {
-        result.transactionType = parts[0].toUpperCase();
-      }
-
-      // Extract property type (second word)
-      if (parts.length > 1) {
-        const propType = parts[1].toLowerCase();
-        if (propType.includes('maison')) result.propertyType = 'MAI';
-        else if (propType.includes('appartement')) result.propertyType = 'APP';
-        else if (propType.includes('terrain')) result.propertyType = 'TER';
-        else result.propertyType = propType.substring(0, 3).toUpperCase();
-      }
-
-      // Extract location: " - City - Department (XX)"
-      const locationMatch = titleText.match(/- ([^-]+) - ([^(]+)\((\d+)\)/);
-      if (locationMatch) {
-        result.city = this.cleanText(locationMatch[1]);
-        result.department = locationMatch[3];
-        result.address = result.city; // Use city as default address
-        result.zipCode = locationMatch[3] + '000'; // Approximate zipCode
-      }
-    } catch (error) {
-      this.logger.warn(
-        {
-          error: error instanceof Error ? error.message : 'Unknown error',
-          titleText,
-        },
-        'Failed to parse title components'
-      );
-    }
-
-    return result;
-  }
-
-  // Price extraction
-  private async extractPricing(page: Page): Promise<PricingInfo> {
-    const result: PricingInfo = {};
-
-    try {
-      // Extract main price
-      const priceElement = await page.$('[data-prix-prioritaire]');
-      if (priceElement) {
-        const priceText = await priceElement.textContent();
-        result.price = this.parsePrice(this.cleanText(priceText || ''));
-      }
-
-      // Try to determine price type (FAI, CC, etc.) from context
-      result.priceType = 'FAI'; // Default assumption for notary listings
-    } catch (error) {
-      this.logger.warn(
-        { error: error instanceof Error ? error.message : 'Unknown error' },
-        'Failed to extract pricing'
-      );
-    }
-
-    return result;
   }
 
   // Property details extraction

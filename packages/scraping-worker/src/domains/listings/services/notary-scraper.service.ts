@@ -54,9 +54,14 @@ export class NotaryScraperService {
       this.logger.log('Browser initialized for notary scraping');
 
       // Step 1: Extract all listing URLs from paginated pages
-      this.logger.log(`Step 1: Extracting listing URLs from pages ${startPage} to ${endPage}`);
+      this.logger.log(
+        `Step 1: Extracting listing URLs from pages ${startPage} to ${endPage}`
+      );
       const listingUrls =
-        await this.listingExtractorService.extractAllListingUrls(config, startPage);
+        await this.listingExtractorService.extractAllListingUrls(
+          config,
+          startPage
+        );
 
       stats.totalListingsFound = listingUrls.length;
       this.logger.log(

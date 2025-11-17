@@ -221,12 +221,6 @@ export class ListingsGeocodingService {
 
   private formatAddressForRequest(opportunity: RawListingOpportunity): string {
     // Combine address with city for better geocoding results
-    const parts = [
-      opportunity.address,
-      opportunity.city,
-      opportunity.department,
-    ].filter(Boolean);
-
-    return parts.join(' ').trim();
+    return `${opportunity.city} ${opportunity.zipCode ?? opportunity.department}`;
   }
 }

@@ -2,7 +2,7 @@
 export interface RawListingOpportunity {
   url: string;
   label: string;
-  address: string;
+  address?: string;
   city: string;
   zipCode: string;
   department: string; // e.g., "75", "92"
