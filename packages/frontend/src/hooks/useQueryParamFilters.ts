@@ -81,7 +81,7 @@ function getRetainedFiltersFromParams<T extends OpportunityFilters>(searchParams
   }
 
   // If parsing fails, try to salvage valid individual fields
-  const partialFilters: Record<string, any> = {};
+  const partialFilters: Record<string, unknown> = {};
 
   // Get the shape of the schema to know which fields are valid
   if (schema instanceof z.ZodObject) {

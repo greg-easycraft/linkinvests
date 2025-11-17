@@ -48,7 +48,7 @@ interface NotaryOfficeInfo {
 export class DetailScraperService {
   private readonly logger = new Logger(DetailScraperService.name);
 
-  constructor(private readonly browserService: BrowserService) { }
+  constructor(private readonly browserService: BrowserService) {}
 
   async scrapeListingDetails(urls: string[]): Promise<RawListingOpportunity[]> {
     const listings: RawListingOpportunity[] = [];

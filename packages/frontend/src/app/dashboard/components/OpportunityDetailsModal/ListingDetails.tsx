@@ -5,7 +5,6 @@ import { fr } from "date-fns/locale";
 import {
   Home,
   Euro,
-  Ruler,
   FileText,
   MapPin as VenueIcon,
   Phone,
