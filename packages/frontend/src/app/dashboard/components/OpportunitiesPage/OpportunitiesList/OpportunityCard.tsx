@@ -1,5 +1,6 @@
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
+import Image from "next/image";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
@@ -7,6 +8,11 @@ import { MapPin, Calendar, ExternalLink } from "lucide-react";
 import { StaticStreetView } from "./StaticStreetView";
 import { TYPE_LABELS, TYPE_COLORS } from "~/constants/opportunity-types";
 import { Opportunity, OpportunityType } from "@linkinvests/shared";
+
+// Type guard to check if opportunity has pictures
+const hasPictureFields = (opportunity: Opportunity): opportunity is Extract<Opportunity, { mainPicture?: string; pictures?: string[] }> => {
+  return 'mainPicture' in opportunity;
+};
 
 interface OpportunityCardProps {
   opportunity: Opportunity;
@@ -27,12 +33,22 @@ export function OpportunityCard({ opportunity, onSelect, selectedId, type, exter
             }`}
         >
           <div className="flex gap-4 p-4">
-            {/* Street View Thumbnail */}
+            {/* Thumbnail - Main Picture or Street View fallback */}
             <div className="flex-shrink-0">
-              <StaticStreetView
-                latitude={opportunity.latitude}
-                longitude={opportunity.longitude}
-              />
+              {hasPictureFields(opportunity) && opportunity.mainPicture ? (
+                <Image
+                  src={opportunity.mainPicture}
+                  alt="Property main picture"
+                  width={96}
+                  height={72}
+                  className="rounded-sm object-cover"
+                />
+              ) : (
+                <StaticStreetView
+                  latitude={opportunity.latitude}
+                  longitude={opportunity.longitude}
+                />
+              )}
             </div>
 
             {/* Content */}

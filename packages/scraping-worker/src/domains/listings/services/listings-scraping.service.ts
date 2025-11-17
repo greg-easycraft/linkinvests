@@ -28,7 +28,10 @@ export class ListingsScrapingService {
 
       // Scrape listings from notary website
       const opportunities =
-        await this.notaryScraperService.scrapeNotaryListings(startPage, endPage);
+        await this.notaryScraperService.scrapeNotaryListings(
+          startPage,
+          endPage
+        );
       totalListings = opportunities.length;
 
       if (opportunities.length === 0) {

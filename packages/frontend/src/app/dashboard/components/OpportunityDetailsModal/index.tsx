@@ -14,6 +14,7 @@ import {
   OpportunityType,
 } from "@linkinvests/shared";
 import { StreetView } from "./StreetView";
+import { ImageCarousel } from "./ImageCarousel";
 import { AuctionDetails } from "./AuctionDetails";
 import { SuccessionDetails } from "./SuccessionDetails";
 import { LiquidationDetails } from "./LiquidationDetails";
@@ -25,6 +26,17 @@ interface OpportunityDetailsModalProps {
   onClose: () => void;
   type: OpportunityType;
 }
+
+// Type guard to check if opportunity has pictures
+const hasPictureFields = (opportunity: Opportunity): opportunity is Extract<Opportunity, { mainPicture?: string; pictures?: string[] }> => {
+  return 'mainPicture' in opportunity || 'pictures' in opportunity;
+};
+
+// Helper to check if opportunity has any pictures available
+const hasAvailablePictures = (opportunity: Opportunity): boolean => {
+  if (!hasPictureFields(opportunity)) return false;
+  return !!(opportunity.mainPicture || (opportunity.pictures && opportunity.pictures.length > 0));
+};
 
 export function OpportunityDetailsModal({
   opportunity,
@@ -53,13 +65,17 @@ export function OpportunityDetailsModal({
           </div>
 
         <div className="space-y-6">
-          {/* Street View */}
-          <StreetView
-            address={opportunity.address}
-            latitude={opportunity.latitude}
-            longitude={opportunity.longitude}
-            className="w-full h-64 rounded-lg"
-          />
+          {/* Image carousel or Street View */}
+          {hasAvailablePictures(opportunity) ? (
+            <ImageCarousel opportunity={opportunity} className="w-full" />
+          ) : (
+            <StreetView
+              address={opportunity.address}
+              latitude={opportunity.latitude}
+              longitude={opportunity.longitude}
+              className="w-full h-64 rounded-lg"
+            />
+          )}
 
           {/* Details Grid */}
           <div className="space-y-4">
