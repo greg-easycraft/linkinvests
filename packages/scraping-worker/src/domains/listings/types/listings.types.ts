@@ -1,4 +1,4 @@
-import { ListingSource } from '@linkinvests/shared';
+import { ListingSource, PropertyType } from '@linkinvests/shared';
 
 // Raw listing opportunity (before geocoding)
 export interface RawListingOpportunity {
@@ -15,7 +15,7 @@ export interface RawListingOpportunity {
   externalId: string; // Generated from notary listing ID
   // Listing-specific fields
   transactionType: string; // "VENTE", "VNI", "VAE"
-  propertyType: string; // "APP", "MAI", etc.
+  propertyType: PropertyType;
   price?: number;
   priceType?: string; // e.g., "FAI", "CC", etc.
   description?: string;

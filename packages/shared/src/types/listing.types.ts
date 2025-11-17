@@ -1,18 +1,13 @@
+import { ListingSource, PropertyType } from '../constants/opportunity.js';
 import { BaseOpportunity, BaseOpportunityInput } from './base-opportunity.types.js';
 
-export enum ListingSource {
-  LEBONCOIN = 'leboncoin',
-  SELOGER = 'seloger',
-  NOTAIRES = 'notaires',
-  AUTRE = 'autre',
-}
 
 export interface Listing extends BaseOpportunity {
   // Listing-specific fields
   url: string;
   source: ListingSource;
   transactionType: string; // "VENTE", "VENTE_EN_L_ETAT_FUTUR_D_ACHEVEMENT", "VENTE_AUX_ENCHERES", etc.
-  propertyType: string; // "APP" (apartment), "MAI" (house), etc.
+  propertyType: PropertyType;
   description?: string;
   squareFootage?: number;
   landArea?: number;

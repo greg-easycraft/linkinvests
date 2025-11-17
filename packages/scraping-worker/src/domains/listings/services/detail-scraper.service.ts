@@ -2,13 +2,13 @@ import { Injectable, Logger } from '@nestjs/common';
 import { BrowserService } from './browser.service.js';
 import type { RawListingOpportunity } from '~/domains/listings/types/listings.types.js';
 import { Page } from 'playwright';
-import { ListingSource } from '@linkinvests/shared';
+import { ListingSource, PropertyType } from '@linkinvests/shared';
 
 // Intermediate data structures for extraction
 interface TitleInfo {
   label: string;
   transactionType: string;
-  propertyType: string;
+  propertyType: PropertyType;
   city: string;
   department: string;
   zipCode: string;
@@ -361,21 +361,21 @@ export class DetailScraperService {
   }
 
   private parseTitleComponents(titleText: string): {
-    propertyType: string;
+    propertyType: PropertyType;
     transactionType: string;
   } {
     // Example title: "Vente Maison 10 pièces - Guingamp - Côtes-d'Armor (22)"
     const result: {
-      propertyType: string;
+      propertyType: PropertyType;
       transactionType: string;
     } = {
       transactionType: 'VENTE',
-      propertyType: 'UNKNOWN',
+      propertyType: PropertyType.OTHER,
     };
     const formattedText = titleText.toLowerCase();
-    if (formattedText.includes('maison')) result.propertyType = 'MAI';
-    else if (formattedText.includes('appartement')) result.propertyType = 'APP';
-    else if (formattedText.includes('terrain')) result.propertyType = 'TER';
+    if (formattedText.includes('maison')) result.propertyType = PropertyType.HOUSE;
+    else if (formattedText.includes('appartement')) result.propertyType = PropertyType.APARTMENT;
+    else if (formattedText.includes('terrain')) result.propertyType = PropertyType.TERRAIN;
 
     return result;
   }
