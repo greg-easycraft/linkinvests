@@ -63,7 +63,7 @@ export function BaseFilters({
 
   const viewType = useMemo(() => {
     const param = searchParams.get("view") as ViewType;
-    if(param === "map") return "map";
+    if (param === "map") return "map";
     return "list";
   }, [searchParams]);
 
@@ -74,7 +74,14 @@ export function BaseFilters({
   }, [router, currentType, searchParams]);
 
   const handleTypeChange = useCallback((value: string): void => {
-    router.push(`/dashboard/${TYPE_TO_PATH[value as OpportunityType]}`);
+    const url = `/dashboard/${TYPE_TO_PATH[value as OpportunityType]}`
+    const pageSize = searchParams.get("pageSize");
+    if (!pageSize) {
+      router.push(url);
+      return;
+    }
+
+    router.push(url + `?pageSize=${pageSize}`);
   }, [router, searchParams]);
 
 

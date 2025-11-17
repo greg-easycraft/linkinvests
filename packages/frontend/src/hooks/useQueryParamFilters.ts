@@ -47,6 +47,12 @@ export function useQueryParamFilters<T extends OpportunityFilters>(schema: z.Zod
     return result;
   }, [searchParams, schema]);
 
+  const setFilters = useCallback((newFilters: T) => {
+    const filtersToUse = { ...newFilters };
+    delete filtersToUse.page;
+    setCurrentFilters(filtersToUse);
+  }, [setCurrentFilters]);
+
   useEffect(() => {
     debouncedUpdateFilters(currentFilters);
 
@@ -62,7 +68,7 @@ export function useQueryParamFilters<T extends OpportunityFilters>(schema: z.Zod
     // Current state
     filters: appliedFilters,
     // State setters
-    setFilters: setCurrentFilters,
+    setFilters,
   };
 }
 
