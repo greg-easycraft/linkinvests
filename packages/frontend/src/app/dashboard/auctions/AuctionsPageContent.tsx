@@ -15,7 +15,6 @@ export default function AuctionsPageContent(): React.ReactElement {
   const { filters: appliedFilters, setFilters: setAppliedFilters } =
     useQueryParamFilters(auctionFiltersSchema);
   // Use unified data fetching - single queries for both list and map views
-  console.log('appliedFilters', appliedFilters);
   const {
     data,
     count,

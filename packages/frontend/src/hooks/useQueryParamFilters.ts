@@ -43,9 +43,7 @@ export function useQueryParamFilters<T extends OpportunityFilters>(schema: z.Zod
   }, [updateFilters]);
 
   const appliedFilters = useMemo(() => {
-    console.log('searchParams', searchParams);
     const result = getRetainedFiltersFromParams(searchParams, schema);
-    console.log('result', result);
     return result;
   }, [searchParams, schema]);
 
