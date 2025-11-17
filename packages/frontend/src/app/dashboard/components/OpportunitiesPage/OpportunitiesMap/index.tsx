@@ -154,14 +154,10 @@ export function OpportunitiesMap({
     }
   }, [opportunities, selectedId, onSelect, mapLoaded]);
 
-  if (isLoading || !mapLoaded) {
-    return <MapSkeleton />;
-  }
-
   return (
     <div className="relative w-full h-full">
-
-      {opportunities.length === 0 && <MapEmptyState />}
+      {isLoading && <MapSkeleton />}
+      {mapLoaded && !isLoading && opportunities.length === 0 && <MapEmptyState />}
       <div ref={mapContainer} className="w-full h-full rounded-lg" />
 
       {/* Legend */}
