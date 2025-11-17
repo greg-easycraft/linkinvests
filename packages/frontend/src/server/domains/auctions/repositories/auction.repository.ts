@@ -4,7 +4,7 @@ import { opportunityAuctions } from "@linkinvests/db";
 import type { IAuctionRepository, } from "../lib.types";
 import type { OpportunityFilters, PaginationFilters } from "~/types/filters";
 import { calculateStartDate } from "~/constants/date-periods";
-import type { Auction } from "@linkinvests/shared";
+import { PropertyType, type Auction } from "@linkinvests/shared";
 
 export class DrizzleAuctionRepository implements IAuctionRepository {
   constructor(private readonly db: DomainDbType) {}
@@ -127,7 +127,7 @@ export class DrizzleAuctionRepository implements IAuctionRepository {
       // Auction-specific fields
       url: auction.url,
       auctionType: auction.auctionType ?? undefined,
-      propertyType: auction.propertyType ?? undefined,
+      propertyType: (auction.propertyType ?? undefined) as PropertyType | undefined,
       description: auction.description ?? undefined,
       squareFootage: auction.squareFootage ? Number(auction.squareFootage) : undefined,
       rooms: auction.rooms ?? undefined,

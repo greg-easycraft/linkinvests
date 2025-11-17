@@ -4,7 +4,7 @@ import { opportunityListings } from "@linkinvests/db";
 import type { IListingRepository } from "../lib.types";
 import type { OpportunityFilters, PaginationFilters } from "~/types/filters";
 import { calculateStartDate } from "~/constants/date-periods";
-import { ListingSource, type Listing } from "@linkinvests/shared";
+import { ListingSource, PropertyType, type Listing } from "@linkinvests/shared";
 
 export class DrizzleListingRepository implements IListingRepository {
   constructor(private readonly db: DomainDbType) {}
@@ -128,7 +128,7 @@ export class DrizzleListingRepository implements IListingRepository {
       // Listing-specific fields
       url: listing.url,
       transactionType: listing.transactionType ?? undefined,
-      propertyType: listing.propertyType ?? undefined,
+      propertyType: listing.propertyType as PropertyType,
       description: listing.description ?? undefined,
       squareFootage: listing.squareFootage ? Number(listing.squareFootage) : undefined,
       rooms: listing.rooms ?? undefined,
