@@ -30,6 +30,7 @@ export interface DepartmentOption {
 export type EnergyClass = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G';
 
 export interface OpportunityFilters {
+  view?: "list" | "map";
   types?: OpportunityType[];
   departments?: string[];
   zipCodes?: string[];

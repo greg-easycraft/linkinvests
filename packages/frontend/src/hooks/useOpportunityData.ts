@@ -12,17 +12,18 @@ export function useOpportunityData(
   getDataFn: (filters: OpportunityFilters) => Promise<any>,
   getCountFn: (filters: OpportunityFilters) => Promise<number>
 ) {
+  const filtersWithoutView = removeViewFromFilters(filters);
   // Single data query - used for both list and map views
   const dataQuery = useQuery({
-    queryKey: [opportunityType.toLowerCase(), 'data', filters],
-    queryFn: () => getDataFn(filters),
+    queryKey: [opportunityType.toLowerCase(), 'data', filtersWithoutView],
+    queryFn: () => getDataFn(filtersWithoutView),
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   // Single count query - used for pagination and total display
   const countQuery = useQuery({
-    queryKey: [opportunityType.toLowerCase(), 'count', filters],
-    queryFn: () => getCountFn(filters),
+    queryKey: [opportunityType.toLowerCase(), 'count', filtersWithoutView],
+    queryFn: () => getCountFn(filtersWithoutView),
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
@@ -39,4 +40,10 @@ export function useOpportunityData(
       countQuery.refetch();
     },
   };
+}
+
+function removeViewFromFilters(filters: OpportunityFilters): OpportunityFilters {
+  const newFilters = { ...filters };
+  delete newFilters.view;
+  return newFilters;
 }

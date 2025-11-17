@@ -24,12 +24,21 @@ interface OpportunityFiltersProps {
 
 // @ts-expect-error - TODO: Add real estate listing and divorce types
 const TYPE_LABELS: Record<OpportunityType, string> = {
-  [OpportunityType.SUCCESSION]: "Succession",
-  [OpportunityType.LIQUIDATION]: "Liquidation",
-  [OpportunityType.ENERGY_SIEVE]: "Passoire énergétique",
-  [OpportunityType.REAL_ESTATE_LISTING]: "Annonce immobilière",
-  [OpportunityType.AUCTION]: "Vente aux enchères",
-  // [OpportunityType.DIVORCE]: "Divorce",
+  [OpportunityType.SUCCESSION]: "Successions",
+  [OpportunityType.LIQUIDATION]: "Liquidations",
+  [OpportunityType.ENERGY_SIEVE]: "Passoires énergétiques",
+  [OpportunityType.REAL_ESTATE_LISTING]: "Annonces immobilières",
+  [OpportunityType.AUCTION]: "Ventes aux enchères",
+  // [OpportunityType.DIVORCE]: "Divorces",
+};
+
+const TYPE_TO_PATH: Record<OpportunityType, string> = {
+  [OpportunityType.SUCCESSION]: "successions",
+  [OpportunityType.LIQUIDATION]: "liquidations",
+  [OpportunityType.ENERGY_SIEVE]: "energy-sieves",
+  [OpportunityType.REAL_ESTATE_LISTING]: "listings",
+  [OpportunityType.AUCTION]: "auctions",
+  [OpportunityType.DIVORCE]: "divorces",
 };
 
 // Custom order for dropdown display - Succession last
@@ -61,11 +70,11 @@ export function BaseFilters({
   const handleViewTypeChange = useCallback((value: ViewType): void => {
     const newParams = new URLSearchParams(searchParams);
     newParams.set("view", value);
-    router.push(`/dashboard/${currentType}?${newParams.toString()}`);
+    router.push(`/dashboard/${TYPE_TO_PATH[currentType]}?${newParams.toString()}`);
   }, [router, currentType, searchParams]);
 
   const handleTypeChange = useCallback((value: string): void => {
-    router.push(`/dashboard/${value}?${searchParams.toString()}`);
+    router.push(`/dashboard/${TYPE_TO_PATH[value as OpportunityType]}`);
   }, [router, searchParams]);
 
 
