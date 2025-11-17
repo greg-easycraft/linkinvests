@@ -10,6 +10,7 @@ import { OpportunityType } from "@linkinvests/shared";
 import type { ExportFormat } from "~/server/services/export.service";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
+import { DEFAULT_PAGE_SIZE } from "~/constants/filters";
 
 // Helper function to get opportunity type string for export filenames
 function getOpportunityTypeString(type: OpportunityType): string {
@@ -45,7 +46,7 @@ export function OpportunityHeader({
   const router = useRouter();
   const searchParams = useSearchParams();
   const currentPage = parseInt(searchParams.get("page") ?? "1", 10);
-  const pageSize = parseInt(searchParams.get("pageSize") ?? "25", 10);
+  const pageSize = parseInt(searchParams.get("pageSize") ?? `${DEFAULT_PAGE_SIZE}`, 10);
   const totalPages = Math.ceil((total ?? 0) / pageSize);
   const startItem = (currentPage - 1) * pageSize + 1;
   const endItem = startItem + itemsOnPage - 1;

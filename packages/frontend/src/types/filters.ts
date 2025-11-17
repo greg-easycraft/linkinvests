@@ -36,12 +36,17 @@ export interface OpportunityFilters {
   dateRange?: DateRange; // Legacy support - uses 'from' date as threshold
   datePeriod?: DatePeriod; // New predefined period - filters for opportunities after start date
   bounds?: MapBounds;
-  limit?: number;
-  offset?: number;
+  page?: number;
+  pageSize?: number;
   sortBy?: string;
   sortOrder?: "asc" | "desc";
   // Energy diagnostics specific filters
   energyClasses?: EnergyClass[];
+}
+
+export interface PaginationFilters {
+  limit: number;
+  offset: number;
 }
 
 export interface EnergyDiagnosticFilters extends OpportunityFilters {

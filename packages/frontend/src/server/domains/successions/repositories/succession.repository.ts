@@ -2,7 +2,7 @@ import { and, eq, gte, inArray, lte, sql, type SQL } from "drizzle-orm";
 import type { DomainDbType } from "~/server/db";
 import { opportunitySuccessions } from "@linkinvests/db";
 import type { ISuccessionRepository } from "../lib.types";
-import type { OpportunityFilters } from "~/types/filters";
+import type { OpportunityFilters, PaginationFilters } from "~/types/filters";
 import { calculateStartDate } from "~/constants/date-periods";
 import type { Succession } from "@linkinvests/shared";
 
@@ -54,15 +54,17 @@ export class DrizzleSuccessionRepository implements ISuccessionRepository {
     return conditions;
   }
 
-  async findAll(filters?: OpportunityFilters): Promise<Succession[]> {
+  async findAll(filters?: OpportunityFilters, paginationFilters?: PaginationFilters): Promise<Succession[]> {
     const conditions = this.buildWhereClause(filters);
 
     let query = this.db
       .select()
       .from(opportunitySuccessions)
-      .limit(filters?.limit ?? 100)
-      .offset(filters?.offset ?? 0)
       .$dynamic();
+
+    if (paginationFilters) {
+      query = query.limit(paginationFilters.limit).offset(paginationFilters.offset);
+    }
 
     if (conditions.length > 0) {
       query = query.where(and(...conditions));
