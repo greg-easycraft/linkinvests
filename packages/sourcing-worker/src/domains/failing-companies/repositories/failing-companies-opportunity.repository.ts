@@ -48,7 +48,7 @@ export class FailingCompaniesOpportunityRepository {
         siret: est.siret, // Required for liquidations
         address: est.address,
         zipCode: est.zipCode,
-        department: est.department,
+        department: est.department.toString().padStart(2, '0'),
         latitude: est.latitude,
         longitude: est.longitude,
         opportunityDate: est.opportunityDate, // Already in string format 'YYYY-MM-DD'

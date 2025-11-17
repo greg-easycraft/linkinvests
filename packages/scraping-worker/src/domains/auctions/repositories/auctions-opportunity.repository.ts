@@ -77,7 +77,7 @@ export class AuctionsOpportunityRepository {
           label: opp.label,
           address: opp.address,
           zipCode: opp.zipCode,
-          department: opp.department,
+          department: opp.department.toString().padStart(2, '0'),
           latitude: opp.latitude,
           longitude: opp.longitude,
           opportunityDate: opp.auctionDate,
