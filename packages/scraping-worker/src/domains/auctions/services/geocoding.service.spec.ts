@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuctionsGeocodingService } from './geocoding.service';
 import type { RawAuctionOpportunity } from '../types';
+import { AuctionSource } from '@linkinvests/shared';
 
 // Mock global fetch
 const mockFetch = jest.fn();
@@ -36,6 +37,7 @@ describe('AuctionsGeocodingService', () => {
   describe('geocodeBatch', () => {
     const mockOpportunities: RawAuctionOpportunity[] = [
       {
+        source: AuctionSource.ENCHERES_PUBLIQUES,
         url: 'https://test.com/1',
         label: 'Test Property 1',
         address: '1 Rue de la Paix, 75001 Paris, France',
@@ -47,6 +49,7 @@ describe('AuctionsGeocodingService', () => {
         extraData: { url: 'https://test.com/1' },
       },
       {
+        source: AuctionSource.ENCHERES_PUBLIQUES,
         url: 'https://test.com/2',
         label: 'Test Property 2',
         address: '2 Avenue des Champs-Élysées, 75008 Paris, France',
@@ -431,6 +434,7 @@ describe('AuctionsGeocodingService', () => {
   describe('formatAddressForRequest', () => {
     it('should format complete opportunity address', () => {
       const opportunity: RawAuctionOpportunity = {
+        source: AuctionSource.ENCHERES_PUBLIQUES,
         url: 'https://test.com/1',
         label: 'Test Property',
         address: '1 Rue de la Paix, 75001 Paris',
@@ -449,6 +453,7 @@ describe('AuctionsGeocodingService', () => {
 
     it('should add France if not present', () => {
       const opportunity: RawAuctionOpportunity = {
+        source: AuctionSource.ENCHERES_PUBLIQUES,
         url: 'https://test.com/1',
         label: 'Test Property',
         address: '1 Rue de la Paix, Paris',
@@ -467,6 +472,7 @@ describe('AuctionsGeocodingService', () => {
 
     it('should not add France if already present', () => {
       const opportunity: RawAuctionOpportunity = {
+        source: AuctionSource.ENCHERES_PUBLIQUES,
         url: 'https://test.com/1',
         label: 'Test Property',
         address: '1 Rue de la Paix, 75001 Paris, France',
@@ -485,6 +491,7 @@ describe('AuctionsGeocodingService', () => {
 
     it('should handle empty address', () => {
       const opportunity: RawAuctionOpportunity = {
+        source: AuctionSource.ENCHERES_PUBLIQUES,
         url: 'https://test.com/1',
         label: 'Test Property',
         address: '',
@@ -503,6 +510,7 @@ describe('AuctionsGeocodingService', () => {
 
     it('should handle null address', () => {
       const opportunity: RawAuctionOpportunity = {
+        source: AuctionSource.ENCHERES_PUBLIQUES,
         url: 'https://test.com/1',
         label: 'Test Property',
         address: null as any,
@@ -557,6 +565,7 @@ describe('AuctionsGeocodingService', () => {
     it('should respect rate limiting in real time', async () => {
       const opportunities: RawAuctionOpportunity[] = [
         {
+          source: AuctionSource.ENCHERES_PUBLIQUES,
           url: 'https://test.com/1',
           label: 'Test 1',
           address: 'Address 1',
@@ -568,6 +577,7 @@ describe('AuctionsGeocodingService', () => {
           extraData: {},
         },
         {
+          source: AuctionSource.ENCHERES_PUBLIQUES,
           url: 'https://test.com/2',
           label: 'Test 2',
           address: 'Address 2',

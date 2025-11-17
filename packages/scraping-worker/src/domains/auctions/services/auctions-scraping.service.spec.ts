@@ -6,6 +6,7 @@ import {
 import { EncheresPubliquesScraperService } from './encheres-publiques-scraper.service';
 import type { Job } from 'bullmq';
 import type { AuctionOpportunity } from '../types/auctions.types';
+import { AuctionSource } from '@linkinvests/shared';
 
 describe('AuctionsScrapingService', () => {
   let processor: AuctionsScrapingService;
@@ -20,6 +21,7 @@ describe('AuctionsScrapingService', () => {
 
   const mockOpportunities: AuctionOpportunity[] = [
     {
+      source: AuctionSource.ENCHERES_PUBLIQUES,
       url: 'https://encheres-publiques.fr/lot/test-1',
       label: 'Test Property 1',
       address: '1 Rue de la Paix, 75001 Paris, France',
@@ -35,6 +37,7 @@ describe('AuctionsScrapingService', () => {
       },
     },
     {
+      source: AuctionSource.ENCHERES_PUBLIQUES,
       url: 'https://encheres-publiques.fr/lot/test-2',
       label: 'Test Property 2',
       address: '2 Avenue des Champs-Élysées, 75008 Paris, France',

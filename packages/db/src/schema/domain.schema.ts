@@ -26,6 +26,7 @@ export const opportunityAuctions = pgTable('auction', {
   longitude: doublePrecision('longitude').notNull(),
   opportunityDate: date('opportunity_date').notNull(),
   externalId: varchar('external_id').notNull().unique(),
+  source: varchar('source').notNull(),
   // Auction-specific fields
   url: text('url').notNull(),
   auctionType: varchar('auction_type'),

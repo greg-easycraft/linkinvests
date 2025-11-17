@@ -1,10 +1,11 @@
 import { BaseOpportunity, BaseOpportunityInput } from './base-opportunity.types.js';
+import { PropertyType } from '../constants/opportunity.js';
 
 export interface Auction extends BaseOpportunity {
   // Auction-specific fields
   url: string;
   auctionType?: string;
-  propertyType?: string;
+  propertyType?: PropertyType;
   description?: string;
   squareFootage?: number;
   rooms?: number;

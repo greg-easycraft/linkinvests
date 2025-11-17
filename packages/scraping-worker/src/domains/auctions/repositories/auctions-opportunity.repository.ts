@@ -14,14 +14,6 @@ export class AuctionsOpportunityRepository {
   ) {}
 
   /**
-   * Creates external ID from auction ID
-   * Example: auction ID "120597" -> "encheres-publiques-120597"
-   */
-  private createExternalId(auctionId: string): string {
-    return `encheres-publiques-${auctionId}`;
-  }
-
-  /**
    * Creates auction house contact JSONB object from venue information
    */
   private createAuctionHouseContact(auctionVenue?: string) {
@@ -68,8 +60,9 @@ export class AuctionsOpportunityRepository {
         );
 
         // Extract main picture and additional pictures from images array
-        const images = opp.images || [];
-        const mainPicture = images.length > 0 ? images[0] : null;
+        const images = opp.pictures || [];
+        const mainPicture =
+          opp.mainPicture || (images.length > 0 ? images[0] : null);
         const additionalPictures = images.length > 1 ? images.slice(1) : [];
 
         return {
@@ -81,8 +74,8 @@ export class AuctionsOpportunityRepository {
           latitude: opp.latitude,
           longitude: opp.longitude,
           opportunityDate: opp.auctionDate,
-          externalId: this.createExternalId(auctionId),
-
+          externalId: auctionId,
+          source: opp.source,
           // Auction-specific fields (normalized from extraData)
           url: opp.url,
           auctionType: opp.extraData?.auctionType || null,

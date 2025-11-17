@@ -9,6 +9,7 @@ import type {
 } from '../types';
 import { BrowserService } from './browser.service';
 import { DEPARTMENT_IDS_MAP } from '../constants/departments';
+import { AuctionSource, PropertyType } from '@linkinvests/shared';
 
 interface DetailScraperResult {
   success: boolean;
@@ -153,6 +154,8 @@ export class DetailScraperService {
     const { text, latitude, longitude, city, departmentId } =
       this.extractAdress(lotData, apolloState, url);
 
+    const { mainPicture, pictures } = this.getPictures(lotData);
+
     // Build the opportunity object
     const opportunity: RawAuctionOpportunity = {
       url,
@@ -163,10 +166,13 @@ export class DetailScraperService {
       latitude: latitude || 0,
       longitude: longitude || 0,
       auctionDate: this.extractAuctionDate(lotData),
+      mainPicture,
+      source: AuctionSource.ENCHERES_PUBLIQUES,
+      pictures,
       extraData: {
-        id: lotId,
+        id: `${AuctionSource.ENCHERES_PUBLIQUES}-${lotId}`,
         auctionType,
-        propertyType,
+        propertyType: this.getPropertyType(propertyType),
         currentPrice: Number(lotData.offre_actuelle) || undefined,
         lowerEstimate: Number(lotData.estimation_basse) || undefined,
         upperEstimate: Number(lotData.estimation_haute) || undefined,
@@ -182,6 +188,35 @@ export class DetailScraperService {
     return opportunity;
   }
 
+  private getPropertyType(propertyType: string): PropertyType {
+    if (propertyType.toLowerCase().includes('maison'))
+      return PropertyType.HOUSE;
+    if (propertyType.toLowerCase().includes('appartement'))
+      return PropertyType.APARTMENT;
+    if (propertyType.toLowerCase().includes('terrain'))
+      return PropertyType.TERRAIN;
+    return PropertyType.OTHER;
+  }
+
+  private getPictures(lotData: LotData): {
+    mainPicture?: string;
+    pictures?: string[];
+  } {
+    const mainPicture = lotData.photo;
+    const pictures = lotData.photos
+      ?.map((photo: { src: string }) => photo.src)
+      .filter((src: string) => src !== mainPicture);
+    return {
+      mainPicture: mainPicture
+        ? `https://www.encheres-publiques.com${mainPicture}`
+        : undefined,
+      pictures: pictures
+        ? pictures.map(
+            (src: string) => `https://www.encheres-publiques.com${src}`
+          )
+        : undefined,
+    };
+  }
   /**
    * Extract title from nom field - split on 'situé' and take first part
    */

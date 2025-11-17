@@ -1,3 +1,5 @@
+import { AuctionSource, PropertyType } from '@linkinvests/shared';
+
 export interface AuctionListing {
   url: string;
   auctionDate?: string;
@@ -49,6 +51,9 @@ export interface LotData {
   critere_consommation_energetique?: string;
   critere_surface_habitable?: number | string;
   critere_nombre_de_pieces?: number | string;
+  photos?: {
+    src: string;
+  }[];
   adresse?: {
     _ref: string;
   };
@@ -80,12 +85,13 @@ export interface AuctionOpportunity {
   department: string;
   latitude: number;
   longitude: number;
+  source: AuctionSource;
   auctionDate: string; // Will be mapped to opportunityDate in repository
   extraData?: {
     id?: string; // Auction ID from query
     url?: string; // Original auction URL
     auctionType?: string; // Type of auction
-    propertyType?: string; // Property category
+    propertyType?: PropertyType; // Property category
     currentPrice?: number; // Current bid amount
     lowerEstimate?: number; // Lower price estimate
     upperEstimate?: number; // Upper price estimate
@@ -97,7 +103,8 @@ export interface AuctionOpportunity {
     rooms?: number; // Number of rooms
     auctionVenue?: string; // Will be used for contactData
   };
-  images?: string[];
+  mainPicture?: string;
+  pictures?: string[];
 }
 
 export type RawAuctionOpportunity = Omit<AuctionOpportunity, 'zipCode'> & {

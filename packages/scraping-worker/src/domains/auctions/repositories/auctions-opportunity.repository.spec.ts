@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AuctionsOpportunityRepository } from './auctions-opportunity.repository';
 import { DATABASE_CONNECTION } from '../../../database/database.module';
 import type { AuctionOpportunity } from '../types';
+import { AuctionSource } from '@linkinvests/shared';
 
 describe('AuctionsOpportunityRepository', () => {
   let repository: AuctionsOpportunityRepository;
@@ -9,6 +10,7 @@ describe('AuctionsOpportunityRepository', () => {
 
   const mockOpportunities: AuctionOpportunity[] = [
     {
+      source: AuctionSource.ENCHERES_PUBLIQUES,
       url: 'https://encheres-publiques.fr/lot/test-1',
       label: 'Test Property 1',
       address: '1 Rue de la Paix, 75001 Paris, France',
@@ -24,6 +26,7 @@ describe('AuctionsOpportunityRepository', () => {
       },
     },
     {
+      source: AuctionSource.ENCHERES_PUBLIQUES,
       url: 'https://encheres-publiques.fr/lot/test-2',
       label: 'Test Property 2',
       address: '2 Avenue des Champs-Élysées, 75008 Paris, France',

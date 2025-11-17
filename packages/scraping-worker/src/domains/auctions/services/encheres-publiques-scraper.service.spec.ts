@@ -7,6 +7,7 @@ import { DetailScraperService } from './detail-scraper.service';
 import { AuctionsGeocodingService } from './geocoding.service';
 import type { Page } from 'playwright';
 import type { RawAuctionOpportunity, AuctionOpportunity } from '../types';
+import { AuctionSource } from '@linkinvests/shared';
 
 describe('EncheresPubliquesScraperService', () => {
   let service: EncheresPubliquesScraperService;
@@ -34,6 +35,7 @@ describe('EncheresPubliquesScraperService', () => {
 
   const mockRawOpportunities: RawAuctionOpportunity[] = [
     {
+      source: AuctionSource.ENCHERES_PUBLIQUES,
       url: 'https://encheres-publiques.fr/lot/test-1',
       label: 'Test Property 1',
       address: '1 Rue de la Paix, Paris',
@@ -45,6 +47,7 @@ describe('EncheresPubliquesScraperService', () => {
       extraData: { url: 'https://encheres-publiques.fr/lot/test-1' },
     },
     {
+      source: AuctionSource.ENCHERES_PUBLIQUES,
       url: 'https://encheres-publiques.fr/lot/test-2',
       label: 'Test Property 2',
       address: '2 Avenue des Champs-Élysées, Paris',
@@ -380,6 +383,7 @@ describe('EncheresPubliquesScraperService', () => {
         .map((_, index) => `https://encheres-publiques.fr/lot/test-${index}`);
       const largeRawOpportunities: RawAuctionOpportunity[] = largeListing.map(
         (url, index) => ({
+          source: AuctionSource.ENCHERES_PUBLIQUES,
           url,
           label: `Property ${index}`,
           address: `Address ${index}`,

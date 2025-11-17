@@ -51,7 +51,7 @@ export class AuctionsScrapingService {
     ).length;
 
     const withImagesCount = opportunities.filter(
-      (opp) => opp.images && opp.images.length > 0
+      (opp) => opp.mainPicture && opp.pictures && opp.pictures.length > 0
     ).length;
 
     const failedGeocoding = opportunities.length - geocodedCount;

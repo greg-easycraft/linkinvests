@@ -9,6 +9,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'media.immobilier.notaires.fr',
       },
+      {
+        protocol: 'https',
+        hostname: '**.encheres-publiques.com',
+      },
     ],
   },
 };
