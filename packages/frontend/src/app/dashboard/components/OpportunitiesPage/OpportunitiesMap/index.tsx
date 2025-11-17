@@ -3,13 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { X } from "lucide-react";
 import { Opportunity, OpportunityType } from "@linkinvests/shared";
 import { env } from "~/lib/env";
 import { TYPE_LABELS, TYPE_COLORS } from "~/constants/opportunity-types";
-import { formatNumber } from "~/lib/utils";
+import { MapSkeleton } from "./MapSkeleton";
+import { MapEmptyState } from "./MapEmptyState";
 
-interface OpportunityMapProps {
+interface OpportunitiesMapProps {
   opportunities: Opportunity[];
   selectedId?: string;
   onSelect: (opportunity: Opportunity) => void;
@@ -19,26 +19,23 @@ interface OpportunityMapProps {
     east: number;
     west: number;
   }) => void;
-  isLimited?: boolean;
-  total?: number;
   type: OpportunityType;
+  isLoading: boolean;
 }
 
 
-export function OpportunityMap({
+export function OpportunitiesMap({
   opportunities,
   selectedId,
   onSelect,
   onBoundsChange,
-  isLimited = false,
-  total = 0,
   type,
-}: OpportunityMapProps): React.ReactElement {
+  isLoading,
+}: OpportunitiesMapProps): React.ReactElement {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const markersRef = useRef<mapboxgl.Marker[]>([]);
   const [mapLoaded, setMapLoaded] = useState(false);
-  const [isDisclaimerVisible, setIsDisclaimerVisible] = useState(true);
 
   // Initialize map
   useEffect(() => {
@@ -159,43 +156,9 @@ export function OpportunityMap({
 
   return (
     <div className="relative w-full h-full">
+      {isLoading && <MapSkeleton />}
+      {mapLoaded && !isLoading && opportunities.length === 0 && <MapEmptyState />}
       <div ref={mapContainer} className="w-full h-full rounded-lg" />
-
-      {/* Disclaimer for limited results */}
-      {isLimited && isDisclaimerVisible && (
-        <div className="absolute top-4 left-4 right-4 bg-amber-500 text-white p-4 rounded-lg shadow-lg max-w-md">
-          <div className="flex items-start gap-3">
-            <svg
-              className="w-6 h-6 flex-shrink-0 mt-0.5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-              />
-            </svg>
-            <div className="flex-1">
-              <div className="font-semibold mb-1 font-heading">Affichage limité</div>
-              <div className="text-sm">
-                {formatNumber(total)} opportunités correspondent à vos critères, mais seules les 500
-                premières sont affichées. Veuillez affiner vos filtres pour voir des
-                résultats plus précis.
-              </div>
-            </div>
-            <button
-              onClick={() => setIsDisclaimerVisible(false)}
-              className="flex-shrink-0 hover:opacity-80 transition-opacity"
-              aria-label="Fermer"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* Legend */}
       <div className="absolute bottom-4 right-4 bg-[var(--secundary)] text-[var(--primary)] p-4 rounded-lg shadow-lg">

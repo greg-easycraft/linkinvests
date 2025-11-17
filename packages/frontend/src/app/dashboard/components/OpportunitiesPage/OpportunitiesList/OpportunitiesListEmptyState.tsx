@@ -2,7 +2,7 @@ import { Search, Filter } from "lucide-react";
 import { Card } from "~/components/ui/card";
 
 // Empty state component for when no opportunities match criteria
-export function OpportunityListEmptyState(): React.ReactElement {
+export function OpportunitiesListEmptyState(): React.ReactElement {
   return (
     <div className="flex flex-col items-center justify-center min-h-96 px-4 py-12">
       <Card className="w-full max-w-md bg-[var(--secundary)] border-0 shadow-sm">

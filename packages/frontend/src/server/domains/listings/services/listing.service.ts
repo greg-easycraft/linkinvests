@@ -1,11 +1,13 @@
 import type { IListingRepository } from "../lib.types";
 import type { OpportunityFilters } from "~/types/filters";
 import type { Listing } from "@linkinvests/shared";
-import { OpportunitiesListQueryResult, OpportunitiesMapQueryResult } from "~/types/query-result";
+import { OpportunityType } from "@linkinvests/shared";
+import { OpportunitiesDataQueryResult } from "~/types/query-result";
 import type { IExportService, ExportFormat } from "~/server/services/export.service";
+import { getOpportunityHeaders } from "~/server/services/export-headers.service";
+import { DEFAULT_PAGE_SIZE } from "~/constants/filters";
 
 export class ListingService {
-  private readonly MAP_VIEW_LIMIT = 500;
   private readonly EXPORT_LIMIT = 500;
 
   constructor(
@@ -13,46 +15,26 @@ export class ListingService {
     private readonly exportService: IExportService
   ) {}
 
-  async getListings(filters?: OpportunityFilters): Promise<OpportunitiesListQueryResult<Listing>> {
-    const pageSize = filters?.limit ?? 25;
-    const page = filters?.offset ? Math.floor(filters.offset / pageSize) + 1 : 1;
+  async getListingsData(filters?: OpportunityFilters): Promise<OpportunitiesDataQueryResult<Listing>> {
+    const pageSize = filters?.pageSize ?? DEFAULT_PAGE_SIZE;
+    const page = filters?.page ?? 1;
+    const offset = (page - 1) * pageSize;
 
-    const [opportunities, total] = await Promise.all([
-      this.listingRepository.findAll(filters),
-      this.listingRepository.count(filters),
-    ]);
+    const opportunities = await this.listingRepository.findAll(filters, { limit: pageSize, offset });
 
     return {
       opportunities,
-      total,
       page,
       pageSize,
-      totalPages: Math.ceil(total / pageSize),
     };
+  }
+
+  async getListingsCount(filters?: OpportunityFilters): Promise<number> {
+    return await this.listingRepository.count(filters);
   }
 
   async getListingById(id: string): Promise<Listing | null> {
     return await this.listingRepository.findById(id);
-  }
-
-  async getListingsForMap(filters?: OpportunityFilters): Promise<OpportunitiesMapQueryResult<Listing>> {
-    // For map view, limit to avoid performance issues
-    const mapFilters: OpportunityFilters = {
-      ...filters,
-      limit: this.MAP_VIEW_LIMIT,
-      offset: 0,
-    };
-
-    const [opportunities, total] = await Promise.all([
-      this.listingRepository.findAll(mapFilters),
-      this.listingRepository.count(filters),
-    ]);
-
-    return {
-      opportunities,
-      total,
-      isLimited: total > this.MAP_VIEW_LIMIT,
-    };
   }
 
   async exportList(filters: OpportunityFilters, format: ExportFormat): Promise<Blob> {
@@ -63,22 +45,18 @@ export class ListingService {
       throw new Error(`Export limit exceeded. Found ${total} items, maximum allowed is ${this.EXPORT_LIMIT}. Please refine your filters.`);
     }
 
-    // Remove pagination from filters to get all results
-    const exportFilters: OpportunityFilters = {
-      ...filters,
-      limit: undefined,
-      offset: undefined,
-    };
-
     // Fetch all matching listings
-    const listings = (await this.listingRepository.findAll(exportFilters)) as unknown as Record<string, unknown>[];
+    const listings = (await this.listingRepository.findAll(filters)) as unknown as Record<string, unknown>[];
+
+    // Get French headers for listings
+    const customHeaders = getOpportunityHeaders(OpportunityType.REAL_ESTATE_LISTING);
 
     // Export data based on format
     if (format === "csv") {
-      return this.exportService.exportToCSV(listings);
+      return this.exportService.exportToCSV(listings, customHeaders);
     }
     if (format === "xlsx") {
-      return this.exportService.exportToXLSX(listings);
+      return this.exportService.exportToXLSX(listings, customHeaders);
     }
       throw new Error(`Unsupported export format: ${format}`);
   }

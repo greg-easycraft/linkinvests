@@ -30,28 +30,45 @@ export interface DepartmentOption {
 export type EnergyClass = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G';
 
 export interface OpportunityFilters {
+  view?: "list" | "map";
   types?: OpportunityType[];
   departments?: string[];
   zipCodes?: string[];
   dateRange?: DateRange; // Legacy support - uses 'from' date as threshold
   datePeriod?: DatePeriod; // New predefined period - filters for opportunities after start date
   bounds?: MapBounds;
-  limit?: number;
-  offset?: number;
+  page?: number;
+  pageSize?: number;
   sortBy?: string;
   sortOrder?: "asc" | "desc";
   // Energy diagnostics specific filters
   energyClasses?: EnergyClass[];
 }
 
+export interface PaginationFilters {
+  limit: number;
+  offset: number;
+}
+
 export interface EnergyDiagnosticFilters extends OpportunityFilters {
   energyClasses?: EnergyClass[];
 }
 
-// Placeholder for future auction-specific filters
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+// Price range interface for auction filters
+export interface PriceRange {
+  min?: number;
+  max?: number;
+}
+
 export interface AuctionFilters extends OpportunityFilters {
-  // Future: Add auction-specific filter properties here
+  // Auction-specific filter properties
+  auctionTypes?: string[];
+  propertyTypes?: string[];
+  priceRange?: PriceRange;
+  reservePriceRange?: PriceRange;
+  squareFootageRange?: PriceRange; // Reusing PriceRange for number ranges
+  roomsRange?: PriceRange; // Reusing PriceRange for number ranges
+  auctionVenues?: string[];
 }
 
 // Placeholder for future succession-specific filters
@@ -64,4 +81,28 @@ export interface SuccessionFilters extends OpportunityFilters {
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface LiquidationFilters extends OpportunityFilters {
   // Future: Add liquidation-specific filter properties here
+}
+
+// Listing features interface
+export interface ListingFeatures {
+  balcony?: boolean;
+  terrace?: boolean;
+  garden?: boolean;
+  garage?: boolean;
+  parking?: boolean;
+  elevator?: boolean;
+}
+
+export interface ListingFilters extends OpportunityFilters {
+  // Listing-specific filter properties
+  transactionTypes?: string[]; // VENTE, VENTE_EN_L_ETAT_FUTUR_D_ACHEVEMENT, VENTE_AUX_ENCHERES
+  propertyTypes?: string[]; // APP, MAI, TER, etc.
+  priceRange?: PriceRange;
+  squareFootageRange?: PriceRange; // Reusing PriceRange for number ranges
+  landAreaRange?: PriceRange; // Reusing PriceRange for number ranges
+  roomsRange?: PriceRange; // Reusing PriceRange for number ranges
+  bedroomsRange?: PriceRange; // Reusing PriceRange for number ranges
+  constructionYearRange?: PriceRange; // Reusing PriceRange for year ranges
+  dpe?: EnergyClass[]; // Energy performance diagnosis (A-G)
+  features?: ListingFeatures; // Boolean features like balcony, garage, etc.
 }

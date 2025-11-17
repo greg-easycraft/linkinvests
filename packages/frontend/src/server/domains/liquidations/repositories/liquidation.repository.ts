@@ -2,7 +2,7 @@ import { and, eq, gte, inArray, lte, sql, type SQL } from "drizzle-orm";
 import type { DomainDbType } from "~/server/db";
 import { opportunityLiquidations } from "@linkinvests/db";
 import type { ILiquidationRepository } from "../lib.types";
-import type { OpportunityFilters } from "~/types/filters";
+import type { OpportunityFilters, PaginationFilters } from "~/types/filters";
 import { calculateStartDate } from "~/constants/date-periods";
 import type { Liquidation } from "@linkinvests/shared";
 
@@ -54,15 +54,17 @@ export class DrizzleLiquidationRepository implements ILiquidationRepository {
     return conditions;
   }
 
-  async findAll(filters?: OpportunityFilters): Promise<Liquidation[]> {
+  async findAll(filters?: OpportunityFilters, paginationFilters?: PaginationFilters): Promise<Liquidation[]> {
     const conditions = this.buildWhereClause(filters);
 
     let query = this.db
       .select()
       .from(opportunityLiquidations)
-      .limit(filters?.limit ?? 100)
-      .offset(filters?.offset ?? 0)
       .$dynamic();
+
+    if (paginationFilters) {
+      query = query.limit(paginationFilters.limit).offset(paginationFilters.offset);
+    }
 
     if (conditions.length > 0) {
       query = query.where(and(...conditions));

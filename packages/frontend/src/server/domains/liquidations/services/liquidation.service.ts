@@ -1,11 +1,13 @@
 import type { ILiquidationRepository } from "../lib.types";
 import type { OpportunityFilters } from "~/types/filters";
 import type { Liquidation } from "@linkinvests/shared";
-import { OpportunitiesListQueryResult, OpportunitiesMapQueryResult } from "~/types/query-result";
+import { OpportunityType } from "@linkinvests/shared";
+import { OpportunitiesDataQueryResult } from "~/types/query-result";
 import type { IExportService, ExportFormat } from "~/server/services/export.service";
+import { getOpportunityHeaders } from "~/server/services/export-headers.service";
+import { DEFAULT_PAGE_SIZE } from "~/constants/filters";
 
 export class LiquidationService {
-  private readonly MAP_VIEW_LIMIT = 500;
   private readonly EXPORT_LIMIT = 500;
 
   constructor(
@@ -13,46 +15,26 @@ export class LiquidationService {
     private readonly exportService: IExportService
   ) {}
 
-  async getLiquidations(filters?: OpportunityFilters): Promise<OpportunitiesListQueryResult<Liquidation>> {
-    const pageSize = filters?.limit ?? 25;
-    const page = filters?.offset ? Math.floor(filters.offset / pageSize) + 1 : 1;
+  async getLiquidationsData(filters?: OpportunityFilters): Promise<OpportunitiesDataQueryResult<Liquidation>> {
+    const pageSize = filters?.pageSize ?? DEFAULT_PAGE_SIZE;
+    const page = filters?.page ?? 1;
+    const offset = (page - 1) * pageSize;
 
-    const [opportunities, total] = await Promise.all([
-      this.liquidationRepository.findAll(filters),
-      this.liquidationRepository.count(filters),
-    ]);
+    const opportunities = await this.liquidationRepository.findAll(filters, { limit: pageSize, offset });
 
     return {
       opportunities,
-      total,
       page,
       pageSize,
-      totalPages: Math.ceil(total / pageSize),
     };
+  }
+
+  async getLiquidationsCount(filters?: OpportunityFilters): Promise<number> {
+    return await this.liquidationRepository.count(filters);
   }
 
   async getLiquidationById(id: string): Promise<Liquidation | null> {
     return await this.liquidationRepository.findById(id);
-  }
-
-  async getLiquidationsForMap(filters?: OpportunityFilters): Promise<OpportunitiesMapQueryResult<Liquidation>> {
-    // For map view, limit to avoid performance issues
-    const mapFilters: OpportunityFilters = {
-      ...filters,
-      limit: this.MAP_VIEW_LIMIT,
-      offset: 0,
-    };
-
-    const [opportunities, total] = await Promise.all([
-      this.liquidationRepository.findAll(mapFilters),
-      this.liquidationRepository.count(filters),
-    ]);
-
-    return {
-      opportunities,
-      total,
-      isLimited: total > this.MAP_VIEW_LIMIT,
-    };
   }
 
   async exportList(filters: OpportunityFilters, format: ExportFormat): Promise<Blob> {
@@ -63,22 +45,18 @@ export class LiquidationService {
       throw new Error(`Export limit exceeded. Found ${total} items, maximum allowed is ${this.EXPORT_LIMIT}. Please refine your filters.`);
     }
 
-    // Remove pagination from filters to get all results
-    const exportFilters: OpportunityFilters = {
-      ...filters,
-      limit: undefined,
-      offset: undefined,
-    };
+    // Fetch all matching liquidations
+    const liquidations = (await this.liquidationRepository.findAll(filters)) as unknown as Record<string, unknown>[];
 
-    // Fetch all matching auctions
-    const liquidations = (await this.liquidationRepository.findAll(exportFilters)) as unknown as Record<string, unknown>[];
+    // Get French headers for liquidations
+    const customHeaders = getOpportunityHeaders(OpportunityType.LIQUIDATION);
 
     // Export data based on format
     if (format === "csv") {
-      return this.exportService.exportToCSV(liquidations);
-    } 
+      return this.exportService.exportToCSV(liquidations, customHeaders);
+    }
     if (format === "xlsx") {
-      return this.exportService.exportToXLSX(liquidations);
+      return this.exportService.exportToXLSX(liquidations, customHeaders);
     }
       throw new Error(`Unsupported export format: ${format}`);
   }

@@ -6,7 +6,7 @@
  * Minimum timeout before showing skeleton loaders to prevent flashing
  * when data loads quickly (in milliseconds)
  */
-export const SKELETON_TIMEOUT_MS = 400;
+export const SKELETON_TIMEOUT_MS = 200;
 
 /**
  * Debounce delay for filter input changes (in milliseconds)
