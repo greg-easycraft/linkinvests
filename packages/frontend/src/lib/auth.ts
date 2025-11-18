@@ -44,6 +44,7 @@ export const auth = betterAuth({
     disableCSRFCheck: true,
     disableOriginCheck: true
   },
+  trustHost: true,
   
   // // ✅ Fixed: Enable trusted origins for both www and non-www
   // trustedOrigins: [
