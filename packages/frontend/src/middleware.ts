@@ -1,8 +1,13 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { auth } from "./lib/auth";
+import { headers } from "next/headers";
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const session = await auth.api.getSession({
+    headers: await headers()
+})
 
   // Protected routes that require authentication
   const protectedPaths = ["/search"];
@@ -14,17 +19,13 @@ export async function middleware(request: NextRequest) {
   const authPaths = ["/", "/sign-up", "/forgot-password"];
   const isAuthPath = authPaths.some((path) => pathname === path);
 
-  // Check if user has a session by looking for the better-auth session cookie
-  const sessionCookie = request.cookies.get("better-auth.session_token");
-  const hasSession = !!sessionCookie;
-
   // Redirect unauthenticated users to sign-in
-  if (isProtectedPath && !hasSession) {
+  if (isProtectedPath && !session) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
   // Redirect authenticated users to search
-  if (isAuthPath && hasSession) {
+  if (isAuthPath && session) {
     return NextResponse.redirect(new URL("/search", request.url));
   }
 
@@ -32,5 +33,6 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
+  runtime: "nodejs",
   matcher: ["/search/:path*", "/", "/sign-up", "/forgot-password"],
 };
