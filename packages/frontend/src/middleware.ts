@@ -1,8 +1,12 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { env } from "~/lib/env";
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  const { NEXT_PUBLIC_BETTER_AUTH_URL, BETTER_AUTH_URL } = env;
+  console.log({NEXT_PUBLIC_BETTER_AUTH_URL, BETTER_AUTH_URL});
 
   // Protected routes that require authentication
   const protectedPaths = ["/search"];

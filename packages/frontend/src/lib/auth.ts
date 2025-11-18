@@ -36,19 +36,25 @@ export const auth = betterAuth({
     },
   },
 
-  // ✅ Fixed: Enable trusted origins for both www and non-www
-  trustedOrigins: [
-    env.BETTER_AUTH_URL,
-    "https://linkinvests.easycraft.cloud",
-    "https://www.linkinvests.easycraft.cloud"
-  ],
 
-  // ✅ Fixed: Configure cookies to work across subdomains
-  cookies: {
-    domain: ".linkinvests.easycraft.cloud", // Leading dot allows www and non-www
-    secure: true, // Required for production HTTPS
-    sameSite: "lax", // Required for OAuth redirects
+  advanced: {
+    disableCSRFCheck: true,
+    disableOriginCheck: true
   },
+  
+  // // ✅ Fixed: Enable trusted origins for both www and non-www
+  // trustedOrigins: [
+  //   env.BETTER_AUTH_URL,
+  //   "https://linkinvests.easycraft.cloud",
+  //   "https://www.linkinvests.easycraft.cloud"
+  // ],
+
+  // // ✅ Fixed: Configure cookies to work across subdomains
+  // cookies: {
+  //   domain: ".linkinvests.easycraft.cloud", // Leading dot allows www and non-www
+  //   secure: true, // Required for production HTTPS
+  //   sameSite: "lax", // Required for OAuth redirects
+  // },
 
   // ✅ Fixed: Set consistent base URL
   baseURL: env.BETTER_AUTH_URL || "https://linkinvests.easycraft.cloud",
