@@ -40,18 +40,18 @@ export const auth = betterAuth({
   },
 
 
-  advanced: {
-    disableCSRFCheck: true,
-    disableOriginCheck: true
-  },
-  trustHost: true,
+  // advanced: {
+  //   disableCSRFCheck: true,
+  //   disableOriginCheck: true
+  // },
+  // trustHost: true,
   
   // // ✅ Fixed: Enable trusted origins for both www and non-www
-  // trustedOrigins: [
-  //   env.BETTER_AUTH_URL,
-  //   "https://linkinvests.easycraft.cloud",
-  //   "https://www.linkinvests.easycraft.cloud"
-  // ],
+  trustedOrigins: [
+    env.BETTER_AUTH_URL,
+    "https://linkinvests.easycraft.cloud",
+    "https://www.linkinvests.easycraft.cloud"
+  ],
 
   // // ✅ Fixed: Configure cookies to work across subdomains
   // cookies: {
