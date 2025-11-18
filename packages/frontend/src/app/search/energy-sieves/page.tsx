@@ -1,4 +1,4 @@
-import PageWrapper from "../components/PageWrapper";
+import PageWrapper from "../_components/PageWrapper";
 import EnergySievesPageContent from "./EnergySievesPageContent";
 
 export default function EnergySievesPage(): React.ReactElement {

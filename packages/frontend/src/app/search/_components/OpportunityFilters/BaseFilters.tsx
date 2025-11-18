@@ -70,11 +70,11 @@ export function BaseFilters({
   const handleViewTypeChange = useCallback((value: ViewType): void => {
     const newParams = new URLSearchParams(searchParams);
     newParams.set("view", value);
-    router.push(`/dashboard/${TYPE_TO_PATH[currentType]}?${newParams.toString()}`);
+    router.push(`/search/${TYPE_TO_PATH[currentType]}?${newParams.toString()}`);
   }, [router, currentType, searchParams]);
 
   const handleTypeChange = useCallback((value: string): void => {
-    const url = `/dashboard/${TYPE_TO_PATH[value as OpportunityType]}`
+    const url = `/search/${TYPE_TO_PATH[value as OpportunityType]}`
     const pageSize = searchParams.get("pageSize");
     if (!pageSize) {
       router.push(url);

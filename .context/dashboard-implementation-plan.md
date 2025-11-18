@@ -1,11 +1,11 @@
-# Dashboard Implementation Plan
+# search Implementation Plan
 
 **Status:** In Progress
 **Started:** 2025-10-28
 **Last Updated:** 2025-10-28
 
 ## Overview
-Implement a comprehensive dashboard for displaying opportunities with list view, map view, and multiple filtering options.
+Implement a comprehensive search for displaying opportunities with list view, map view, and multiple filtering options.
 
 ## Requirements
 - List view with table displaying all opportunities
@@ -79,10 +79,10 @@ Implement a comprehensive dashboard for displaying opportunities with list view,
 
 ---
 
-## Phase 3: Dashboard Components
+## Phase 3: search Components
 
 ### 3.1 Component Structure
-**Location:** `packages/frontend/src/app/dashboard/components/`
+**Location:** `packages/frontend/src/app/search/components/`
 
 #### OpportunityFilters.tsx (Client Component)
 - [ ] Type filter (multi-select)
@@ -123,8 +123,8 @@ Implement a comprehensive dashboard for displaying opportunities with list view,
 - [ ] Preserves filters when switching
 - [ ] Icon indicators
 
-### 3.2 Dashboard Page
-**Location:** `packages/frontend/src/app/dashboard/page.tsx`
+### 3.2 search Page
+**Location:** `packages/frontend/src/app/search/page.tsx`
 
 - [ ] Server Component for initial data load
 - [ ] Layout with filters, view toggle, main content area

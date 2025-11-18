@@ -5,7 +5,7 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Protected routes that require authentication
-  const protectedPaths = ["/dashboard"];
+  const protectedPaths = ["/search"];
   const isProtectedPath = protectedPaths.some((path) =>
     pathname.startsWith(path)
   );
@@ -23,14 +23,14 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
-  // Redirect authenticated users to dashboard
+  // Redirect authenticated users to search
   if (isAuthPath && hasSession) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+    return NextResponse.redirect(new URL("/search", request.url));
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/", "/sign-up", "/forgot-password"],
+  matcher: ["/search/:path*", "/", "/sign-up", "/forgot-password"],
 };

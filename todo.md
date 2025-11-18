@@ -14,16 +14,13 @@
 
 ## Auctions scraping
 - current price from bids
-- photo
 - LLMs for address from desc
-- departments "00"
 
 ## Decease scraping
 - refine address
 - scraping job
 
 ## Annonces
-- notaires
 - MoteurImmo
 
 ## All Jobs
@@ -47,9 +44,9 @@ Accounts to Open
 
 Encheres (2j)
 - [x] auctions depts 00
+- [x] photos
 - [ ] Auctions price from bids
 - [ ] Auctions address from desc ?
-- [ ] photos
 
 Liquidations (0.5j)
 - [x] problem on Departments < 10
@@ -63,23 +60,15 @@ Passoires Energétiques (0.5j)
 Data fetching
 - annonce occupé vs libre
 -----
-- enchere source
-- enchere type de bien
-- enchere source
 - enchere occupé vs libre
-- enchere photos
 
 -----
-- succession email mairie
-
 Successions (0.5j)
 - [ ] Verif email mairie
 
 Encheres filtres (0.5j)
 - [ ] type de bien
 - [ ] prix réserve
-Encheres display
-- [ ] Verif email
 
 Encheres - filtres (0.5j)
 - [ ] type de bien

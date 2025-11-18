@@ -1,19 +1,20 @@
 'use client';
 
 import { OpportunityType } from "@linkinvests/shared";
-import { getAuctionById, getAuctionsData, getAuctionsCount, exportAuctions } from "~/app/_actions/auctions/queries";
-import OpportunitiesPage from "../components/OpportunitiesPage";
-import { AuctionFilters } from "../components/OpportunityFilters/AuctionFilters";
+import { getEnergyDiagnosticById, getEnergyDiagnosticsData, getEnergyDiagnosticsCount, exportEnergyDiagnostics } from "~/app/_actions/energy-sieves/queries";
+import OpportunitiesPage from "../_components/OpportunitiesPage";
+import { EnergyDiagnosticFilters } from "../_components/OpportunityFilters/EnergyDiagnosticFilters";
 import { useQueryParamFilters } from "~/hooks/useQueryParamFilters";
 import { useOpportunityData } from "~/hooks/useOpportunityData";
 import type { ExportFormat } from "~/server/services/export.service";
 import { useCallback } from "react";
-import { auctionFiltersSchema } from "~/utils/filters/filters.schema";
+import { energyDiagnosticFiltersSchema } from "~/utils/filters/filters.schema";
 
-export default function AuctionsPageContent(): React.ReactElement {
+export default function EnergySievesPageContent(): React.ReactElement {
   // Use query param hook for filters and view type
   const { filters: appliedFilters, setFilters: setAppliedFilters } =
-    useQueryParamFilters(auctionFiltersSchema);
+    useQueryParamFilters(energyDiagnosticFiltersSchema);
+
   // Use unified data fetching - single queries for both list and map views
   const {
     data,
@@ -21,14 +22,14 @@ export default function AuctionsPageContent(): React.ReactElement {
     isCountLoading,
     isLoading
   } = useOpportunityData(
-    OpportunityType.AUCTION,
+    OpportunityType.ENERGY_SIEVE,
     appliedFilters,
-    getAuctionsData,
-    getAuctionsCount
+    getEnergyDiagnosticsData,
+    getEnergyDiagnosticsCount
   );
 
   const handleExport = useCallback(async (format: ExportFormat) => {
-    const result = await exportAuctions(appliedFilters, format);
+    const result = await exportEnergyDiagnostics(appliedFilters, format);
     return result;
   }, [appliedFilters]);
 
@@ -38,12 +39,12 @@ export default function AuctionsPageContent(): React.ReactElement {
       count={count}
       isCountLoading={isCountLoading}
       isLoading={isLoading}
-      getOpportunityById={getAuctionById}
-      opportunityType={OpportunityType.AUCTION}
+      getOpportunityById={getEnergyDiagnosticById}
+      opportunityType={OpportunityType.ENERGY_SIEVE}
       onExport={handleExport}
       FiltersComponent={
-        <AuctionFilters 
-          filters={appliedFilters} 
+        <EnergyDiagnosticFilters
+          filters={appliedFilters}
           onFiltersChange={setAppliedFilters}
         />
       }

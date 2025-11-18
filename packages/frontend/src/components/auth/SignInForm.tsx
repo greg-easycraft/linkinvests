@@ -44,7 +44,7 @@ export function SignInForm() {
       if (result.error) {
         setError(result.error.message || "An error occurred during sign in");
       } else {
-        router.push("/dashboard");
+        router.push("/search");
       }
     } catch {
       setError("An unexpected error occurred");
@@ -60,7 +60,7 @@ export function SignInForm() {
     try {
       await authClient.signIn.social({
         provider: "google",
-        callbackURL: "/dashboard",
+        callbackURL: "/search",
       });
     } catch {
       setError("Failed to sign in with Google");

@@ -97,7 +97,7 @@ describe('SignInForm', () => {
     });
   });
 
-  it('should redirect to dashboard on successful sign-in', async () => {
+  it('should redirect to search on successful sign-in', async () => {
     const user = userEvent.setup();
     vi.mocked(authClient.signIn.email).mockResolvedValue({ data: {}, error: null });
 
@@ -112,7 +112,7 @@ describe('SignInForm', () => {
     await user.click(submitButton);
 
     await waitFor(() => {
-      expect(mockPush).toHaveBeenCalledWith('/dashboard');
+      expect(mockPush).toHaveBeenCalledWith('/search');
     });
   });
 
@@ -150,7 +150,7 @@ describe('SignInForm', () => {
     await waitFor(() => {
       expect(authClient.signIn.social).toHaveBeenCalledWith({
         provider: 'google',
-        callbackURL: '/dashboard',
+        callbackURL: '/search',
       });
     });
   });

@@ -9,7 +9,7 @@ Implement authentication in `@packages/frontend` using better-auth with Google O
 - ✓ Landing page (/) will render sign-in form directly
 - ✓ No email verification required for signups
 - ✓ Include password reset (forgot password) functionality
-- ✓ Post-login redirect to `/dashboard`
+- ✓ Post-login redirect to `/search`
 
 ## Implementation Steps
 
@@ -113,16 +113,16 @@ Implement authentication in `@packages/frontend` using better-auth with Google O
 ### 7. Protected Routes & Session Management
 
 - [x] Create `src/middleware.ts`
-  - Check session for protected routes (`/dashboard`)
+  - Check session for protected routes (`/search`)
   - Redirect unauthenticated users to `/`
-  - Redirect authenticated users from `/` to `/dashboard`
+  - Redirect authenticated users from `/` to `/search`
   - Configure matcher for auth and protected routes
 
 - [x] Create `src/lib/get-session.ts`
   - Server-side session helper
   - Export `getSession()` function for use in server components/actions
 
-- [x] Update `src/app/dashboard/page.tsx`
+- [x] Update `src/app/search/page.tsx`
   - Add session check (redirect if not authenticated)
   - Display user info in header with avatar dropdown
   - Avatar displays user image or initials
@@ -131,7 +131,7 @@ Implement authentication in `@packages/frontend` using better-auth with Google O
 - [x] Create UI components for user menu
   - `src/components/ui/dropdown-menu.tsx` - Dropdown menu component
   - `src/components/ui/avatar.tsx` - Avatar component
-  - `src/app/dashboard/components/UserInfo.tsx` - User avatar with dropdown
+  - `src/app/search/components/UserInfo.tsx` - User avatar with dropdown
 
 ### 8. Database Schema Review
 - [ ] Verify existing schema at `/packages/db/src/schema/auth.schema.ts`
@@ -189,9 +189,9 @@ Implement authentication in `@packages/frontend` using better-auth with Google O
 ✓ Email/password authentication
 ✓ Password reset flow
 ✓ No email verification (as requested)
-✓ Protected dashboard route
+✓ Protected search route
 ✓ Landing page = sign-in page
-✓ Post-login redirect to /dashboard
+✓ Post-login redirect to /search
 ✓ Uses existing database schema
 ✓ Type-safe with TypeScript
 ✓ Integration with existing architecture

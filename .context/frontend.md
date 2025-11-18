@@ -21,7 +21,7 @@ This document outlines the frontend-specific coding standards and best practices
 
 ```typescript
 // ✅ Good - Refactored component structure
-// /src/app/_components/agents/domain-expert-dashboard/
+// /src/app/_components/agents/domain-expert-search/
 // ├── index.tsx                 (Main orchestrator)
 // ├── WelcomeSection.tsx        (Welcome message and stats)
 // ├── StatsCards.tsx           (Statistics display)
@@ -30,11 +30,11 @@ This document outlines the frontend-specific coding standards and best practices
 // └── RecentConversations.tsx       (Recent conversations display)
 
 // Main orchestrator component
-export function DomainExpertDashboard({
+export function DomainExpertsearch({
     assignedAgents,
     recentConversations,
     user,
-}: DomainExpertDashboardProps) {
+}: DomainExpertsearchProps) {
     const [searchTerm, setSearchTerm] = useState('');
     
     // Shared logic and state management
@@ -533,14 +533,14 @@ export const AgentCard = React.memo(function AgentCard({
 
 ```typescript
 // ✅ Good - Lazy loading with loading state
-const AgentManagementDashboard = lazy(() => 
-    import('./AgentManagementDashboard')
+const AgentManagementsearch = lazy(() => 
+    import('./AgentManagementsearch')
 );
 
 export function AdminPage() {
     return (
         <Suspense fallback={<LoadingSpinner />}>
-            <AgentManagementDashboard />
+            <AgentManagementsearch />
         </Suspense>
     );
 }

@@ -2,8 +2,8 @@
 
 import { OpportunityType } from "@linkinvests/shared";
 import { getSuccessionById, getSuccessionsData, getSuccessionsCount, exportSuccessions } from "~/app/_actions/successions/queries";
-import OpportunitiesPage from "../components/OpportunitiesPage";
-import { BaseFilters } from "../components/OpportunityFilters/BaseFilters";
+import OpportunitiesPage from "../_components/OpportunitiesPage";
+import { BaseFilters } from "../_components/OpportunityFilters/BaseFilters";
 import { useQueryParamFilters } from "~/hooks/useQueryParamFilters";
 import { useOpportunityData } from "~/hooks/useOpportunityData";
 import type { ExportFormat } from "~/server/services/export.service";

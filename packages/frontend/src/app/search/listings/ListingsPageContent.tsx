@@ -1,19 +1,19 @@
 'use client';
 
 import { OpportunityType } from "@linkinvests/shared";
-import { getEnergyDiagnosticById, getEnergyDiagnosticsData, getEnergyDiagnosticsCount, exportEnergyDiagnostics } from "~/app/_actions/energy-sieves/queries";
-import OpportunitiesPage from "../components/OpportunitiesPage";
-import { EnergyDiagnosticFilters } from "../components/OpportunityFilters/EnergyDiagnosticFilters";
+import { getListingById, getListingsData, getListingsCount, exportListings } from "~/app/_actions/listings/queries";
+import OpportunitiesPage from "../_components/OpportunitiesPage";
+import { ListingFilters } from "../_components/OpportunityFilters/ListingFilters";
 import { useQueryParamFilters } from "~/hooks/useQueryParamFilters";
 import { useOpportunityData } from "~/hooks/useOpportunityData";
 import type { ExportFormat } from "~/server/services/export.service";
 import { useCallback } from "react";
-import { energyDiagnosticFiltersSchema } from "~/utils/filters/filters.schema";
+import { listingFiltersSchema } from "~/utils/filters/filters.schema";
 
-export default function EnergySievesPageContent(): React.ReactElement {
+export default function ListingsPageContent(): React.ReactElement {
   // Use query param hook for filters and view type
   const { filters: appliedFilters, setFilters: setAppliedFilters } =
-    useQueryParamFilters(energyDiagnosticFiltersSchema);
+    useQueryParamFilters(listingFiltersSchema);
 
   // Use unified data fetching - single queries for both list and map views
   const {
@@ -22,14 +22,14 @@ export default function EnergySievesPageContent(): React.ReactElement {
     isCountLoading,
     isLoading
   } = useOpportunityData(
-    OpportunityType.ENERGY_SIEVE,
+    OpportunityType.REAL_ESTATE_LISTING,
     appliedFilters,
-    getEnergyDiagnosticsData,
-    getEnergyDiagnosticsCount
+    getListingsData,
+    getListingsCount
   );
 
   const handleExport = useCallback(async (format: ExportFormat) => {
-    const result = await exportEnergyDiagnostics(appliedFilters, format);
+    const result = await exportListings(appliedFilters, format);
     return result;
   }, [appliedFilters]);
 
@@ -39,11 +39,11 @@ export default function EnergySievesPageContent(): React.ReactElement {
       count={count}
       isCountLoading={isCountLoading}
       isLoading={isLoading}
-      getOpportunityById={getEnergyDiagnosticById}
-      opportunityType={OpportunityType.ENERGY_SIEVE}
+      getOpportunityById={getListingById}
+      opportunityType={OpportunityType.REAL_ESTATE_LISTING}
       onExport={handleExport}
       FiltersComponent={
-        <EnergyDiagnosticFilters
+        <ListingFilters
           filters={appliedFilters}
           onFiltersChange={setAppliedFilters}
         />

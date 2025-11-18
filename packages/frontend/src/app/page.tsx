@@ -22,7 +22,7 @@ export default function Home() {
         </div>
         <div className="flex justify-center">
           <Button variant="outline" asChild>
-            <Link href="/dashboard">
+            <Link href="/search">
               Accéder à la plateforme
             </Link>
           </Button>
