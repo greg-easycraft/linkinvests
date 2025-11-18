@@ -11,7 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/com
 import Link from "next/link";
 
 const forgotPasswordSchema = z.object({
-  email: z.email("Invalid email address"),
+  email: z.email("Adresse email invalide"),
 });
 
 type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
@@ -40,7 +40,7 @@ export function ForgotPasswordForm() {
       });
       setSuccess(true);
     } catch {
-      setError("Failed to send reset email. Please try again.");
+      setError("Échec de l'envoi de l'email de réinitialisation. Veuillez réessayer.");
     } finally {
       setIsPending(false);
     }
@@ -48,16 +48,16 @@ export function ForgotPasswordForm() {
 
   if (success) {
     return (
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md bg-[var(--secundary)]">
         <CardHeader>
-          <CardTitle>Check your email</CardTitle>
-          <CardDescription>
-            We&apos;ve sent you a password reset link. Please check your email.
+          <CardTitle className="!text-[var(--primary)]">Vérifiez votre email</CardTitle>
+          <CardDescription className="!text-[var(--primary)]">
+            Nous vous avons envoyé un lien de réinitialisation. Veuillez vérifier votre boîte de réception.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Link href="/" className="text-primary hover:underline text-sm">
-            Back to sign in
+            Retour à la connexion
           </Link>
         </CardContent>
       </Card>
@@ -65,11 +65,11 @@ export function ForgotPasswordForm() {
   }
 
   return (
-    <Card className="w-full max-w-md">
+    <Card className="w-full max-w-md bg-[var(--secundary)]">
       <CardHeader>
-        <CardTitle>Forgot password</CardTitle>
-        <CardDescription>
-          Enter your email address and we&apos;ll send you a reset link
+        <CardTitle className="!text-[var(--primary)]">Mot de passe oublié</CardTitle>
+        <CardDescription className="!text-[var(--primary)]">
+          Entrez votre adresse email et nous vous enverrons un lien de réinitialisation
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -81,13 +81,13 @@ export function ForgotPasswordForm() {
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">
-            <label htmlFor="email" className="text-sm font-medium">
+            <label htmlFor="email" className="text-sm font-medium text-[var(--primary)]">
               Email
             </label>
             <Input
               id="email"
               type="email"
-              placeholder="you@example.com"
+              placeholder="votre@email.com"
               {...register("email")}
             />
             {errors.email && (
@@ -100,13 +100,13 @@ export function ForgotPasswordForm() {
             className="w-full"
             disabled={isPending}
           >
-            {isPending ? "Sending..." : "Send Reset Link"}
+            {isPending ? "Envoi en cours..." : "Envoyer le lien de réinitialisation"}
           </Button>
         </form>
 
         <div className="text-center text-sm">
           <Link href="/" className="text-primary hover:underline">
-            Back to sign in
+            Retour à la connexion
           </Link>
         </div>
       </CardContent>

@@ -1,7 +1,7 @@
-import { ForgotPasswordForm } from "~/components/auth/ForgotPasswordForm";
+import { VerifyEmailCard } from "~/components/auth/VerifyEmailCard";
 import Image from "next/image";
 
-export default function ForgotPasswordPage() {
+export default function VerifyEmailPage() {
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="w-full max-w-md px-4">
@@ -18,7 +18,7 @@ export default function ForgotPasswordPage() {
             Plateforme d&apos;investissement immobilier
           </p>
         </div>
-        <ForgotPasswordForm />
+        <VerifyEmailCard />
       </div>
     </div>
   );

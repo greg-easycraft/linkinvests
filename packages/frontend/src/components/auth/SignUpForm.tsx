@@ -57,7 +57,7 @@ export function SignUpForm() {
       if (result.error) {
         setError(result.error.message || "An error occurred during sign up");
       } else {
-        router.push("/search");
+        router.push("/verify-email");
       }
     } catch {
       setError("An unexpected error occurred");

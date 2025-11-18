@@ -36,18 +36,32 @@ export function SignInForm() {
     setIsPending(true);
 
     try {
-      const result = await authClient.signIn.email({
-        email: data.email,
-        password: data.password,
-      });
+      const result = await authClient.signIn.email(
+        {
+          email: data.email,
+          password: data.password,
+        },
+        {
+          onError: (ctx) => {
+            if (ctx.error.status === 403) {
+              setError(
+                "Votre email n'est pas encore vérifié. Veuillez vérifier votre boîte de réception ou vous rendre sur la page de vérification."
+              );
+              // Optionally redirect to verify-email page
+              setTimeout(() => router.push("/verify-email"), 3000);
+            } else {
+              setError(ctx.error.message || "Une erreur s'est produite lors de la connexion");
+            }
+          },
+        }
+      );
 
-      if (result.error) {
-        setError(result.error.message || "An error occurred during sign in");
-      } else {
+      if (result.data) {
         router.push("/search");
       }
-    } catch {
-      setError("An unexpected error occurred");
+    } catch (error) {
+      console.error("Sign-in error:", error);
+      setError("Une erreur inattendue s'est produite");
     } finally {
       setIsPending(false);
     }
