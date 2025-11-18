@@ -5,6 +5,9 @@ import { users, sessions, accounts, verifications } from "@linkinvests/db";
 import { env } from "~/lib/env";
 
 export const auth = betterAuth({
+  logger: {
+    level: "debug",
+  },
   database: drizzleAdapter(db, {
     provider: "pg",
     schema: {
