@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useCallback, useEffect, useState } from 'react';
-import Image from 'next/image';
 import { EmblaOptionsType, EmblaCarouselType } from 'embla-carousel';
 import useEmblaCarousel from 'embla-carousel-react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -89,10 +88,9 @@ export function ImageCarousel({ opportunity, className = '' }: ImageCarouselProp
           {/* Image slides */}
           {images.map((imageUrl, index) => (
             <div key={index} className="flex-[0_0_100%] min-w-0 relative" style={{ height: '300px' }}>
-              <Image
+              <img
                 src={imageUrl}
                 alt={`Property image ${index + 1}`}
-                fill
                 className="object-cover rounded-lg border border-black"
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               />

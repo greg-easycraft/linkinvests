@@ -1,6 +1,5 @@
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import Image from "next/image";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
@@ -36,7 +35,7 @@ export function OpportunityCard({ opportunity, onSelect, selectedId, type, exter
             {/* Thumbnail - Main Picture or Street View fallback */}
             <div className="flex-shrink-0">
               {hasPictureFields(opportunity) && opportunity.mainPicture ? (
-                <Image
+                <img
                   src={opportunity.mainPicture}
                   alt="Property main picture"
                   width={96}
