@@ -11,14 +11,26 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/com
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-const signInSchema = z.object({
-  email: z.email("Invalid email address"),
-  password: z.string().min(8, "Password must be at least 8 characters"),
+const signUpSchema = z.object({
+  name: z.string()
+    .min(1, "Name is required")
+    .min(2, "Name must be at least 2 characters")
+    .max(100, "Name must be less than 100 characters"),
+  email: z.string().email("Invalid email address"),
+  password: z.string()
+    .min(8, "Password must be at least 8 characters")
+    .regex(/(?=.*[a-z])/, "Password must contain at least one lowercase letter")
+    .regex(/(?=.*[A-Z])/, "Password must contain at least one uppercase letter")
+    .regex(/(?=.*\d)/, "Password must contain at least one number"),
+  confirmPassword: z.string().min(1, "Please confirm your password"),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords do not match",
+  path: ["confirmPassword"],
 });
 
-type SignInFormData = z.infer<typeof signInSchema>;
+type SignUpFormData = z.infer<typeof signUpSchema>;
 
-export function SignInForm() {
+export function SignUpForm() {
   const [error, setError] = useState<string | null>(null);
   const [isPending, setIsPending] = useState(false);
   const router = useRouter();
@@ -27,22 +39,23 @@ export function SignInForm() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<SignInFormData>({
-    resolver: zodResolver(signInSchema),
+  } = useForm<SignUpFormData>({
+    resolver: zodResolver(signUpSchema),
   });
 
-  const onSubmit = async (data: SignInFormData) => {
+  const onSubmit = async (data: SignUpFormData) => {
     setError(null);
     setIsPending(true);
 
     try {
-      const result = await authClient.signIn.email({
+      const result = await authClient.signUp.email({
         email: data.email,
         password: data.password,
+        name: data.name,
       });
 
       if (result.error) {
-        setError(result.error.message || "An error occurred during sign in");
+        setError(result.error.message || "An error occurred during sign up");
       } else {
         router.push("/search");
       }
@@ -53,7 +66,7 @@ export function SignInForm() {
     }
   };
 
-  const handleGoogleSignIn = async () => {
+  const handleGoogleSignUp = async () => {
     setError(null);
     setIsPending(true);
 
@@ -63,7 +76,7 @@ export function SignInForm() {
         callbackURL: "/search",
       });
     } catch {
-      setError("Failed to sign in with Google");
+      setError("Failed to sign up with Google");
       setIsPending(false);
     }
   };
@@ -71,8 +84,8 @@ export function SignInForm() {
   return (
     <Card className="w-full max-w-md bg-[var(--secundary)]">
       <CardHeader>
-        <CardTitle className="!text-[var(--primary)]">Connexion</CardTitle>
-        <CardDescription className="!text-[var(--primary)]">Connectez-vous à votre compte</CardDescription>
+        <CardTitle className="!text-[var(--primary)]">Créer un compte</CardTitle>
+        <CardDescription className="!text-[var(--primary)]">Créez votre nouveau compte</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {error && (
@@ -82,6 +95,21 @@ export function SignInForm() {
         )}
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <div className="space-y-2">
+            <label htmlFor="name" className="text-sm font-medium text-[var(--primary)]">
+              Name
+            </label>
+            <Input
+              id="name"
+              type="text"
+              placeholder="Your full name"
+              {...register("name")}
+            />
+            {errors.name && (
+              <p className="text-sm text-red-600">{errors.name.message}</p>
+            )}
+          </div>
+
           <div className="space-y-2">
             <label htmlFor="email" className="text-sm font-medium text-[var(--primary)]">
               Email
@@ -110,11 +138,21 @@ export function SignInForm() {
             {errors.password && (
               <p className="text-sm text-red-600">{errors.password.message}</p>
             )}
-            <div>
-              <Link href="/forgot-password" className="text-primary hover:underline">
-                Mot de passe oublié ?
-              </Link>
-            </div>
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="confirmPassword" className="text-sm font-medium text-[var(--primary)]">
+              Confirm Password
+            </label>
+            <Input
+              id="confirmPassword"
+              type="password"
+              placeholder="••••••••"
+              {...register("confirmPassword")}
+            />
+            {errors.confirmPassword && (
+              <p className="text-sm text-red-600">{errors.confirmPassword.message}</p>
+            )}
           </div>
 
           <Button
@@ -122,14 +160,15 @@ export function SignInForm() {
             className="w-full"
             disabled={isPending}
           >
-            {isPending ? "Signing in..." : "Sign In"}
+            {isPending ? "Creating account..." : "Sign Up"}
           </Button>
         </form>
+
         <div className="space-y-2 text-center text-sm">
           <div>
-            <span className="text-[var(--primary)]">Pas de compte ? </span>
-            <Link href="/sign-up" className="text-primary hover:underline">
-              Créer un compte
+            <span className="text-[var(--primary)]">Déjà un compte ? </span>
+            <Link href="/" className="text-primary hover:underline">
+              Connectez-vous
             </Link>
           </div>
         </div>
@@ -144,7 +183,7 @@ export function SignInForm() {
           type="button"
           variant="outline"
           className="w-full"
-          onClick={handleGoogleSignIn}
+          onClick={handleGoogleSignUp}
           disabled={isPending}
         >
           <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
