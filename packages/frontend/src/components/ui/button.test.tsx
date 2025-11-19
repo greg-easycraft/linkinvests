@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+// describe, it, expect are Jest globals
 import { render, screen } from '~/test-utils/test-helpers';
 import userEvent from '@testing-library/user-event';
 import { Button } from './button';
@@ -12,7 +12,7 @@ describe('Button', () => {
 
   it('should handle click events', async () => {
     const user = userEvent.setup();
-    const handleClick = vi.fn();
+    const handleClick = jest.fn();
 
     render(<Button onClick={handleClick}>Click me</Button>);
 
@@ -30,7 +30,7 @@ describe('Button', () => {
 
   it('should not call onClick when disabled', async () => {
     const user = userEvent.setup();
-    const handleClick = vi.fn();
+    const handleClick = jest.fn();
 
     render(
       <Button disabled onClick={handleClick}>

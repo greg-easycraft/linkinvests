@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+// describe, it, expect are Jest globals
 import { render, screen } from '~/test-utils/test-helpers';
 import { Avatar, AvatarImage, AvatarFallback } from './avatar';
 
@@ -37,7 +37,7 @@ describe('Avatar Components', () => {
     });
 
     it('should forward ref correctly', () => {
-      const ref = vi.fn();
+      const ref = jest.fn();
       render(
         <Avatar ref={ref}>
           <AvatarFallback>JD</AvatarFallback>

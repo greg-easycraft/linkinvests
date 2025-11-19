@@ -1,5 +1,7 @@
 import { z } from 'zod';
-import { BaseOpportunityInput } from '../types/base-opportunity.types.js';
+import { BaseOpportunity } from '../types/base-opportunity.types.js';
+
+type BaseOpportunityInput = Omit<BaseOpportunity, 'id' | 'createdAt' | 'updatedAt'>;
 
 export const baseOpportunityInputSchema = z.object({
   label: z.string(),

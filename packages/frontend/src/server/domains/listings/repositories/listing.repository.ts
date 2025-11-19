@@ -1,5 +1,5 @@
 import { and, eq, gte, inArray, lte, sql, type SQL } from "drizzle-orm";
-import type { DomainDbType } from "~/server/db";
+import type { DomainDbType } from "~/types/db";
 import { opportunityListings } from "@linkinvests/db";
 import type { IListingRepository } from "../lib.types";
 import type { OpportunityFilters, PaginationFilters } from "~/types/filters";
@@ -113,30 +113,32 @@ export class DrizzleListingRepository implements IListingRepository {
 
   private mapListing(listing: typeof opportunityListings.$inferSelect): Listing {
     return {
-      id: listing.id,
-      label: listing.label,
+      ...listing,
       source: listing.source as ListingSource,
-      address: listing.address ?? '',
-      zipCode: parseInt(listing.zipCode, 10),
-      department: parseInt(listing.department, 10),
-      latitude: listing.latitude,
-      longitude: listing.longitude,
-      opportunityDate: listing.opportunityDate,
-      externalId: listing.externalId,
-      createdAt: listing.createdAt,
-      updatedAt: listing.updatedAt,
-      // Listing-specific fields
-      url: listing.url,
-      transactionType: listing.transactionType ?? undefined,
-      propertyType: listing.propertyType as PropertyType,
-      description: listing.description ?? undefined,
-      squareFootage: listing.squareFootage ? Number(listing.squareFootage) : undefined,
-      rooms: listing.rooms ?? undefined,
-      dpe: listing.dpe ?? undefined,
-      price: listing.price ? Number(listing.price) : undefined,
+      address: listing.address ?? undefined,
       mainPicture: listing.mainPicture ?? undefined,
       pictures: listing.pictures ?? undefined,
       sellerContact: listing.sellerContact ?? undefined,
+      propertyType: listing.propertyType as PropertyType,
+      description: listing.description ?? undefined,
+      squareFootage: listing.squareFootage ?? undefined,
+      landArea: listing.landArea ?? undefined,
+      rooms: listing.rooms ?? undefined,
+      bedrooms: listing.bedrooms ?? undefined,
+      dpe: listing.dpe ?? undefined,
+      constructionYear: listing.constructionYear ?? undefined,
+      floor: listing.floor ?? undefined,
+      totalFloors: listing.totalFloors ?? undefined,
+      balcony: listing.balcony ?? undefined,
+      terrace: listing.terrace ?? undefined,
+      garden: listing.garden ?? undefined,
+      garage: listing.garage ?? undefined,
+      parking: listing.parking ?? undefined,
+      elevator: listing.elevator ?? undefined,
+      price: listing.price ?? undefined,
+      priceType: listing.priceType ?? undefined,
+      fees: listing.fees ?? undefined,
+      charges: listing.charges ?? undefined,
     };
   }
 }

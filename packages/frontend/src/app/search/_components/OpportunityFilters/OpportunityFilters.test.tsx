@@ -1,11 +1,11 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+// describe, it, expect, beforeEach are Jest globals
 import { render, screen } from '~/test-utils/test-helpers';
 import { BaseFilters } from './BaseFilters';
 import { OpportunityType } from '@linkinvests/shared';
 import type { OpportunityFilters as IOpportunityFilters } from '~/types/filters';
 
 describe('BaseFilters', () => {
-  const mockOnFiltersChange = vi.fn();
+  const mockOnFiltersChange = jest.fn();
 
   const emptyFilters: IOpportunityFilters = {};
   const defaultProps = {
@@ -15,7 +15,7 @@ describe('BaseFilters', () => {
   };
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   describe('Rendering', () => {

@@ -149,7 +149,6 @@ export class EnergyDiagnosticsProcessor extends WorkerHost {
       .split('T')[0];
 
     const dpeInput = {
-      dpeNumber: record.numero_dpe,
       externalId: record.numero_dpe,
       label: record.adresse_ban || record.nom_commune_ban || 'Unknown',
       address: record.adresse_ban,

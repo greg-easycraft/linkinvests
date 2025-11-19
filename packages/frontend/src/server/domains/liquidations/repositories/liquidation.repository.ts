@@ -1,5 +1,5 @@
 import { and, eq, gte, inArray, lte, sql, type SQL } from "drizzle-orm";
-import type { DomainDbType } from "~/server/db";
+import type { DomainDbType } from "~/types/db";
 import { opportunityLiquidations } from "@linkinvests/db";
 import type { ILiquidationRepository } from "../lib.types";
 import type { OpportunityFilters, PaginationFilters } from "~/types/filters";
@@ -97,20 +97,9 @@ export class DrizzleLiquidationRepository implements ILiquidationRepository {
 
   private mapLiquidation(liquidation: typeof opportunityLiquidations.$inferSelect): Liquidation {
     return {
-      id: liquidation.id,
-      label: liquidation.label,
-      address: liquidation.address ?? '',
-      zipCode: parseInt(liquidation.zipCode, 10),
-      department: parseInt(liquidation.department, 10),
-      latitude: liquidation.latitude,
-      longitude: liquidation.longitude,
-      opportunityDate: liquidation.opportunityDate,
-      externalId: undefined, // Liquidations don't have external IDs
-      createdAt: liquidation.createdAt,
-      updatedAt: liquidation.updatedAt,
-      // Liquidation-specific fields
-      siret: liquidation.siret,
+      ...liquidation,
       companyContact: liquidation.companyContact ?? undefined,
+      externalId: liquidation.siret,
     };
   }
 

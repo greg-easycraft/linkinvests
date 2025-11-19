@@ -12,6 +12,3 @@ export interface BaseOpportunity {
   createdAt: Date;
   updatedAt: Date;
 }
-
-// Base opportunity interface for creation (without generated fields)
-export type BaseOpportunityInput = Omit<BaseOpportunity, 'id' | 'createdAt' | 'updatedAt'>;

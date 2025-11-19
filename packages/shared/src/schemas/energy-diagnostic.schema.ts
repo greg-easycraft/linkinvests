@@ -4,7 +4,6 @@ import { EnergyDiagnosticInput } from "../types/energy-diagnostic.types.js";
 
 export const energyDiagnosticInputSchema = baseOpportunityInputSchema.extend({
   energyClass: z.string(),
-  dpeNumber: z.string(),
   squareFootage: z.number(),
   address: z.string(),
 });

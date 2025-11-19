@@ -1,10 +1,11 @@
 import { and, eq, gte, inArray, lte, sql, type SQL } from "drizzle-orm";
-import type { DomainDbType } from "~/server/db";
+import type { DomainDbType } from "~/types/db";
 import { energyDiagnostics } from "@linkinvests/db";
 import type { IEnergyDiagnosticsRepository } from "../lib.types";
 import type { OpportunityFilters, PaginationFilters } from "~/types/filters";
 import { calculateStartDate } from "~/constants/date-periods";
 import type { EnergyDiagnostic } from "@linkinvests/shared";
+import { DEFAULT_PAGE_SIZE } from "~/constants/filters";
 
 export class DrizzleEnergyDiagnosticsRepository implements IEnergyDiagnosticsRepository {
   constructor(private readonly db: DomainDbType) {}
@@ -16,10 +17,8 @@ export class DrizzleEnergyDiagnosticsRepository implements IEnergyDiagnosticsRep
   private buildWhereClause(filters?: OpportunityFilters): SQL[] {
     const conditions: SQL[] = [];
 
-    // ALWAYS filter for F and G energy classes only
-    conditions.push(inArray(energyDiagnostics.energyClass, ['E', 'F', 'G']));
-
     if (!filters) {
+      conditions.push(inArray(energyDiagnostics.energyClass, ['E', 'F', 'G']));
       return conditions;
     }
 
@@ -58,17 +57,19 @@ export class DrizzleEnergyDiagnosticsRepository implements IEnergyDiagnosticsRep
     // Additional energy class filtering if specified in filters
     // Note: This will intersect with the mandatory F/G filter above
     if (filters.energyClasses && filters.energyClasses.length > 0) {
-      // Intersect with F and G classes only
-      const allowedClasses = filters.energyClasses.filter(cls => cls === 'F' || cls === 'G');
+      // Intersect with E, F and G classes only
+      const allowedClasses = filters.energyClasses.filter(cls => ['E', 'F', 'G'].includes(cls));
       if (allowedClasses.length > 0) {
         conditions.push(inArray(energyDiagnostics.energyClass, allowedClasses));
       }
+    } else {
+      conditions.push(inArray(energyDiagnostics.energyClass, ['E', 'F', 'G']));
     }
 
     return conditions;
   }
 
-  async findAll(filters?: OpportunityFilters, paginationFilters?: PaginationFilters): Promise<EnergyDiagnostic[]> {
+  async findAll(filters?: OpportunityFilters, paginationFilters: PaginationFilters = { limit: DEFAULT_PAGE_SIZE, offset: 0 }): Promise<EnergyDiagnostic[]> {
     const conditions = this.buildWhereClause(filters);
 
     let query = this.db
@@ -96,7 +97,7 @@ export class DrizzleEnergyDiagnosticsRepository implements IEnergyDiagnosticsRep
     }
 
     const results = await query;
-    return results.map(this.mapEnergyDiagnostic);
+    return results;
   }
 
   async findById(id: string): Promise<EnergyDiagnostic | null> {
@@ -110,26 +111,7 @@ export class DrizzleEnergyDiagnosticsRepository implements IEnergyDiagnosticsRep
       ))
       .limit(1);
 
-    return result[0] ? this.mapEnergyDiagnostic(result[0]) : null;
-  }
-
-  private mapEnergyDiagnostic(diagnostic: typeof energyDiagnostics.$inferSelect): EnergyDiagnostic {
-    return {
-      id: diagnostic.id,
-      label: diagnostic.label,
-      address: diagnostic.address ?? '',
-      zipCode: parseInt(diagnostic.zipCode, 10),
-      department: parseInt(diagnostic.department, 10),
-      latitude: diagnostic.latitude,
-      longitude: diagnostic.longitude,
-      opportunityDate: diagnostic.opportunityDate,
-      externalId: undefined, // Energy diagnostics don't have external IDs
-      createdAt: diagnostic.createdAt,
-      updatedAt: diagnostic.updatedAt,
-      // Energy-specific fields
-      energyClass: diagnostic.energyClass ?? undefined,
-      dpeNumber: diagnostic.dpeNumber ?? undefined,
-    };
+    return result[0] ?? null;
   }
 
   async count(filters?: OpportunityFilters): Promise<number> {

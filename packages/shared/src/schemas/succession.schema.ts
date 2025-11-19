@@ -7,13 +7,14 @@ const mairieContactSchema = z.object({
   name: z.string().optional(),
   address: z.string().optional(),
   phone: z.string().optional(),
-  email: z.string().email().optional(),
-  website: z.string().url().optional(),
+  email: z.email().optional(),
+  website: z.url().optional(),
   openingHours: z.string().optional(),
 }).optional();
 
 // Schema for succession input extending base opportunity
 export const successionInputSchema = baseOpportunityInputSchema.extend({
+  address: z.string(),
   firstName: z.string().min(1),
   lastName: z.string().min(1),
   mairieContact: mairieContactSchema,

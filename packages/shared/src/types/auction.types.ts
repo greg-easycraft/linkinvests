@@ -1,4 +1,4 @@
-import { BaseOpportunity, BaseOpportunityInput } from './base-opportunity.types.js';
+import { BaseOpportunity } from './base-opportunity.types.js';
 import { AuctionSource, PropertyType } from '../constants/opportunity.js';
 
 export interface Auction extends BaseOpportunity {
@@ -32,44 +32,7 @@ export interface Auction extends BaseOpportunity {
   source: AuctionSource;
 }
 
-export interface AuctionInput extends BaseOpportunityInput {
-  // Auction-specific fields
-  url: string;
-  auctionType?: string;
-  propertyType?: string;
-  description?: string;
-  squareFootage?: number;
-  rooms?: number;
-  dpe?: string;
-  auctionVenue?: string;
-  // Price fields
-  currentPrice?: number;
-  reservePrice?: number;
-  lowerEstimate?: number;
-  upperEstimate?: number;
-  // Picture fields
-  mainPicture?: string;
-  pictures?: string[];
-  // Auction house contact info as JSONB
-  auctionHouseContact?: {
-    name?: string;
-    address?: string;
-    phone?: string;
-    email?: string;
-    auctioneer?: string;
-    registrationRequired?: boolean;
-    depositAmount?: number;
-  };
-}
+export type AuctionInput = Omit<Auction, 'id' | 'createdAt' | 'updatedAt'> ;
 
-// Legacy interface for backward compatibility during migration
-export interface AuctionHouseContactData {
-  type: 'auction_house';
-  name: string;
-  address: string;
-  phone?: string;
-  email?: string;
-  auctioneer?: string;
-  registrationRequired?: boolean;
-  depositAmount?: number;
-}
+
+

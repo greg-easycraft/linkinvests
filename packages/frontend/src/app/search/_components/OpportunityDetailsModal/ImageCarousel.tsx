@@ -79,7 +79,7 @@ export function ImageCarousel({ opportunity, className = '' }: ImageCarouselProp
           {/* StreetView slide */}
           <div className="flex-[0_0_100%] min-w-0">
             <StreetView
-              address={opportunity.address}
+              address={opportunity.address ?? null}
               latitude={opportunity.latitude}
               longitude={opportunity.longitude}
             />

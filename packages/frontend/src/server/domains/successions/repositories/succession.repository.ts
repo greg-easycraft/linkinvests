@@ -1,5 +1,5 @@
 import { and, eq, gte, inArray, lte, sql, type SQL } from "drizzle-orm";
-import type { DomainDbType } from "~/server/db";
+import type { DomainDbType } from "~/types/db";
 import { opportunitySuccessions } from "@linkinvests/db";
 import type { ISuccessionRepository } from "../lib.types";
 import type { OpportunityFilters, PaginationFilters } from "~/types/filters";
@@ -82,7 +82,7 @@ export class DrizzleSuccessionRepository implements ISuccessionRepository {
     }
 
     const results = await query;
-    return results.map(this.mapSuccession);
+    return results;
   }
 
   async findById(id: string): Promise<Succession | null> {
@@ -92,27 +92,7 @@ export class DrizzleSuccessionRepository implements ISuccessionRepository {
       .where(eq(opportunitySuccessions.id, id))
       .limit(1);
 
-    return result[0] ? this.mapSuccession(result[0]) : null;
-  }
-
-  private mapSuccession(succession: typeof opportunitySuccessions.$inferSelect): Succession {
-    return {
-      id: succession.id,
-      label: succession.label,
-      address: succession.address ?? '',
-      zipCode: parseInt(succession.zipCode, 10),
-      department: parseInt(succession.department, 10),
-      latitude: succession.latitude,
-      longitude: succession.longitude,
-      opportunityDate: succession.opportunityDate,
-      externalId: succession.externalId,
-      createdAt: succession.createdAt,
-      updatedAt: succession.updatedAt,
-      // Succession-specific fields
-      firstName: succession.firstName,
-      lastName: succession.lastName,
-      mairieContact: succession.mairieContact ?? undefined,
-    };
+    return result[0] ?? null;
   }
 
   async count(filters?: OpportunityFilters): Promise<number> {

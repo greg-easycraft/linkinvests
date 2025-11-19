@@ -24,6 +24,59 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
+    sendResetPassword: async ({ user, url }) => {
+      try {
+        await resend.emails.send({
+          from: "Linkinvests <noreply@linkinvests.com>",
+          to: user.email,
+          subject: "Réinitialisez votre mot de passe",
+          html: `
+            <!DOCTYPE html>
+            <html>
+              <head>
+                <meta charset="utf-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1">
+                <title>Réinitialisez votre mot de passe - Linkinvests</title>
+              </head>
+              <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; margin: 0; padding: 20px; background-color: #f9fafb;">
+                <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 40px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                  <div style="text-align: center; margin-bottom: 32px;">
+                    <h1 style="color: #111827; font-size: 24px; font-weight: 600; margin: 0;">Réinitialisation de mot de passe</h1>
+                  </div>
+
+                  <div style="margin-bottom: 32px;">
+                    <p style="color: #374151; margin: 0 0 16px 0;">Bonjour ${user.name || user.email},</p>
+                    <p style="color: #374151; margin: 0 0 16px 0;">Vous avez demandé la réinitialisation de votre mot de passe pour votre compte Linkinvests. Cliquez sur le bouton ci-dessous pour choisir un nouveau mot de passe.</p>
+                  </div>
+
+                  <div style="text-align: center; margin: 32px 0;">
+                    <a href="${url}" style="display: inline-block; background-color: #3b82f6; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 500;">
+                      Réinitialiser le mot de passe
+                    </a>
+                  </div>
+
+                  <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid #e5e7eb;">
+                    <p style="color: #6b7280; font-size: 14px; margin: 0 0 8px 0;">Si le bouton ne fonctionne pas, copiez et collez ce lien dans votre navigateur :</p>
+                    <p style="color: #6b7280; font-size: 14px; margin: 0; word-break: break-all;">${url}</p>
+                  </div>
+
+                  <div style="margin-top: 24px;">
+                    <p style="color: #6b7280; font-size: 12px; margin: 0;">Ce lien de réinitialisation expirera dans 1 heure. Si vous n'avez pas demandé cette réinitialisation, vous pouvez ignorer cet email en toute sécurité.</p>
+                  </div>
+
+                  <div style="margin-top: 16px;">
+                    <p style="color: #6b7280; font-size: 12px; margin: 0;">Pour votre sécurité, ne partagez jamais ce lien avec d'autres personnes.</p>
+                  </div>
+                </div>
+              </body>
+            </html>
+          `,
+        });
+      } catch (error) {
+        console.error("Failed to send password reset email:", error);
+        throw new Error("Failed to send password reset email");
+      }
+    },
   },
 
   emailVerification: {

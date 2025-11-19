@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { baseOpportunityInputSchema } from './base-opportunity.schema.js';
 import { AuctionInput } from '../types/auction.types.js';
+import { AuctionSource } from '../constants/opportunity.js';
 
 // Schema for auction house contact info
 const auctionHouseContactSchema = z.object({
@@ -30,6 +31,7 @@ export const auctionInputSchema = baseOpportunityInputSchema.extend({
   mainPicture: z.string().optional(),
   pictures: z.array(z.string()).optional(),
   auctionHouseContact: auctionHouseContactSchema,
+  source: z.enum(AuctionSource),
 });
 
 // Typed schema for coherent typing

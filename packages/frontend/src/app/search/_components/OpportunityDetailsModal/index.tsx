@@ -72,7 +72,7 @@ export function OpportunityDetailsModal({
             <ImageCarousel opportunity={opportunity} className="w-full" />
           ) : (
             <StreetView
-              address={opportunity.address}
+              address={opportunity.address ?? null}
               latitude={opportunity.latitude}
               longitude={opportunity.longitude}
               className="w-full h-64 rounded-lg"

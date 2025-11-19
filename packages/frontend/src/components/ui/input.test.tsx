@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+// describe, it, expect are Jest globals
 import { render, screen } from '~/test-utils/test-helpers';
 import userEvent from '@testing-library/user-event';
 import { Input } from './input';
@@ -12,7 +12,7 @@ describe('Input', () => {
 
   it('should handle text input', async () => {
     const user = userEvent.setup();
-    const handleChange = vi.fn();
+    const handleChange = jest.fn();
 
     render(<Input onChange={handleChange} />);
 
@@ -46,7 +46,7 @@ describe('Input', () => {
   });
 
   it('should forward ref correctly', () => {
-    const ref = vi.fn();
+    const ref = jest.fn();
     render(<Input ref={ref} />);
 
     expect(ref).toHaveBeenCalled();

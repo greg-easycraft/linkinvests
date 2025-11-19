@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+// describe, it, expect are Jest globals
 import { render, screen } from '~/test-utils/test-helpers';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from './card';
 

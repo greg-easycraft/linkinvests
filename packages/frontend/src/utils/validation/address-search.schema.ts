@@ -2,13 +2,12 @@ import { z } from "zod";
 
 export const addressSearchSchema = z.object({
   // DPE energy class (A-G rating) - optional
-  dpe: z.enum(['A', 'B', 'C', 'D', 'E', 'F', 'G']).optional(),
+  energyClass: z.enum(['A', 'B', 'C', 'D', 'E', 'F', 'G']),
 
   // Square footage in square meters - optional, must be positive
   squareFootage: z
     .number()
-    .positive("La superficie doit être un nombre positif")
-    .optional(),
+    .positive("La superficie doit être un nombre positif"),
 
   // 5-digit postal code - required
   zipCode: z

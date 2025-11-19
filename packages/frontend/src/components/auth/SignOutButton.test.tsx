@@ -1,19 +1,19 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+// describe, it, expect, beforeEach are Jest globals
 import { render, screen, waitFor } from '~/test-utils/test-helpers';
 import userEvent from '@testing-library/user-event';
 import { SignOutButton } from './SignOutButton';
 import { authClient } from '~/lib/auth-client';
 
 // Mock the auth client
-vi.mock('~/lib/auth-client', () => ({
+jest.mock('~/lib/auth-client', () => ({
   authClient: {
-    signOut: vi.fn(),
+    signOut: jest.fn(),
   },
 }));
 
 // Mock Next.js router
-const mockPush = vi.fn();
-vi.mock('next/navigation', () => ({
+const mockPush = jest.fn();
+jest.mock('next/navigation', () => ({
   useRouter: () => ({
     push: mockPush,
   }),
@@ -21,7 +21,7 @@ vi.mock('next/navigation', () => ({
 
 describe('SignOutButton', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   it('should render sign-out button', () => {
@@ -32,12 +32,12 @@ describe('SignOutButton', () => {
 
   it('should call signOut when clicked', async () => {
     const user = userEvent.setup();
-    const mockSignOut = vi.fn((options) => {
+    const mockSignOut = jest.fn((options) => {
       options.fetchOptions.onSuccess();
       return Promise.resolve();
     });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.mocked(authClient.signOut).mockImplementation(mockSignOut as any);
+    jest.mocked(authClient.signOut).mockImplementation(mockSignOut as any);
 
     render(<SignOutButton />);
 
@@ -51,12 +51,12 @@ describe('SignOutButton', () => {
 
   it('should redirect to home page on successful sign-out', async () => {
     const user = userEvent.setup();
-    const mockSignOut = vi.fn((options) => {
+    const mockSignOut = jest.fn((options) => {
       options.fetchOptions.onSuccess();
       return Promise.resolve();
     });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.mocked(authClient.signOut).mockImplementation(mockSignOut as any);
+    jest.mocked(authClient.signOut).mockImplementation(mockSignOut as any);
 
     render(<SignOutButton />);
 
@@ -70,7 +70,7 @@ describe('SignOutButton', () => {
 
   it('should show loading state during sign-out', async () => {
     const user = userEvent.setup();
-    vi.mocked(authClient.signOut).mockImplementation(
+    jest.mocked(authClient.signOut).mockImplementation(
       () => new Promise((resolve) => setTimeout(() => resolve(undefined), 100))
     );
 

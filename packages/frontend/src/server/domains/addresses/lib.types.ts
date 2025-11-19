@@ -1,6 +1,15 @@
-import type { AddressSearchInput, EnergyDiagnostic } from "@linkinvests/shared";
+import type { EnergyClass, EnergyDiagnostic } from "@linkinvests/shared";
 
-export interface IEnergyDiagnosticsRepository {
-  findAllForAddressSearch(input: AddressSearchInput): Promise<EnergyDiagnostic[]>;
+export const MAX_NUMBER_OF_RESULTS = 50;
+
+export type DiagnosticQueryInput = {
+  zipCode: string;
+  energyClass: EnergyClass;
+  squareFootageMin: number;
+  squareFootageMax: number;
+}
+
+export interface IAddressSearchRepository {
+  findAllForAddressSearch(input: DiagnosticQueryInput): Promise<EnergyDiagnostic[]>;
   findById(id: string): Promise<EnergyDiagnostic | null>;
 }

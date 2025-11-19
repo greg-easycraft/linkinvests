@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { baseOpportunityInputSchema } from './base-opportunity.schema.js';
 import { ListingInput } from '../types/listing.types.js';
+import { ListingSource } from '../constants/opportunity.js';
 
 // Schema for seller contact info
 const sellerContactSchema = z.object({
@@ -8,7 +9,7 @@ const sellerContactSchema = z.object({
   address: z.string().optional(),
   phone: z.string().optional(),
   email: z.email().optional(),
-  website: z.string().url().optional(),
+  website: z.url().optional(),
   contact: z.string().optional(),
   siret: z.string().optional(),
 }).optional();
@@ -16,6 +17,7 @@ const sellerContactSchema = z.object({
 // Schema for listing input extending base opportunity
 export const listingInputSchema = baseOpportunityInputSchema.extend({
   url: z.url(),
+  source: z.enum(ListingSource),
   transactionType: z.string(),
   propertyType: z.string(),
   description: z.string().optional(),

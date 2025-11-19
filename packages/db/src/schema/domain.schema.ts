@@ -78,7 +78,7 @@ export const opportunitySuccessions = pgTable('succession', {
   id: uuid('id').primaryKey().defaultRandom(),
   // Base opportunity fields
   label: varchar('label').notNull(),
-  address: text('address'),
+  address: text('address').notNull(),
   zipCode: varchar('zip_code').notNull(),
   department: varchar('department').notNull(),
   latitude: doublePrecision('latitude').notNull(),
@@ -96,7 +96,7 @@ export const opportunitySuccessions = pgTable('succession', {
     email?: string;
     website?: string;
     openingHours?: string;
-  }>(),
+  }>().notNull(),
   // Timestamps
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at')
@@ -122,7 +122,7 @@ export const opportunityLiquidations = pgTable('liquidation', {
   // Base opportunity fields
   label: varchar('label').notNull(),
   siret: varchar('siret', { length: 14 }).notNull().unique(),
-  address: text('address'),
+  address: text('address').notNull(),
   zipCode: varchar('zip_code').notNull(),
   department: varchar('department').notNull(),
   latitude: doublePrecision('latitude').notNull(),
@@ -161,7 +161,7 @@ export const energyDiagnostics = pgTable('energy_diagnostic', {
   id: uuid('id').primaryKey().defaultRandom(),
   // Base opportunity fields
   label: varchar('label').notNull(),
-  address: text('address'),
+  address: text('address').notNull(),
   zipCode: varchar('zip_code').notNull(),
   department: varchar('department').notNull(),
   squareFootage: numeric('square_footage', { mode: 'number' }).notNull(),
@@ -169,8 +169,8 @@ export const energyDiagnostics = pgTable('energy_diagnostic', {
   longitude: doublePrecision('longitude').notNull(),
   opportunityDate: date('opportunity_date').notNull(),
   // Energy-specific fields
-  energyClass: varchar('energy_class'),
-  dpeNumber: varchar('dpe_number').notNull().unique(),
+  energyClass: varchar('energy_class').notNull(),
+  externalId: varchar('external_id').notNull().unique(),
   // Timestamps
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at')
@@ -178,11 +178,11 @@ export const energyDiagnostics = pgTable('energy_diagnostic', {
     .$onUpdate(() => /* @__PURE__ */ new Date())
     .notNull(),
 }, (table) => [
-  uniqueIndex('uq_energy_sieve_dpe_number').on(table.dpeNumber),
-  index('idx_energy_sieve_energy_class').on(table.energyClass),
-  index('idx_energy_sieve_department').on(table.department),
-  index('idx_energy_sieve_date').on(desc(table.opportunityDate)),
-  index('idx_energy_sieve_department_date')
+  uniqueIndex('uq_energy_diagnostic_external_id').on(table.externalId),
+  index('idx_energy_diagnostic_energy_class').on(table.energyClass),
+  index('idx_energy_diagnostic_department').on(table.department),
+  index('idx_energy_diagnostic_date').on(desc(table.opportunityDate)),
+  index('idx_energy_diagnostic_department_date')
     .on(table.department, desc(table.opportunityDate)),
   index('idx_energy_sieve_class').on(table.energyClass),
   index('idx_energy_sieve_zip_code').on(table.zipCode),

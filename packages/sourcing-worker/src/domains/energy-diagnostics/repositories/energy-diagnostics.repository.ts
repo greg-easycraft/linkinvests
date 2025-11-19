@@ -43,7 +43,7 @@ export class EnergyDiagnosticsRepository {
           .insert(domainSchema.energyDiagnostics)
           .values(batch)
           .onConflictDoNothing({
-            target: [domainSchema.energyDiagnostics.dpeNumber],
+            target: [domainSchema.energyDiagnostics.externalId],
           });
 
         insertedCount += batch.length;

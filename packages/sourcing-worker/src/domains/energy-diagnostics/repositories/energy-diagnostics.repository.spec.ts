@@ -82,7 +82,6 @@ describe('EnergyDiagnosticsRepository', () => {
       const opportunities: EnergyDiagnosticInput[] = Array.from(
         { length: 1500 },
         (_, i) => ({
-          dpeNumber: `DPE${i.toString().padStart(6, '0')}`,
           externalId: `DPE${i.toString().padStart(6, '0')}`,
           label: `Building ${i}`,
           address: `${i} Rue de Test`,
@@ -108,7 +107,6 @@ describe('EnergyDiagnosticsRepository', () => {
       const opportunities: EnergyDiagnosticInput[] = Array.from(
         { length: 300 },
         (_, i) => ({
-          dpeNumber: `DPE${i.toString().padStart(6, '0')}`,
           externalId: `DPE${i.toString().padStart(6, '0')}`,
           label: `Building ${i}`,
           address: `${i} Rue de Test`,
@@ -131,7 +129,6 @@ describe('EnergyDiagnosticsRepository', () => {
     it('should call db.insert with correctly formatted data', async () => {
       const opportunities: EnergyDiagnosticInput[] = [
         {
-          dpeNumber: 'DPE123456',
           externalId: 'DPE123456',
           label: 'Test Building',
           address: '123 Rue de Test',
@@ -171,7 +168,6 @@ describe('EnergyDiagnosticsRepository', () => {
     it('should set type to OpportunityType.ENERGY_SIEVE', async () => {
       const opportunities: EnergyDiagnosticInput[] = [
         {
-          dpeNumber: 'DPE123456',
           externalId: 'DPE123456',
           label: 'Test Building',
           address: '123 Rue de Test',
@@ -194,7 +190,6 @@ describe('EnergyDiagnosticsRepository', () => {
     it('should set siret to null (no SIRET for energy sieves)', async () => {
       const opportunities: EnergyDiagnosticInput[] = [
         {
-          dpeNumber: 'DPE123456',
           externalId: 'DPE123456',
           label: 'Test Building',
           address: '123 Rue de Test',
@@ -217,7 +212,6 @@ describe('EnergyDiagnosticsRepository', () => {
     it('should use onConflictDoNothing() for duplicates', async () => {
       const opportunities: EnergyDiagnosticInput[] = [
         {
-          dpeNumber: 'DPE123456',
           externalId: 'DPE123456',
           label: 'Test Building',
           address: '123 Rue de Test',
@@ -242,7 +236,6 @@ describe('EnergyDiagnosticsRepository', () => {
 
       const opportunities: EnergyDiagnosticInput[] = [
         {
-          dpeNumber: 'DPE123456',
           externalId: 'DPE123456',
           squareFootage: 100,
           energyClass: 'A',

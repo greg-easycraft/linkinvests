@@ -22,11 +22,9 @@ export interface AddressSearchResult {
   // Postal code
   zipCode: string;
   // Department number
-  department: number;
+  department: string;
   // Energy class if available
-  dpe: string;
-  // DPE certificate number if available
-  dpeNumber: string;
+  energyClass: string;
   // Square footage if available (estimated or actual)
   squareFootage: number;
   // Coordinates for map display

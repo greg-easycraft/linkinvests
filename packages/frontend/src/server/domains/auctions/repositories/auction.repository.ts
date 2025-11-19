@@ -1,10 +1,10 @@
 import { and, eq, gte, inArray, lte, sql, type SQL } from "drizzle-orm";
-import type { DomainDbType } from "~/server/db";
+import type { DomainDbType } from "~/types/db";
 import { opportunityAuctions } from "@linkinvests/db";
 import type { IAuctionRepository, } from "../lib.types";
 import type { OpportunityFilters, PaginationFilters } from "~/types/filters";
 import { calculateStartDate } from "~/constants/date-periods";
-import { PropertyType, type Auction } from "@linkinvests/shared";
+import { AuctionSource, PropertyType, type Auction } from "@linkinvests/shared";
 
 export class DrizzleAuctionRepository implements IAuctionRepository {
   constructor(private readonly db: DomainDbType) {}
@@ -113,30 +113,20 @@ export class DrizzleAuctionRepository implements IAuctionRepository {
 
   private mapAuction(auction: typeof opportunityAuctions.$inferSelect): Auction {
     return {
-      id: auction.id,
-      label: auction.label,
-      address: auction.address ?? '',
-      zipCode: parseInt(auction.zipCode, 10),
-      department: parseInt(auction.department, 10),
-      latitude: auction.latitude,
-      longitude: auction.longitude,
-      opportunityDate: auction.opportunityDate,
-      externalId: auction.externalId,
-      createdAt: auction.createdAt,
-      updatedAt: auction.updatedAt,
-      // Auction-specific fields
-      url: auction.url,
+      ...auction,
+      address: auction.address ?? undefined,
+      source: auction.source as AuctionSource,
       auctionType: auction.auctionType ?? undefined,
       propertyType: (auction.propertyType ?? undefined) as PropertyType | undefined,
       description: auction.description ?? undefined,
-      squareFootage: auction.squareFootage ? Number(auction.squareFootage) : undefined,
+      squareFootage: auction.squareFootage ?? undefined,
       rooms: auction.rooms ?? undefined,
       dpe: auction.dpe ?? undefined,
       auctionVenue: auction.auctionVenue ?? undefined,
-      currentPrice: auction.currentPrice ? Number(auction.currentPrice) : undefined,
-      reservePrice: auction.reservePrice ? Number(auction.reservePrice) : undefined,
-      lowerEstimate: auction.lowerEstimate ? Number(auction.lowerEstimate) : undefined,
-      upperEstimate: auction.upperEstimate ? Number(auction.upperEstimate) : undefined,
+      currentPrice: auction.currentPrice ?? undefined,
+      reservePrice: auction.reservePrice ?? undefined,
+      lowerEstimate: auction.lowerEstimate ?? undefined,
+      upperEstimate: auction.upperEstimate ?? undefined,
       mainPicture: auction.mainPicture ?? undefined,
       pictures: auction.pictures ?? undefined,
       auctionHouseContact: auction.auctionHouseContact ?? undefined,

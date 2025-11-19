@@ -1,22 +1,22 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+// describe, it, expect, beforeEach are Jest globals
 import { render, screen, waitFor } from '~/test-utils/test-helpers';
 import userEvent from '@testing-library/user-event';
 import { SignInForm } from './SignInForm';
 import { authClient } from '~/lib/auth-client';
 
 // Mock the auth client
-vi.mock('~/lib/auth-client', () => ({
+jest.mock('~/lib/auth-client', () => ({
   authClient: {
     signIn: {
-      email: vi.fn(),
-      social: vi.fn(),
+      email: jest.fn(),
+      social: jest.fn(),
     },
   },
 }));
 
 // Mock Next.js router
-const mockPush = vi.fn();
-vi.mock('next/navigation', () => ({
+const mockPush = jest.fn();
+jest.mock('next/navigation', () => ({
   useRouter: () => ({
     push: mockPush,
   }),
@@ -24,7 +24,7 @@ vi.mock('next/navigation', () => ({
 
 describe('SignInForm', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   it('should render sign-in form', () => {
@@ -77,7 +77,7 @@ describe('SignInForm', () => {
 
   it('should call signIn.email with correct data on valid submission', async () => {
     const user = userEvent.setup();
-    vi.mocked(authClient.signIn.email).mockResolvedValue({ data: {}, error: null });
+    jest.mocked(authClient.signIn.email).mockResolvedValue({ data: {}, error: null });
 
     render(<SignInForm />);
 
@@ -99,7 +99,7 @@ describe('SignInForm', () => {
 
   it('should redirect to search on successful sign-in', async () => {
     const user = userEvent.setup();
-    vi.mocked(authClient.signIn.email).mockResolvedValue({ data: {}, error: null });
+    jest.mocked(authClient.signIn.email).mockResolvedValue({ data: {}, error: null });
 
     render(<SignInForm />);
 
@@ -118,7 +118,7 @@ describe('SignInForm', () => {
 
   it('should display error message on failed sign-in', async () => {
     const user = userEvent.setup();
-    vi.mocked(authClient.signIn.email).mockResolvedValue({
+    jest.mocked(authClient.signIn.email).mockResolvedValue({
       data: null,
       error: { message: 'Invalid credentials' },
     });
@@ -140,7 +140,7 @@ describe('SignInForm', () => {
 
   it('should handle Google sign-in', async () => {
     const user = userEvent.setup();
-    vi.mocked(authClient.signIn.social).mockResolvedValue({ data: {}, error: null });
+    jest.mocked(authClient.signIn.social).mockResolvedValue({ data: {}, error: null });
 
     render(<SignInForm />);
 
@@ -157,7 +157,7 @@ describe('SignInForm', () => {
 
   it('should show loading state during sign-in', async () => {
     const user = userEvent.setup();
-    vi.mocked(authClient.signIn.email).mockImplementation(
+    jest.mocked(authClient.signIn.email).mockImplementation(
       () => new Promise((resolve) => setTimeout(() => resolve({ data: {}, error: null }), 100))
     );
 

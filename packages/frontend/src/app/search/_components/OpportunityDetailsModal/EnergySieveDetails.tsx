@@ -28,12 +28,7 @@ const ENERGY_CLASS_INFO: Record<string, { color: string; label: string }> = {
 };
 
 export function EnergySieveDetails({ opportunity }: EnergySieveDetailsProps) {
-  const hasEnergyInfo = opportunity.energyClass || opportunity.dpeNumber;
-
-  if (!hasEnergyInfo) {
-    return null;
-  }
-  const energyClassInfo = opportunity.energyClass ? ENERGY_CLASS_INFO[opportunity.energyClass] : null;
+  const energyClassInfo = ENERGY_CLASS_INFO[opportunity.energyClass];
 
   return (
     <Card className="mt-6 text-[var(--primary)] border-[var(--primary)]">
@@ -67,16 +62,13 @@ export function EnergySieveDetails({ opportunity }: EnergySieveDetailsProps) {
                 </div>
               </div>
             )}
-
-            {opportunity.dpeNumber && (
-              <div className="flex items-center gap-2">
-                <Hash className="h-4 w-4 text-gray-600" />
-                <span className="font-medium">Numéro DPE:</span>
-                <Badge variant="outline" className="font-mono bg-[var(--primary)]">
-                  {opportunity.dpeNumber}
-                </Badge>
-              </div>
-            )}
+            <div className="flex items-center gap-2">
+              <Hash className="h-4 w-4 text-gray-600" />
+              <span className="font-medium">Numéro DPE:</span>
+              <Badge variant="outline" className="font-mono bg-[var(--primary)]">
+                {opportunity.externalId}
+              </Badge>
+            </div>
           </div>
         </div>
 

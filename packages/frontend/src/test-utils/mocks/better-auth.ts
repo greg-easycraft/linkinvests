@@ -1,17 +1,17 @@
-import { vi } from 'vitest';
+// vi is available as jest global
 
 export const mockAuthClient = {
   signIn: {
-    email: vi.fn(),
-    social: vi.fn(),
+    email: jest.fn(),
+    social: jest.fn(),
   },
   signUp: {
-    email: vi.fn(),
+    email: jest.fn(),
   },
-  signOut: vi.fn(),
-  forgetPassword: vi.fn(),
-  resetPassword: vi.fn(),
-  useSession: vi.fn(),
+  signOut: jest.fn(),
+  forgetPassword: jest.fn(),
+  resetPassword: jest.fn(),
+  useSession: jest.fn(),
 };
 
 export const mockSession = {
@@ -36,7 +36,7 @@ export const mockSession = {
   },
 };
 
-vi.mock('~/lib/auth-client', () => ({
+jest.mock('~/lib/auth-client', () => ({
   authClient: mockAuthClient,
   useSession: () => ({ data: mockSession, isPending: false }),
 }));
