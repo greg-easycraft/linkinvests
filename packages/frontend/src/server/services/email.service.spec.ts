@@ -56,7 +56,7 @@ describe('EmailService', () => {
       // Verify resend.emails.send was called correctly
       expect(mockEmailSend).toHaveBeenCalledTimes(1);
       expect(mockEmailSend).toHaveBeenCalledWith({
-        from: 'Linkinvests <noreply@linkinvests.com>',
+        from: 'LinkInvests <noreply@easycraft.cloud>',
         to: testEmail,
         subject: 'Réinitialisation de mot de passe - LinkInvests',
         html: expect.stringContaining('Bonjour John Doe,'),
@@ -138,16 +138,16 @@ describe('EmailService', () => {
       // Verify resend.emails.send was called correctly
       expect(mockEmailSend).toHaveBeenCalledTimes(1);
       expect(mockEmailSend).toHaveBeenCalledWith({
-        from: 'Linkinvests <noreply@linkinvests.com>',
+        from: 'LinkInvests <noreply@easycraft.cloud>',
         to: testEmail,
-        subject: 'Verify your email - LinkInvests',
-        html: expect.stringContaining('Hi Jane Smith,'),
+        subject: 'Vérifiez votre email - LinkInvests',
+        html: expect.stringContaining('Bonjour Jane Smith,'),
       });
 
       // Verify the email contains the verification URL
       const htmlContent = mockEmailSend.mock.calls[0][0].html;
       expect(htmlContent).toContain(testUrl);
-      expect(htmlContent).toContain('Verify Email Address');
+      expect(htmlContent).toContain('Vérifier l\'adresse email');
       expect(htmlContent).toContain(testUserName);
     });
 
@@ -162,7 +162,7 @@ describe('EmailService', () => {
 
       // Verify the email uses email address as fallback when no username
       const htmlContent = mockEmailSend.mock.calls[0][0].html;
-      expect(htmlContent).toContain(`Hi ${testEmail},`);
+      expect(htmlContent).toContain(`Bonjour ${testEmail},`);
       expect(htmlContent).toContain(testUrl);
     });
 
@@ -201,10 +201,10 @@ describe('EmailService', () => {
       await emailService.sendVerificationEmail(testEmail, testUrl, testUserName);
 
       const htmlContent = mockEmailSend.mock.calls[0][0].html;
-      expect(htmlContent).toContain('Welcome to Linkinvests');
-      expect(htmlContent).toContain('Thanks for signing up');
-      expect(htmlContent).toContain('verify your email address');
-      expect(htmlContent).toContain('This verification link will expire in 24 hours');
+      expect(htmlContent).toContain('Bienvenue sur LinkInvests');
+      expect(htmlContent).toContain('Merci de vous être inscrit');
+      expect(htmlContent).toContain('vérifier votre adresse email');
+      expect(htmlContent).toContain('Ce lien de vérification expirera dans 24 heures');
     });
   });
 
@@ -224,7 +224,7 @@ describe('EmailService', () => {
         expect(mockEmailSend).toHaveBeenCalledWith(
           expect.objectContaining({
             to: email,
-            from: 'Linkinvests <noreply@linkinvests.com>',
+            from: 'LinkInvests <noreply@easycraft.cloud>',
           })
         );
       }
@@ -365,7 +365,7 @@ describe('EmailService', () => {
       expect(htmlContent).toMatch(/<\/body>/);
 
       // Validate required content
-      expect(htmlContent).toContain('Welcome to Linkinvests');
+      expect(htmlContent).toContain('Bienvenue sur LinkInvests');
       expect(htmlContent).toContain('href="https://test.com/verify"');
       expect(htmlContent).toContain('Test User');
     });
