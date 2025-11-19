@@ -324,7 +324,6 @@ describe('EnergyDiagnosticFilters Component', () => {
 
     it('should handle invalid energy class values gracefully', () => {
       const filters: IEnergyDiagnosticFilters = {
-        // @ts-expect-error - intentionally testing invalid values
         energyClasses: ['A', 'B', 'X', 'Y'] as EnergyClass[],
       };
 

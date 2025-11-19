@@ -13,10 +13,10 @@ if (typeof globalThis !== 'undefined' && globalThis.crypto && !globalThis.crypto
 }
 
 if (typeof globalThis !== 'undefined' && !globalThis.crypto) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   globalThis.crypto = {
     randomUUID: function (): string {
       return uuidv4();
     },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any;
 }

@@ -541,7 +541,6 @@ describe('ZipCodeInput Component', () => {
     });
 
     it('should handle remove button hover effects', async () => {
-      // @ts-expect-error - user variable declared but not used in this specific test
       render(<ZipCodeInput value={['12345']} onChange={jest.fn()} />);
 
       const removeButton = screen.getByLabelText('Supprimer le code postal 12345');
