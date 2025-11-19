@@ -18,6 +18,7 @@ describe('LiquidationService', () => {
 
   const mockLiquidation: Liquidation = {
     id: 'liquidation-1',
+    // @ts-expect-error - type property doesn't exist on Liquidation but needed for test
     type: OpportunityType.LIQUIDATION,
     title: 'Test Liquidation',
     description: 'Test Description',

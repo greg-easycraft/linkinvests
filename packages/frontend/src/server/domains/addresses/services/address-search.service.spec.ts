@@ -7,9 +7,9 @@ describe('AddressSearchService', () => {
   let addressSearchService: AddressSearchService;
   let mockAddressSearchRepository: jest.Mocked<IAddressSearchRepository>;
 
-  // @ts-expect-error - Test mock data includes properties not in interface
   const mockEnergyDiagnostic: EnergyDiagnostic = {
     id: 'energy-diagnostic-1',
+    // @ts-expect-error - type property doesn't exist on EnergyDiagnostic but needed for test
     type: OpportunityType.ENERGY_SIEVE,
     title: 'Test Energy Diagnostic',
     description: 'Test Description',
@@ -84,6 +84,7 @@ describe('AddressSearchService', () => {
     });
 
     it('should use default square footage when not provided', async () => {
+      // @ts-expect-error - Testing optional property behavior
       const input: AddressSearchInput = {
         zipCode: '75001',
         dpe: 'F',
@@ -94,14 +95,15 @@ describe('AddressSearchService', () => {
 
       await addressSearchService.getPlausibleAddresses(input);
 
-      const call = mockAddressSearchRepository.findAllForAddressSearch.mock.calls[0][0];
-      expect(call.zipCode).toBe('75001');
-      expect(call.energyClass).toBe('F');
-      expect(call.squareFootageMin).toBeCloseTo(45, 1); // 50 * 0.9 (default 50)
-      expect(call.squareFootageMax).toBeCloseTo(55, 1); // 50 * 1.1
+      const call = mockAddressSearchRepository.findAllForAddressSearch.mock.calls[0]?.[0];
+      expect(call?.zipCode).toBe('75001');
+      expect(call?.energyClass).toBe('F');
+      expect(call?.squareFootageMin).toBeCloseTo(45, 1); // 50 * 0.9 (default 50)
+      expect(call?.squareFootageMax).toBeCloseTo(55, 1); // 50 * 1.1
     });
 
     it('should use default energy class when not provided', async () => {
+      // @ts-expect-error - Testing optional property behavior
       const input: AddressSearchInput = {
         zipCode: '75001',
         squareFootage: 60,
@@ -131,11 +133,11 @@ describe('AddressSearchService', () => {
 
       await addressSearchService.getPlausibleAddresses(input);
 
-      const call = mockAddressSearchRepository.findAllForAddressSearch.mock.calls[0][0];
-      expect(call.zipCode).toBe('75001');
-      expect(call.energyClass).toBe('G');
-      expect(call.squareFootageMin).toBeCloseTo(90, 1); // 100 * 0.9
-      expect(call.squareFootageMax).toBeCloseTo(110, 1); // 100 * 1.1
+      const call = mockAddressSearchRepository.findAllForAddressSearch.mock.calls[0]?.[0];
+      expect(call?.zipCode).toBe('75001');
+      expect(call?.energyClass).toBe('G');
+      expect(call?.squareFootageMin).toBeCloseTo(90, 1); // 100 * 0.9
+      expect(call?.squareFootageMax).toBeCloseTo(110, 1); // 100 * 1.1
     });
 
     it('should sort results by match score in descending order', async () => {
@@ -156,12 +158,12 @@ describe('AddressSearchService', () => {
       const result = await addressSearchService.getPlausibleAddresses(input);
 
       expect(result).toHaveLength(3);
-      expect(result[0].id).toBe('diag-1'); // Highest score first
-      expect(result[0].matchScore).toBe(100);
-      expect(result[1].id).toBe('diag-3'); // Second highest
-      expect(result[1].matchScore).toBeCloseTo(96, 0);
-      expect(result[2].id).toBe('diag-2'); // Lowest score
-      expect(result[2].matchScore).toBe(90);
+      expect(result[0]?.id).toBe('diag-1'); // Highest score first
+      expect(result[0]?.matchScore).toBe(100);
+      expect(result[1]?.id).toBe('diag-3'); // Second highest
+      expect(result[1]?.matchScore).toBeCloseTo(96, 0);
+      expect(result[2]?.id).toBe('diag-2'); // Lowest score
+      expect(result[2]?.matchScore).toBe(90);
     });
 
     it('should handle repository errors', async () => {
@@ -192,7 +194,7 @@ describe('AddressSearchService', () => {
 
       const result = await addressSearchService.getPlausibleAddresses(input);
 
-      expect(result[0].energyDiagnosticId).toBe('external-abc-123');
+      expect(result[0]?.energyDiagnosticId).toBe('external-abc-123');
     });
   });
 
@@ -209,7 +211,7 @@ describe('AddressSearchService', () => {
 
       const result = await addressSearchService.getPlausibleAddresses(input);
 
-      expect(result[0].matchScore).toBe(100);
+      expect(result[0]?.matchScore).toBe(100);
     });
 
     it('should reduce score for energy class mismatch', async () => {
@@ -224,7 +226,7 @@ describe('AddressSearchService', () => {
 
       const result = await addressSearchService.getPlausibleAddresses(input);
 
-      expect(result[0].matchScore).toBe(90); // 100 - 10 penalty
+      expect(result[0]?.matchScore).toBe(90); // 100 - 10 penalty
     });
 
     it('should reduce score based on square footage difference', async () => {
@@ -239,7 +241,7 @@ describe('AddressSearchService', () => {
 
       const result = await addressSearchService.getPlausibleAddresses(input);
 
-      expect(result[0].matchScore).toBe(96); // 100 - (0.2 * 20) penalty
+      expect(result[0]?.matchScore).toBe(96); // 100 - (0.2 * 20) penalty
     });
 
     it('should handle cases where square footage is missing', async () => {
@@ -249,12 +251,12 @@ describe('AddressSearchService', () => {
         squareFootage: 50,
       };
 
-      const noSquareFootage = { ...mockEnergyDiagnostic, energyClass: 'F', squareFootage: undefined };
-      mockAddressSearchRepository.findAllForAddressSearch.mockResolvedValue([noSquareFootage]);
+      const noSquareFootage = { ...mockEnergyDiagnostic, energyClass: 'F', squareFootage: undefined as any };
+      mockAddressSearchRepository.findAllForAddressSearch.mockResolvedValue([noSquareFootage] as any);
 
       const result = await addressSearchService.getPlausibleAddresses(input);
 
-      expect(result[0].matchScore).toBe(100); // No penalty if squareFootage is missing
+      expect(result[0]?.matchScore).toBe(100); // No penalty if squareFootage is missing
     });
 
     it('should ensure minimum score is 0', async () => {
@@ -270,7 +272,7 @@ describe('AddressSearchService', () => {
 
       const result = await addressSearchService.getPlausibleAddresses(input);
 
-      expect(result[0].matchScore).toBeGreaterThanOrEqual(0);
+      expect(result[0]?.matchScore).toBeGreaterThanOrEqual(0);
     });
   });
 });

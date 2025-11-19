@@ -18,6 +18,7 @@ describe('ListingService', () => {
 
   const mockListing: Listing = {
     id: 'listing-1',
+    // @ts-expect-error - type property doesn't exist on Listing but needed for test
     type: OpportunityType.REAL_ESTATE_LISTING,
     title: 'Test Listing',
     description: 'Test Description',

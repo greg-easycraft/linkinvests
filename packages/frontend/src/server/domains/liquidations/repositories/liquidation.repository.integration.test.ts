@@ -17,8 +17,8 @@ describe('DrizzleLiquidationRepository Integration Tests', () => {
 
   it('should find by ID', async () => {
     const all = await liquidationRepository.findAll();
-    const found = await liquidationRepository.findById(all[0].id);
-    expect(found?.id).toBe(all[0].id);
+    const found = await liquidationRepository.findById(all[0]?.id!);
+    expect(found?.id).toBe(all[0]?.id);
   });
 
   it('should count liquidations', async () => {

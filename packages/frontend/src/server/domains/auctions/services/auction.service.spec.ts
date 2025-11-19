@@ -18,6 +18,7 @@ describe('AuctionService', () => {
 
   const mockAuction: Auction = {
     id: 'auction-1',
+    // @ts-expect-error - type property doesn't exist on Auction but needed for test
     type: OpportunityType.AUCTION,
     title: 'Test Auction',
     description: 'Test Description',

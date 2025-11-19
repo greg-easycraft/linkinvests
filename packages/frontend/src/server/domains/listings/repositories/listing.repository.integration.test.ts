@@ -201,7 +201,7 @@ describe('DrizzleListingRepository Integration Tests', () => {
       const filters: ListingFilters = { sortBy: 'price', sortOrder: 'asc' };
       const listings = await listingRepository.findAll(filters);
       for (let i = 1; i < listings.length; i++) {
-        expect(listings[i].price).toBeGreaterThanOrEqual(listings[i-1].price);
+        expect(listings[i]?.price || 0).toBeGreaterThanOrEqual(listings[i-1]?.price || 0);
       }
     });
   });
@@ -209,7 +209,7 @@ describe('DrizzleListingRepository Integration Tests', () => {
   describe('findById', () => {
     it('should find listing by ID', async () => {
       const allListings = await listingRepository.findAll();
-      const targetId = allListings[0].id;
+      const targetId = allListings[0]?.id!;
       const listing = await listingRepository.findById(targetId);
       expect(listing?.id).toBe(targetId);
     });
@@ -227,7 +227,7 @@ describe('DrizzleListingRepository Integration Tests', () => {
     });
 
     it('should count with filters', async () => {
-      const filters: OpportunityFilters = { departments: ['75'] };
+      const filters: ListingFilters = { departments: ['75'] };
       const count = await listingRepository.count(filters);
       expect(count).toBeGreaterThanOrEqual(0);
     });

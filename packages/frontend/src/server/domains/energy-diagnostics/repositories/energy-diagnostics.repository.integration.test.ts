@@ -16,16 +16,15 @@ describe('DrizzleEnergyDiagnosticsRepository Integration Tests', () => {
   });
 
   it('should filter by energy classes', async () => {
-    // @ts-expect-error - Test filter uses string array instead of EnergyClass array
-    const filters = { energyClasses: ['F', 'G'] };
+    const filters = { energyClasses: ['F', 'G'] as any };
     const diagnostics = await energyDiagnosticsRepository.findAll(filters);
     diagnostics.forEach(d => expect(['F', 'G']).toContain(d.energyClass));
   });
 
   it('should find by ID', async () => {
     const all = await energyDiagnosticsRepository.findAll();
-    const found = await energyDiagnosticsRepository.findById(all[0].id);
-    expect(found?.id).toBe(all[0].id);
+    const found = await energyDiagnosticsRepository.findById(all[0]?.id!);
+    expect(found?.id).toBe(all[0]?.id);
   });
 
   it('should count energy diagnostics', async () => {

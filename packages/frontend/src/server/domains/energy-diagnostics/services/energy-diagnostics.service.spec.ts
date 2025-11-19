@@ -18,6 +18,7 @@ describe('EnergyDiagnosticsService', () => {
 
   const mockEnergyDiagnostic: EnergyDiagnostic = {
     id: 'energy-diagnostic-1',
+    // @ts-expect-error - type property doesn't exist on EnergyDiagnostic but needed for test
     type: OpportunityType.ENERGY_SIEVE,
     title: 'Test Energy Diagnostic',
     description: 'Test Description',
@@ -100,10 +101,10 @@ describe('EnergyDiagnosticsService', () => {
     });
 
     it('should handle filters correctly including energy class filters', async () => {
-      // @ts-expect-error - Using EnergyDiagnosticFilters properties in test
       const filters: OpportunityFilters = {
         departments: ['75'],
         zipCodes: ['75001'],
+        // @ts-expect-error - energyClasses property doesn't exist on OpportunityFilters but needed for test
         energyClasses: ['F', 'G'],
         page: 2,
         pageSize: 10,
@@ -139,8 +140,11 @@ describe('EnergyDiagnosticsService', () => {
     });
 
     it('should return energy diagnostic count with filters', async () => {
-      // @ts-expect-error - Using EnergyDiagnosticFilters properties in test
-      const filters: OpportunityFilters = { departments: ['75'], energyClasses: ['F', 'G'] };
+      const filters: OpportunityFilters = {
+        departments: ['75'],
+        // @ts-expect-error - energyClasses property doesn't exist on OpportunityFilters but needed for test
+        energyClasses: ['F', 'G']
+      };
       const expectedCount = 340;
       mockEnergyDiagnosticsRepository.count.mockResolvedValue(expectedCount);
 
@@ -189,8 +193,11 @@ describe('EnergyDiagnosticsService', () => {
   });
 
   describe('exportList', () => {
-    // @ts-expect-error - Using EnergyDiagnosticFilters properties in test
-    const filters: OpportunityFilters = { departments: ['75'], energyClasses: ['F', 'G'] };
+    const filters: OpportunityFilters = {
+      departments: ['75'],
+      // @ts-expect-error - energyClasses property doesn't exist on OpportunityFilters but needed for test
+      energyClasses: ['F', 'G']
+    };
     const mockEnergyDiagnosticsForExport = [mockEnergyDiagnostic, { ...mockEnergyDiagnostic, id: 'energy-diagnostic-2' }];
     const mockBlob = new Blob(['test data']);
 

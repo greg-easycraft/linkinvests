@@ -289,7 +289,6 @@ describe('EmailService', () => {
 
   describe('error scenarios', () => {
     it('should handle undefined response from Resend', async () => {
-      // @ts-expect-error - Testing edge case with undefined response
       mockEmailSend.mockResolvedValue(undefined);
 
       await expect(emailService.sendResetPasswordEmail('test@example.com', 'https://test.com'))
@@ -298,7 +297,6 @@ describe('EmailService', () => {
     });
 
     it('should handle null response from Resend', async () => {
-      // @ts-expect-error - Testing edge case with null response
       mockEmailSend.mockResolvedValue(null);
 
       await expect(emailService.sendVerificationEmail('test@example.com', 'https://test.com'))
@@ -307,7 +305,6 @@ describe('EmailService', () => {
     });
 
     it('should handle response without data or error properties', async () => {
-      // @ts-expect-error - Testing edge case with malformed response
       mockEmailSend.mockResolvedValue({});
 
       // Since response.error is undefined (falsy), the method succeeds

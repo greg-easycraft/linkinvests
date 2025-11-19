@@ -18,6 +18,7 @@ describe('SuccessionService', () => {
 
   const mockSuccession: Succession = {
     id: 'succession-1',
+    // @ts-expect-error - type property doesn't exist on Succession but needed for test
     type: OpportunityType.SUCCESSION,
     title: 'Test Succession',
     description: 'Test Description',
