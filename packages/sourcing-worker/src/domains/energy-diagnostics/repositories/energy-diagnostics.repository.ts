@@ -57,8 +57,9 @@ export class EnergyDiagnosticsOpportunityRepository {
           externalId: opp.numeroDpe,
 
           // Energy-specific fields (normalized from extraData)
-          energyClass: opp.extraData?.energyClass || null,
+          energyClass: opp.energyClass,
           dpeNumber: opp.numeroDpe, // Store DPE number in dedicated field
+          squareFootage: opp.squareFootage,
         };
       });
 

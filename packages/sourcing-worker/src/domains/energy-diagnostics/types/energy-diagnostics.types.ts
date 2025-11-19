@@ -11,7 +11,7 @@ export interface DpeRecord {
   date_reception_dpe?: string; // DPE reception date (YYYY-MM-DD)
   type_batiment?: string; // Building type (appartement, maison, immeuble)
   annee_construction?: string; // Construction year
-  surface_habitable_logement?: number; // Living area in m²
+  surface_habitable_logement: number; // Living area in m²
 }
 
 export interface DpeApiResponse {
@@ -36,7 +36,6 @@ export interface EnergyDiagnostic {
   latitude: number;
   longitude: number;
   opportunityDate: Date;
-  extraData?: {
-    energyClass?: string; // A-G rating
-  };
+  squareFootage: number;
+  energyClass: string; // A-G rating
 }

@@ -8,6 +8,9 @@ export * from './liquidation.types.js';
 export * from './energy-diagnostic.types.js';
 export * from './listing.types.js';
 
+// Address search types
+export * from './address-search.types.js';
+
 import { Auction } from './auction.types.js';
 import { Succession } from './succession.types.js';
 import { Liquidation } from './liquidation.types.js';

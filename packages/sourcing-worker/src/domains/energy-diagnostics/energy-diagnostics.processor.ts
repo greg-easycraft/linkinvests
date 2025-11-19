@@ -180,9 +180,8 @@ export class EnergyDiagnosticsProcessor extends WorkerHost {
       latitude,
       longitude,
       opportunityDate: new Date(opportunityDateStr),
-      extraData: {
-        energyClass: record.etiquette_dpe,
-      },
+      energyClass: record.etiquette_dpe,
+      squareFootage: record.surface_habitable_logement,
     };
   }
 }
