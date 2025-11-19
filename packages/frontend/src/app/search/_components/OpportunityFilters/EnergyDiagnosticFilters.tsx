@@ -1,12 +1,12 @@
 "use client";
 
 import { OpportunityType } from "@linkinvests/shared";
-import type { OpportunityFilters as IOpportunityFilters, EnergyClass } from "~/types/filters";
+import type { EnergyDiagnosticFilters as IEnergyDiagnosticFilters, EnergyClass } from "~/types/filters";
 import { BaseFilters } from "./BaseFilters";
 
 interface EnergyDiagnosticFiltersProps {
-  filters: IOpportunityFilters;
-  onFiltersChange: (filters: IOpportunityFilters) => void;
+  filters: IEnergyDiagnosticFilters;
+  onFiltersChange: (filters: IEnergyDiagnosticFilters) => void;
 }
 
 

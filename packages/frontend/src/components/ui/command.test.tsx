@@ -114,6 +114,7 @@ describe('Command Components', () => {
       render(
         <CommandDialog
           data-testid="dialog-root"
+          // @ts-expect-error - className is not in CommandDialogProps but needed for test
           className="custom-dialog"
         >
           Content

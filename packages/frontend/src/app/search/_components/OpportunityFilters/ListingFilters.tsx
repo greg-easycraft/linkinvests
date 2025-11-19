@@ -139,12 +139,12 @@ export function ListingFilters({
 
   // Energy class handlers (DPE)
   const handleDpeChange = (energyClass: EnergyClass, checked: boolean): void => {
-    const currentClasses = listingFilters.dpe ?? [];
+    const currentClasses = listingFilters.energyClasses ?? [];
     const updatedClasses = checked
       ? [...currentClasses, energyClass]
       : currentClasses.filter(c => c !== energyClass);
 
-    onFiltersChange({ ...filters, dpe: updatedClasses.length > 0 ? updatedClasses : undefined } as IListingFilters);
+    onFiltersChange({ ...filters, energyClasses: updatedClasses.length > 0 ? updatedClasses : undefined });
   };
 
   // Features handlers
@@ -353,7 +353,7 @@ export function ListingFilters({
         <label className="text-sm font-medium mb-2 block font-heading">Diagnostic énergétique (DPE)</label>
         <div className="space-y-2">
           {ENERGY_CLASSES.map((energyClass) => {
-            const isChecked = listingFilters.dpe?.includes(energyClass.value) ?? false;
+            const isChecked = listingFilters.energyClasses?.includes(energyClass.value) ?? false;
             return (
               <div key={energyClass.value} className="flex items-center space-x-2">
                 <input

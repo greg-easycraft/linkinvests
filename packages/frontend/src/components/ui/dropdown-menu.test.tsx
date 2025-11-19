@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '~/test-utils/test-helpers';
+import { render, screen } from '~/test-utils/test-helpers';
 import userEvent from '@testing-library/user-event';
 import {
   DropdownMenu,
@@ -361,6 +361,7 @@ describe('DropdownMenu Components', () => {
         <DropdownMenuLabel
           data-testid="props-label"
           id="label-1"
+          // @ts-expect-error - htmlFor is not in DropdownMenuLabelProps but needed for test
           htmlFor="input-1"
         >
           Props Label

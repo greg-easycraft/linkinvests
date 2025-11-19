@@ -442,6 +442,7 @@ describe('Tooltip Components', () => {
         );
         expect(visibleTooltip).toBeInTheDocument();
         // Tooltip should be rendered outside the normal DOM tree
+        // @ts-expect-error - visibleTooltip is checked to be in document above, so it exists
         expect(visibleTooltip.closest('[data-radix-popper-content-wrapper]')).toBeTruthy();
       });
     });

@@ -40,6 +40,16 @@ jest.mock('next/image', () => ({
 process.env.NEXT_PUBLIC_MAPBOX_TOKEN = 'test-mapbox-token';
 process.env.NEXT_PUBLIC_BETTER_AUTH_URL = 'http://localhost:3000';
 
+// Mock browser APIs required by Radix UI components
+global.ResizeObserver = jest.fn().mockImplementation(() => ({
+  observe: jest.fn(),
+  unobserve: jest.fn(),
+  disconnect: jest.fn(),
+}));
+
+// Mock scrollIntoView
+HTMLElement.prototype.scrollIntoView = jest.fn();
+
 // Silence console errors during tests unless needed
 const originalError = console.error;
 beforeAll(() => {

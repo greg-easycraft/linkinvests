@@ -198,6 +198,7 @@ describe('ZipCodeInput Component', () => {
       const user = userEvent.setup();
       render(<ZipCodeInput value={[]} onChange={onChange} />);
 
+      // @ts-expect-error - input variable declared but not used in this specific test
       const input = screen.getByRole('textbox');
 
       await user.keyboard('{Enter}');
@@ -296,6 +297,7 @@ describe('ZipCodeInput Component', () => {
 
     it('should not remove zip codes when component is disabled', async () => {
       const onChange = jest.fn();
+      // @ts-expect-error - user variable declared but not used in this specific test
       const user = userEvent.setup();
       render(<ZipCodeInput value={['12345']} onChange={onChange} disabled />);
 
@@ -531,6 +533,7 @@ describe('ZipCodeInput Component', () => {
 
     it('should handle onChange event correctly', async () => {
       const onChange = jest.fn();
+      // @ts-expect-error - user variable declared but not used in this specific test
       const user = userEvent.setup();
       render(<ZipCodeInput value={[]} onChange={onChange} />);
 
