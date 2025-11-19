@@ -102,7 +102,7 @@ export class EmailService {
 
     private async sendEmail(email: string, subject: string, htmlBody: string): Promise<boolean> {
         const response = await this.resend.emails.send({
-            from: "Linkinvests <noreply@linkinvests.com>",
+            from: "Linkinvests <noreply@easycraft.cloud>",
             to: email,
             subject,
             html: htmlBody,
