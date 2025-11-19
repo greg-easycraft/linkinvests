@@ -5,7 +5,6 @@ import type { OpportunityFilters } from '~/types/filters';
 import { OpportunityType, type Auction } from '@linkinvests/shared';
 import { DEFAULT_PAGE_SIZE } from '~/constants/filters';
 import { getOpportunityHeaders } from '~/server/services/export-headers.service';
-import { mockClass } from '~/test-utils/mock-class';
 
 // Mock the export-headers service
 jest.mock('~/server/services/export-headers.service', () => ({

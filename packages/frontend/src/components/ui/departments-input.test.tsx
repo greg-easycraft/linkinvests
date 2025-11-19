@@ -717,6 +717,7 @@ describe('DepartmentsInput Component', () => {
       const input = screen.getByRole('textbox');
 
       // Type rapidly
+      // @ts-expect-error - delay property not in typeOptions but supported by userEvent
       await user.type(input, 'Paris', { delay: 1 });
 
       // Should handle without errors

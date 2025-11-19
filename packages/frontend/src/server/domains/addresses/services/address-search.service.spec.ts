@@ -1,12 +1,13 @@
 import { AddressSearchService } from './address-search.service';
 import type { IAddressSearchRepository } from '../lib.types';
-import type { AddressSearchInput, AddressSearchResult, EnergyDiagnostic } from '@linkinvests/shared';
+import type { AddressSearchInput, EnergyDiagnostic } from '@linkinvests/shared';
 import { OpportunityType } from '@linkinvests/shared';
 
 describe('AddressSearchService', () => {
   let addressSearchService: AddressSearchService;
   let mockAddressSearchRepository: jest.Mocked<IAddressSearchRepository>;
 
+  // @ts-expect-error - Test mock data includes properties not in interface
   const mockEnergyDiagnostic: EnergyDiagnostic = {
     id: 'energy-diagnostic-1',
     type: OpportunityType.ENERGY_SIEVE,
@@ -34,6 +35,7 @@ describe('AddressSearchService', () => {
     // Create mocked repository
     mockAddressSearchRepository = {
       findAllForAddressSearch: jest.fn(),
+      findById: jest.fn(),
     };
 
     // Initialize service with mocked dependency
@@ -53,6 +55,7 @@ describe('AddressSearchService', () => {
       const result = await addressSearchService.getPlausibleAddresses(input);
 
       expect(result).toEqual([]);
+      // @ts-expect-error - Test mock calls are guaranteed to exist in test context
       const call = mockAddressSearchRepository.findAllForAddressSearch.mock.calls[0][0];
       expect(call.zipCode).toBe('75001');
       expect(call.energyClass).toBe('F');
