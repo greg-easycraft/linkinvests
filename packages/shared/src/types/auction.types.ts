@@ -1,5 +1,5 @@
 import { BaseOpportunity, BaseOpportunityInput } from './base-opportunity.types.js';
-import { PropertyType } from '../constants/opportunity.js';
+import { AuctionSource, PropertyType } from '../constants/opportunity.js';
 
 export interface Auction extends BaseOpportunity {
   // Auction-specific fields
@@ -29,6 +29,7 @@ export interface Auction extends BaseOpportunity {
     registrationRequired?: boolean;
     depositAmount?: number;
   };
+  source: AuctionSource;
 }
 
 export interface AuctionInput extends BaseOpportunityInput {
