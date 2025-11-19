@@ -7,7 +7,14 @@ export interface Succession extends BaseOpportunity {
   // Mairie contact info as JSONB
   mairieContact: {
     name?: string;
-    address?: string;
+    address: {
+      complement1: string;
+      complement2: string;
+      numero_voie: string;
+      service_distribution: string;
+      code_postal: string;
+      nom_commune: string;
+    };
     phone?: string;
     email?: string;
     website?: string;

@@ -10,9 +10,11 @@ import {
   DeceasesCsvProcessJobData,
   InseeCsvRow,
   CsvProcessingStats,
-  DeceasesOpportunity,
 } from './types/deceases.types';
-import { INGEST_DECEASES_CSV_QUEUE } from '@linkinvests/shared';
+import {
+  INGEST_DECEASES_CSV_QUEUE,
+  SuccessionInput,
+} from '@linkinvests/shared';
 
 @Injectable()
 @Processor(INGEST_DECEASES_CSV_QUEUE, { concurrency: 1 })
@@ -144,8 +146,8 @@ export class DeceasesCsvProcessor extends WorkerHost {
   private async processBatch(
     batch: InseeCsvRow[],
     stats: CsvProcessingStats,
-  ): Promise<DeceasesOpportunity[]> {
-    const opportunities: DeceasesOpportunity[] = [];
+  ): Promise<SuccessionInput[]> {
+    const opportunities: SuccessionInput[] = [];
 
     for (const row of batch) {
       try {
@@ -177,7 +179,7 @@ export class DeceasesCsvProcessor extends WorkerHost {
   private async processRow(
     row: InseeCsvRow,
     stats: CsvProcessingStats,
-  ): Promise<DeceasesOpportunity | null> {
+  ): Promise<SuccessionInput | null> {
     // Validate required fields
     if (!row.nomprenom || !row.datedeces || !row.lieudeces) {
       throw new Error(
@@ -202,21 +204,18 @@ export class DeceasesCsvProcessor extends WorkerHost {
     stats.mairieInfoSuccesses++;
     const { firstName, lastName } = this.cleanPersonName(row.nomprenom);
 
-    const opportunity: DeceasesOpportunity = {
-      inseeDeathId: this.generateDeathId(row),
+    const opportunity: SuccessionInput = {
+      externalId: this.generateDeathId(row),
       label: `Succession ${firstName.split(' ')[0]} ${lastName.toUpperCase()}`,
-      siret: null,
       address,
       zipCode,
       department: row.lieudeces.substring(0, 2),
       latitude: coordinates.latitude,
       longitude: coordinates.longitude,
       opportunityDate: this.formatDate(row.datedeces),
-      mairieInfo: contactInfo,
-      extraData: {
-        firstName,
-        lastName,
-      },
+      mairieContact: contactInfo,
+      firstName,
+      lastName,
     };
 
     return opportunity;

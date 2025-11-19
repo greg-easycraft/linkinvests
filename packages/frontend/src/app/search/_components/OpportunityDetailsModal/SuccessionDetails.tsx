@@ -71,7 +71,12 @@ export function SuccessionDetails({ opportunity }: SuccessionDetailsProps) {
                   <div>
                     <div className="font-medium">{opportunity.mairieContact.name}</div>
                     {opportunity.mairieContact.address && (
-                      <div className="text-gray-600">{opportunity.mairieContact.address}</div>
+                      <div className="text-gray-600">{opportunity.mairieContact.address.complement1}
+                      <br/>{opportunity.mairieContact.address.complement2}
+                      <br/>{opportunity.mairieContact.address.numero_voie}
+                      <br/>{opportunity.mairieContact.address.service_distribution}
+                      <br/>{opportunity.mairieContact.address.code_postal}
+                      <br/>{opportunity.mairieContact.address.nom_commune}</div>
                     )}
                   </div>
                 </div>

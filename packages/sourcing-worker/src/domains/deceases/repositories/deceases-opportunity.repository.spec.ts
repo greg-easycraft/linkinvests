@@ -1,13 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { OpportunityType } from '@linkinvests/shared';
+import { OpportunityType, SuccessionInput } from '@linkinvests/shared';
 
 import { DATABASE_CONNECTION } from '~/database';
 
 import { DeceasesOpportunityRepository } from './deceases-opportunity.repository';
-import type {
-  DeceasesOpportunity,
-  MairieContactInfo,
-} from '../types/deceases.types';
+import type { MairieContactInfo } from '../types/deceases.types';
 
 describe('DeceasesOpportunityRepository', () => {
   let repository: DeceasesOpportunityRepository;
@@ -70,22 +67,19 @@ describe('DeceasesOpportunityRepository', () => {
         },
       };
 
-      const opportunities: DeceasesOpportunity[] = [
+      const opportunities: SuccessionInput[] = [
         {
-          inseeDeathId: 'INSEE123_20240115',
+          externalId: 'INSEE123_20240115',
           label: 'DUPONT Jean',
-          siret: null,
           address: 'Mairie de Paris',
           zipCode: '75001',
           department: '75',
+          firstName: 'Jean',
+          lastName: 'DUPONT',
+          mairieContact: mairieInfo,
           latitude: 48.8566,
           longitude: 2.3522,
           opportunityDate: '2024-01-15',
-          mairieInfo,
-          extraData: {
-            firstName: 'Jean',
-            lastName: 'DUPONT',
-          },
         },
       ];
 
@@ -96,42 +90,47 @@ describe('DeceasesOpportunityRepository', () => {
       expect(mockDb.values).toHaveBeenCalledWith([
         {
           label: 'DUPONT Jean',
-          siret: null,
           address: 'Mairie de Paris',
-          zipCode: 75001,
-          department: 75,
+          zipCode: '75001',
+          department: '75',
+          firstName: 'Jean',
+          lastName: 'DUPONT',
+          mairieContact: mairieInfo,
           latitude: 48.8566,
           longitude: 2.3522,
-          type: OpportunityType.SUCCESSION,
-          status: 'pending_review',
           opportunityDate: '2024-01-15',
           externalId: 'INSEE123_20240115',
-          contactData: mairieInfo,
-          extraData: {
-            firstName: 'Jean',
-            lastName: 'DUPONT',
-          },
         },
       ]);
       expect(mockDb.onConflictDoNothing).toHaveBeenCalledTimes(1);
     });
 
     it('should batch records (500 per batch by default)', async () => {
-      const opportunities: DeceasesOpportunity[] = Array.from(
+      const opportunities: SuccessionInput[] = Array.from(
         { length: 1500 },
         (_, i) => ({
-          inseeDeathId: `INSEE${i}_20240115`,
+          externalId: `INSEE${i}_20240115`,
           label: `PERSON ${i}`,
-          siret: null,
           address: `${i} Rue de Test`,
           zipCode: '75001',
           department: '75',
           latitude: 48.8566,
           longitude: 2.3522,
           opportunityDate: '2024-01-15',
-          extraData: {
-            firstName: `FirstName${i}`,
-            lastName: `LastName${i}`,
+          firstName: `FirstName${i}`,
+          lastName: `LastName${i}`,
+          mairieContact: {
+            name: 'Mairie de Paris',
+            phone: '01 42 76 40 40',
+            email: 'contact@paris.fr',
+            address: {
+              complement1: 'Hôtel de Ville',
+              complement2: 'Place',
+              numero_voie: '4',
+              service_distribution: "Place de l'Hôtel de Ville",
+              code_postal: '75004',
+              nom_commune: 'Paris',
+            },
           },
         }),
       );
@@ -146,21 +145,31 @@ describe('DeceasesOpportunityRepository', () => {
     });
 
     it('should respect custom batch size', async () => {
-      const opportunities: DeceasesOpportunity[] = Array.from(
+      const opportunities: SuccessionInput[] = Array.from(
         { length: 1000 },
         (_, i) => ({
-          inseeDeathId: `INSEE${i}_20240115`,
+          externalId: `INSEE${i}_20240115`,
           label: `PERSON ${i}`,
-          siret: null,
           address: `${i} Rue de Test`,
           zipCode: '75001',
           department: '75',
           latitude: 48.8566,
           longitude: 2.3522,
           opportunityDate: '2024-01-15',
-          extraData: {
-            firstName: `FirstName${i}`,
-            lastName: `LastName${i}`,
+          firstName: `FirstName${i}`,
+          lastName: `LastName${i}`,
+          mairieContact: {
+            name: 'Mairie de Paris',
+            phone: '01 42 76 40 40',
+            email: 'contact@paris.fr',
+            address: {
+              complement1: 'Hôtel de Ville',
+              complement2: 'Place',
+              numero_voie: '4',
+              service_distribution: "Place de l'Hôtel de Ville",
+              code_postal: '75004',
+              nom_commune: 'Paris',
+            },
           },
         }),
       );
@@ -173,20 +182,30 @@ describe('DeceasesOpportunityRepository', () => {
     });
 
     it('should convert string zipCode and department to integers', async () => {
-      const opportunities: DeceasesOpportunity[] = [
+      const opportunities: SuccessionInput[] = [
         {
-          inseeDeathId: 'INSEE123_20240115',
+          externalId: 'INSEE123_20240115',
           label: 'TEST',
-          siret: null,
           address: 'Test Address',
           zipCode: '75001',
           department: '75',
           latitude: 48.8566,
           longitude: 2.3522,
           opportunityDate: '2024-01-15',
-          extraData: {
-            firstName: 'Test',
-            lastName: 'Person',
+          firstName: 'Test',
+          lastName: 'Person',
+          mairieContact: {
+            name: 'Mairie de Paris',
+            phone: '01 42 76 40 40',
+            email: 'contact@paris.fr',
+            address: {
+              complement1: 'Hôtel de Ville',
+              complement2: 'Place',
+              numero_voie: '4',
+              service_distribution: "Place de l'Hôtel de Ville",
+              code_postal: '75004',
+              nom_commune: 'Paris',
+            },
           },
         },
       ];
@@ -198,44 +217,75 @@ describe('DeceasesOpportunityRepository', () => {
           zipCode: 75001,
           department: 75,
           externalId: 'INSEE123_20240115',
-          extraData: {
-            firstName: 'Test',
-            lastName: 'Person',
+          firstName: 'Test',
+          lastName: 'Person',
+          mairieContact: {
+            name: 'Mairie de Paris',
+            phone: '01 42 76 40 40',
+            email: 'contact@paris.fr',
+            address: {
+              complement1: 'Hôtel de Ville',
+              complement2: 'Place',
+              numero_voie: '4',
+              service_distribution: "Place de l'Hôtel de Ville",
+              code_postal: '75004',
+              nom_commune: 'Paris',
+            },
           },
         }),
       ]);
     });
 
     it('should use OpportunityType.SUCCESSION for all records', async () => {
-      const opportunities: DeceasesOpportunity[] = [
+      const opportunities: SuccessionInput[] = [
         {
-          inseeDeathId: 'INSEE1_20240115',
+          externalId: 'INSEE123_20240115',
           label: 'TEST 1',
-          siret: null,
           address: 'Address 1',
           zipCode: '75001',
           department: '75',
           latitude: 48.8566,
           longitude: 2.3522,
           opportunityDate: '2024-01-15',
-          extraData: {
-            firstName: 'Test',
-            lastName: 'One',
+          firstName: 'Test',
+          lastName: 'One',
+          mairieContact: {
+            name: 'Mairie de Paris',
+            phone: '01 42 76 40 40',
+            email: 'contact@paris.fr',
+            address: {
+              complement1: 'Hôtel de Ville',
+              complement2: 'Place',
+              numero_voie: '4',
+              service_distribution: "Place de l'Hôtel de Ville",
+              code_postal: '75004',
+              nom_commune: 'Paris',
+            },
           },
         },
         {
-          inseeDeathId: 'INSEE2_20240116',
+          externalId: 'INSEE2_20240116',
           label: 'TEST 2',
-          siret: null,
           address: 'Address 2',
           zipCode: '75002',
           department: '75',
           latitude: 48.8566,
           longitude: 2.3522,
           opportunityDate: '2024-01-16',
-          extraData: {
-            firstName: 'Test',
-            lastName: 'Two',
+          firstName: 'Test',
+          lastName: 'Two',
+          mairieContact: {
+            name: 'Mairie de Paris',
+            phone: '01 42 76 40 40',
+            email: 'contact@paris.fr',
+            address: {
+              complement1: 'Hôtel de Ville',
+              complement2: 'Place',
+              numero_voie: '4',
+              service_distribution: "Place de l'Hôtel de Ville",
+              code_postal: '75004',
+              nom_commune: 'Paris',
+            },
           },
         },
       ];
@@ -251,20 +301,30 @@ describe('DeceasesOpportunityRepository', () => {
     });
 
     it('should set status to pending_review for all records', async () => {
-      const opportunities: DeceasesOpportunity[] = [
+      const opportunities: SuccessionInput[] = [
         {
-          inseeDeathId: 'INSEE123_20240115',
+          externalId: 'INSEE123_20240115',
           label: 'TEST',
-          siret: null,
           address: 'Test Address',
           zipCode: '75001',
           department: '75',
           latitude: 48.8566,
           longitude: 2.3522,
           opportunityDate: '2024-01-15',
-          extraData: {
-            firstName: 'Test',
-            lastName: 'Person',
+          firstName: 'Test',
+          lastName: 'Person',
+          mairieContact: {
+            name: 'Mairie de Paris',
+            phone: '01 42 76 40 40',
+            email: 'contact@paris.fr',
+            address: {
+              complement1: 'Hôtel de Ville',
+              complement2: 'Place',
+              numero_voie: '4',
+              service_distribution: "Place de l'Hôtel de Ville",
+              code_postal: '75004',
+              nom_commune: 'Paris',
+            },
           },
         },
       ];
@@ -277,21 +337,31 @@ describe('DeceasesOpportunityRepository', () => {
     });
 
     it('should log progress for each batch', async () => {
-      const opportunities: DeceasesOpportunity[] = Array.from(
+      const opportunities: SuccessionInput[] = Array.from(
         { length: 1000 },
         (_, i) => ({
-          inseeDeathId: `INSEE${i}_20240115`,
+          externalId: `INSEE${i}_20240115`,
           label: `PERSON ${i}`,
-          siret: null,
           address: `${i} Rue de Test`,
           zipCode: '75001',
           department: '75',
           latitude: 48.8566,
           longitude: 2.3522,
           opportunityDate: '2024-01-15',
-          extraData: {
-            firstName: `FirstName${i}`,
-            lastName: `LastName${i}`,
+          firstName: `FirstName${i}`,
+          lastName: `LastName${i}`,
+          mairieContact: {
+            name: 'Mairie de Paris',
+            phone: '01 42 76 40 40',
+            email: 'contact@paris.fr',
+            address: {
+              complement1: 'Hôtel de Ville',
+              complement2: 'Place',
+              numero_voie: '4',
+              service_distribution: "Place de l'Hôtel de Ville",
+              code_postal: '75004',
+              nom_commune: 'Paris',
+            },
           },
         }),
       );
@@ -307,20 +377,30 @@ describe('DeceasesOpportunityRepository', () => {
     });
 
     it('should log final success message', async () => {
-      const opportunities: DeceasesOpportunity[] = [
+      const opportunities: SuccessionInput[] = [
         {
-          inseeDeathId: 'INSEE123_20240115',
+          externalId: 'INSEE123_20240115',
           label: 'TEST',
-          siret: null,
           address: 'Test Address',
           zipCode: '75001',
           department: '75',
           latitude: 48.8566,
           longitude: 2.3522,
           opportunityDate: '2024-01-15',
-          extraData: {
-            firstName: 'Test',
-            lastName: 'Person',
+          firstName: 'Test',
+          lastName: 'Person',
+          mairieContact: {
+            name: 'Mairie de Paris',
+            phone: '01 42 76 40 40',
+            email: 'contact@paris.fr',
+            address: {
+              complement1: 'Hôtel de Ville',
+              complement2: 'Place',
+              numero_voie: '4',
+              service_distribution: "Place de l'Hôtel de Ville",
+              code_postal: '75004',
+              nom_commune: 'Paris',
+            },
           },
         },
       ];
@@ -336,20 +416,30 @@ describe('DeceasesOpportunityRepository', () => {
       const dbError = new Error('Database connection failed');
       mockDb.onConflictDoNothing.mockRejectedValue(dbError);
 
-      const opportunities: DeceasesOpportunity[] = [
+      const opportunities: SuccessionInput[] = [
         {
-          inseeDeathId: 'INSEE123_20240115',
+          externalId: 'INSEE123_20240115',
           label: 'TEST',
-          siret: null,
           address: 'Test Address',
           zipCode: '75001',
           department: '75',
           latitude: 48.8566,
           longitude: 2.3522,
           opportunityDate: '2024-01-15',
-          extraData: {
-            firstName: 'Test',
-            lastName: 'Person',
+          firstName: 'Test',
+          lastName: 'Person',
+          mairieContact: {
+            name: 'Mairie de Paris',
+            phone: '01 42 76 40 40',
+            email: 'contact@paris.fr',
+            address: {
+              complement1: 'Hôtel de Ville',
+              complement2: 'Place',
+              numero_voie: '4',
+              service_distribution: "Place de l'Hôtel de Ville",
+              code_postal: '75004',
+              nom_commune: 'Paris',
+            },
           },
         },
       ];
@@ -383,21 +473,18 @@ describe('DeceasesOpportunityRepository', () => {
         },
       };
 
-      const opportunity: DeceasesOpportunity = {
-        inseeDeathId: 'INSEE456_20240320',
+      const opportunity: SuccessionInput = {
+        externalId: 'INSEE456_20240320',
         label: 'MARTIN Marie Louise',
-        siret: null,
         address: 'Mairie de Lyon',
         zipCode: '69001',
         department: '69',
         latitude: 45.7578,
         longitude: 4.832,
         opportunityDate: '2024-03-20',
-        mairieInfo,
-        extraData: {
-          firstName: 'Marie Louise',
-          lastName: 'MARTIN',
-        },
+        mairieContact: mairieInfo,
+        firstName: 'Marie Louise',
+        lastName: 'MARTIN',
       };
 
       await repository.insertOpportunities([opportunity]);
@@ -405,7 +492,6 @@ describe('DeceasesOpportunityRepository', () => {
       expect(mockDb.values).toHaveBeenCalledWith([
         {
           label: 'MARTIN Marie Louise',
-          siret: null,
           address: 'Mairie de Lyon',
           zipCode: 69001,
           department: 69,
@@ -415,21 +501,18 @@ describe('DeceasesOpportunityRepository', () => {
           status: 'pending_review',
           opportunityDate: '2024-03-20',
           externalId: 'INSEE456_20240320',
-          contactData: mairieInfo,
-          extraData: {
-            firstName: 'Marie Louise',
-            lastName: 'MARTIN',
-          },
+          mairieContact: mairieInfo,
+          firstName: 'Marie Louise',
+          lastName: 'MARTIN',
         },
       ]);
     });
 
     it('should handle missing optional mairieInfo field', async () => {
-      const opportunities: DeceasesOpportunity[] = [
+      const opportunities: SuccessionInput[] = [
         {
-          inseeDeathId: 'INSEE789_20240401',
+          externalId: 'INSEE789_20240401',
           label: 'DURAND Paul',
-          siret: null,
           address: 'Test Address',
           zipCode: '75001',
           department: '75',
@@ -437,10 +520,21 @@ describe('DeceasesOpportunityRepository', () => {
           longitude: 2.3522,
           opportunityDate: '2024-04-01',
           // No mairieInfo provided (optional field)
-          extraData: {
-            firstName: 'Paul',
-            lastName: 'DURAND',
+          mairieContact: {
+            name: 'Mairie de Paris',
+            phone: '01 42 76 40 40',
+            email: 'contact@paris.fr',
+            address: {
+              complement1: 'Hôtel de Ville',
+              complement2: 'Place',
+              numero_voie: '4',
+              service_distribution: "Place de l'Hôtel de Ville",
+              code_postal: '75004',
+              nom_commune: 'Paris',
+            },
           },
+          firstName: 'Paul',
+          lastName: 'DURAND',
         },
       ];
 
@@ -450,11 +544,9 @@ describe('DeceasesOpportunityRepository', () => {
       expect(mockDb.values).toHaveBeenCalledWith([
         expect.objectContaining({
           externalId: 'INSEE789_20240401',
-          contactData: undefined,
-          extraData: {
-            firstName: 'Paul',
-            lastName: 'DURAND',
-          },
+          mairieContact: undefined,
+          firstName: 'Paul',
+          lastName: 'DURAND',
         }),
       ]);
     });
@@ -474,22 +566,18 @@ describe('DeceasesOpportunityRepository', () => {
         },
       };
 
-      const opportunity: DeceasesOpportunity = {
-        inseeDeathId: 'MAPPING_TEST_123', // Maps to externalId
+      const opportunity: SuccessionInput = {
+        externalId: 'MAPPING_TEST_123', // Maps to externalId
         label: 'TEST MAPPING',
-        siret: null,
         address: 'Test Address',
         zipCode: '75001',
         department: '75',
         latitude: 48.8566,
         longitude: 2.3522,
         opportunityDate: '2024-05-01',
-        mairieInfo, // Maps to contactData
-        extraData: {
-          // Maps to extraData (same name)
-          firstName: 'Test',
-          lastName: 'MAPPING',
-        },
+        mairieContact: mairieInfo,
+        firstName: 'Test',
+        lastName: 'MAPPING',
       };
 
       await repository.insertOpportunities([opportunity]);
@@ -498,12 +586,9 @@ describe('DeceasesOpportunityRepository', () => {
         expect.objectContaining({
           // Verify field mapping
           externalId: 'MAPPING_TEST_123', // inseeDeathId -> externalId
-          contactData: mairieInfo, // mairieInfo -> contactData
-          extraData: {
-            // extraData -> extraData (no change)
-            firstName: 'Test',
-            lastName: 'MAPPING',
-          },
+          mairieContact: mairieInfo,
+          firstName: 'Test',
+          lastName: 'MAPPING',
         }),
       ]);
     });
