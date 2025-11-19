@@ -19,6 +19,7 @@ export class DrizzleListingRepository implements IListingRepository {
       return conditions;
     }
 
+    // Base OpportunityFilters
     // Filter by departments (support multiple departments)
     if (filters.departments && filters.departments.length > 0) {
       conditions.push(inArray(opportunityListings.department, filters.departments));
@@ -49,6 +50,104 @@ export class DrizzleListingRepository implements IListingRepository {
           lte(opportunityListings.longitude, filters.bounds.east),
         ) ?? sql`true`,
       );
+    }
+
+    // Listing-specific filters
+    // Filter by transaction types
+    if (filters.transactionTypes && filters.transactionTypes.length > 0) {
+      conditions.push(inArray(opportunityListings.transactionType, filters.transactionTypes));
+    }
+
+    // Filter by property types
+    if (filters.propertyTypes && filters.propertyTypes.length > 0) {
+      conditions.push(inArray(opportunityListings.propertyType, filters.propertyTypes));
+    }
+
+    // Filter by energy classes (DPE)
+    if (filters.energyClasses && filters.energyClasses.length > 0) {
+      conditions.push(inArray(opportunityListings.dpe, filters.energyClasses));
+    }
+
+    // Filter by price range
+    if (filters.priceRange) {
+      if (filters.priceRange.min !== undefined) {
+        conditions.push(gte(opportunityListings.price, filters.priceRange.min));
+      }
+      if (filters.priceRange.max !== undefined) {
+        conditions.push(lte(opportunityListings.price, filters.priceRange.max));
+      }
+    }
+
+    // Filter by square footage range
+    if (filters.squareFootageRange) {
+      if (filters.squareFootageRange.min !== undefined) {
+        conditions.push(gte(opportunityListings.squareFootage, filters.squareFootageRange.min));
+      }
+      if (filters.squareFootageRange.max !== undefined) {
+        conditions.push(lte(opportunityListings.squareFootage, filters.squareFootageRange.max));
+      }
+    }
+
+    // Filter by land area range
+    if (filters.landAreaRange) {
+      if (filters.landAreaRange.min !== undefined) {
+        conditions.push(gte(opportunityListings.landArea, filters.landAreaRange.min));
+      }
+      if (filters.landAreaRange.max !== undefined) {
+        conditions.push(lte(opportunityListings.landArea, filters.landAreaRange.max));
+      }
+    }
+
+    // Filter by rooms range
+    if (filters.roomsRange) {
+      if (filters.roomsRange.min !== undefined) {
+        conditions.push(gte(opportunityListings.rooms, filters.roomsRange.min));
+      }
+      if (filters.roomsRange.max !== undefined) {
+        conditions.push(lte(opportunityListings.rooms, filters.roomsRange.max));
+      }
+    }
+
+    // Filter by bedrooms range
+    if (filters.bedroomsRange) {
+      if (filters.bedroomsRange.min !== undefined) {
+        conditions.push(gte(opportunityListings.bedrooms, filters.bedroomsRange.min));
+      }
+      if (filters.bedroomsRange.max !== undefined) {
+        conditions.push(lte(opportunityListings.bedrooms, filters.bedroomsRange.max));
+      }
+    }
+
+    // Filter by construction year range
+    if (filters.constructionYearRange) {
+      if (filters.constructionYearRange.min !== undefined) {
+        conditions.push(gte(opportunityListings.constructionYear, filters.constructionYearRange.min));
+      }
+      if (filters.constructionYearRange.max !== undefined) {
+        conditions.push(lte(opportunityListings.constructionYear, filters.constructionYearRange.max));
+      }
+    }
+
+    // Filter by features
+    if (filters.features) {
+      if (filters.features.balcony !== undefined) {
+        conditions.push(eq(opportunityListings.balcony, filters.features.balcony));
+      }
+      if (filters.features.terrace !== undefined) {
+        conditions.push(eq(opportunityListings.terrace, filters.features.terrace));
+      }
+      if (filters.features.garden !== undefined) {
+        conditions.push(eq(opportunityListings.garden, filters.features.garden));
+      }
+      if (filters.features.garage !== undefined) {
+        conditions.push(eq(opportunityListings.garage, filters.features.garage));
+      }
+      if (filters.features.parking !== undefined) {
+        conditions.push(eq(opportunityListings.parking, filters.features.parking));
+      }
+      if (filters.features.elevator !== undefined) {
+        conditions.push(eq(opportunityListings.elevator, filters.features.elevator));
+      }
     }
 
     return conditions;

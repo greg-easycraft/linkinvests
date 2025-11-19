@@ -2,7 +2,7 @@ import { and, eq, gte, inArray, lte, sql, type SQL } from "drizzle-orm";
 import type { DomainDbType } from "~/types/db";
 import { opportunityLiquidations } from "@linkinvests/db";
 import type { ILiquidationRepository } from "../lib.types";
-import type { OpportunityFilters, PaginationFilters } from "~/types/filters";
+import type { LiquidationFilters, PaginationFilters } from "~/types/filters";
 import { calculateStartDate } from "~/constants/date-periods";
 import type { Liquidation } from "@linkinvests/shared";
 
@@ -12,7 +12,7 @@ export class DrizzleLiquidationRepository implements ILiquidationRepository {
   /**
    * Builds where clause for liquidation filters
    */
-  private buildWhereClause(filters?: OpportunityFilters): SQL[] {
+  private buildWhereClause(filters?: LiquidationFilters): SQL[] {
     const conditions: SQL[] = [];
 
     if (!filters) {
@@ -54,7 +54,7 @@ export class DrizzleLiquidationRepository implements ILiquidationRepository {
     return conditions;
   }
 
-  async findAll(filters?: OpportunityFilters, paginationFilters?: PaginationFilters): Promise<Liquidation[]> {
+  async findAll(filters?: LiquidationFilters, paginationFilters?: PaginationFilters): Promise<Liquidation[]> {
     const conditions = this.buildWhereClause(filters);
 
     let query = this.db
@@ -103,7 +103,7 @@ export class DrizzleLiquidationRepository implements ILiquidationRepository {
     };
   }
 
-  async count(filters?: OpportunityFilters): Promise<number> {
+  async count(filters?: LiquidationFilters): Promise<number> {
     const conditions = this.buildWhereClause(filters);
 
     let query = this.db

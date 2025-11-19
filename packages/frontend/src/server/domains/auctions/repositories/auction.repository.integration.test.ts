@@ -3,7 +3,7 @@
  */
 import { DrizzleAuctionRepository } from './auction.repository';
 import { useTestDb } from '~/test-utils/use-test-db';
-import type { OpportunityFilters, PaginationFilters } from '~/types/filters';
+import type { AuctionFilters, PaginationFilters } from '~/types/filters';
 import { OpportunityType } from '@linkinvests/shared';
 
 describe('DrizzleAuctionRepository Integration Tests', () => {
@@ -22,7 +22,7 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
     });
 
     it('should filter by departments', async () => {
-      const filters: OpportunityFilters = {
+      const filters: AuctionFilters = {
         departments: ['06'] // CA department from fixtures
       };
 
@@ -35,7 +35,7 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
     });
 
     it('should filter by multiple departments', async () => {
-      const filters: OpportunityFilters = {
+      const filters: AuctionFilters = {
         departments: ['06', '10'] // CA and NY departments
       };
 
@@ -48,7 +48,7 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
     });
 
     it('should filter by zipCodes', async () => {
-      const filters: OpportunityFilters = {
+      const filters: AuctionFilters = {
         zipCodes: ['90210'] // Beverly Hills from fixtures
       };
 
@@ -60,7 +60,7 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
     });
 
     it('should filter by multiple zipCodes', async () => {
-      const filters: OpportunityFilters = {
+      const filters: AuctionFilters = {
         zipCodes: ['90210', '10001'] // Beverly Hills and NYC
       };
 
@@ -72,7 +72,7 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
     });
 
     it('should filter by date period', async () => {
-      const filters: OpportunityFilters = {
+      const filters: AuctionFilters = {
         datePeriod: 'last_month'
       };
 
@@ -83,8 +83,140 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
       expect(auctions).toBeInstanceOf(Array);
     });
 
+    // Auction-specific filter tests
+    it('should filter by auction types', async () => {
+      const filters: AuctionFilters = {
+        auctionTypes: ['PUBLIC_SALE']
+      };
+
+      const auctions = await auctionRepository.findAll(filters);
+
+      auctions.forEach(auction => {
+        expect(auction.auctionType).toBe('PUBLIC_SALE');
+      });
+    });
+
+    it('should filter by property types', async () => {
+      const filters: AuctionFilters = {
+        propertyTypes: ['HOUSE', 'APARTMENT']
+      };
+
+      const auctions = await auctionRepository.findAll(filters);
+
+      auctions.forEach(auction => {
+        expect(['HOUSE', 'APARTMENT']).toContain(auction.propertyType);
+      });
+    });
+
+    it('should filter by auction venues', async () => {
+      const filters: AuctionFilters = {
+        auctionVenues: ['COURTHOUSE_A', 'AUCTION_HOUSE_B']
+      };
+
+      const auctions = await auctionRepository.findAll(filters);
+
+      auctions.forEach(auction => {
+        expect(['COURTHOUSE_A', 'AUCTION_HOUSE_B']).toContain(auction.auctionVenue);
+      });
+    });
+
+    it('should filter by energy classes', async () => {
+      const filters: AuctionFilters = {
+        energyClasses: ['D', 'E', 'F']
+      };
+
+      const auctions = await auctionRepository.findAll(filters);
+
+      auctions.forEach(auction => {
+        expect(['D', 'E', 'F']).toContain(auction.dpe);
+      });
+    });
+
+    it('should filter by price range', async () => {
+      const filters: AuctionFilters = {
+        priceRange: { min: 100000, max: 500000 }
+      };
+
+      const auctions = await auctionRepository.findAll(filters);
+
+      auctions.forEach(auction => {
+        if (auction.currentPrice) {
+          expect(auction.currentPrice).toBeGreaterThanOrEqual(100000);
+          expect(auction.currentPrice).toBeLessThanOrEqual(500000);
+        }
+      });
+    });
+
+    it('should filter by reserve price range', async () => {
+      const filters: AuctionFilters = {
+        reservePriceRange: { min: 50000, max: 300000 }
+      };
+
+      const auctions = await auctionRepository.findAll(filters);
+
+      auctions.forEach(auction => {
+        if (auction.reservePrice) {
+          expect(auction.reservePrice).toBeGreaterThanOrEqual(50000);
+          expect(auction.reservePrice).toBeLessThanOrEqual(300000);
+        }
+      });
+    });
+
+    it('should filter by square footage range', async () => {
+      const filters: AuctionFilters = {
+        squareFootageRange: { min: 50, max: 200 }
+      };
+
+      const auctions = await auctionRepository.findAll(filters);
+
+      auctions.forEach(auction => {
+        if (auction.squareFootage) {
+          expect(auction.squareFootage).toBeGreaterThanOrEqual(50);
+          expect(auction.squareFootage).toBeLessThanOrEqual(200);
+        }
+      });
+    });
+
+    it('should filter by rooms range', async () => {
+      const filters: AuctionFilters = {
+        roomsRange: { min: 2, max: 5 }
+      };
+
+      const auctions = await auctionRepository.findAll(filters);
+
+      auctions.forEach(auction => {
+        if (auction.rooms) {
+          expect(auction.rooms).toBeGreaterThanOrEqual(2);
+          expect(auction.rooms).toBeLessThanOrEqual(5);
+        }
+      });
+    });
+
+    it('should filter by multiple auction criteria', async () => {
+      const filters: AuctionFilters = {
+        departments: ['06'],
+        auctionTypes: ['PUBLIC_SALE'],
+        priceRange: { min: 100000, max: 1000000 },
+        squareFootageRange: { min: 50 }
+      };
+
+      const auctions = await auctionRepository.findAll(filters);
+
+      auctions.forEach(auction => {
+        expect(auction.department).toBe('06');
+        expect(auction.auctionType).toBe('PUBLIC_SALE');
+        if (auction.currentPrice) {
+          expect(auction.currentPrice).toBeGreaterThanOrEqual(100000);
+          expect(auction.currentPrice).toBeLessThanOrEqual(1000000);
+        }
+        if (auction.squareFootage) {
+          expect(auction.squareFootage).toBeGreaterThanOrEqual(50);
+        }
+      });
+    });
+
     it('should filter by map bounds', async () => {
-      const filters: OpportunityFilters = {
+      const filters: AuctionFilters = {
         bounds: {
           north: 35.0,  // Covers Los Angeles area
           south: 33.0,
