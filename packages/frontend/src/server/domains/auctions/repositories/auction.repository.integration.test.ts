@@ -327,9 +327,13 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
       const auctions = await auctionRepository.findAll();
 
       for (let i = 1; i < auctions.length; i++) {
-        const current = new Date(auctions[i]?.createdAt!).getTime();
-        const previous = new Date(auctions[i-1]?.createdAt!).getTime();
-        expect(current).toBeLessThanOrEqual(previous);
+        const currentAuction = auctions[i];
+        const previousAuction = auctions[i-1];
+        if (currentAuction && previousAuction) {
+          const current = new Date(currentAuction.createdAt).getTime();
+          const previous = new Date(previousAuction.createdAt).getTime();
+          expect(current).toBeLessThanOrEqual(previous);
+        }
       }
     });
 
@@ -370,7 +374,7 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
       const allAuctions = await auctionRepository.findAll();
       expect(allAuctions.length).toBeGreaterThan(0);
 
-      const targetId = allAuctions[0]?.id!;
+      const targetId = allAuctions[0]?.id ?? '';
       const auction = await auctionRepository.findById(targetId);
 
       expect(auction).not.toBeNull();
@@ -387,7 +391,7 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
 
     it('should return auction with all required properties', async () => {
       const allAuctions = await auctionRepository.findAll();
-      const targetId = allAuctions[0]?.id!;
+      const targetId = allAuctions[0]?.id ?? '';
 
       const auction = await auctionRepository.findById(targetId);
 

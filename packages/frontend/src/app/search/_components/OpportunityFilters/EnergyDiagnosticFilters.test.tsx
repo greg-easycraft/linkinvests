@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { render, screen } from '~/test-utils/test-helpers';
 import userEvent from '@testing-library/user-event';
 import { EnergyDiagnosticFilters } from './EnergyDiagnosticFilters';
@@ -323,7 +324,7 @@ describe('EnergyDiagnosticFilters Component', () => {
 
     it('should handle invalid energy class values gracefully', () => {
       const filters: IEnergyDiagnosticFilters = {
-        // @ts-ignore - intentionally testing invalid values
+        // @ts-expect-error - intentionally testing invalid values
         energyClasses: ['A', 'B', 'X', 'Y'] as EnergyClass[],
       };
 

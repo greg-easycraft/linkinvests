@@ -520,7 +520,7 @@ describe('DepartmentsInput Component', () => {
       // Navigate down to last item
       await user.keyboard('{ArrowDown}{ArrowDown}{ArrowDown}{ArrowDown}');
 
-      let lastOption = screen.getByText('69 - Rhône');
+      const lastOption = screen.getByText('69 - Rhône');
       expect(lastOption.closest('button')).toHaveClass('bg-accent', 'text-accent-foreground');
 
       // Navigate down again (should cycle to first)

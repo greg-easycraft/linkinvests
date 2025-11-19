@@ -17,8 +17,9 @@ describe('DrizzleSuccessionRepository Integration Tests', () => {
 
   it('should find by ID', async () => {
     const all = await successionRepository.findAll();
-    const found = await successionRepository.findById(all[0]?.id!);
-    expect(found?.id).toBe(all[0]?.id);
+    const targetId = all[0]?.id ?? '';
+    const found = await successionRepository.findById(targetId);
+    expect(found?.id).toBe(targetId);
   });
 
   it('should count successions', async () => {

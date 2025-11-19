@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { AddressSearchService } from './address-search.service';
 import type { IAddressSearchRepository } from '../lib.types';
 import type { AddressSearchInput, EnergyDiagnostic } from '@linkinvests/shared';

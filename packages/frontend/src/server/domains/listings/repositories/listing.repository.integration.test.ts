@@ -209,7 +209,7 @@ describe('DrizzleListingRepository Integration Tests', () => {
   describe('findById', () => {
     it('should find listing by ID', async () => {
       const allListings = await listingRepository.findAll();
-      const targetId = allListings[0]?.id!;
+      const targetId = allListings[0]?.id ?? '';
       const listing = await listingRepository.findById(targetId);
       expect(listing?.id).toBe(targetId);
     });

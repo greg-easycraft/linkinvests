@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { render, screen } from '~/test-utils/test-helpers';
 import userEvent from '@testing-library/user-event';
 import { AuctionFilters } from './AuctionFilters';
@@ -149,7 +150,8 @@ describe('AuctionFilters Component', () => {
       };
 
       // Mock the onValueChange to simulate removing existing value
-      jest.mocked(require('~/components/ui/select').Select).mockImplementation(({ onValueChange }: any) => (
+      const selectModule = await import('~/components/ui/select');
+      jest.mocked(selectModule.Select).mockImplementation(({ onValueChange }: any) => (
         <div data-testid="select" onClick={() => onValueChange?.('test-value')}>
           Mock Select
         </div>
@@ -203,7 +205,8 @@ describe('AuctionFilters Component', () => {
       };
 
       // Mock the component to simulate removing the last item
-      jest.mocked(require('~/components/ui/select').Select).mockImplementation(({ onValueChange }: any) => (
+      const selectModule = await import('~/components/ui/select');
+      jest.mocked(selectModule.Select).mockImplementation(({ onValueChange }: any) => (
         <div data-testid="select" onClick={() => onValueChange?.('test-value')}>
           Mock Select
         </div>

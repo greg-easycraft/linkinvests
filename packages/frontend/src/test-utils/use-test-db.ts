@@ -1,4 +1,3 @@
-/* eslint-disable drizzle/enforce-delete-with-where */
 import { execSync } from 'child_process';
 
 import { drizzle } from "drizzle-orm/node-postgres";

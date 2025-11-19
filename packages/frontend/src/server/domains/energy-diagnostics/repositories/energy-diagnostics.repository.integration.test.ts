@@ -1,6 +1,7 @@
 /**
  * @jest-environment node
  */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { DrizzleEnergyDiagnosticsRepository } from './energy-diagnostics.repository';
 import { useTestDb } from '~/test-utils/use-test-db';
 import { OpportunityType } from '@linkinvests/shared';
@@ -23,8 +24,9 @@ describe('DrizzleEnergyDiagnosticsRepository Integration Tests', () => {
 
   it('should find by ID', async () => {
     const all = await energyDiagnosticsRepository.findAll();
-    const found = await energyDiagnosticsRepository.findById(all[0]?.id!);
-    expect(found?.id).toBe(all[0]?.id);
+    const targetId = all[0]?.id ?? '';
+    const found = await energyDiagnosticsRepository.findById(targetId);
+    expect(found?.id).toBe(targetId);
   });
 
   it('should count energy diagnostics', async () => {

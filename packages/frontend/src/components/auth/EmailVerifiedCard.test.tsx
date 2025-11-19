@@ -250,7 +250,7 @@ describe('EmailVerifiedCard Component', () => {
 
     it('should handle undefined window object gracefully', () => {
       const originalWindow = global.window;
-      // @ts-ignore
+      // @ts-expect-error - intentionally testing undefined window
       delete global.window;
 
       expect(() => render(<EmailVerifiedCard />)).not.toThrow();

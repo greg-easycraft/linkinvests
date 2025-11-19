@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { EmailService } from './email.service';
 import { Resend } from 'resend';
 

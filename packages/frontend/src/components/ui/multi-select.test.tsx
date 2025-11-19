@@ -242,8 +242,7 @@ describe('MultiSelect Component', () => {
 
       // Simulate state update
       onChange.mockClear();
-      // @ts-expect-error - rerender declared but not used in this specific test
-      const { rerender } = render(
+      render(
         <MultiSelect {...defaultProps} selected={['opt1']} onChange={onChange} />
       );
 
