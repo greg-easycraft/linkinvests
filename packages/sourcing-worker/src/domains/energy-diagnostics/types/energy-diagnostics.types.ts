@@ -25,17 +25,3 @@ export interface EnergyDiagnosticJobData {
   beforeDate?: string; // Filter DPE records before this date (format: YYYY-MM-DD, optional)
   energyClasses?: string[]; // Array of energy classes to fetch (default: ["F", "G"])
 }
-
-// Local type for energy sieve opportunities in sourcing worker
-export interface EnergyDiagnostic {
-  numeroDpe: string; // DPE certificate number (for externalId)
-  label: string;
-  address: string;
-  zipCode: string;
-  department: string;
-  latitude: number;
-  longitude: number;
-  opportunityDate: Date;
-  squareFootage: number;
-  energyClass: string; // A-G rating
-}

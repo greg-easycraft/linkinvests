@@ -1,13 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { EnergyDiagnosticsProcessor } from './energy-diagnostics.processor';
 import { AdemeApiService } from './services';
-import { EnergyDiagnosticsOpportunityRepository } from './repositories';
+import { EnergyDiagnosticsRepository } from './repositories';
 import type { DpeRecord } from './types/energy-diagnostics.types';
 
 describe('EnergyDiagnosticsProcessor', () => {
   let processor: EnergyDiagnosticsProcessor;
   let mockAdemeApi: jest.Mocked<AdemeApiService>;
-  let mockRepository: jest.Mocked<EnergyDiagnosticsOpportunityRepository>;
+  let mockRepository: jest.Mocked<EnergyDiagnosticsRepository>;
 
   beforeEach(async () => {
     mockAdemeApi = {
@@ -26,13 +26,15 @@ describe('EnergyDiagnosticsProcessor', () => {
           useValue: mockAdemeApi,
         },
         {
-          provide: EnergyDiagnosticsOpportunityRepository,
+          provide: EnergyDiagnosticsRepository,
           useValue: mockRepository,
         },
       ],
     }).compile();
 
-    processor = module.get<EnergyDiagnosticsProcessor>(EnergyDiagnosticsProcessor);
+    processor = module.get<EnergyDiagnosticsProcessor>(
+      EnergyDiagnosticsProcessor,
+    );
 
     // Suppress logger output during tests
     jest.spyOn(processor['logger'], 'log').mockImplementation();
@@ -73,9 +75,8 @@ describe('EnergyDiagnosticsProcessor', () => {
         latitude: 48.8566,
         longitude: 2.3522,
         opportunityDate: new Date('2024-01-15'),
-        extraData: {
-          energyClass: 'F',
-        },
+        energyClass: 'F',
+        squareFootage: 50,
       });
     });
 
@@ -167,7 +168,7 @@ describe('EnergyDiagnosticsProcessor', () => {
       const result = processor['transformDpeRecord'](validRecord, '75');
 
       expect(result?.opportunityDate).toBeInstanceOf(Date);
-      expect(result?.opportunityDate.toISOString()).toContain('2024-01-15');
+      expect(result?.opportunityDate).toBe('2024-01-15');
     });
   });
 
@@ -229,11 +230,15 @@ describe('EnergyDiagnosticsProcessor', () => {
         expect.arrayContaining([
           expect.objectContaining({
             address: '123 Rue de Test',
-            zipCode: 75001,
+            zipCode: '75001',
+            energyClass: 'F',
+            squareFootage: 50,
           }),
           expect.objectContaining({
             address: '456 Avenue Test',
-            zipCode: 75002,
+            zipCode: '75002',
+            energyClass: 'G',
+            squareFootage: 100,
           }),
         ]),
       );

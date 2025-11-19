@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { EnergyDiagnosticsOpportunityRepository } from './energy-diagnostics.repository';
+import { EnergyDiagnosticsRepository } from './energy-diagnostics.repository';
 import { DATABASE_CONNECTION } from '~/database';
 import { OpportunityType } from '@linkinvests/shared';
-import type { EnergyDiagnostic } from '../types/energy-diagnostics.types';
+import { EnergyDiagnosticInput } from '@linkinvests/shared';
 
-describe('EnergyDiagnosticsOpportunityRepository', () => {
-  let repository: EnergyDiagnosticsOpportunityRepository;
+describe('EnergyDiagnosticsRepository', () => {
+  let repository: EnergyDiagnosticsRepository;
   let mockDb: any;
 
   beforeEach(async () => {
@@ -17,7 +17,7 @@ describe('EnergyDiagnosticsOpportunityRepository', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        EnergyDiagnosticsOpportunityRepository,
+        EnergyDiagnosticsRepository,
         {
           provide: DATABASE_CONNECTION,
           useValue: mockDb,
@@ -25,8 +25,8 @@ describe('EnergyDiagnosticsOpportunityRepository', () => {
       ],
     }).compile();
 
-    repository = module.get<EnergyDiagnosticsOpportunityRepository>(
-      EnergyDiagnosticsOpportunityRepository,
+    repository = module.get<EnergyDiagnosticsRepository>(
+      EnergyDiagnosticsRepository,
     );
 
     // Suppress logger output during tests
@@ -79,17 +79,20 @@ describe('EnergyDiagnosticsOpportunityRepository', () => {
     });
 
     it('should batch records (500 per batch by default)', async () => {
-      const opportunities: EnergyDiagnostic[] = Array.from(
+      const opportunities: EnergyDiagnosticInput[] = Array.from(
         { length: 1500 },
         (_, i) => ({
-          numeroDpe: `DPE${i.toString().padStart(6, '0')}`,
+          dpeNumber: `DPE${i.toString().padStart(6, '0')}`,
+          externalId: `DPE${i.toString().padStart(6, '0')}`,
           label: `Building ${i}`,
           address: `${i} Rue de Test`,
           zipCode: '75001',
           department: '75',
           latitude: 48.8566,
           longitude: 2.3522,
-          opportunityDate: new Date('2024-01-15'),
+          opportunityDate: new Date('2024-01-15').toISOString().split('T')[0],
+          squareFootage: 100,
+          energyClass: 'A',
         }),
       );
 
@@ -102,17 +105,20 @@ describe('EnergyDiagnosticsOpportunityRepository', () => {
     });
 
     it('should allow custom batch size', async () => {
-      const opportunities: EnergyDiagnostic[] = Array.from(
+      const opportunities: EnergyDiagnosticInput[] = Array.from(
         { length: 300 },
         (_, i) => ({
-          numeroDpe: `DPE${i.toString().padStart(6, '0')}`,
+          dpeNumber: `DPE${i.toString().padStart(6, '0')}`,
+          externalId: `DPE${i.toString().padStart(6, '0')}`,
           label: `Building ${i}`,
           address: `${i} Rue de Test`,
           zipCode: '75001',
           department: '75',
           latitude: 48.8566,
           longitude: 2.3522,
-          opportunityDate: new Date('2024-01-15'),
+          opportunityDate: new Date('2024-01-15').toISOString().split('T')[0],
+          squareFootage: 100,
+          energyClass: 'A',
         }),
       );
 
@@ -123,16 +129,21 @@ describe('EnergyDiagnosticsOpportunityRepository', () => {
     });
 
     it('should call db.insert with correctly formatted data', async () => {
-      const opportunities: EnergyDiagnostic[] = [
+      const opportunities: EnergyDiagnosticInput[] = [
         {
-          numeroDpe: 'DPE123456',
+          dpeNumber: 'DPE123456',
+          externalId: 'DPE123456',
           label: 'Test Building',
           address: '123 Rue de Test',
           zipCode: '75001',
           department: '75',
           latitude: 48.8566,
           longitude: 2.3522,
-          opportunityDate: new Date('2024-01-15T10:30:00Z'),
+          opportunityDate: new Date('2024-01-15T10:30:00Z')
+            .toISOString()
+            .split('T')[0],
+          squareFootage: 100,
+          energyClass: 'A',
         },
       ];
 
@@ -158,16 +169,19 @@ describe('EnergyDiagnosticsOpportunityRepository', () => {
     });
 
     it('should set type to OpportunityType.ENERGY_SIEVE', async () => {
-      const opportunities: EnergyDiagnostic[] = [
+      const opportunities: EnergyDiagnosticInput[] = [
         {
-          numeroDpe: 'DPE123456',
+          dpeNumber: 'DPE123456',
+          externalId: 'DPE123456',
           label: 'Test Building',
           address: '123 Rue de Test',
           zipCode: '75001',
           department: '75',
           latitude: 48.8566,
           longitude: 2.3522,
-          opportunityDate: new Date('2024-01-15'),
+          opportunityDate: new Date('2024-01-15').toISOString().split('T')[0],
+          squareFootage: 100,
+          energyClass: 'A',
         },
       ];
 
@@ -178,16 +192,19 @@ describe('EnergyDiagnosticsOpportunityRepository', () => {
     });
 
     it('should set siret to null (no SIRET for energy sieves)', async () => {
-      const opportunities: EnergyDiagnostic[] = [
+      const opportunities: EnergyDiagnosticInput[] = [
         {
-          numeroDpe: 'DPE123456',
+          dpeNumber: 'DPE123456',
+          externalId: 'DPE123456',
           label: 'Test Building',
           address: '123 Rue de Test',
           zipCode: '75001',
           department: '75',
           latitude: 48.8566,
           longitude: 2.3522,
-          opportunityDate: new Date('2024-01-15'),
+          opportunityDate: new Date('2024-01-15').toISOString().split('T')[0],
+          squareFootage: 100,
+          energyClass: 'A',
         },
       ];
 
@@ -198,16 +215,19 @@ describe('EnergyDiagnosticsOpportunityRepository', () => {
     });
 
     it('should use onConflictDoNothing() for duplicates', async () => {
-      const opportunities: EnergyDiagnostic[] = [
+      const opportunities: EnergyDiagnosticInput[] = [
         {
-          numeroDpe: 'DPE123456',
+          dpeNumber: 'DPE123456',
+          externalId: 'DPE123456',
           label: 'Test Building',
           address: '123 Rue de Test',
           zipCode: '75001',
           department: '75',
           latitude: 48.8566,
           longitude: 2.3522,
-          opportunityDate: new Date('2024-01-15'),
+          opportunityDate: new Date('2024-01-15').toISOString().split('T')[0],
+          squareFootage: 100,
+          energyClass: 'A',
         },
       ];
 
@@ -220,16 +240,19 @@ describe('EnergyDiagnosticsOpportunityRepository', () => {
       const dbError = new Error('Database connection failed');
       mockDb.onConflictDoNothing.mockRejectedValue(dbError);
 
-      const opportunities: EnergyDiagnostic[] = [
+      const opportunities: EnergyDiagnosticInput[] = [
         {
-          numeroDpe: 'DPE123456',
+          dpeNumber: 'DPE123456',
+          externalId: 'DPE123456',
+          squareFootage: 100,
+          energyClass: 'A',
           label: 'Test Building',
           address: '123 Rue de Test',
           zipCode: '75001',
           department: '75',
           latitude: 48.8566,
           longitude: 2.3522,
-          opportunityDate: new Date('2024-01-15'),
+          opportunityDate: new Date('2024-01-15').toISOString().split('T')[0],
         },
       ];
 

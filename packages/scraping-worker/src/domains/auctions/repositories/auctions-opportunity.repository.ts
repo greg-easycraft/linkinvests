@@ -81,16 +81,16 @@ export class AuctionsOpportunityRepository {
           auctionType: opp.extraData?.auctionType || null,
           propertyType: opp.extraData?.propertyType || null,
           description: opp.extraData?.description || null,
-          squareFootage: opp.extraData?.squareFootage?.toString() || null,
+          squareFootage: opp.extraData?.squareFootage || null,
           rooms: opp.extraData?.rooms || null,
           dpe: opp.extraData?.dpe || null,
           auctionVenue: opp.extraData?.auctionVenue || null,
 
           // Price fields (normalized from extraData)
-          currentPrice: opp.extraData?.currentPrice?.toString() || null,
-          reservePrice: opp.extraData?.reservePrice?.toString() || null,
-          lowerEstimate: opp.extraData?.lowerEstimate?.toString() || null,
-          upperEstimate: opp.extraData?.upperEstimate?.toString() || null,
+          currentPrice: opp.extraData?.currentPrice || null,
+          reservePrice: opp.extraData?.reservePrice || null,
+          lowerEstimate: opp.extraData?.lowerEstimate || null,
+          upperEstimate: opp.extraData?.upperEstimate || null,
 
           // Picture fields (normalized from images array)
           mainPicture,

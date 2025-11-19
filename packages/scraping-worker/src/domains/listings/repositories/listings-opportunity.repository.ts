@@ -76,8 +76,8 @@ export class ListingsOpportunityRepository {
           transactionType: opp.transactionType,
           propertyType: opp.propertyType,
           description: opp.description || null,
-          squareFootage: opp.squareFootage?.toString() || null,
-          landArea: opp.landArea?.toString() || null,
+          squareFootage: opp.squareFootage || null,
+          landArea: opp.landArea || null,
           rooms: opp.rooms || null,
           bedrooms: opp.bedrooms || null,
           dpe: opp.dpe || null,
@@ -94,10 +94,10 @@ export class ListingsOpportunityRepository {
           elevator: opp.elevator || null,
 
           // Price fields
-          price: opp.price?.toString() || null,
+          price: opp.price || null,
           priceType: opp.priceType || null,
-          fees: opp.fees?.toString() || null,
-          charges: opp.charges?.toString() || null,
+          fees: opp.fees || null,
+          charges: opp.charges || null,
 
           // Picture fields
           mainPicture,

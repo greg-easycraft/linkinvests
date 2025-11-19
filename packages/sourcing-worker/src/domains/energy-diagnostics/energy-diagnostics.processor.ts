@@ -1,13 +1,16 @@
 import { Logger } from '@nestjs/common';
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
-import { SOURCE_ENERGY_SIEVES_QUEUE } from '@linkinvests/shared';
+import {
+  EnergyDiagnosticInput,
+  energyDiagnosticInputSchema,
+  SOURCE_ENERGY_SIEVES_QUEUE,
+} from '@linkinvests/shared';
 import { AdemeApiService } from './services';
-import { EnergyDiagnosticsOpportunityRepository } from './repositories';
+import { EnergyDiagnosticsRepository } from './repositories';
 import type {
   EnergyDiagnosticJobData,
   DpeRecord,
-  EnergyDiagnostic,
 } from './types/energy-diagnostics.types';
 
 @Processor(SOURCE_ENERGY_SIEVES_QUEUE, { concurrency: 1 })
@@ -16,7 +19,7 @@ export class EnergyDiagnosticsProcessor extends WorkerHost {
 
   constructor(
     private readonly ademeApi: AdemeApiService,
-    private readonly opportunityRepository: EnergyDiagnosticsOpportunityRepository,
+    private readonly opportunityRepository: EnergyDiagnosticsRepository,
   ) {
     super();
   }
@@ -59,11 +62,11 @@ export class EnergyDiagnosticsProcessor extends WorkerHost {
 
       // Step 2: Transform records to opportunities
       this.logger.log('Step 2/3: Transforming DPE records to opportunities...');
-      const opportunities: EnergyDiagnostic[] = [];
+      const opportunities: EnergyDiagnosticInput[] = [];
 
       for (const record of dpeRecords) {
         try {
-          const opportunity = this.transformDpeRecord(record, departmentId);
+          const opportunity = this.transformDpeRecord(record);
           if (opportunity) {
             opportunities.push(opportunity);
             stats.validRecords++;
@@ -126,62 +129,47 @@ export class EnergyDiagnosticsProcessor extends WorkerHost {
    * @param departmentId - Department ID
    * @returns Transformed opportunity or null if invalid
    */
-  private transformDpeRecord(
-    record: DpeRecord,
-    departmentId: string,
-  ): EnergyDiagnostic | null {
+  private transformDpeRecord(record: DpeRecord): EnergyDiagnosticInput | null {
     // Validate required fields
-    if (!record.adresse_ban || !record.code_postal_ban || !record._geopoint) {
+    if (!record._geopoint) {
       return null;
     }
-
-    // Parse coordinates from _geopoint (format: "lat,lon")
     const [latStr, lonStr] = record._geopoint.split(',');
-    const latitude = parseFloat(latStr || '');
-    const longitude = parseFloat(lonStr || '');
 
-    if (isNaN(latitude) || isNaN(longitude)) {
-      this.logger.warn(
-        `Invalid coordinates for record ${record.numero_dpe}: ${record._geopoint}`,
-      );
-      return null;
-    }
-
-    // Parse postal code
-    const zipCode = record.code_postal_ban;
-    if (!zipCode) {
-      this.logger.warn(
-        `Invalid postal code for record ${record.numero_dpe}: ${record.code_postal_ban}`,
-      );
-      return null;
-    }
-
-    // Create label (use address or municipality name)
-    const label = record.adresse_ban || record.nom_commune_ban || 'Unknown';
-
-    // Use DPE establishment date as opportunity date (fallback to reception date)
     const opportunityDateStr =
       record.date_etablissement_dpe || record.date_reception_dpe;
-
-    // Opportunity date is now mandatory - reject records without a date
     if (!opportunityDateStr) {
       this.logger.warn(
         `Missing opportunity date for record ${record.numero_dpe}`,
       );
       return null;
     }
+    const opportunityDate = new Date(opportunityDateStr)
+      .toISOString()
+      .split('T')[0];
 
-    return {
-      numeroDpe: record.numero_dpe,
-      label,
+    const dpeInput = {
+      dpeNumber: record.numero_dpe,
+      externalId: record.numero_dpe,
+      label: record.adresse_ban || record.nom_commune_ban || 'Unknown',
       address: record.adresse_ban,
-      zipCode,
-      department: departmentId,
-      latitude,
-      longitude,
-      opportunityDate: new Date(opportunityDateStr),
+      zipCode: record.code_postal_ban,
+      department: record.code_departement_ban,
+      latitude: parseFloat(latStr || ''),
+      longitude: parseFloat(lonStr || ''),
+      opportunityDate,
       energyClass: record.etiquette_dpe,
       squareFootage: record.surface_habitable_logement,
     };
+
+    const validationResult = energyDiagnosticInputSchema.safeParse(dpeInput);
+    if (!validationResult.success) {
+      this.logger.warn(
+        `Invalid DPE record ${record.numero_dpe}: ${JSON.stringify(validationResult.error.issues)}`,
+      );
+      return null;
+    }
+
+    return validationResult.data;
   }
 }
