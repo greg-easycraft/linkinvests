@@ -1,5 +1,5 @@
 import type { IAuctionRepository } from "../lib.types";
-import type { OpportunityFilters } from "~/types/filters";
+import type { AuctionFilters } from "~/types/filters";
 import type { Auction } from "@linkinvests/shared";
 import { OpportunityType } from "@linkinvests/shared";
 import { OpportunitiesDataQueryResult } from "~/types/query-result";
@@ -16,7 +16,7 @@ export class AuctionService {
   ) {}
 
 
-  async getAuctionsData(filters?: OpportunityFilters): Promise<OpportunitiesDataQueryResult<Auction>> {
+  async getAuctionsData(filters?: AuctionFilters): Promise<OpportunitiesDataQueryResult<Auction>> {
     const pageSize = filters?.pageSize ?? DEFAULT_PAGE_SIZE;
     const page = filters?.page ?? 1;
 
@@ -31,7 +31,7 @@ export class AuctionService {
     };
   }
 
-  async getAuctionsCount(filters?: OpportunityFilters): Promise<number> {
+  async getAuctionsCount(filters?: AuctionFilters): Promise<number> {
     return await this.auctionRepository.count(filters);
   }
 
@@ -41,7 +41,7 @@ export class AuctionService {
   }
 
 
-  async exportList(filters: OpportunityFilters, format: ExportFormat): Promise<Blob> {
+  async exportList(filters: AuctionFilters, format: ExportFormat): Promise<Blob> {
     // Check if the total count exceeds the export limit
     const total = await this.auctionRepository.count(filters);
 

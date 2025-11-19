@@ -41,8 +41,6 @@ export interface OpportunityFilters {
   pageSize?: number;
   sortBy?: string;
   sortOrder?: "asc" | "desc";
-  // Energy diagnostics specific filters
-  energyClasses?: EnergyClass[];
 }
 
 export interface PaginationFilters {
@@ -69,6 +67,7 @@ export interface AuctionFilters extends OpportunityFilters {
   squareFootageRange?: PriceRange; // Reusing PriceRange for number ranges
   roomsRange?: PriceRange; // Reusing PriceRange for number ranges
   auctionVenues?: string[];
+  energyClasses?: EnergyClass[];
 }
 
 // Placeholder for future succession-specific filters
@@ -103,6 +102,6 @@ export interface ListingFilters extends OpportunityFilters {
   roomsRange?: PriceRange; // Reusing PriceRange for number ranges
   bedroomsRange?: PriceRange; // Reusing PriceRange for number ranges
   constructionYearRange?: PriceRange; // Reusing PriceRange for year ranges
-  dpe?: EnergyClass[]; // Energy performance diagnosis (A-G)
+  energyClasses?: EnergyClass[]; // Energy performance diagnosis (A-G)
   features?: ListingFeatures; // Boolean features like balcony, garage, etc.
 }

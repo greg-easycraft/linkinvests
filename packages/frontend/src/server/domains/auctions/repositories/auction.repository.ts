@@ -2,7 +2,7 @@ import { and, eq, gte, inArray, lte, sql, type SQL } from "drizzle-orm";
 import type { DomainDbType } from "~/types/db";
 import { opportunityAuctions } from "@linkinvests/db";
 import type { IAuctionRepository, } from "../lib.types";
-import type { OpportunityFilters, PaginationFilters } from "~/types/filters";
+import type { AuctionFilters, PaginationFilters } from "~/types/filters";
 import { calculateStartDate } from "~/constants/date-periods";
 import { AuctionSource, PropertyType, type Auction } from "@linkinvests/shared";
 
@@ -12,7 +12,7 @@ export class DrizzleAuctionRepository implements IAuctionRepository {
   /**
    * Builds where clause for auction filters
    */
-  private buildWhereClause(filters?: OpportunityFilters): SQL[] {
+  private buildWhereClause(filters?: AuctionFilters): SQL[] {
     const conditions: SQL[] = [];
 
     if (!filters) {
@@ -54,7 +54,7 @@ export class DrizzleAuctionRepository implements IAuctionRepository {
     return conditions;
   }
 
-  async findAll(filters?: OpportunityFilters, paginationFilters?: PaginationFilters): Promise<Auction[]> {
+  async findAll(filters?: AuctionFilters, paginationFilters?: PaginationFilters): Promise<Auction[]> {
     const conditions = this.buildWhereClause(filters);
 
     let query = this.db
@@ -95,7 +95,7 @@ export class DrizzleAuctionRepository implements IAuctionRepository {
     return result[0] ? this.mapAuction(result[0]) : null;
   }
 
-  async count(filters?: OpportunityFilters): Promise<number> {
+  async count(filters?: AuctionFilters): Promise<number> {
     const conditions = this.buildWhereClause(filters);
 
     let query = this.db

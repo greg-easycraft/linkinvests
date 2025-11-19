@@ -1,5 +1,5 @@
 import type { IListingRepository } from "../lib.types";
-import type { OpportunityFilters } from "~/types/filters";
+import type { ListingFilters } from "~/types/filters";
 import type { Listing } from "@linkinvests/shared";
 import { OpportunityType } from "@linkinvests/shared";
 import { OpportunitiesDataQueryResult } from "~/types/query-result";
@@ -15,7 +15,7 @@ export class ListingService {
     private readonly exportService: IExportService
   ) {}
 
-  async getListingsData(filters?: OpportunityFilters): Promise<OpportunitiesDataQueryResult<Listing>> {
+  async getListingsData(filters?: ListingFilters): Promise<OpportunitiesDataQueryResult<Listing>> {
     const pageSize = filters?.pageSize ?? DEFAULT_PAGE_SIZE;
     const page = filters?.page ?? 1;
     const offset = (page - 1) * pageSize;
@@ -29,7 +29,7 @@ export class ListingService {
     };
   }
 
-  async getListingsCount(filters?: OpportunityFilters): Promise<number> {
+  async getListingsCount(filters?: ListingFilters): Promise<number> {
     return await this.listingRepository.count(filters);
   }
 
@@ -37,7 +37,7 @@ export class ListingService {
     return await this.listingRepository.findById(id);
   }
 
-  async exportList(filters: OpportunityFilters, format: ExportFormat): Promise<Blob> {
+  async exportList(filters: ListingFilters, format: ExportFormat): Promise<Blob> {
     // Check if the total count exceeds the export limit
     const total = await this.listingRepository.count(filters);
 
