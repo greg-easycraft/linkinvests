@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 
+// Import crypto polyfill before any auth code
+import '~/lib/crypto-polyfill';
 import './globals.css';
 import { QueryProvider } from '~/components/providers/query-provider';
 import { AuthProvider } from '~/components/providers/auth-provider';
