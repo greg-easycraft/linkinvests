@@ -1,7 +1,5 @@
 "use client";
 
-// Import crypto polyfill before creating auth client
-import './crypto-polyfill';
 import { createAuthClient } from "better-auth/react";
 import type { Session, User } from "./auth";
 import { env } from "~/lib/env";

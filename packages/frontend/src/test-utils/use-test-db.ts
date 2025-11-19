@@ -12,7 +12,7 @@ import {
 	ALL_LISTINGS,
 	ALL_LIQUIDATIONS,
 	ALL_SUCCESSIONS,
-} from '@linkinvests/shared';
+} from '~/test-utils/fixtures';
 
 /* eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access */
 require('dotenv').config();
