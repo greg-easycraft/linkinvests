@@ -18,6 +18,7 @@ const configSchema = z.object({
   S3_REGION: z.string(),
   S3_ENDPOINT_URL: z.string(),
   S3_BUCKET: z.string(),
+  MOTEUR_IMMO_API_KEY: z.string(),
 });
 
 export const config = configSchema.parse({

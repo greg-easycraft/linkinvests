@@ -6,6 +6,7 @@ import { DatabaseModule } from './database';
 import { DeceasesModule } from './domains/deceases';
 import { EnergyDiagnosticsModule } from './domains/energy-diagnostics';
 import { FailingCompaniesModule } from './domains/failing-companies';
+import { ListingsModule } from './domains/listings';
 import { S3Module } from './storage';
 import { config, ConfigModule } from './config';
 
@@ -23,6 +24,7 @@ import { config, ConfigModule } from './config';
     DeceasesModule,
     EnergyDiagnosticsModule,
     FailingCompaniesModule,
+    ListingsModule,
   ],
   controllers: [AppController],
 })

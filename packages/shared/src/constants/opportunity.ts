@@ -18,6 +18,7 @@ export enum ListingSource {
   LEBONCOIN = 'leboncoin',
   SELOGER = 'seloger',
   NOTAIRES = 'notaires',
+  MOTEUR_IMMO = 'moteurimmo',
 }
 
 export enum AuctionSource {
