@@ -10,6 +10,7 @@ import {
   INGEST_DECEASES_CSV_QUEUE,
   SOURCE_ENERGY_SIEVES_QUEUE,
   SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE,
+  SOURCE_LISTINGS_QUEUE,
 } from '@linkinvests/shared';
 import { ScrapingController } from './scraping/scraping.controller';
 import { SourcingController } from './sourcing/sourcing.controller';
@@ -60,6 +61,10 @@ const connection = {
         name: SOURCE_ENERGY_SIEVES_QUEUE,
         connection,
       },
+      {
+        name: SOURCE_LISTINGS_QUEUE,
+        connection,
+      },
     ),
 
     // Register all queues with BullBoard for dashboard visibility
@@ -82,6 +87,10 @@ const connection = {
       },
       {
         name: SOURCE_ENERGY_SIEVES_QUEUE,
+        adapter: BullMQAdapter,
+      },
+      {
+        name: SOURCE_LISTINGS_QUEUE,
         adapter: BullMQAdapter,
       },
     ),

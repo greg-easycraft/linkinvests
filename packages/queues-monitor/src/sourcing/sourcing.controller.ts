@@ -13,6 +13,7 @@ import {
   INGEST_DECEASES_CSV_QUEUE,
   SOURCE_ENERGY_SIEVES_QUEUE,
   SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE,
+  SOURCE_LISTINGS_QUEUE,
 } from '@linkinvests/shared';
 
 @Controller('sourcing')
@@ -28,6 +29,8 @@ export class SourcingController {
     private readonly energySievesQueue: Queue,
     @InjectQueue(SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE)
     private readonly failingCompaniesQueue: Queue,
+    @InjectQueue(SOURCE_LISTINGS_QUEUE)
+    private readonly listingsQueue: Queue,
   ) {}
 
   @Post('jobs/failing-companies')
@@ -242,6 +245,60 @@ export class SourcingController {
       this.logger.error({
         error: err.message,
         message: 'Failed to enqueue energy sieves job',
+      });
+
+      return {
+        success: false,
+        error: err.message,
+      };
+    }
+  }
+
+  @Post('jobs/listings')
+  @HttpCode(HttpStatus.ACCEPTED)
+  async enqueueListings(
+    @Body('afterDate') afterDate?: string,
+    @Body('beforeDate') beforeDate?: string,
+    @Body('dpeClasses') dpeClasses?: string[],
+    @Body('propertyTypes') propertyTypes?: string[],
+    @Body('departments') departments?: string[],
+  ) {
+    try {
+      const { id: jobId } = await this.listingsQueue.add(
+        'source-listings',
+        {
+          afterDate,
+          beforeDate,
+          dpeClasses,
+          propertyTypes,
+          departments,
+        },
+        {
+          removeOnComplete: 100,
+          removeOnFail: 100,
+        },
+      );
+
+      this.logger.log({
+        jobId,
+        afterDate,
+        beforeDate,
+        dpeClasses,
+        propertyTypes,
+        departments,
+        message: 'Listings sourcing job enqueued',
+      });
+
+      return {
+        success: true,
+        jobId,
+        message: 'Listings sourcing job enqueued successfully',
+      };
+    } catch (error) {
+      const err = error as Error;
+      this.logger.error({
+        error: err.message,
+        message: 'Failed to enqueue listings sourcing job',
       });
 
       return {
