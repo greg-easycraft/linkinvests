@@ -18,7 +18,8 @@ import {
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import type { Auction } from "@linkinvests/shared";
+import type { Auction, EnergyClass } from "@linkinvests/shared";
+import { DpeBadge } from "~/components/ui/dpe-badge";
 
 interface AuctionDetailsProps {
   opportunity: Auction;
@@ -141,7 +142,7 @@ export function AuctionDetails({ opportunity }: AuctionDetailsProps) {
                 <div className="flex items-center gap-2">
                   <FileText className="h-4 w-4 text-gray-600" />
                   <span className="font-medium">DPE:</span>
-                  <Badge variant="outline">{opportunity.dpe}</Badge>
+                  <DpeBadge dpe={opportunity.dpe as EnergyClass} />
                 </div>
               )}
             </div>

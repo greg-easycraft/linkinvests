@@ -25,7 +25,9 @@ import {
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import type { Listing } from "@linkinvests/shared";
+import type { EnergyClass, Listing } from "@linkinvests/shared";
+import { ENERGY_CLASS_INFO } from "~/constants/energy-classes";
+import { DpeBadge } from "~/components/ui/dpe-badge";
 
 interface ListingDetailsProps {
   opportunity: Listing;
@@ -85,6 +87,9 @@ export function ListingDetails({ opportunity }: ListingDetailsProps) {
     opportunity.sellerContact.siret
   );
 
+  const energyClassInfo = ENERGY_CLASS_INFO[opportunity.dpe as EnergyClass];
+  console.log(energyClassInfo);
+
   if (!hasPriceInfo && !hasPropertyInfo && !hasFeatures && !hasContactInfo && !opportunity.url && !opportunity.description) {
     return null;
   }
@@ -118,14 +123,14 @@ export function ListingDetails({ opportunity }: ListingDetailsProps) {
             <div className="flex items-center gap-2">
               <FileText className="h-4 w-4 text-blue-600" />
               <span className="font-medium">Transaction:</span>
-              <Badge variant="outline" className="text-blue-600 border-blue-600">
+              <Badge variant="outline" className="!text-blue-600 border-blue-600">
                 {formatTransactionType(opportunity.transactionType)}
               </Badge>
             </div>
             <div className="flex items-center gap-2">
               <Building className="h-4 w-4 text-purple-600" />
               <span className="font-medium">Type de bien:</span>
-              <Badge variant="outline" className="text-purple-600 border-purple-600">
+              <Badge variant="outline" className="!text-purple-600 border-purple-600">
                 {formatPropertyType(opportunity.propertyType)}
               </Badge>
             </div>
@@ -141,7 +146,7 @@ export function ListingDetails({ opportunity }: ListingDetailsProps) {
                 <div className="flex items-center gap-2">
                   <Euro className="h-4 w-4 text-green-600" />
                   <span className="font-medium">Prix:</span>
-                  <Badge variant="outline" className="text-green-600 border-green-600">
+                  <Badge variant="outline" className="!text-green-600 border-green-600">
                     {formatPrice(Number(opportunity.price))}
                   </Badge>
                   {opportunity.priceType && (
@@ -204,7 +209,9 @@ export function ListingDetails({ opportunity }: ListingDetailsProps) {
                 <div className="flex items-center gap-2">
                   <Zap className="h-4 w-4 text-gray-600" />
                   <span className="font-medium">DPE:</span>
-                  <Badge variant="outline">{opportunity.dpe}</Badge>
+                  <DpeBadge
+                    dpe={opportunity.dpe as EnergyClass}
+                  />
                 </div>
               )}
               {opportunity.constructionYear && (

@@ -10,25 +10,15 @@ import {
 } from "lucide-react";
 import { Badge } from "~/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import type { EnergyDiagnostic } from "@linkinvests/shared";
+import type { EnergyDiagnostic, EnergyClass } from "@linkinvests/shared";
+import { ENERGY_CLASS_INFO } from "~/constants/energy-classes";
 
 interface EnergySieveDetailsProps {
   opportunity: EnergyDiagnostic;
 }
 
-// Energy class colors and labels
-const ENERGY_CLASS_INFO: Record<string, { color: string; label: string }> = {
-  'A': { color: 'green-600', label: 'Très performant' },
-  'B': { color: 'green-500', label: 'Performant' },
-  'C': { color: 'yellow-500', label: 'Assez performant' },
-  'D': { color: 'orange-500', label: 'Peu performant' },
-  'E': { color: 'orange-600', label: 'Peu performant' },
-  'F': { color: 'red-500', label: 'Très peu performant' },
-  'G': { color: 'red-600', label: 'Extrêmement peu performant' },
-};
-
 export function EnergySieveDetails({ opportunity }: EnergySieveDetailsProps) {
-  const energyClassInfo = ENERGY_CLASS_INFO[opportunity.energyClass];
+  const energyClassInfo = ENERGY_CLASS_INFO[opportunity.energyClass as EnergyClass];
 
   return (
     <Card className="mt-6 text-[var(--primary)] border-[var(--primary)]">
