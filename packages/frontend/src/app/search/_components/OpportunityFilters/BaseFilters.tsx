@@ -75,13 +75,9 @@ export function BaseFilters({
 
   const handleTypeChange = useCallback((value: string): void => {
     const url = `/search/${TYPE_TO_PATH[value as OpportunityType]}`
-    const pageSize = searchParams.get("pageSize");
-    if (!pageSize) {
-      router.push(url);
-      return;
-    }
-
-    router.push(url + `?pageSize=${pageSize}`);
+    const newParams = new URLSearchParams(searchParams);
+    newParams.delete('page');
+    router.push(url + `?${newParams.toString()}`);
   }, [router, searchParams]);
 
 
