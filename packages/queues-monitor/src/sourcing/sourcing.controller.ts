@@ -257,21 +257,25 @@ export class SourcingController {
   @Post('jobs/listings')
   @HttpCode(HttpStatus.ACCEPTED)
   async enqueueListings(
+    @Body('source') source?: string,
     @Body('afterDate') afterDate?: string,
     @Body('beforeDate') beforeDate?: string,
-    @Body('dpeClasses') dpeClasses?: string[],
+    @Body('energyGradesMax') energyGradesMax?: string,
     @Body('propertyTypes') propertyTypes?: string[],
-    @Body('departments') departments?: string[],
+    @Body('departmentCode') departmentCode?: string,
   ) {
     try {
       const { id: jobId } = await this.listingsQueue.add(
         'source-listings',
         {
-          afterDate,
-          beforeDate,
-          dpeClasses,
-          propertyTypes,
-          departments,
+          source,
+          filters: {
+            afterDate,
+            beforeDate,
+            energyGradesMax,
+            propertyTypes,
+            departmentCode,
+          },
         },
         {
           removeOnComplete: 100,
@@ -281,11 +285,14 @@ export class SourcingController {
 
       this.logger.log({
         jobId,
-        afterDate,
-        beforeDate,
-        dpeClasses,
-        propertyTypes,
-        departments,
+        source,
+        filters: {
+          afterDate,
+          beforeDate,
+          energyGradesMax,
+          propertyTypes,
+          departmentCode,
+        },
         message: 'Listings sourcing job enqueued',
       });
 

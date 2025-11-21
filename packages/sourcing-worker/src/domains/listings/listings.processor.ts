@@ -1,19 +1,14 @@
 import { Logger } from '@nestjs/common';
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
-import { SOURCE_LISTINGS_QUEUE } from '@linkinvests/shared';
+import {
+  ListingInput,
+  listingInputSchema,
+  SOURCE_LISTINGS_QUEUE,
+} from '@linkinvests/shared';
 import { MoteurImmoService } from './services/moteur-immo.service';
 import { ListingsRepository } from './repositories/listings.repository';
-
-interface ListingJobData {
-  source?: string;
-  afterDate?: string;
-  beforeDate?: string;
-  dpeClasses?: string[];
-  propertyTypes?: string[];
-  departments?: string[];
-  fetchType?: 'dpe_energy_sieves' | 'recent_listings' | 'custom';
-}
+import { ListingJobData, ListingsJobFilters } from './types';
 
 @Processor(SOURCE_LISTINGS_QUEUE, { concurrency: 1 })
 export class ListingsProcessor extends WorkerHost {
@@ -27,16 +22,16 @@ export class ListingsProcessor extends WorkerHost {
   }
 
   async process(job: Job<ListingJobData>): Promise<void> {
-    const {
-      source = 'moteurimmo',
-      afterDate,
-      beforeDate,
-      dpeClasses = [],
-      propertyTypes = [],
-      departments = [],
-      fetchType = 'custom',
-    } = job.data;
+    const { source = 'moteurimmo', filters } = job.data;
     const startTime = Date.now();
+    const filtersToUse = filters ?? ({} as ListingsJobFilters);
+    const {
+      beforeDate,
+      afterDate,
+      energyGradesMax,
+      propertyTypes,
+      departmentCode,
+    } = filtersToUse;
 
     const dateRangeText = beforeDate
       ? `from ${afterDate} to ${beforeDate}`
@@ -45,16 +40,15 @@ export class ListingsProcessor extends WorkerHost {
         : 'all dates';
 
     this.logger.log(
-      `Starting to process listings for source ${source} ${dateRangeText} (type: ${fetchType})`,
+      `Starting to process listings for source ${source} ${dateRangeText})`,
       {
         jobId: job.id,
         source,
         afterDate,
         beforeDate,
-        dpeClasses,
+        energyGradesMax,
         propertyTypes,
-        departments,
-        fetchType,
+        departmentCode,
       },
     );
 
@@ -70,38 +64,33 @@ export class ListingsProcessor extends WorkerHost {
     try {
       // Step 1: Fetch all listings from API
       this.logger.log('Step 1/3: Fetching listings from Moteur Immo API...');
-      const rawListings = await this.moteurImmoService.getListings({
-        afterDate,
-        beforeDate,
-        dpeClasses: dpeClasses.length > 0 ? dpeClasses : undefined,
-        propertyTypes: propertyTypes.length > 0 ? propertyTypes : undefined,
-        departments: departments.length > 0 ? departments : undefined,
-      });
+      const rawListings =
+        await this.moteurImmoService.getListings(filtersToUse);
 
       stats.totalListings = rawListings.length;
       this.logger.log(`Fetched ${rawListings.length} listings from API`);
 
       // Step 2: Prepare listings (already transformed and validated by service)
       this.logger.log('Step 2/3: Preparing validated listings...');
-      const validatedListings = rawListings;
+      const validatedListings = rawListings.map((listing) =>
+        this.validateListing(listing),
+      );
+
+      const validListings = validatedListings.filter(Boolean) as ListingInput[];
 
       // Update stats
-      stats.validListings = rawListings.length;
-      stats.invalidListings = 0;
-
-      this.logger.log(
-        `Validated ${validatedListings.length} listings (${stats.invalidListings} invalid)`,
-      );
+      stats.validListings = validListings.length;
+      stats.invalidListings = rawListings.length - validListings.length;
 
       // Step 3: Insert listings into database in batches
       this.logger.log('Step 3/3: Inserting listings into database...');
 
-      if (validatedListings.length > 0) {
+      if (validListings.length > 0) {
         try {
           const insertedCount =
-            await this.listingsRepository.insertListings(validatedListings);
+            await this.listingsRepository.insertListings(validListings);
           stats.listingsInserted = insertedCount;
-          stats.duplicatesSkipped = validatedListings.length - insertedCount;
+          stats.duplicatesSkipped = validListings.length - insertedCount;
         } catch (error) {
           stats.errors++;
           this.logger.error(
@@ -155,5 +144,16 @@ export class ListingsProcessor extends WorkerHost {
       );
       throw error; // Re-throw to mark job as failed and trigger retries
     }
+  }
+
+  private validateListing(listing: Partial<ListingInput>): ListingInput | null {
+    const result = listingInputSchema.safeParse(listing);
+
+    if (!result.success) {
+      // this.logger.warn(`Invalid listing: ${JSON.stringify(result.error)}`);
+      return null;
+    }
+
+    return result.data;
   }
 }

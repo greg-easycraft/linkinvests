@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { baseOpportunityInputSchema } from './base-opportunity.schema.js';
 import { ListingInput } from '../types/listing.types.js';
-import { ListingSource } from '../constants/opportunity.js';
+import { ListingSource, PropertyType } from '../constants/opportunity.js';
 
 // Schema for seller contact info
 const sellerContactSchema = z.object({
@@ -19,7 +19,7 @@ export const listingInputSchema = baseOpportunityInputSchema.extend({
   url: z.url(),
   source: z.enum(ListingSource),
   transactionType: z.string(),
-  propertyType: z.string(),
+  propertyType: z.enum(PropertyType),
   description: z.string().optional(),
   squareFootage: z.number().positive().optional(),
   landArea: z.number().positive().optional(),

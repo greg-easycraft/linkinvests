@@ -2,6 +2,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ListingInput, ListingSource, PropertyType } from '@linkinvests/shared';
 import type { ConfigType } from '~/config';
 import { CONFIG_TOKEN } from '~/config';
+import { ListingsJobFilters } from '../types';
 
 interface MoteurImmoListing {
   adId: string;
@@ -93,7 +94,7 @@ export class MoteurImmoService {
   private readonly retryDelay = 2000; // 2 seconds base delay for exponential backoff
 
   // API discovered constraints
-  private readonly apiPageSize = 50; // Fixed page size returned by the API
+  private readonly apiPageSize = 1000; // Fixed page size returned by the API
 
   constructor(
     @Inject(CONFIG_TOKEN)
@@ -109,13 +110,7 @@ export class MoteurImmoService {
    * @param filters - Date and other filters for listings
    * @returns Array of all matching listings
    */
-  async getListings(filters: {
-    beforeDate?: string;
-    afterDate?: string;
-    dpeClasses?: string[];
-    propertyTypes?: string[];
-    departments?: string[];
-  }): Promise<ListingInput[]> {
+  async getListings(filters: ListingsJobFilters): Promise<ListingInput[]> {
     const allListings: ListingInput[] = [];
     let page = 1;
     const pageSize = this.apiPageSize; // Fixed page size of 50 discovered from API testing
@@ -137,7 +132,7 @@ export class MoteurImmoService {
 
     while (hasMorePages) {
       try {
-        const listings = await this.fetchListingsPage(filters, page, pageSize);
+        const listings = await this.fetchListingsPage(filters, page);
 
         // Transform API response to ListingInput format
         const transformedListings = listings
@@ -184,17 +179,10 @@ export class MoteurImmoService {
    * Fetch a single page of listings with rate limiting and retry logic
    */
   private async fetchListingsPage(
-    filters: {
-      beforeDate?: string;
-      afterDate?: string;
-      dpeClasses?: string[];
-      propertyTypes?: string[];
-      departments?: string[];
-    },
+    filters: ListingsJobFilters,
     page: number,
-    size: number,
   ): Promise<MoteurImmoListing[]> {
-    const requestBody = this.buildApiRequestBody(filters, page, size);
+    const requestBody = this.buildApiRequestBody(filters, page);
 
     // Rate limiting: ensure minimum interval between requests
     const now = Date.now();
@@ -324,44 +312,34 @@ export class MoteurImmoService {
    * Build the Moteur Immo API request body for POST /ads endpoint
    */
   private buildApiRequestBody(
-    filters: {
-      beforeDate?: string;
-      afterDate?: string;
-      dpeClasses?: string[];
-      propertyTypes?: string[];
-      departments?: string[];
-    },
+    filters: ListingsJobFilters,
     page: number,
-    _size: number,
   ): Record<string, unknown> {
     const requestBody: Record<string, unknown> = {
       apiKey: this.apiKey,
       token: this.apiKey, // Both apiKey and token are required for authentication
       // API returns fixed 50 results per page, pagination via offset
-      offset: (page - 1) * this.apiPageSize,
+      page,
+      maxLength: this.apiPageSize,
+      types: ['sale'],
     };
 
     // Date filtering: The exact parameter names for date filtering need to be discovered
     // The API might not support the standard createdAfter/createdBefore pattern
-    if (filters.afterDate || filters.beforeDate) {
-      this.logger.warn(
-        'Date filtering parameter names not yet discovered for Moteur Immo API',
-      );
-      // TODO: Discover correct date filtering parameter names
-      // Some possibilities to test: dateFrom/dateTo, createdSince/createdUntil, etc.
+    if (filters.afterDate) {
+      requestBody.lastEventDateAfter = filters.afterDate;
+    }
+    if (filters.beforeDate) {
+      requestBody.lastEventDateBefore = filters.beforeDate;
     }
 
-    // DPE/Energy grade filtering: parameter name needs to be discovered
-    if (filters.dpeClasses && filters.dpeClasses.length > 0) {
-      // TODO: Discover correct DPE filtering parameter name
-      this.logger.debug(
-        `DPE filter requested: ${filters.dpeClasses.join(', ')}`,
-      );
+    if (filters.energyGradesMax) {
+      requestBody.energyGradesMax = filters.energyGradesMax;
     }
 
     // Property type filtering - CONFIRMED: works with 'categories' parameter
     if (filters.propertyTypes && filters.propertyTypes.length > 0) {
-      (requestBody as Record<string, unknown>).categories = filters.propertyTypes.map((type) => {
+      requestBody.categories = filters.propertyTypes.map((type) => {
         // Map our PropertyType to API categories
         switch (type.toLowerCase()) {
           case 'apartment':
@@ -377,11 +355,10 @@ export class MoteurImmoService {
     }
 
     // Department filtering: parameter name needs to be discovered
-    if (filters.departments && filters.departments.length > 0) {
-      // TODO: Discover correct department filtering parameter name
-      this.logger.debug(
-        `Department filter requested: ${filters.departments.join(', ')}`,
-      );
+    if (filters.departmentCode) {
+      requestBody.location = {
+        departmentCode: filters.departmentCode,
+      };
     }
 
     return requestBody;

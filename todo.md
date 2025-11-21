@@ -39,14 +39,14 @@ Accounts to Open
 - cloudflare
 
 ## AVANT EVENT
-- [ ] Setup Prod + All data (2j)
+- [x] Setup Prod + All data (2j)
 - [ ] Handle DOM TOM + Corse properly everywhere
 
 Encheres (2j)
 - [x] auctions depts 00
 - [x] photos
 - [ ] Auctions price from bids
-- [ ] Auctions address from desc ?
+- [ ] Auctions address from desc
 
 Liquidations (0.5j)
 - [x] problem on Departments < 10
@@ -67,12 +67,8 @@ Successions (0.5j)
 - [ ] Verif email mairie
 
 Encheres filtres (0.5j)
-- [ ] type de bien
-- [ ] prix réserve
-
-Encheres - filtres (0.5j)
-- [ ] type de bien
-- [ ] prix réserve
+- [x] type de bien
+- [x] prix réserve
 Encheres - display
 - [ ] dpe
 - [ ] m2
@@ -80,22 +76,16 @@ Encheres - display
 Liquidations (0)
 - [ ] Max 1 an historique + Filtre
 
-Filtres Annonces (0.5j)
-- [ ] particuliers vs pro
-- [ ] source pour annonces
-- [ ] type de biens
-- [ ] prix
-- [ ] occupé vs libre
-
 Export (0.5j)
 - [x] labels FR sur export
 - [x] Max 1 an historique
 
 Filtres Annonces (0.5j)
+- [x] type de biens
+- [x] prix
 - [ ] particuliers vs pro
 - [ ] source pour annonces
-- [x] type de biens
-- [ ] prix
+- [ ] occupé vs libre
 
 Export (0.5j)
 - [x] labels FR sur export
