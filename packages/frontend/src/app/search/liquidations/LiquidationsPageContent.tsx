@@ -12,7 +12,7 @@ import { baseFiltersSchema } from "~/utils/filters/filters.schema";
 
 export default function LiquidationsPageContent(): React.ReactElement {
   // Use query param hook for filters and view type
-  const { filters: appliedFilters, setFilters: setAppliedFilters } =
+  const { currentFilters, debouncedFilters, setFilters: setAppliedFilters } =
     useQueryParamFilters(baseFiltersSchema);
 
   // Use unified data fetching - single queries for both list and map views
@@ -20,32 +20,32 @@ export default function LiquidationsPageContent(): React.ReactElement {
     data,
     count,
     isCountLoading,
-    isLoading
+    isDataLoading
   } = useOpportunityData(
     OpportunityType.LIQUIDATION,
-    appliedFilters,
+    debouncedFilters,
     getLiquidationsData,
     getLiquidationsCount
   );
 
   const handleExport = useCallback(async (format: ExportFormat) => {
-    const result = await exportLiquidations(appliedFilters, format);
+    const result = await exportLiquidations(debouncedFilters, format);
     return result;
-  }, [appliedFilters]);
+  }, [debouncedFilters]);
 
   return (
     <OpportunitiesPage
       data={data}
       count={count}
       isCountLoading={isCountLoading}
-      isLoading={isLoading}
+      isLoading={isDataLoading}
       getOpportunityById={getLiquidationById}
       opportunityType={OpportunityType.LIQUIDATION}
       onExport={handleExport}
       FiltersComponent={
         <BaseFilters
           currentType={OpportunityType.LIQUIDATION}
-          filters={appliedFilters}
+          filters={currentFilters}
           onFiltersChange={setAppliedFilters}
         />
       }

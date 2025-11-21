@@ -12,7 +12,7 @@ import { energyDiagnosticFiltersSchema } from "~/utils/filters/filters.schema";
 
 export default function EnergySievesPageContent(): React.ReactElement {
   // Use query param hook for filters and view type
-  const { filters: appliedFilters, setFilters: setAppliedFilters } =
+  const { currentFilters, debouncedFilters, setFilters: setAppliedFilters } =
     useQueryParamFilters(energyDiagnosticFiltersSchema);
 
   // Use unified data fetching - single queries for both list and map views
@@ -20,31 +20,31 @@ export default function EnergySievesPageContent(): React.ReactElement {
     data,
     count,
     isCountLoading,
-    isLoading
+    isDataLoading
   } = useOpportunityData(
     OpportunityType.ENERGY_SIEVE,
-    appliedFilters,
+    debouncedFilters,
     getEnergyDiagnosticsData,
     getEnergyDiagnosticsCount
   );
 
   const handleExport = useCallback(async (format: ExportFormat) => {
-    const result = await exportEnergyDiagnostics(appliedFilters, format);
+    const result = await exportEnergyDiagnostics(debouncedFilters, format);
     return result;
-  }, [appliedFilters]);
+  }, [debouncedFilters]);
 
   return (
     <OpportunitiesPage
       data={data}
       count={count}
       isCountLoading={isCountLoading}
-      isLoading={isLoading}
+      isLoading={isDataLoading}
       getOpportunityById={getEnergyDiagnosticById}
       opportunityType={OpportunityType.ENERGY_SIEVE}
       onExport={handleExport}
       FiltersComponent={
         <EnergyDiagnosticFilters
-          filters={appliedFilters}
+          filters={currentFilters}
           onFiltersChange={setAppliedFilters}
         />
       }

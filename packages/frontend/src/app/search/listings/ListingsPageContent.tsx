@@ -12,7 +12,7 @@ import { listingFiltersSchema } from "~/utils/filters/filters.schema";
 
 export default function ListingsPageContent(): React.ReactElement {
   // Use query param hook for filters and view type
-  const { filters: appliedFilters, setFilters: setAppliedFilters } =
+  const { currentFilters, debouncedFilters, setFilters: setAppliedFilters } =
     useQueryParamFilters(listingFiltersSchema);
 
   // Use unified data fetching - single queries for both list and map views
@@ -20,31 +20,31 @@ export default function ListingsPageContent(): React.ReactElement {
     data,
     count,
     isCountLoading,
-    isLoading
+    isDataLoading
   } = useOpportunityData(
     OpportunityType.REAL_ESTATE_LISTING,
-    appliedFilters,
+    debouncedFilters,
     getListingsData,
     getListingsCount
   );
 
   const handleExport = useCallback(async (format: ExportFormat) => {
-    const result = await exportListings(appliedFilters, format);
+    const result = await exportListings(currentFilters, format);
     return result;
-  }, [appliedFilters]);
+  }, [currentFilters]);
 
   return (
     <OpportunitiesPage
       data={data}
       count={count}
       isCountLoading={isCountLoading}
-      isLoading={isLoading}
+      isLoading={isDataLoading}
       getOpportunityById={getListingById}
       opportunityType={OpportunityType.REAL_ESTATE_LISTING}
       onExport={handleExport}
       FiltersComponent={
         <ListingFilters
-          filters={appliedFilters}
+          filters={currentFilters}
           onFiltersChange={setAppliedFilters}
         />
       }

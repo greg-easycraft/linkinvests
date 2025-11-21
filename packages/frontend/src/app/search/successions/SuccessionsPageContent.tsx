@@ -12,7 +12,7 @@ import { baseFiltersSchema } from "~/utils/filters/filters.schema";
 
 export default function SuccessionsPageContent(): React.ReactElement {
   // Use query param hook for filters and view type
-  const { filters: appliedFilters, setFilters: setAppliedFilters } =
+  const { currentFilters, debouncedFilters, setFilters: setAppliedFilters } =
     useQueryParamFilters(baseFiltersSchema);
 
   // Use unified data fetching - single queries for both list and map views
@@ -20,32 +20,32 @@ export default function SuccessionsPageContent(): React.ReactElement {
     data,
     count,
     isCountLoading,
-    isLoading
+    isDataLoading
   } = useOpportunityData(
     OpportunityType.SUCCESSION,
-    appliedFilters,
+    debouncedFilters,
     getSuccessionsData,
     getSuccessionsCount
   );
 
   const handleExport = useCallback(async (format: ExportFormat) => {
-    const result = await exportSuccessions(appliedFilters, format);
+    const result = await exportSuccessions(debouncedFilters, format);
     return result;
-  }, [appliedFilters]);
+  }, [debouncedFilters]);
 
   return (
     <OpportunitiesPage
       data={data}
       count={count}
       isCountLoading={isCountLoading}
-      isLoading={isLoading}
+      isLoading={isDataLoading}
       getOpportunityById={getSuccessionById}
       opportunityType={OpportunityType.SUCCESSION}
       onExport={handleExport}
       FiltersComponent={
         <BaseFilters
           currentType={OpportunityType.SUCCESSION}
-          filters={appliedFilters}
+          filters={currentFilters}
           onFiltersChange={setAppliedFilters}
         />
       }

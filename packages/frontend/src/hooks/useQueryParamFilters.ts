@@ -22,11 +22,15 @@ export function useQueryParamFilters<T extends OpportunityFilters>(schema: z.Zod
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const [currentFilters, setCurrentFilters] = useState<T>(getRetainedFiltersFromParams(searchParams, schema));
+  const [debouncedFilters, setDebouncedFilters] = useState<T>(getRetainedFiltersFromParams(searchParams, schema));
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
-
-  const updateFilters = useCallback((newFilters: T) => {
-    const newSearchParams = createURLSearchParams(newFilters);
+  
+  const setFilters = useCallback((newFilters: T) => {
+    console.log({newFilters})
+    const filtersToUse = { ...newFilters };
+    delete filtersToUse.page;
+    console.log({filtersToUse})
+    const newSearchParams = createURLSearchParams(filtersToUse);
     router.push(`${pathname}?${newSearchParams.toString()}`);
   }, [router, pathname]);
 
@@ -38,20 +42,14 @@ export function useQueryParamFilters<T extends OpportunityFilters>(schema: z.Zod
 
     // Set new timer
     debounceTimerRef.current = setTimeout(() => {
-      updateFilters(newFilters);
+      setDebouncedFilters(newFilters);
     }, 1000); // 300ms debounce delay
-  }, [updateFilters]);
+  }, [setDebouncedFilters]);
 
-  const appliedFilters = useMemo(() => {
+  const currentFilters = useMemo(() => {
     const result = getRetainedFiltersFromParams(searchParams, schema);
     return result;
   }, [searchParams, schema]);
-
-  const setFilters = useCallback((newFilters: T) => {
-    const filtersToUse = { ...newFilters };
-    delete filtersToUse.page;
-    setCurrentFilters(filtersToUse);
-  }, [setCurrentFilters]);
 
   useEffect(() => {
     debouncedUpdateFilters(currentFilters);
@@ -66,7 +64,8 @@ export function useQueryParamFilters<T extends OpportunityFilters>(schema: z.Zod
 
   return {
     // Current state
-    filters: appliedFilters,
+    currentFilters,
+    debouncedFilters,
     // State setters
     setFilters,
   };

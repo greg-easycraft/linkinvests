@@ -12,38 +12,38 @@ import { auctionFiltersSchema } from "~/utils/filters/filters.schema";
 
 export default function AuctionsPageContent(): React.ReactElement {
   // Use query param hook for filters and view type
-  const { filters: appliedFilters, setFilters: setAppliedFilters } =
+  const { currentFilters, debouncedFilters, setFilters: setAppliedFilters } =
     useQueryParamFilters(auctionFiltersSchema);
   // Use unified data fetching - single queries for both list and map views
   const {
     data,
     count,
     isCountLoading,
-    isLoading
+    isDataLoading
   } = useOpportunityData(
     OpportunityType.AUCTION,
-    appliedFilters,
+    debouncedFilters,
     getAuctionsData,
     getAuctionsCount
   );
 
   const handleExport = useCallback(async (format: ExportFormat) => {
-    const result = await exportAuctions(appliedFilters, format);
+    const result = await exportAuctions(debouncedFilters, format);
     return result;
-  }, [appliedFilters]);
+  }, [debouncedFilters]);
 
   return (
     <OpportunitiesPage
       data={data}
       count={count}
       isCountLoading={isCountLoading}
-      isLoading={isLoading}
+      isLoading={isDataLoading}
       getOpportunityById={getAuctionById}
       opportunityType={OpportunityType.AUCTION}
       onExport={handleExport}
       FiltersComponent={
         <AuctionFilters 
-          filters={appliedFilters} 
+          filters={currentFilters} 
           onFiltersChange={setAppliedFilters}
         />
       }

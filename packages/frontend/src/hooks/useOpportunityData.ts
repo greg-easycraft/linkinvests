@@ -33,13 +33,8 @@ export function useOpportunityData<T extends BaseOpportunity = BaseOpportunity>(
     count: countQuery.data,
     isDataLoading: dataQuery.isLoading,
     isCountLoading: countQuery.isLoading,
-    isLoading: dataQuery.isLoading || countQuery.isLoading,
     isError: dataQuery.isError || countQuery.isError,
     error: dataQuery.error || countQuery.error,
-    refetch: () => {
-      dataQuery.refetch();
-      countQuery.refetch();
-    },
   };
 }
 
