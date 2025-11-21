@@ -9,6 +9,7 @@ import { useOpportunityData } from "~/hooks/useOpportunityData";
 import type { ExportFormat } from "~/server/services/export.service";
 import { useCallback } from "react";
 import { baseFiltersSchema } from "~/utils/filters/filters.schema";
+import { DATE_PERIOD_OPTIONS } from "~/constants/date-periods";
 
 export default function LiquidationsPageContent(): React.ReactElement {
   // Use query param hook for filters and view type
@@ -33,6 +34,8 @@ export default function LiquidationsPageContent(): React.ReactElement {
     return result;
   }, [debouncedFilters]);
 
+  const datePeriodOptions = DATE_PERIOD_OPTIONS.filter(({ months }) => months <= 12);
+
   return (
     <OpportunitiesPage
       data={data}
@@ -47,6 +50,7 @@ export default function LiquidationsPageContent(): React.ReactElement {
           currentType={OpportunityType.LIQUIDATION}
           filters={currentFilters}
           onFiltersChange={setAppliedFilters}
+          datePeriodOptions={datePeriodOptions}
         />
       }
     />
