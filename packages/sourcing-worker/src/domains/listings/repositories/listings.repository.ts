@@ -2,7 +2,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { DATABASE_CONNECTION, type DomainDbType } from '~/database';
 import { domainSchema } from '@linkinvests/db';
 import { ListingInput } from '@linkinvests/shared';
-import { eq, lt, and, type SQL } from 'drizzle-orm';
+import { eq, lt, and, type SQL, sql } from 'drizzle-orm';
 
 @Injectable()
 export class ListingsRepository {
@@ -50,8 +50,46 @@ export class ListingsRepository {
           .insert(domainSchema.opportunityListings)
           .values(batch)
           // @todo: use onConflictDoUpdate to update the listing if it already exists
-          .onConflictDoNothing({
+          .onConflictDoUpdate({
             target: [domainSchema.opportunityListings.externalId],
+            set: {
+              label: sql`excluded.label`,
+              address: sql`excluded.address`,
+              zipCode: sql`excluded.zip_code`,
+              department: sql`excluded.department`,
+              latitude: sql`excluded.latitude`,
+              longitude: sql`excluded.longitude`,
+              opportunityDate: sql`excluded.opportunity_date`,
+              url: sql`excluded.url`,
+              transactionType: sql`excluded.transaction_type`,
+              propertyType: sql`excluded.property_type`,
+              description: sql`excluded.description`,
+              squareFootage: sql`excluded.square_footage`,
+              landArea: sql`excluded.land_area`,
+              rooms: sql`excluded.rooms`,
+              bedrooms: sql`excluded.bedrooms`,
+              energyClass: sql`excluded.energy_class`,
+              constructionYear: sql`excluded.construction_year`,
+              floor: sql`excluded.floor`,
+              totalFloors: sql`excluded.total_floors`,
+              balcony: sql`excluded.balcony`,
+              terrace: sql`excluded.terrace`,
+              garden: sql`excluded.garden`,
+              garage: sql`excluded.garage`,
+              parking: sql`excluded.parking`,
+              elevator: sql`excluded.elevator`,
+              isSoldRented: sql`excluded.is_sold_rented`,
+              price: sql`excluded.price`,
+              priceType: sql`excluded.price_type`,
+              fees: sql`excluded.fees`,
+              charges: sql`excluded.charges`,
+              mainPicture: sql`excluded.main_picture`,
+              pictures: sql`excluded.pictures`,
+              sellerType: sql`excluded.seller_type`,
+              sellerContact: sql`excluded.seller_contact`,
+              source: sql`excluded.source`,
+              updatedAt: new Date(),
+            },
           });
 
         const batchNumber = Math.floor(i / batchSize) + 1;

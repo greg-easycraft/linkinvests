@@ -13,7 +13,7 @@ export interface Listing extends BaseOpportunity {
   landArea?: number;
   rooms?: number;
   bedrooms?: number;
-  energyClass: EnergyClass;
+  energyClass?: EnergyClass;
   constructionYear?: number;
   floor?: number;
   totalFloors?: number;
@@ -23,6 +23,7 @@ export interface Listing extends BaseOpportunity {
   garage?: boolean;
   parking?: boolean;
   elevator?: boolean;
+  isSoldRented: boolean;
 
   // Price fields
   price?: number;

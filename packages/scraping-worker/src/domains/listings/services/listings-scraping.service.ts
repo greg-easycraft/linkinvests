@@ -158,6 +158,7 @@ export class ListingsScrapingService {
       // Picture fields
       mainPicture: opp.images?.[0],
       pictures: opp.images?.slice(1) || [],
+      isSoldRented: false,
       sellerType: 'professional',
       // Convert notaryOffice to sellerContact
       sellerContact: opp.notaryOffice

@@ -56,7 +56,7 @@ interface MoteurImmoListing {
   buildingFloors?: number;
   options: string[];
   energyValue?: number;
-  energyGrade: EnergyClass;
+  energyGrade?: EnergyClass;
   gasValue?: number;
   gasGrade?: string;
   diagnosticDate?: string;
@@ -95,6 +95,7 @@ export class MoteurImmoService {
   // API discovered constraints
   private readonly apiPageSize = 1000; // Moteur Immo Max Page Size
   private readonly maxPages = 10; // (Moteur Immo API limit = 10000 listings)
+  private hasTooManyListings = false;
 
   constructor(
     @Inject(CONFIG_TOKEN)
@@ -116,7 +117,7 @@ export class MoteurImmoService {
     const pageSize = this.apiPageSize; // Fixed page size of 50 discovered from API testing
     let hasMorePages = true;
 
-    while (hasMorePages && page <= this.maxPages) {
+    while (hasMorePages && page <= this.maxPages && !this.hasTooManyListings) {
       try {
         const listings = await this.fetchListingsPage(filters, page);
 
@@ -157,6 +158,10 @@ export class MoteurImmoService {
     this.logger.log(
       `Completed fetching ${allListings.length} listings from Moteur Immo`,
     );
+
+    if (this.hasTooManyListings) {
+      throw new Error('Moteur Immo API returned too many listings');
+    }
 
     return allListings;
   }
@@ -220,6 +225,9 @@ export class MoteurImmoService {
         const data = (await response.json()) as MoteurImmoApiResponse;
         if (data.count) {
           this.logger.log(`Found ${data.count} listings`);
+          if (data.count > 10000) {
+            this.hasTooManyListings = true;
+          }
         }
 
         return data.ads || [];
@@ -264,7 +272,7 @@ export class MoteurImmoService {
         squareFootage: apiListing.surface ?? undefined,
         rooms: apiListing.rooms ?? undefined,
         bedrooms: apiListing.bedrooms ?? undefined,
-        energyClass: apiListing.energyGrade,
+        energyClass: apiListing.energyGrade ?? undefined,
         price: apiListing.price,
         pictures: apiListing.pictureUrls || [],
         sellerType: apiListing.publisher.type,
@@ -277,6 +285,7 @@ export class MoteurImmoService {
         },
         mainPicture: apiListing.pictureUrl || apiListing.pictureUrls?.[0],
         externalId: `${apiListing.origin}-${apiListing.adId}`,
+        isSoldRented: apiListing.options.includes('isSoldRented'),
       };
     } catch (error) {
       this.logger.warn(
@@ -319,10 +328,9 @@ export class MoteurImmoService {
       maxLength: this.apiPageSize,
       types: ['sale'],
       categories: ['house', 'flat', 'office', 'premises', 'shop', 'block'],
+      options: ['isOld', 'isNotUnderCompromise'],
     };
 
-    // Date filtering: The exact parameter names for date filtering need to be discovered
-    // The API might not support the standard createdAfter/createdBefore pattern
     if (filters.afterDate) {
       requestBody.lastEventDateAfter = new Date(
         filters.afterDate,

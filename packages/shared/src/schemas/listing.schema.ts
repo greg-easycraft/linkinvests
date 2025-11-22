@@ -25,7 +25,7 @@ export const listingInputSchema = baseOpportunityInputSchema.extend({
   landArea: z.number().positive().optional(),
   rooms: z.number().int().positive().optional(),
   bedrooms: z.number().int().positive().optional(),
-  energyClass: z.enum(EnergyClass),
+  energyClass: z.enum(EnergyClass).optional(),
   constructionYear: z.number().int().optional(),
   floor: z.number().int().optional(),
   totalFloors: z.number().int().positive().optional(),
@@ -41,6 +41,7 @@ export const listingInputSchema = baseOpportunityInputSchema.extend({
   charges: z.number().optional(),
   mainPicture: z.string().optional(),
   pictures: z.array(z.string()).optional(),
+  isSoldRented: z.boolean(),
   sellerType: z.enum(['individual', 'professional']),
   sellerContact: sellerContactSchema,
 });

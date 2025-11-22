@@ -11,6 +11,7 @@ import {
   uuid,
   numeric,
   jsonb,
+  boolean,
 } from 'drizzle-orm/pg-core';
 import { desc } from 'drizzle-orm';
 
@@ -224,12 +225,13 @@ export const opportunityListings = pgTable('listing', {
   constructionYear: integer('construction_year'),
   floor: integer('floor'),
   totalFloors: integer('total_floors'),
-  balcony: jsonb('balcony').$type<boolean>(),
-  terrace: jsonb('terrace').$type<boolean>(),
-  garden: jsonb('garden').$type<boolean>(),
-  garage: jsonb('garage').$type<boolean>(),
-  parking: jsonb('parking').$type<boolean>(),
-  elevator: jsonb('elevator').$type<boolean>(),
+  balcony: boolean('balcony'),
+  terrace: boolean('terrace'),
+  garden: boolean('garden'),
+  garage: boolean('garage'),
+  parking: boolean('parking'),
+  elevator: boolean('elevator'),
+  isSoldRented: boolean('is_sold_rented').default(false).notNull(),
   // Price fields
   price: numeric('price', { mode: 'number' }),
   priceType: varchar('price_type'),

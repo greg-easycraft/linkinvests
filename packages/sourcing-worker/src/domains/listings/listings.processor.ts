@@ -141,8 +141,8 @@ export class ListingsProcessor extends WorkerHost {
     const result = listingInputSchema.safeParse(listing);
 
     if (!result.success) {
-      // this.logger.warn(`Invalid listing: ${JSON.stringify(result.error)}`);
-      // this.logger.warn(listing);
+      this.logger.warn(`Invalid listing: ${JSON.stringify(result.error)}`);
+      this.logger.warn(listing);
       return null;
     }
 
