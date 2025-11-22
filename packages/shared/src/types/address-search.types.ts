@@ -1,7 +1,7 @@
 // Address search input interface for the search form
 export interface AddressSearchInput {
   // DPE energy class (A-G rating)
-  dpe: 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G';
+  energyClass: 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G';
   // Square footage in square meters
   squareFootage: number;
   // 5-digit postal code (required)

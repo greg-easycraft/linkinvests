@@ -22,7 +22,7 @@ export const auctionInputSchema = baseOpportunityInputSchema.extend({
   description: z.string().optional(),
   squareFootage: z.number().positive().optional(),
   rooms: z.number().int().positive().optional(),
-  dpe: z.string().optional(),
+  energyClass: z.string().optional(),
   auctionVenue: z.string().optional(),
   currentPrice: z.number().positive().optional(),
   reservePrice: z.number().positive().optional(),

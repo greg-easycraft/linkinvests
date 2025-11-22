@@ -358,13 +358,13 @@ export function ListingFilters({
               <div key={energyClass.value} className="flex items-center space-x-2">
                 <input
                   type="checkbox"
-                  id={`dpe-${energyClass.value}`}
+                  id={`energyClass-${energyClass.value}`}
                   checked={isChecked}
                   onChange={(e) => handleDpeChange(energyClass.value, e.target.checked)}
                   className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
                 <label
-                  htmlFor={`dpe-${energyClass.value}`}
+                  htmlFor={`energyClass-${energyClass.value}`}
                   className={`text-sm cursor-pointer ${energyClass.color} font-medium`}
                 >
                   {energyClass.label}

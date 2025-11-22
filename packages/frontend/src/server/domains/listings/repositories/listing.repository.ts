@@ -65,7 +65,7 @@ export class DrizzleListingRepository implements IListingRepository {
 
     // Filter by energy classes (DPE)
     if (filters.energyClasses && filters.energyClasses.length > 0) {
-      conditions.push(inArray(opportunityListings.dpe, filters.energyClasses));
+      conditions.push(inArray(opportunityListings.energyClass, filters.energyClasses));
     }
 
     // Filter by price range
@@ -223,7 +223,7 @@ export class DrizzleListingRepository implements IListingRepository {
       landArea: listing.landArea ?? undefined,
       rooms: listing.rooms ?? undefined,
       bedrooms: listing.bedrooms ?? undefined,
-      dpe: listing.dpe ?? undefined,
+      energyClass: listing.energyClass ?? undefined,
       constructionYear: listing.constructionYear ?? undefined,
       floor: listing.floor ?? undefined,
       totalFloors: listing.totalFloors ?? undefined,

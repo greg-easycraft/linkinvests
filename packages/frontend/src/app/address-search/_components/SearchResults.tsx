@@ -73,8 +73,8 @@ function AddressResultCard({ result, onViewDetails }: AddressResultCardProps) {
     return "Correspondance Possible";
   };
 
-  const getDpeColor = (dpe?: string) => {
-    const dpeColors: Record<string, string> = {
+  const getDpeColor = (energyClass?: string) => {
+    const energyClassColors: Record<string, string> = {
       'A': 'bg-green-600 text-white',
       'B': 'bg-green-500 text-white',
       'C': 'bg-yellow-500 text-white',
@@ -83,7 +83,7 @@ function AddressResultCard({ result, onViewDetails }: AddressResultCardProps) {
       'F': 'bg-red-500 text-white',
       'G': 'bg-red-600 text-white',
     };
-    return dpe ? dpeColors[dpe] || 'bg-gray-500 text-white' : 'bg-gray-500 text-white';
+    return energyClass ? energyClassColors[energyClass] || 'bg-gray-500 text-white' : 'bg-gray-500 text-white';
   };
 
   return (

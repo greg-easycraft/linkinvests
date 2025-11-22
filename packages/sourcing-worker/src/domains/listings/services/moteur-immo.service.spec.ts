@@ -185,7 +185,7 @@ describe('MoteurImmoService', () => {
         squareFootage: 75,
         rooms: 3,
         bedrooms: 2,
-        dpe: 'C',
+        energyClass: 'C',
         price: 500000,
         pictures: ['image1.jpg', 'image2.jpg'],
         mainPicture: 'image1.jpg',
@@ -546,7 +546,7 @@ describe('MoteurImmoService', () => {
     it('should fetch all pages and transform results', async () => {
       const result = await service.getListings({
         afterDate: '2024-01-01',
-        dpeClasses: ['E', 'F'],
+        energyClassClasses: ['E', 'F'],
       });
 
       expect(result).toHaveLength(3);

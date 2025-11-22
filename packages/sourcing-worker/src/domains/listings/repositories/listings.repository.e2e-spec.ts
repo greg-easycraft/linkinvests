@@ -25,7 +25,7 @@ describe('ListingsRepository (Integration)', () => {
     squareFootage: 75,
     rooms: 3,
     bedrooms: 2,
-    dpe: 'C',
+    energyClass: 'C',
     price: 500000,
     pictures: ['image1.jpg', 'image2.jpg'],
     mainPicture: 'image1.jpg',

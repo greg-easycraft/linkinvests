@@ -9,7 +9,7 @@ export class AddressSearchService {
   ) {}
 
   async getPlausibleAddresses(input: AddressSearchInput): Promise<AddressSearchResult[]> {
-    const { dpe, squareFootage, zipCode } = input;
+    const { energyClass, squareFootage, zipCode } = input;
 
     // Default to reasonable square footage range if not specified
     const baseSquareFootage = squareFootage || 50;
@@ -17,7 +17,7 @@ export class AddressSearchService {
     const maxSquareFootage = baseSquareFootage * (1 + (this.MAX_SQUARE_FOOTAGE_DIFFERENCE_PERCENTAGE / 100));
     const results = await this.energyDiagnosticsRepository.findAllForAddressSearch({
       zipCode,
-      energyClass: dpe || 'F',
+      energyClass: energyClass || 'F',
       squareFootageMin: minSquareFootage,
       squareFootageMax: maxSquareFootage,
     });
@@ -40,7 +40,7 @@ export class AddressSearchService {
     let score = 100; // Base score
 
     // Reduce score if energy class doesn't match exactly
-    if (input.dpe && result.energyClass !== input.dpe) {
+    if (input.energyClass && result.energyClass !== input.energyClass) {
       score -= 10;
     }
 

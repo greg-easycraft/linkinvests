@@ -128,7 +128,7 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
       const auctions = await auctionRepository.findAll(filters);
 
       auctions.forEach(auction => {
-        expect(['D', 'E', 'F']).toContain(auction.dpe);
+        expect(['D', 'E', 'F']).toContain(auction.energyClass);
       });
     });
 

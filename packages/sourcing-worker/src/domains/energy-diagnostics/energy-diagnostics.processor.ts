@@ -51,20 +51,20 @@ export class EnergyDiagnosticsProcessor extends WorkerHost {
     try {
       // Step 1: Fetch all DPE records from ADEME API
       this.logger.log('Step 1/3: Fetching DPE records from ADEME API...');
-      const dpeRecords = await this.ademeApi.fetchAllDpeRecords(
+      const energyClassRecords = await this.ademeApi.fetchAllDpeRecords(
         departmentId,
         sinceDate,
         energyClasses,
         beforeDate,
       );
-      stats.totalRecords = dpeRecords.length;
-      this.logger.log(`Fetched ${dpeRecords.length} DPE records`);
+      stats.totalRecords = energyClassRecords.length;
+      this.logger.log(`Fetched ${energyClassRecords.length} DPE records`);
 
       // Step 2: Transform records to opportunities
       this.logger.log('Step 2/3: Transforming DPE records to opportunities...');
       const opportunities: EnergyDiagnosticInput[] = [];
 
-      for (const record of dpeRecords) {
+      for (const record of energyClassRecords) {
         try {
           const opportunity = this.transformDpeRecord(record);
           if (opportunity) {
@@ -77,7 +77,7 @@ export class EnergyDiagnosticsProcessor extends WorkerHost {
           stats.errors++;
           stats.invalidRecords++;
           this.logger.warn(
-            `Failed to transform record ${record.numero_dpe}: ${(error as Error).message}`,
+            `Failed to transform record ${record.numero_energyClass}: ${(error as Error).message}`,
           );
         }
       }
@@ -137,10 +137,10 @@ export class EnergyDiagnosticsProcessor extends WorkerHost {
     const [latStr, lonStr] = record._geopoint.split(',');
 
     const opportunityDateStr =
-      record.date_etablissement_dpe || record.date_reception_dpe;
+      record.date_etablissement_energyClass || record.date_reception_energyClass;
     if (!opportunityDateStr) {
       this.logger.warn(
-        `Missing opportunity date for record ${record.numero_dpe}`,
+        `Missing opportunity date for record ${record.numero_energyClass}`,
       );
       return null;
     }
@@ -148,8 +148,8 @@ export class EnergyDiagnosticsProcessor extends WorkerHost {
       .toISOString()
       .split('T')[0];
 
-    const dpeInput = {
-      externalId: record.numero_dpe,
+    const energyClassInput = {
+      externalId: record.numero_energyClass,
       label: record.adresse_ban || record.nom_commune_ban || 'Unknown',
       address: record.adresse_ban,
       zipCode: record.code_postal_ban,
@@ -157,14 +157,14 @@ export class EnergyDiagnosticsProcessor extends WorkerHost {
       latitude: parseFloat(latStr || ''),
       longitude: parseFloat(lonStr || ''),
       opportunityDate,
-      energyClass: record.etiquette_dpe,
+      energyClass: record.etiquette_energyClass,
       squareFootage: record.surface_habitable_logement,
     };
 
-    const validationResult = energyDiagnosticInputSchema.safeParse(dpeInput);
+    const validationResult = energyDiagnosticInputSchema.safeParse(energyClassInput);
     if (!validationResult.success) {
       this.logger.warn(
-        `Invalid DPE record ${record.numero_dpe}: ${JSON.stringify(validationResult.error.issues)}`,
+        `Invalid DPE record ${record.numero_energyClass}: ${JSON.stringify(validationResult.error.issues)}`,
       );
       return null;
     }

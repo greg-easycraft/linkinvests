@@ -9,10 +9,10 @@ interface ListingJobData {
   source?: string;
   afterDate?: string;
   beforeDate?: string;
-  dpeClasses?: string[];
+  energyClassClasses?: string[];
   propertyTypes?: string[];
   departments?: string[];
-  fetchType?: 'dpe_energy_sieves' | 'recent_listings' | 'custom';
+  fetchType?: 'energyClass_energy_sieves' | 'recent_listings' | 'custom';
 }
 
 @Injectable()
@@ -74,7 +74,7 @@ export class ListingsCron {
    * Focus on properties with poor energy classes (E, F, G) and "ancien" type
    */
   @Cron(CronExpression.EVERY_WEEK, {
-    name: 'weekly-dpe-energy-sieves-import',
+    name: 'weekly-energyClass-energy-sieves-import',
     timeZone: 'Europe/Paris',
   })
   async handleWeeklyDpeEnergySlaves(): Promise<void> {
@@ -88,12 +88,12 @@ export class ListingsCron {
       const jobData: ListingJobData = {
         source: 'moteurimmo',
         afterDate,
-        dpeClasses: ['E', 'F', 'G'], // Poor energy performance
+        energyClassClasses: ['E', 'F', 'G'], // Poor energy performance
         propertyTypes: ['ancien'], // Focus on existing/old properties
-        fetchType: 'dpe_energy_sieves',
+        fetchType: 'energyClass_energy_sieves',
       };
 
-      const job = await this.queue.add('fetch-dpe-energy-sieves', jobData, {
+      const job = await this.queue.add('fetch-energyClass-energy-sieves', jobData, {
         removeOnComplete: 10,
         removeOnFail: 10,
         attempts: 3,
@@ -170,7 +170,7 @@ export class ListingsCron {
       const allEnergyClassesJobData: ListingJobData = {
         source: 'moteurimmo',
         afterDate,
-        dpeClasses: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
+        energyClassClasses: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
         propertyTypes: ['ancien'],
         fetchType: 'custom',
       };
@@ -225,10 +225,10 @@ export class ListingsCron {
     afterDate?: string,
     beforeDate?: string,
     options: {
-      dpeClasses?: string[];
+      energyClassClasses?: string[];
       propertyTypes?: string[];
       departments?: string[];
-      fetchType?: 'dpe_energy_sieves' | 'recent_listings' | 'custom';
+      fetchType?: 'energyClass_energy_sieves' | 'recent_listings' | 'custom';
     } = {},
   ): Promise<string> {
     this.logger.log(

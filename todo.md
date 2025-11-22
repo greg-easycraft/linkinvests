@@ -25,7 +25,7 @@ Filtres Annonces + Encheres
 - [ ] occupé vs libre
 
 Encheres + Annonces - display on card
-- [ ] dpe
+- [ ] energyClass
 - [ ] m2
 
 DERNIERE SEMAINE

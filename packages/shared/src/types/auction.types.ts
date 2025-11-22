@@ -9,7 +9,7 @@ export interface Auction extends BaseOpportunity {
   description?: string;
   squareFootage?: number;
   rooms?: number;
-  dpe?: string;
+  energyClass?: string;
   auctionVenue?: string;
   // Price fields (normalized from extraData)
   currentPrice?: number;

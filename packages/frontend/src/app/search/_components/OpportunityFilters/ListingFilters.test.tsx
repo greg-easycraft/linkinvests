@@ -781,7 +781,7 @@ describe('ListingFilters Component', () => {
 
       // Energy classes
       const energyClassA = screen.getByRole('checkbox', { name: 'A (Très économe)' });
-      expect(energyClassA).toHaveAttribute('id', 'dpe-A');
+      expect(energyClassA).toHaveAttribute('id', 'energyClass-A');
 
       // Features
       const balconyCheckbox = screen.getByRole('checkbox', { name: 'Balcon' });

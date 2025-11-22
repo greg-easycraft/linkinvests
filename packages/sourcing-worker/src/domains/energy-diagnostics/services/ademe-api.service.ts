@@ -8,7 +8,7 @@ import type {
 export class AdemeApiService {
   private readonly logger = new Logger(AdemeApiService.name);
   private readonly baseUrl =
-    'https://data.ademe.fr/data-fair/api/v1/datasets/dpe03existant';
+    'https://data.ademe.fr/data-fair/api/v1/datasets/energyClass03existant';
 
   // Rate limiting configuration
   private lastRequestTime = 0;
@@ -205,27 +205,27 @@ export class AdemeApiService {
     const energyClassesFilter = `(${energyClasses.join(' OR ')})`;
 
     // Build date filter - support both sinceDate and beforeDate
-    let dateFilter = `date_etablissement_dpe:>=${sinceDate}`;
+    let dateFilter = `date_etablissement_energyClass:>=${sinceDate}`;
     if (beforeDate) {
-      dateFilter += ` AND date_etablissement_dpe:<=${beforeDate}`;
+      dateFilter += ` AND date_etablissement_energyClass:<=${beforeDate}`;
     }
 
     // Query string: department AND energy class AND date filter
     // Using qs syntax: field:value, AND/OR operators, >= and <= for date comparison
-    const queryString = `code_departement_ban:"${departmentStr}" AND etiquette_dpe:${energyClassesFilter} AND ${dateFilter}`;
+    const queryString = `code_departement_ban:"${departmentStr}" AND etiquette_energyClass:${energyClassesFilter} AND ${dateFilter}`;
 
     // Fields to select - only request the fields we need
     const selectFields = [
-      'numero_dpe',
+      'numero_energyClass',
       'adresse_ban',
       'code_postal_ban',
       'nom_commune_ban',
       'code_departement_ban',
-      'etiquette_dpe',
+      'etiquette_energyClass',
       'etiquette_ges',
       '_geopoint',
-      'date_etablissement_dpe',
-      'date_reception_dpe',
+      'date_etablissement_energyClass',
+      'date_reception_energyClass',
       'type_batiment',
       'annee_construction',
       'surface_habitable_logement',

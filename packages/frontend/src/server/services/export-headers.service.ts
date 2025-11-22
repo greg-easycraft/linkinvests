@@ -29,7 +29,7 @@ const auctionHeaders: Record<string, string> = {
   description: "Description",
   squareFootage: "Surface (m²)",
   rooms: "Nombre de pièces",
-  dpe: "DPE",
+  energyClass: "DPE",
   auctionVenue: "Lieu des enchères",
   currentPrice: "Prix actuel (€)",
   reservePrice: "Prix de réserve (€)",
@@ -44,7 +44,7 @@ const auctionHeaders: Record<string, string> = {
 const energyDiagnosticHeaders: Record<string, string> = {
   ...baseOpportunityHeaders,
   energyClass: "Classe énergétique",
-  dpeNumber: "Numéro DPE"
+  energyClassNumber: "Numéro DPE"
 };
 
 // Liquidation headers
@@ -73,7 +73,7 @@ const listingHeaders: Record<string, string> = {
   landArea: "Surface terrain (m²)",
   rooms: "Nombre de pièces",
   bedrooms: "Nombre de chambres",
-  dpe: "DPE",
+  energyClass: "DPE",
   constructionYear: "Année de construction",
   floor: "Étage",
   totalFloors: "Nombre d'étages total",

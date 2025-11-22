@@ -34,7 +34,7 @@ export const opportunityAuctions = pgTable('auction', {
   description: text('description'),
   squareFootage: numeric('square_footage', { mode: 'number' }),
   rooms: integer('rooms'),
-  dpe: varchar('dpe'),
+  energyClass: varchar('energy_class'),
   auctionVenue: varchar('auction_venue'),
   // Price fields
   currentPrice: numeric('current_price', { mode: 'number' }),
@@ -220,7 +220,7 @@ export const opportunityListings = pgTable('listing', {
   landArea: numeric('land_area', { mode: 'number' }),
   rooms: integer('rooms'),
   bedrooms: integer('bedrooms'),
-  dpe: varchar('dpe'),
+  energyClass: varchar('energy_class'),
   constructionYear: integer('construction_year'),
   floor: integer('floor'),
   totalFloors: integer('total_floors'),

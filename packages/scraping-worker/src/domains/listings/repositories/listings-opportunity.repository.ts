@@ -80,7 +80,7 @@ export class ListingsOpportunityRepository {
           landArea: opp.landArea || null,
           rooms: opp.rooms || null,
           bedrooms: opp.bedrooms || null,
-          dpe: opp.dpe || null,
+          energyClass: opp.energyClass || null,
           constructionYear: opp.constructionYear || null,
           floor: opp.floor || null,
           totalFloors: opp.totalFloors || null,

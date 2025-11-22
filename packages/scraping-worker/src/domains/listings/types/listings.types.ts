@@ -23,7 +23,7 @@ export interface RawListingOpportunity {
   landArea?: number;
   rooms?: number;
   bedrooms?: number;
-  dpe?: string; // Energy performance diagnosis
+  energyClass?: string; // Energy performance diagnosis
   constructionYear?: number;
   floor?: number;
   totalFloors?: number;

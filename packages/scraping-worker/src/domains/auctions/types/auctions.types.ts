@@ -98,7 +98,7 @@ export interface AuctionOpportunity {
     reservePrice?: number; // Reserve price (prix_plancher)
     price?: number; // Legacy field for compatibility
     description?: string;
-    dpe?: string; // Energy performance rating
+    energyClass?: string; // Energy performance rating
     squareFootage?: number; // Surface area in m²
     rooms?: number; // Number of rooms
     auctionVenue?: string; // Will be used for contactData

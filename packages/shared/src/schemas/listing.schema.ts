@@ -25,7 +25,7 @@ export const listingInputSchema = baseOpportunityInputSchema.extend({
   landArea: z.number().positive().optional(),
   rooms: z.number().int().positive().optional(),
   bedrooms: z.number().int().positive().optional(),
-  dpe: z.string().optional(),
+  energyClass: z.string().optional(),
   constructionYear: z.number().int().optional(),
   floor: z.number().int().optional(),
   totalFloors: z.number().int().positive().optional(),

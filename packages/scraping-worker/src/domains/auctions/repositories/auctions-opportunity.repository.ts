@@ -83,7 +83,7 @@ export class AuctionsOpportunityRepository {
           description: opp.extraData?.description || null,
           squareFootage: opp.extraData?.squareFootage || null,
           rooms: opp.extraData?.rooms || null,
-          dpe: opp.extraData?.dpe || null,
+          energyClass: opp.extraData?.energyClass || null,
           auctionVenue: opp.extraData?.auctionVenue || null,
 
           // Price fields (normalized from extraData)

@@ -138,7 +138,7 @@ export class ListingsScrapingService {
       landArea: opp.landArea,
       rooms: opp.rooms,
       bedrooms: opp.bedrooms,
-      dpe: opp.dpe,
+      energyClass: opp.energyClass,
       constructionYear: opp.constructionYear,
       floor: opp.floor,
       totalFloors: opp.totalFloors,

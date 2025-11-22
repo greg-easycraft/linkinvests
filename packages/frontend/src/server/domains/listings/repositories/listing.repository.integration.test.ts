@@ -56,8 +56,8 @@ describe('DrizzleListingRepository Integration Tests', () => {
       };
       const listings = await listingRepository.findAll(filters);
       listings.forEach(listing => {
-        if (listing.dpe) {
-          expect(['B', 'C', 'D']).toContain(listing.dpe);
+        if (listing.energyClass) {
+          expect(['B', 'C', 'D']).toContain(listing.energyClass);
         }
       });
     });

@@ -13,7 +13,7 @@ export interface Listing extends BaseOpportunity {
   landArea?: number;
   rooms?: number;
   bedrooms?: number;
-  dpe?: string; // Energy performance diagnosis (A-G)
+  energyClass?: string; // Energy performance diagnosis (A-G)
   constructionYear?: number;
   floor?: number;
   totalFloors?: number;

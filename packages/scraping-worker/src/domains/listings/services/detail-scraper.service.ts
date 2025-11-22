@@ -155,7 +155,7 @@ export class DetailScraperService {
       // Phase 4: Extract complex data
       const images = await this.extractImages(page);
       const notaryOffice = await this.extractNotaryOffice(page);
-      const dpe = await this.extractDPE(page);
+      const energyClass = await this.extractDPE(page);
 
       // Phase 5: Combine all extracted data
       const listing: RawListingOpportunity = {
@@ -199,7 +199,7 @@ export class DetailScraperService {
         // Complex data
         images,
         notaryOffice,
-        dpe,
+        energyClass,
       };
 
       // Validate required fields

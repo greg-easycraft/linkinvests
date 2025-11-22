@@ -70,7 +70,7 @@ export class DrizzleAuctionRepository implements IAuctionRepository {
 
     // Filter by energy classes (DPE)
     if (filters.energyClasses && filters.energyClasses.length > 0) {
-      conditions.push(inArray(opportunityAuctions.dpe, filters.energyClasses));
+      conditions.push(inArray(opportunityAuctions.energyClass, filters.energyClasses));
     }
 
     // Filter by price range (current price)
@@ -183,7 +183,7 @@ export class DrizzleAuctionRepository implements IAuctionRepository {
       description: auction.description ?? undefined,
       squareFootage: auction.squareFootage ?? undefined,
       rooms: auction.rooms ?? undefined,
-      dpe: auction.dpe ?? undefined,
+      energyClass: auction.energyClass ?? undefined,
       auctionVenue: auction.auctionVenue ?? undefined,
       currentPrice: auction.currentPrice ?? undefined,
       reservePrice: auction.reservePrice ?? undefined,

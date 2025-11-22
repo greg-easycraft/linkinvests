@@ -26,7 +26,7 @@ Job Triggered → Fetch DPE Data from ADEME API → Transform Records → Insert
 ## ADEME API Documentation
 
 ### Base Information
-- **API Base URL**: `https://data.ademe.fr/data-fair/api/v1/datasets/dpe03existant`
+- **API Base URL**: `https://data.ademe.fr/data-fair/api/v1/datasets/energyClass03existant`
 - **Dataset Size**: 13,178,351+ records
 - **Authentication**: Optional (public access available)
 - **Format**: JSON (lines endpoint)
@@ -46,11 +46,11 @@ GET /lines?size={size}&select={fields}&where={filter}
 
 **Example Request**:
 ```bash
-GET https://data.ademe.fr/data-fair/api/v1/datasets/dpe03existant/lines?
+GET https://data.ademe.fr/data-fair/api/v1/datasets/energyClass03existant/lines?
   size=1000&
-  select=numero_dpe,adresse_ban,code_postal_ban,nom_commune_ban,code_departement_ban,
-         etiquette_dpe,etiquette_ges,_geopoint,type_batiment,annee_construction&
-  where=code_departement_ban="75" AND (etiquette_dpe="F" OR etiquette_dpe="G")&
+  select=numero_energyClass,adresse_ban,code_postal_ban,nom_commune_ban,code_departement_ban,
+         etiquette_energyClass,etiquette_ges,_geopoint,type_batiment,annee_construction&
+  where=code_departement_ban="75" AND (etiquette_energyClass="F" OR etiquette_energyClass="G")&
   page=1
 ```
 
@@ -68,8 +68,8 @@ GET https://data.ademe.fr/data-fair/api/v1/datasets/dpe03existant/lines?
 | Fixed: "pending_review" | `status` | text | Initial status |
 
 ### Additional Fields (for reference/filtering)
-- `numero_dpe`: DPE certificate number (unique identifier)
-- `etiquette_dpe`: Energy efficiency rating (A-G scale)
+- `numero_energyClass`: DPE certificate number (unique identifier)
+- `etiquette_energyClass`: Energy efficiency rating (A-G scale)
 - `etiquette_ges`: GHG emissions rating (A-G scale)
 - `type_batiment`: Building type (appartement, maison, immeuble)
 - `annee_construction`: Construction year
@@ -136,8 +136,8 @@ GET https://data.ademe.fr/data-fair/api/v1/datasets/dpe03existant/lines?
 
 ### Energy Sieve Identification
 Buildings are classified as "energy sieves" if:
-- `etiquette_dpe = "F"` (high energy consumption)
-- `etiquette_dpe = "G"` (very high energy consumption)
+- `etiquette_energyClass = "F"` (high energy consumption)
+- `etiquette_energyClass = "G"` (very high energy consumption)
 
 These represent the worst performers on the A-G energy efficiency scale.
 
@@ -163,7 +163,7 @@ With 13M+ records, pagination is critical:
 ### Duplicate Handling
 Since there's no SIRET for addresses:
 - Cannot use SIRET-based uniqueness
-- Consider using `numero_dpe` as external reference (optional)
+- Consider using `numero_energyClass` as external reference (optional)
 - May need to add address-based deduplication logic
 - Use `onConflictDoNothing()` to skip duplicates on insertion
 
@@ -179,7 +179,7 @@ Since there's no SIRET for addresses:
 
 ### Sample Request
 ```bash
-curl "https://data.ademe.fr/data-fair/api/v1/datasets/dpe03existant/lines?size=2&select=numero_dpe,adresse_ban,code_postal_ban,_geopoint,etiquette_dpe&where=code_departement_ban=%2275%22%20AND%20etiquette_dpe=%22F%22"
+curl "https://data.ademe.fr/data-fair/api/v1/datasets/energyClass03existant/lines?size=2&select=numero_energyClass,adresse_ban,code_postal_ban,_geopoint,etiquette_energyClass&where=code_departement_ban=%2275%22%20AND%20etiquette_energyClass=%22F%22"
 ```
 
 ### Sample Response
@@ -188,18 +188,18 @@ curl "https://data.ademe.fr/data-fair/api/v1/datasets/dpe03existant/lines?size=2
   "total": 45821,
   "results": [
     {
-      "numero_dpe": "2275E0123456",
+      "numero_energyClass": "2275E0123456",
       "adresse_ban": "123 rue de la République",
       "code_postal_ban": "75011",
       "_geopoint": "48.8566,2.3522",
-      "etiquette_dpe": "F"
+      "etiquette_energyClass": "F"
     },
     {
-      "numero_dpe": "2275E0234567",
+      "numero_energyClass": "2275E0234567",
       "adresse_ban": "456 avenue des Champs",
       "code_postal_ban": "75008",
       "_geopoint": "48.8698,2.3078",
-      "etiquette_dpe": "F"
+      "etiquette_energyClass": "F"
     }
   ]
 }
@@ -243,7 +243,7 @@ WHERE type = 'PASSOIRE_THERMIQUE'
 ## Future Enhancements
 - [ ] Add filtering by construction year (target old buildings)
 - [ ] Add filtering by building type (appartement vs maison)
-- [ ] Store `numero_dpe` for reference (requires schema update)
+- [ ] Store `numero_energyClass` for reference (requires schema update)
 - [ ] Add enrichment with cadastral data
 - [ ] Implement CRON job for periodic updates
 - [ ] Add dashboard metrics for energy sieve opportunities

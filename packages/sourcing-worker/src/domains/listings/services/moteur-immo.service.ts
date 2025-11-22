@@ -278,7 +278,7 @@ export class MoteurImmoService {
         squareFootage: apiListing.surface ?? undefined,
         rooms: apiListing.rooms ?? undefined,
         bedrooms: apiListing.bedrooms ?? undefined,
-        dpe: apiListing.energyGrade,
+        energyClass: apiListing.energyGrade,
         price: apiListing.price,
         pictures: apiListing.pictureUrls || [],
         mainPicture: apiListing.pictureUrl || apiListing.pictureUrls?.[0],

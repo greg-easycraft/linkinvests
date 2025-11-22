@@ -41,14 +41,14 @@ describe('AdemeApiService', () => {
       );
 
       expect(url).toContain(
-        'https://data.ademe.fr/data-fair/api/v1/datasets/dpe03existant/lines',
+        'https://data.ademe.fr/data-fair/api/v1/datasets/energyClass03existant/lines',
       );
       expect(url).toContain('size=1000');
       expect(url).toContain('page=1');
       expect(url).toContain('qs=');
       expect(url).toContain('code_departement_ban%3A75');
-      expect(url).toContain('etiquette_dpe%3A%28F+OR+G%29');
-      expect(url).toContain('date_etablissement_dpe%3A%3E%3D2024-01-01');
+      expect(url).toContain('etiquette_energyClass%3A%28F+OR+G%29');
+      expect(url).toContain('date_etablissement_energyClass%3A%3E%3D2024-01-01');
     });
 
     it('should pad single-digit department code with zero', () => {
@@ -60,7 +60,7 @@ describe('AdemeApiService', () => {
     it('should handle single energy class', () => {
       const url = service['buildApiUrl']('75', '2024-01-01', ['F'], 1, 1000);
 
-      expect(url).toContain('etiquette_dpe%3A%28F%29');
+      expect(url).toContain('etiquette_energyClass%3A%28F%29');
     });
 
     it('should handle multiple energy classes', () => {
@@ -72,18 +72,18 @@ describe('AdemeApiService', () => {
         1000,
       );
 
-      expect(url).toContain('etiquette_dpe%3A%28D+OR+E+OR+F+OR+G%29');
+      expect(url).toContain('etiquette_energyClass%3A%28D+OR+E+OR+F+OR+G%29');
     });
 
     it('should select correct fields', () => {
       const url = service['buildApiUrl']('75', '2024-01-01', ['F'], 1, 1000);
 
       expect(url).toContain('select=');
-      expect(url).toContain('numero_dpe');
+      expect(url).toContain('numero_energyClass');
       expect(url).toContain('adresse_ban');
       expect(url).toContain('code_postal_ban');
       expect(url).toContain('_geopoint');
-      expect(url).toContain('date_etablissement_dpe');
+      expect(url).toContain('date_etablissement_energyClass');
     });
 
     it('should build URL with date range when beforeDate is provided', () => {
@@ -96,8 +96,8 @@ describe('AdemeApiService', () => {
         '2024-12-31',
       );
 
-      expect(url).toContain('date_etablissement_dpe%3A%3E%3D2024-01-01');
-      expect(url).toContain('date_etablissement_dpe%3A%3C%3D2024-12-31');
+      expect(url).toContain('date_etablissement_energyClass%3A%3E%3D2024-01-01');
+      expect(url).toContain('date_etablissement_energyClass%3A%3C%3D2024-12-31');
     });
 
     it('should build URL without beforeDate when not provided', () => {
@@ -109,24 +109,24 @@ describe('AdemeApiService', () => {
         1000,
       );
 
-      expect(url).toContain('date_etablissement_dpe%3A%3E%3D2024-01-01');
-      expect(url).not.toContain('date_etablissement_dpe%3A%3C%3D');
+      expect(url).toContain('date_etablissement_energyClass%3A%3E%3D2024-01-01');
+      expect(url).not.toContain('date_etablissement_energyClass%3A%3C%3D');
     });
   });
 
   describe('fetchDpePage', () => {
     const mockDpeRecords: DpeRecord[] = [
       {
-        numero_dpe: 'DPE123',
+        numero_energyClass: 'DPE123',
         adresse_ban: '123 Rue Test',
         code_postal_ban: '75001',
         nom_commune_ban: 'Paris',
         code_departement_ban: '75',
-        etiquette_dpe: 'F',
+        etiquette_energyClass: 'F',
         etiquette_ges: 'F',
         _geopoint: '48.8566,2.3522',
-        date_etablissement_dpe: '2024-01-15',
-        date_reception_dpe: '2024-01-16',
+        date_etablissement_energyClass: '2024-01-15',
+        date_reception_energyClass: '2024-01-16',
         type_batiment: 'Appartement',
         annee_construction: '1950',
         surface_habitable_logement: 50,
@@ -357,14 +357,14 @@ describe('AdemeApiService', () => {
 
       expect(result).toEqual(mockDpeRecords);
       expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining('date_etablissement_dpe%3A%3E%3D2024-01-01'),
+        expect.stringContaining('date_etablissement_energyClass%3A%3E%3D2024-01-01'),
         expect.objectContaining({
           method: 'GET',
           signal: expect.any(AbortSignal),
         }),
       );
       expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining('date_etablissement_dpe%3A%3C%3D2024-12-31'),
+        expect.stringContaining('date_etablissement_energyClass%3A%3C%3D2024-12-31'),
         expect.any(Object),
       );
     });
@@ -372,16 +372,16 @@ describe('AdemeApiService', () => {
 
   describe('fetchAllDpeRecords', () => {
     const mockDpeRecords: DpeRecord[] = Array.from({ length: 10 }, (_, i) => ({
-      numero_dpe: `DPE${i}`,
+      numero_energyClass: `DPE${i}`,
       adresse_ban: `${i} Rue Test`,
       code_postal_ban: '75001',
       nom_commune_ban: 'Paris',
       code_departement_ban: '75',
-      etiquette_dpe: 'F',
+      etiquette_energyClass: 'F',
       etiquette_ges: 'F',
       _geopoint: '48.8566,2.3522',
-      date_etablissement_dpe: '2024-01-15',
-      date_reception_dpe: '2024-01-16',
+      date_etablissement_energyClass: '2024-01-15',
+      date_reception_energyClass: '2024-01-16',
       type_batiment: 'Appartement',
       annee_construction: '1950',
       surface_habitable_logement: 50,

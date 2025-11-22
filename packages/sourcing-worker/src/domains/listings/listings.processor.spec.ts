@@ -23,7 +23,7 @@ const mockValidListing: ListingInput = {
   squareFootage: 75,
   rooms: 3,
   bedrooms: 2,
-  dpe: 'C',
+  energyClass: 'C',
   price: 500000,
   pictures: ['image1.jpg', 'image2.jpg'],
   mainPicture: 'image1.jpg',
@@ -88,10 +88,10 @@ describe('ListingsProcessor', () => {
         source: 'moteurimmo',
         afterDate: '2024-01-01',
         beforeDate: '2024-01-31',
-        dpeClasses: ['E', 'F', 'G'],
+        energyClassClasses: ['E', 'F', 'G'],
         propertyTypes: ['ancien'],
         departments: ['75'],
-        fetchType: 'dpe_energy_sieves' as const,
+        fetchType: 'energyClass_energy_sieves' as const,
       };
 
       const mockJob = createMockJob(jobData);
@@ -111,7 +111,7 @@ describe('ListingsProcessor', () => {
       expect(mockMoteurImmoService.getListings).toHaveBeenCalledWith({
         afterDate: '2024-01-01',
         beforeDate: '2024-01-31',
-        dpeClasses: ['E', 'F', 'G'],
+        energyClassClasses: ['E', 'F', 'G'],
         propertyTypes: ['ancien'],
         departments: ['75'],
       });
@@ -128,7 +128,7 @@ describe('ListingsProcessor', () => {
         expect.objectContaining({
           jobId: 'test-job-123',
           source: 'moteurimmo',
-          fetchType: 'dpe_energy_sieves',
+          fetchType: 'energyClass_energy_sieves',
         }),
       );
 
@@ -206,7 +206,7 @@ describe('ListingsProcessor', () => {
       expect(mockMoteurImmoService.getListings).toHaveBeenCalledWith({
         afterDate: undefined,
         beforeDate: undefined,
-        dpeClasses: undefined,
+        energyClassClasses: undefined,
         propertyTypes: undefined,
         departments: undefined,
       });
@@ -225,7 +225,7 @@ describe('ListingsProcessor', () => {
 
     it('should handle filter arrays correctly', async () => {
       const jobData = {
-        dpeClasses: ['E', 'F'],
+        energyClassClasses: ['E', 'F'],
         propertyTypes: ['ancien', 'neuf'],
         departments: ['75', '92'],
       };
@@ -240,7 +240,7 @@ describe('ListingsProcessor', () => {
       expect(mockMoteurImmoService.getListings).toHaveBeenCalledWith({
         afterDate: undefined,
         beforeDate: undefined,
-        dpeClasses: ['E', 'F'],
+        energyClassClasses: ['E', 'F'],
         propertyTypes: ['ancien', 'neuf'],
         departments: ['75', '92'],
       });
@@ -248,7 +248,7 @@ describe('ListingsProcessor', () => {
 
     it('should handle empty filter arrays correctly', async () => {
       const jobData = {
-        dpeClasses: [],
+        energyClassClasses: [],
         propertyTypes: [],
         departments: [],
       };
@@ -263,7 +263,7 @@ describe('ListingsProcessor', () => {
       expect(mockMoteurImmoService.getListings).toHaveBeenCalledWith({
         afterDate: undefined,
         beforeDate: undefined,
-        dpeClasses: undefined,
+        energyClassClasses: undefined,
         propertyTypes: undefined,
         departments: undefined,
       });

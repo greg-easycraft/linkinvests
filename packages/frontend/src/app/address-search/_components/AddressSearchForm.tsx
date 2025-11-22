@@ -34,7 +34,7 @@ export function AddressSearchForm({ onSubmit, isLoading = false }: AddressSearch
   const handleFormSubmit = async (data: AddressSearchFormData) => {
     // Convert form data to AddressSearchInput
     const searchInput: AddressSearchInput = {
-      dpe: data.energyClass,
+      energyClass: data.energyClass,
       squareFootage: data.squareFootage,
       zipCode: data.zipCode,
       address: data.address?.trim() || undefined,
@@ -70,7 +70,7 @@ export function AddressSearchForm({ onSubmit, isLoading = false }: AddressSearch
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* DPE Energy Class */}
           <div className="space-y-2">
-            <label htmlFor="dpe" className="text-sm font-medium text-gray-700">
+            <label htmlFor="energyClass" className="text-sm font-medium text-gray-700">
               Classe Énergétique DPE
             </label>
             <Select
