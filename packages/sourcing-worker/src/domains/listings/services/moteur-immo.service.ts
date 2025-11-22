@@ -112,6 +112,7 @@ export class MoteurImmoService {
    * @returns Array of all matching listings
    */
   async getListings(filters: ListingsJobFilters): Promise<ListingInput[]> {
+    this.hasTooManyListings = false;
     const allListings: ListingInput[] = [];
     let page = 1;
     const pageSize = this.apiPageSize; // Fixed page size of 50 discovered from API testing

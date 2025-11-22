@@ -20,6 +20,7 @@
     "init-deceases": "tsx scripts/init-deceases.ts",
     "init-liquidations": "tsx scripts/init-liquidations.ts",
     "init-notary-listings": "tsx scripts/init-notary-listings.ts",
+    "init-moteur-immo": "tsx scripts/init-moteur-immo.ts",
     "setup-test-db": "tsx scripts/setup-test-db.ts"
   },
   "keywords": [
