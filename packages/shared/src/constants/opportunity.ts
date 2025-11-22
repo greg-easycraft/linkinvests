@@ -10,7 +10,7 @@ export enum OpportunityType {
 export enum PropertyType {
   APARTMENT = 'apartment',
   HOUSE = 'house',
-  TERRAIN = 'land',
+  LAND = 'land',
   OTHER = 'other',
 }
 

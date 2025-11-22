@@ -94,7 +94,8 @@ export class MoteurImmoService {
   private readonly retryDelay = 2000; // 2 seconds base delay for exponential backoff
 
   // API discovered constraints
-  private readonly apiPageSize = 1000; // Fixed page size returned by the API
+  private readonly apiPageSize = 1000; // Moteur Immo Max Page Size
+  private readonly maxPages = 10; // (Moteur Immo API limit = 10000 listings)
 
   constructor(
     @Inject(CONFIG_TOKEN)
@@ -130,7 +131,7 @@ export class MoteurImmoService {
       },
     );
 
-    while (hasMorePages) {
+    while (hasMorePages && page <= this.maxPages) {
       try {
         const listings = await this.fetchListingsPage(filters, page);
 
@@ -266,7 +267,7 @@ export class MoteurImmoService {
         opportunityDate: apiListing.creationDate,
         externalId: `moteurimmo-${apiListing.adId}`,
         url: apiListing.url,
-        source: ListingSource.MOTEUR_IMMO,
+        source: apiListing.origin as ListingSource,
         transactionType: apiListing.type, // 'sale' or 'rental'
         propertyType: this.mapPropertyType(apiListing.category),
         description: apiListing.description,
@@ -300,9 +301,7 @@ export class MoteurImmoService {
       case 'house':
         return PropertyType.HOUSE;
       case 'land':
-        return PropertyType.TERRAIN;
-      case 'premises':
-        return PropertyType.OTHER; // Commercial/office premises
+        return PropertyType.LAND; // Commercial/office premises
       default:
         return PropertyType.OTHER;
     }
@@ -322,19 +321,28 @@ export class MoteurImmoService {
       page,
       maxLength: this.apiPageSize,
       types: ['sale'],
+      categories: ['house', 'flat', 'office', 'premises', 'shop', 'block'],
     };
 
     // Date filtering: The exact parameter names for date filtering need to be discovered
     // The API might not support the standard createdAfter/createdBefore pattern
     if (filters.afterDate) {
-      requestBody.lastEventDateAfter = filters.afterDate;
+      requestBody.lastEventDateAfter = new Date(
+        filters.afterDate,
+      ).toISOString();
     }
     if (filters.beforeDate) {
-      requestBody.lastEventDateBefore = filters.beforeDate;
+      requestBody.lastEventDateBefore = new Date(
+        filters.beforeDate,
+      ).toISOString();
     }
 
-    if (filters.energyGradesMax) {
-      requestBody.energyGradesMax = filters.energyGradesMax;
+    if (filters.energyGradeMax) {
+      requestBody.energyGradeMax = filters.energyGradeMax;
+    }
+
+    if (filters.energyGradeMin) {
+      requestBody.energyGradeMin = filters.energyGradeMin;
     }
 
     // Property type filtering - CONFIRMED: works with 'categories' parameter
@@ -360,6 +368,8 @@ export class MoteurImmoService {
         departmentCode: filters.departmentCode,
       };
     }
+
+    console.log({ requestBody });
 
     return requestBody;
   }

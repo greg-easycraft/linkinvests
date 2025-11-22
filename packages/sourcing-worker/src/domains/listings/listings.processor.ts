@@ -22,13 +22,13 @@ export class ListingsProcessor extends WorkerHost {
   }
 
   async process(job: Job<ListingJobData>): Promise<void> {
-    const { source = 'moteurimmo', filters } = job.data;
+    const { source = 'moteurimmo', ...filters } = job.data;
     const startTime = Date.now();
     const filtersToUse = filters ?? ({} as ListingsJobFilters);
     const {
       beforeDate,
       afterDate,
-      energyGradesMax,
+      energyGradeMax,
       propertyTypes,
       departmentCode,
     } = filtersToUse;
@@ -46,7 +46,7 @@ export class ListingsProcessor extends WorkerHost {
         source,
         afterDate,
         beforeDate,
-        energyGradesMax,
+        energyGradeMax,
         propertyTypes,
         departmentCode,
       },

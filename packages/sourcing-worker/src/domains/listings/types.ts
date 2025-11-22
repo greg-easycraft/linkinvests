@@ -3,12 +3,12 @@ import { EnergyClass, PropertyType } from '@linkinvests/shared';
 export interface ListingsJobFilters {
   beforeDate?: string;
   afterDate?: string;
-  energyGradesMax?: EnergyClass;
+  energyGradeMax?: EnergyClass;
+  energyGradeMin?: EnergyClass;
   propertyTypes?: PropertyType[];
   departmentCode?: string;
 }
 
-export interface ListingJobData {
+export interface ListingJobData extends ListingsJobFilters {
   source?: string;
-  filters?: ListingsJobFilters;
 }

@@ -260,7 +260,7 @@ export class SourcingController {
     @Body('source') source?: string,
     @Body('afterDate') afterDate?: string,
     @Body('beforeDate') beforeDate?: string,
-    @Body('energyGradesMax') energyGradesMax?: string,
+    @Body('energyGradeMax') energyGradeMax?: string,
     @Body('propertyTypes') propertyTypes?: string[],
     @Body('departmentCode') departmentCode?: string,
   ) {
@@ -272,7 +272,7 @@ export class SourcingController {
           filters: {
             afterDate,
             beforeDate,
-            energyGradesMax,
+            energyGradeMax,
             propertyTypes,
             departmentCode,
           },
@@ -289,7 +289,7 @@ export class SourcingController {
         filters: {
           afterDate,
           beforeDate,
-          energyGradesMax,
+          energyGradeMax,
           propertyTypes,
           departmentCode,
         },
