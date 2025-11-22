@@ -6,7 +6,7 @@ import { AppController } from './app.controller';
 import { DatabaseModule } from './database';
 import { AuctionsModule } from './domains/auctions';
 import { DeceasesModule } from './domains/deceases';
-import { ListingsModule } from './domains/listings';
+// import { ListingsModule } from './domains/listings';
 import { config, ConfigModule } from './config';
 import { SCRAPING_QUEUE } from '@linkinvests/shared';
 import { ScrapingProcessor } from './scraping.processor';
@@ -29,7 +29,7 @@ import { ScrapingProcessor } from './scraping.processor';
     }),
     AuctionsModule,
     DeceasesModule,
-    ListingsModule,
+    // ListingsModule,
   ],
   controllers: [AppController],
   providers: [ScrapingProcessor],

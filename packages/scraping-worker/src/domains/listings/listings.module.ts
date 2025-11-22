@@ -13,7 +13,7 @@ import { ListingsGeocodingService } from './services/geocoding.service.js';
 import { ListingsOpportunityRepository } from './repositories/listings-opportunity.repository.js';
 
 // Cron jobs
-import { ListingsCron } from './cron/listings.cron.js';
+// import { ListingsCron } from './cron/listings.cron.js';
 
 // Queue constants
 import { SCRAPING_QUEUE } from '@linkinvests/shared';
@@ -39,11 +39,11 @@ import { SCRAPING_QUEUE } from '@linkinvests/shared';
     ListingsOpportunityRepository,
 
     // Scheduled jobs
-    ListingsCron,
+    // ListingsCron,
   ],
   exports: [
     // Export main service for processor
     ListingsScrapingService,
   ],
 })
-export class ListingsModule {}
+export class ListingsModule { }
