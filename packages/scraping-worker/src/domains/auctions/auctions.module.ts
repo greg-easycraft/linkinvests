@@ -10,6 +10,7 @@ import {
   AuctionsGeocodingService,
   AuctionsScrapingService,
   AbstractAuctionsRepository,
+  AIAddressService,
 } from './services';
 import { BullModule } from '@nestjs/bullmq';
 import { SCRAPING_QUEUE } from '@linkinvests/shared';
@@ -36,6 +37,7 @@ import { config } from '~/config';
     ListingExtractorService,
     DetailScraperService,
     AuctionsGeocodingService,
+    AIAddressService,
   ],
   exports: [AuctionsScrapingService],
 })

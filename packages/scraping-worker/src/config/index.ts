@@ -19,6 +19,9 @@ const configSchema = z.object({
   S3_ACCESS_KEY_ID: z.string().optional(),
   S3_SECRET_ACCESS_KEY: z.string().optional(),
   S3_ENDPOINT_URL: z.string().optional(),
+  // Gemini AI Configuration
+  GEMINI_API_KEY: z.string(),
+  GENKIT_ENV: z.enum(['dev', 'prod']).default('dev'),
 });
 
 export const config = configSchema.parse({
