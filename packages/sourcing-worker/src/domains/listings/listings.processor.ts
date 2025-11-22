@@ -33,24 +33,15 @@ export class ListingsProcessor extends WorkerHost {
       departmentCode,
     } = filtersToUse;
 
-    const dateRangeText = beforeDate
-      ? `from ${afterDate} to ${beforeDate}`
-      : afterDate
-        ? `since ${afterDate}`
-        : 'all dates';
-
-    this.logger.log(
-      `Starting to process listings for source ${source} ${dateRangeText})`,
-      {
-        jobId: job.id,
-        source,
-        afterDate,
-        beforeDate,
-        energyGradeMax,
-        propertyTypes,
-        departmentCode,
-      },
-    );
+    this.logger.log(`Starting to process listings`, {
+      jobId: job.id,
+      source,
+      afterDate,
+      beforeDate,
+      energyGradeMax,
+      propertyTypes,
+      departmentCode,
+    });
 
     const stats = {
       totalListings: 0,
@@ -150,7 +141,8 @@ export class ListingsProcessor extends WorkerHost {
     const result = listingInputSchema.safeParse(listing);
 
     if (!result.success) {
-      this.logger.warn(`Invalid listing: ${JSON.stringify(result.error)}`);
+      // this.logger.warn(`Invalid listing: ${JSON.stringify(result.error)}`);
+      // this.logger.warn(listing);
       return null;
     }
 

@@ -8,7 +8,7 @@ const sellerContactSchema = z.object({
   name: z.string().optional(),
   address: z.string().optional(),
   phone: z.string().optional(),
-  email: z.email().optional(),
+  email: z.string().optional(),
   website: z.url().optional(),
   contact: z.string().optional(),
   siret: z.string().optional(),
@@ -41,6 +41,7 @@ export const listingInputSchema = baseOpportunityInputSchema.extend({
   charges: z.number().optional(),
   mainPicture: z.string().optional(),
   pictures: z.array(z.string()).optional(),
+  sellerType: z.enum(['individual', 'professional']),
   sellerContact: sellerContactSchema,
 });
 

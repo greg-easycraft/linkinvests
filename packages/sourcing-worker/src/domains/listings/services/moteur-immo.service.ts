@@ -17,7 +17,7 @@ interface MoteurImmoListing {
   type: string; // 'sale' | 'rental'
   category: string; // 'flat' | 'house' | 'premises' | 'land'
   publisher: {
-    type: string;
+    type: 'individual' | 'professional';
     name: string;
     email?: string;
     phone?: string;
@@ -115,20 +115,6 @@ export class MoteurImmoService {
     let page = 1;
     const pageSize = this.apiPageSize; // Fixed page size of 50 discovered from API testing
     let hasMorePages = true;
-
-    const dateRangeText = filters.beforeDate
-      ? `from ${filters.afterDate} to ${filters.beforeDate}`
-      : filters.afterDate
-        ? `since ${filters.afterDate}`
-        : 'all dates';
-
-    this.logger.log(
-      `Starting to fetch listings from Moteur Immo ${dateRangeText}`,
-      {
-        filters,
-        pageSize,
-      },
-    );
 
     while (hasMorePages && page <= this.maxPages) {
       try {
@@ -281,6 +267,14 @@ export class MoteurImmoService {
         energyClass: apiListing.energyGrade,
         price: apiListing.price,
         pictures: apiListing.pictureUrls || [],
+        sellerType: apiListing.publisher.type,
+        sellerContact: {
+          name: this.checkContactInfo(apiListing.publisher.name),
+          address: this.checkContactInfo(apiListing.publisher.address),
+          phone: this.checkContactInfo(apiListing.publisher.phone),
+          email: this.checkContactInfo(apiListing.publisher.email),
+          siret: this.checkContactInfo(apiListing.publisher.sirenNumber),
+        },
         mainPicture: apiListing.pictureUrl || apiListing.pictureUrls?.[0],
         externalId: `${apiListing.origin}-${apiListing.adId}`,
       };
@@ -374,9 +368,13 @@ export class MoteurImmoService {
       ];
     }
 
-    console.log({ requestBody });
-
     return requestBody;
+  }
+
+  private checkContactInfo(info?: string): string | undefined {
+    if (!info) return undefined;
+    if (info === 'hidden') return undefined;
+    return info;
   }
 
   /**

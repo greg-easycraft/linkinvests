@@ -33,8 +33,8 @@ export interface Listing extends BaseOpportunity {
   // Picture fields (normalized from images)
   mainPicture?: string;
   pictures?: string[];
-
-  // Notary office contact info as JSONB
+  sellerType: 'individual' | 'professional';
+  // Seller contact info as JSONB
   sellerContact?: {
     name?: string;
     address?: string;
@@ -46,4 +46,4 @@ export interface Listing extends BaseOpportunity {
   };
 }
 
-export type ListingInput = Omit<Listing, 'id' | 'createdAt' | 'updatedAt'> ;
+export type ListingInput = Omit<Listing, 'id' | 'createdAt' | 'updatedAt'>;

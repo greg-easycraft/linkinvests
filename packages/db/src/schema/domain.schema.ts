@@ -239,6 +239,7 @@ export const opportunityListings = pgTable('listing', {
   mainPicture: text('main_picture'),
   pictures: text('pictures').array(),
   // Notary contact info as JSONB
+  sellerType: varchar('seller_type').notNull(),
   sellerContact: jsonb('seller_contact').$type<{
     name?: string;
     address?: string;
