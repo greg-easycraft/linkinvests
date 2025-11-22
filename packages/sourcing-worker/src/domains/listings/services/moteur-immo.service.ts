@@ -76,8 +76,7 @@ interface MoteurImmoListing {
 
 interface MoteurImmoApiResponse {
   ads: MoteurImmoListing[];
-  // Note: The API doesn't seem to include pagination metadata in the response
-  // Pagination is handled through request parameters
+  count?: number;
 }
 
 @Injectable()
@@ -205,7 +204,10 @@ export class MoteurImmoService {
             'Content-Type': 'application/json',
             Accept: 'application/json',
           },
-          body: JSON.stringify(requestBody),
+          body: JSON.stringify({
+            ...requestBody,
+            withCount: page === 1,
+          }),
           signal: AbortSignal.timeout(30000), // 30 seconds timeout
         });
 
@@ -230,6 +232,9 @@ export class MoteurImmoService {
         }
 
         const data = (await response.json()) as MoteurImmoApiResponse;
+        if (data.count) {
+          this.logger.log(`Found ${data.count} listings`);
+        }
 
         return data.ads || [];
       } catch (error) {
@@ -265,7 +270,6 @@ export class MoteurImmoService {
         latitude: apiListing.location.coordinates[1], // coordinates are [longitude, latitude]
         longitude: apiListing.location.coordinates[0],
         opportunityDate: apiListing.creationDate,
-        externalId: `moteurimmo-${apiListing.adId}`,
         url: apiListing.url,
         source: apiListing.origin as ListingSource,
         transactionType: apiListing.type, // 'sale' or 'rental'
@@ -278,6 +282,7 @@ export class MoteurImmoService {
         price: apiListing.price,
         pictures: apiListing.pictureUrls || [],
         mainPicture: apiListing.pictureUrl || apiListing.pictureUrls?.[0],
+        externalId: `${apiListing.origin}-${apiListing.adId}`,
       };
     } catch (error) {
       this.logger.warn(
@@ -364,9 +369,11 @@ export class MoteurImmoService {
 
     // Department filtering: parameter name needs to be discovered
     if (filters.departmentCode) {
-      requestBody.location = {
-        departmentCode: filters.departmentCode,
-      };
+      requestBody.locations = [
+        {
+          departmentCode: filters.departmentCode,
+        },
+      ];
     }
 
     console.log({ requestBody });
