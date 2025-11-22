@@ -261,7 +261,9 @@ export class MoteurImmoService {
         label: apiListing.title || 'Unknown Property',
         address: `${apiListing.location.city}, ${apiListing.location.postalCode}`,
         zipCode: apiListing.location.postalCode,
-        department: apiListing.location.departmentCode.toString(),
+        department: apiListing.location.departmentCode
+          .toString()
+          .padStart(2, '0'),
         latitude: apiListing.location.coordinates[1], // coordinates are [longitude, latitude]
         longitude: apiListing.location.coordinates[0],
         opportunityDate: apiListing.creationDate,
