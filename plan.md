@@ -1,10 +1,8 @@
 
 ## SAMEDI
 MoteurImmo
-- [ ] annonce occupé vs libre
-- [ ] job fails if criteria > 10000 results
-- [ ] listings onConflictDoUpdate
-- [ ] uniquement ancien
+- [ ] handle land type
+- [ ] publishing date + lastChange date
 -------------
 - [ ] DPEs E,F,G depuis 24 mois
 - [ ] tout DPE depuis 3 mois
