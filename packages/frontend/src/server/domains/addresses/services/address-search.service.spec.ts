@@ -2,7 +2,7 @@
 import { AddressSearchService } from './address-search.service';
 import type { IAddressSearchRepository } from '../lib.types';
 import type { AddressSearchInput, EnergyDiagnostic } from '@linkinvests/shared';
-import { OpportunityType } from '@linkinvests/shared';
+import { EnergyClass, OpportunityType } from '@linkinvests/shared';
 
 describe('AddressSearchService', () => {
   let addressSearchService: AddressSearchService;
@@ -47,7 +47,7 @@ describe('AddressSearchService', () => {
     it('should return empty array when no results found', async () => {
       const input: AddressSearchInput = {
         zipCode: '75001',
-        energyClass: 'F',
+        energyClass: EnergyClass.F,
         squareFootage: 50,
       };
 
@@ -67,7 +67,7 @@ describe('AddressSearchService', () => {
     it('should return results with match scores when data found', async () => {
       const input: AddressSearchInput = {
         zipCode: '75001',
-        energyClass: 'F',
+        energyClass: EnergyClass.F,
         squareFootage: 50,
       };
 
@@ -88,7 +88,7 @@ describe('AddressSearchService', () => {
       // @ts-expect-error - Testing optional property behavior
       const input: AddressSearchInput = {
         zipCode: '75001',
-        energyClass: 'F',
+        energyClass: EnergyClass.F,
         // squareFootage not provided
       };
 
@@ -126,7 +126,7 @@ describe('AddressSearchService', () => {
     it('should calculate correct square footage range with 10% tolerance', async () => {
       const input: AddressSearchInput = {
         zipCode: '75001',
-        energyClass: 'G',
+        energyClass: EnergyClass.G,
         squareFootage: 100,
       };
 
@@ -144,7 +144,7 @@ describe('AddressSearchService', () => {
     it('should sort results by match score in descending order', async () => {
       const input: AddressSearchInput = {
         zipCode: '75001',
-        energyClass: 'F',
+        energyClass: EnergyClass.F,
         squareFootage: 50,
       };
 
@@ -170,7 +170,7 @@ describe('AddressSearchService', () => {
     it('should handle repository errors', async () => {
       const input: AddressSearchInput = {
         zipCode: '75001',
-        energyClass: 'F',
+        energyClass: EnergyClass.F,
         squareFootage: 50,
       };
 
@@ -183,7 +183,7 @@ describe('AddressSearchService', () => {
     it('should include energyDiagnosticId from externalId', async () => {
       const input: AddressSearchInput = {
         zipCode: '75001',
-        energyClass: 'F',
+        energyClass: EnergyClass.F,
         squareFootage: 50,
       };
 
@@ -203,7 +203,7 @@ describe('AddressSearchService', () => {
     it('should give perfect score for exact matches', async () => {
       const input: AddressSearchInput = {
         zipCode: '75001',
-        energyClass: 'F',
+        energyClass: EnergyClass.F,
         squareFootage: 50,
       };
 
@@ -218,7 +218,7 @@ describe('AddressSearchService', () => {
     it('should reduce score for energy class mismatch', async () => {
       const input: AddressSearchInput = {
         zipCode: '75001',
-        energyClass: 'F',
+        energyClass: EnergyClass.F,
         squareFootage: 50,
       };
 
@@ -233,7 +233,7 @@ describe('AddressSearchService', () => {
     it('should reduce score based on square footage difference', async () => {
       const input: AddressSearchInput = {
         zipCode: '75001',
-        energyClass: 'F',
+        energyClass: EnergyClass.F,
         squareFootage: 100,
       };
 
@@ -248,7 +248,7 @@ describe('AddressSearchService', () => {
     it('should handle cases where square footage is missing', async () => {
       const input: AddressSearchInput = {
         zipCode: '75001',
-        energyClass: 'F',
+        energyClass: EnergyClass.F,
         squareFootage: 50,
       };
 
@@ -263,7 +263,7 @@ describe('AddressSearchService', () => {
     it('should ensure minimum score is 0', async () => {
       const input: AddressSearchInput = {
         zipCode: '75001',
-        energyClass: 'F',
+        energyClass: EnergyClass.F,
         squareFootage: 10,
       };
 

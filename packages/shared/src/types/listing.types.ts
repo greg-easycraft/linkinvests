@@ -1,4 +1,4 @@
-import { PropertyType } from '../constants/opportunity.js';
+import { EnergyClass, PropertyType } from '../constants/opportunity.js';
 import { BaseOpportunity } from './base-opportunity.types.js';
 
 
@@ -13,7 +13,7 @@ export interface Listing extends BaseOpportunity {
   landArea?: number;
   rooms?: number;
   bedrooms?: number;
-  energyClass?: string; // Energy performance diagnosis (A-G)
+  energyClass: EnergyClass;
   constructionYear?: number;
   floor?: number;
   totalFloors?: number;

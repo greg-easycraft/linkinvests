@@ -11,13 +11,6 @@ Accounts to Open
 
 ## AVANT EVENT
 
-Data fetching
-- [ ] Encheres price from bids
-- [ ] Encheres address from desc
-- [ ] annonce occupé vs libre
-- [ ] enchere occupé vs libre
-- [ ] successions Verif email mairie
-
 Filtres Annonces + Encheres
 - [x] type de biens (harmonisés)
 - [ ] particuliers vs pro
@@ -30,10 +23,6 @@ Encheres + Annonces - display on card
 
 DERNIERE SEMAINE
 
-Intégration annonces Moteur Immo (2j)
-- [ ] DPEs E,F,G depuis 24 mois
-- [ ] tout DPE depuis 3 mois
-- [ ] uniquement ancien
 
 Recherche d'adresse (affiner) (3j)
 - [ ] lien d'une enchere chez nous

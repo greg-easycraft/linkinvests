@@ -1,7 +1,9 @@
+import { EnergyClass } from "../constants/opportunity";
+
 // Address search input interface for the search form
 export interface AddressSearchInput {
   // DPE energy class (A-G rating)
-  energyClass: 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G';
+  energyClass: EnergyClass;
   // Square footage in square meters
   squareFootage: number;
   // 5-digit postal code (required)
@@ -38,4 +40,3 @@ export interface AddressSearchResult {
 
 // Energy classes enum for type safety
 export const ENERGY_CLASSES = ['A', 'B', 'C', 'D', 'E', 'F', 'G'] as const;
-export type EnergyClass = typeof ENERGY_CLASSES[number];

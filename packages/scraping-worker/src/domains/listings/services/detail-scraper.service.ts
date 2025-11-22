@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { BrowserService } from './browser.service.js';
 import type { RawListingOpportunity } from '~/domains/listings/types/listings.types.js';
 import { Page } from 'playwright';
-import { PropertyType } from '@linkinvests/shared';
+import { EnergyClass, PropertyType } from '@linkinvests/shared';
 
 // Intermediate data structures for extraction
 interface TitleInfo {
@@ -156,6 +156,9 @@ export class DetailScraperService {
       const images = await this.extractImages(page);
       const notaryOffice = await this.extractNotaryOffice(page);
       const energyClass = await this.extractDPE(page);
+      if (!energyClass) {
+        return null;
+      }
 
       // Phase 5: Combine all extracted data
       const listing: RawListingOpportunity = {
@@ -588,14 +591,14 @@ export class DetailScraperService {
   }
 
   // DPE extraction
-  private async extractDPE(page: Page): Promise<string | undefined> {
+  private async extractDPE(page: Page): Promise<EnergyClass | undefined> {
     try {
       // Fallback: look for letter in .lettres element
       const letterElement = await page.$('.lettres');
       if (letterElement) {
         const letter = await letterElement.getAttribute('letter');
         if (letter) {
-          return letter.toUpperCase();
+          return letter.toUpperCase() as EnergyClass;
         }
       }
     } catch (error) {

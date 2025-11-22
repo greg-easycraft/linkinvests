@@ -4,7 +4,7 @@ import { opportunityListings } from "@linkinvests/db";
 import type { IListingRepository } from "../lib.types";
 import type { ListingFilters, PaginationFilters } from "~/types/filters";
 import { calculateStartDate } from "~/constants/date-periods";
-import { PropertyType, type Listing } from "@linkinvests/shared";
+import { EnergyClass, PropertyType, type Listing } from "@linkinvests/shared";
 
 export class DrizzleListingRepository implements IListingRepository {
   constructor(private readonly db: DomainDbType) {}
@@ -223,7 +223,7 @@ export class DrizzleListingRepository implements IListingRepository {
       landArea: listing.landArea ?? undefined,
       rooms: listing.rooms ?? undefined,
       bedrooms: listing.bedrooms ?? undefined,
-      energyClass: listing.energyClass ?? undefined,
+      energyClass: listing.energyClass as EnergyClass,
       constructionYear: listing.constructionYear ?? undefined,
       floor: listing.floor ?? undefined,
       totalFloors: listing.totalFloors ?? undefined,
@@ -237,6 +237,7 @@ export class DrizzleListingRepository implements IListingRepository {
       priceType: listing.priceType ?? undefined,
       fees: listing.fees ?? undefined,
       charges: listing.charges ?? undefined,
+      sellerType: listing.sellerType as 'individual' | 'professional',
     };
   }
 }

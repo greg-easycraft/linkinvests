@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { baseOpportunityInputSchema } from './base-opportunity.schema.js';
 import { ListingInput } from '../types/listing.types.js';
-import { PropertyType } from '../constants/opportunity.js';
+import { EnergyClass, PropertyType } from '../constants/opportunity.js';
 
 // Schema for seller contact info
 const sellerContactSchema = z.object({
@@ -25,7 +25,7 @@ export const listingInputSchema = baseOpportunityInputSchema.extend({
   landArea: z.number().positive().optional(),
   rooms: z.number().int().positive().optional(),
   bedrooms: z.number().int().positive().optional(),
-  energyClass: z.string().optional(),
+  energyClass: z.enum(EnergyClass),
   constructionYear: z.number().int().optional(),
   floor: z.number().int().optional(),
   totalFloors: z.number().int().positive().optional(),

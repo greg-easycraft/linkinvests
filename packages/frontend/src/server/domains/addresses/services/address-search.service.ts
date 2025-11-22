@@ -17,7 +17,7 @@ export class AddressSearchService {
     const maxSquareFootage = baseSquareFootage * (1 + (this.MAX_SQUARE_FOOTAGE_DIFFERENCE_PERCENTAGE / 100));
     const results = await this.energyDiagnosticsRepository.findAllForAddressSearch({
       zipCode,
-      energyClass: energyClass || 'F',
+      energyClass,
       squareFootageMin: minSquareFootage,
       squareFootageMax: maxSquareFootage,
     });

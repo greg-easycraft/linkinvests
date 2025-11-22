@@ -1,5 +1,5 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { ListingInput, PropertyType } from '@linkinvests/shared';
+import { EnergyClass, ListingInput, PropertyType } from '@linkinvests/shared';
 import type { ConfigType } from '~/config';
 import { CONFIG_TOKEN } from '~/config';
 import { ListingsJobFilters } from '../types';
@@ -56,7 +56,7 @@ interface MoteurImmoListing {
   buildingFloors?: number;
   options: string[];
   energyValue?: number;
-  energyGrade?: string;
+  energyGrade: EnergyClass;
   gasValue?: number;
   gasGrade?: string;
   diagnosticDate?: string;

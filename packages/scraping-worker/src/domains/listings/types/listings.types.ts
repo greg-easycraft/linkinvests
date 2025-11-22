@@ -1,4 +1,4 @@
-import { PropertyType } from '@linkinvests/shared';
+import { EnergyClass, PropertyType } from '@linkinvests/shared';
 
 // Raw listing opportunity (before geocoding)
 export interface RawListingOpportunity {
@@ -23,7 +23,7 @@ export interface RawListingOpportunity {
   landArea?: number;
   rooms?: number;
   bedrooms?: number;
-  energyClass?: string; // Energy performance diagnosis
+  energyClass: EnergyClass; // Energy performance diagnosis
   constructionYear?: number;
   floor?: number;
   totalFloors?: number;

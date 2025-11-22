@@ -3,6 +3,7 @@
  */
 import { DrizzleAddressSearchRepository } from './address-search.repository';
 import { useTestDb } from '~/test-utils/use-test-db';
+import { EnergyClass } from '@linkinvests/shared';
 
 describe('DrizzleAddressSearchRepository Integration Tests', () => {
   const db = useTestDb();
@@ -11,7 +12,7 @@ describe('DrizzleAddressSearchRepository Integration Tests', () => {
   it('should find all for address search', async () => {
     const results = await addressSearchRepository.findAllForAddressSearch({
       zipCode: '75001',
-      energyClass: 'F',
+      energyClass: EnergyClass.F,
       squareFootageMin: 45,
       squareFootageMax: 55
     });
@@ -26,7 +27,7 @@ describe('DrizzleAddressSearchRepository Integration Tests', () => {
   it('should filter by energy class', async () => {
     const results = await addressSearchRepository.findAllForAddressSearch({
       zipCode: '75001',
-      energyClass: 'G',
+      energyClass: EnergyClass.G,
       squareFootageMin: 40,
       squareFootageMax: 60
     });
@@ -39,7 +40,7 @@ describe('DrizzleAddressSearchRepository Integration Tests', () => {
   it('should filter by square footage range', async () => {
     const results = await addressSearchRepository.findAllForAddressSearch({
       zipCode: '75001',
-      energyClass: 'F',
+      energyClass: EnergyClass.F,
       squareFootageMin: 45,
       squareFootageMax: 50
     });

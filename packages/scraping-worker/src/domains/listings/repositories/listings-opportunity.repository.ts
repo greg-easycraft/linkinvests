@@ -80,7 +80,7 @@ export class ListingsOpportunityRepository {
           landArea: opp.landArea || null,
           rooms: opp.rooms || null,
           bedrooms: opp.bedrooms || null,
-          energyClass: opp.energyClass || null,
+          energyClass: opp.energyClass,
           constructionYear: opp.constructionYear || null,
           floor: opp.floor || null,
           totalFloors: opp.totalFloors || null,
@@ -102,7 +102,7 @@ export class ListingsOpportunityRepository {
           // Picture fields
           mainPicture,
           pictures: additionalPictures.length > 0 ? additionalPictures : null,
-
+          sellerType: 'professional',
           // Notary contact info as JSONB
           sellerContact,
         };

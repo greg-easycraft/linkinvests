@@ -1,8 +1,9 @@
+import { EnergyClass } from "@linkinvests/shared";
 import { z } from "zod";
 
 export const addressSearchSchema = z.object({
   // DPE energy class (A-G rating) - optional
-  energyClass: z.enum(['A', 'B', 'C', 'D', 'E', 'F', 'G']),
+  energyClass: z.enum(EnergyClass),
 
   // Square footage in square meters - optional, must be positive
   squareFootage: z
@@ -37,12 +38,12 @@ export const addressSearchSchema = z.object({
 export type AddressSearchFormData = z.infer<typeof addressSearchSchema>;
 
 // Energy classes constant for form select options
-export const ENERGY_CLASS_OPTIONS = [
-  { value: 'A', label: 'A', color: 'text-green-600' },
-  { value: 'B', label: 'B', color: 'text-green-500' },
-  { value: 'C', label: 'C', color: 'text-yellow-500' },
-  { value: 'D', label: 'D', color: 'text-yellow-600' },
-  { value: 'E', label: 'E', color: 'text-orange-500' },
-  { value: 'F', label: 'F', color: 'text-red-500' },
-  { value: 'G', label: 'G', color: 'text-red-600' },
-] as const;
+export const ENERGY_CLASS_OPTIONS: { value: EnergyClass; label: string; color: string }[] = [
+  { value: EnergyClass.A, label: 'A', color: 'text-green-600' },
+  { value: EnergyClass.B, label: 'B', color: 'text-green-500' },
+  { value: EnergyClass.C, label: 'C', color: 'text-yellow-500' },
+  { value: EnergyClass.D, label: 'D', color: 'text-yellow-600' },
+  { value: EnergyClass.E, label: 'E', color: 'text-orange-500' },
+  { value: EnergyClass.F, label: 'F', color: 'text-red-500' },
+  { value: EnergyClass.G, label: 'G', color: 'text-red-600' },
+];

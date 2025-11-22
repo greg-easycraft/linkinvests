@@ -8,7 +8,7 @@ import { Input } from "~/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { addressSearchSchema, type AddressSearchFormData, ENERGY_CLASS_OPTIONS } from "~/utils/validation/address-search.schema";
-import type { AddressSearchInput } from "@linkinvests/shared";
+import { EnergyClass, type AddressSearchInput } from "@linkinvests/shared";
 
 interface AddressSearchFormProps {
   onSubmit: (data: AddressSearchInput) => Promise<void>;
@@ -76,7 +76,7 @@ export function AddressSearchForm({ onSubmit, isLoading = false }: AddressSearch
             <Select
               value={watchEnergyClass || ""}
               onValueChange={(value) =>
-                setValue('energyClass', value as 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G', { shouldValidate: true, shouldDirty: true })
+                setValue('energyClass', value as EnergyClass, { shouldValidate: true, shouldDirty: true })
               }
             >
               <SelectTrigger>

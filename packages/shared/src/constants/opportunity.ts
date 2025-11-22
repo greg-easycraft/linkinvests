@@ -17,3 +17,13 @@ export enum PropertyType {
 export enum AuctionSource {
   ENCHERES_PUBLIQUES = 'encheres-publiques',
 }
+
+export enum EnergyClass {
+  A = 'A',
+  B = 'B',
+  C = 'C',
+  D = 'D',
+  E = 'E',
+  F = 'F',
+  G = 'G',
+}
