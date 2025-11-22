@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ListingsRepository } from './listings.repository';
 import { DATABASE_CONNECTION } from '~/database';
-import { ListingInput, ListingSource, PropertyType } from '@linkinvests/shared';
+import { ListingInput, PropertyType } from '@linkinvests/shared';
 
 describe('ListingsRepository (Integration)', () => {
   let repository: ListingsRepository;
@@ -18,7 +18,7 @@ describe('ListingsRepository (Integration)', () => {
     opportunityDate: '2024-01-15',
     externalId: 'moteurimmo-123',
     url: 'https://moteurimmo.fr/listing/123',
-    source: ListingSource.MOTEUR_IMMO,
+    source: 'seloger',
     transactionType: 'sale',
     propertyType: PropertyType.APARTMENT,
     description: 'Bel appartement en centre ville',

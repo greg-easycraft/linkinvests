@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CONFIG_TOKEN } from '../../../config';
 import { MoteurImmoService } from './moteur-immo.service';
-import { ListingSource, PropertyType } from '@linkinvests/shared';
+import { PropertyType } from '@linkinvests/shared';
 
 // Mock global fetch
 global.fetch = jest.fn();
@@ -178,7 +178,7 @@ describe('MoteurImmoService', () => {
         opportunityDate: '2024-01-15T10:00:00Z',
         externalId: 'moteurimmo-test-123',
         url: 'https://moteurimmo.fr/listing/test-123',
-        source: ListingSource.MOTEUR_IMMO,
+        source: 'seloger',
         transactionType: 'sale',
         propertyType: PropertyType.APARTMENT,
         description: 'Bel appartement en centre ville',
@@ -195,7 +195,7 @@ describe('MoteurImmoService', () => {
     it('should map property types correctly', () => {
       expect(service['mapPropertyType']('flat')).toBe(PropertyType.APARTMENT);
       expect(service['mapPropertyType']('house')).toBe(PropertyType.HOUSE);
-      expect(service['mapPropertyType']('land')).toBe(PropertyType.TERRAIN);
+      expect(service['mapPropertyType']('land')).toBe(PropertyType.LAND);
       expect(service['mapPropertyType']('premises')).toBe(PropertyType.OTHER);
       expect(service['mapPropertyType']('unknown')).toBe(PropertyType.OTHER);
       expect(service['mapPropertyType'](undefined)).toBe(PropertyType.OTHER);
@@ -243,7 +243,7 @@ describe('MoteurImmoService', () => {
         department: '75',
         externalId: 'moteurimmo-test-456',
         url: 'https://moteurimmo.fr/listing/test-456',
-        source: ListingSource.MOTEUR_IMMO,
+        source: 'seloger',
         latitude: 48.8566,
         longitude: 2.3522,
         transactionType: 'sale',
@@ -551,7 +551,7 @@ describe('MoteurImmoService', () => {
 
       expect(result).toHaveLength(3);
       expect(
-        result.every((listing) => listing.source === ListingSource.MOTEUR_IMMO),
+        result.every((listing) => listing.source === 'seloger'),
       ).toBe(true);
     });
 

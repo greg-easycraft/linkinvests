@@ -1,5 +1,5 @@
 import { randomUUID } from "crypto";
-import { Listing, ListingSource, PropertyType } from "@linkinvests/shared";
+import { Listing, PropertyType } from "@linkinvests/shared";
 
 
 export const LISTING_1: Listing = {
@@ -13,7 +13,7 @@ export const LISTING_1: Listing = {
     opportunityDate: new Date('2024-01-15').toISOString().split('T')[0] as string,
     externalId: 'NOTAIRES_AP_001',
     url: 'https://www.immobilier.notaires.fr/listing/ap001',
-    source: ListingSource.NOTAIRES,
+    source: 'notaires',
     transactionType: 'VENTE',
     propertyType: PropertyType.APARTMENT,
     description: 'Beautiful 3-room apartment in the heart of Paris, renovated with high-end materials.',
@@ -64,7 +64,7 @@ export const LISTING_2: Listing = {
     opportunityDate: new Date('2024-02-20').toISOString().split('T')[0] as string,
     externalId: 'SELOGER_HO_002',
     url: 'https://www.seloger.com/annonces/achat/maison/lyon-69002/002.htm',
-    source: ListingSource.SELOGER,
+    source: 'seloger',
     transactionType: 'VENTE',
     propertyType: PropertyType.HOUSE,
     description: 'Traditional 19th century house with garden and garage, perfect for a family.',
@@ -114,9 +114,9 @@ export const LISTING_3: Listing = {
     opportunityDate: new Date('2024-03-05').toISOString().split('T')[0] as string,
     externalId: 'LEBONCOIN_LD_003',
     url: 'https://www.leboncoin.fr/ventes_immobilieres/003',
-    source: ListingSource.LEBONCOIN,
+    source: 'leboncoin',
     transactionType: 'VENTE',
-    propertyType: PropertyType.TERRAIN,
+    propertyType: PropertyType.LAND,
     description: 'Buildable land with stunning view over the vineyards, all amenities nearby.',
     landArea: 800,
     price: 150000,
@@ -147,7 +147,7 @@ export const LISTING_4: Listing = {
     opportunityDate: new Date('2024-04-12').toISOString().split('T')[0] as string,
     externalId: 'NOTAIRES_ST_004',
     url: 'https://www.immobilier.notaires.fr/listing/st004',
-    source: ListingSource.NOTAIRES,
+    source: 'notaires',
     transactionType: 'VENTE',
     propertyType: PropertyType.APARTMENT,
     description: 'Bright studio with sea view on the famous Promenade des Anglais.',
@@ -197,7 +197,7 @@ export const LISTING_5: Listing = {
     opportunityDate: new Date('2024-05-18').toISOString().split('T')[0] as string,
     externalId: 'SELOGER_FH_005',
     url: 'https://www.seloger.com/annonces/achat/maison/toulouse-31000/005.htm',
-    source: ListingSource.SELOGER,
+    source: 'seloger',
     transactionType: 'VENTE',
     propertyType: PropertyType.HOUSE,
     description: 'Spacious family home in historic center, recently renovated with modern amenities.',

@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { BrowserService } from './browser.service.js';
 import type { RawListingOpportunity } from '~/domains/listings/types/listings.types.js';
 import { Page } from 'playwright';
-import { ListingSource, PropertyType } from '@linkinvests/shared';
+import { PropertyType } from '@linkinvests/shared';
 
 // Intermediate data structures for extraction
 interface TitleInfo {
@@ -161,7 +161,7 @@ export class DetailScraperService {
       const listing: RawListingOpportunity = {
         // Basic info
         url,
-        source: ListingSource.NOTAIRES,
+        source: 'notaires',
         label: titleInfo.label,
         externalId,
         opportunityDate,
@@ -373,9 +373,12 @@ export class DetailScraperService {
       propertyType: PropertyType.OTHER,
     };
     const formattedText = titleText.toLowerCase();
-    if (formattedText.includes('maison')) result.propertyType = PropertyType.HOUSE;
-    else if (formattedText.includes('appartement')) result.propertyType = PropertyType.APARTMENT;
-    else if (formattedText.includes('terrain')) result.propertyType = PropertyType.TERRAIN;
+    if (formattedText.includes('maison'))
+      result.propertyType = PropertyType.HOUSE;
+    else if (formattedText.includes('appartement'))
+      result.propertyType = PropertyType.APARTMENT;
+    else if (formattedText.includes('terrain'))
+      result.propertyType = PropertyType.LAND;
 
     return result;
   }

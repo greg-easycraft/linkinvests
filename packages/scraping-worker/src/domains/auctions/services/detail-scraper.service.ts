@@ -194,7 +194,7 @@ export class DetailScraperService {
     if (propertyType.toLowerCase().includes('appartement'))
       return PropertyType.APARTMENT;
     if (propertyType.toLowerCase().includes('terrain'))
-      return PropertyType.TERRAIN;
+      return PropertyType.LAND;
     return PropertyType.OTHER;
   }
 

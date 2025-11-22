@@ -4,7 +4,7 @@ import { opportunityListings } from "@linkinvests/db";
 import type { IListingRepository } from "../lib.types";
 import type { ListingFilters, PaginationFilters } from "~/types/filters";
 import { calculateStartDate } from "~/constants/date-periods";
-import { ListingSource, PropertyType, type Listing } from "@linkinvests/shared";
+import { PropertyType, type Listing } from "@linkinvests/shared";
 
 export class DrizzleListingRepository implements IListingRepository {
   constructor(private readonly db: DomainDbType) {}
@@ -213,7 +213,6 @@ export class DrizzleListingRepository implements IListingRepository {
   private mapListing(listing: typeof opportunityListings.$inferSelect): Listing {
     return {
       ...listing,
-      source: listing.source as ListingSource,
       address: listing.address ?? undefined,
       mainPicture: listing.mainPicture ?? undefined,
       pictures: listing.pictures ?? undefined,

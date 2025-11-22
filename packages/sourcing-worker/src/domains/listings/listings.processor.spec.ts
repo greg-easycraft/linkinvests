@@ -3,7 +3,7 @@ import { Job } from 'bullmq';
 import { ListingsProcessor } from './listings.processor';
 import { MoteurImmoService } from './services/moteur-immo.service';
 import { ListingsRepository } from './repositories/listings.repository';
-import { ListingInput, ListingSource, PropertyType } from '@linkinvests/shared';
+import { ListingInput, PropertyType } from '@linkinvests/shared';
 
 // Mock data
 const mockValidListing: ListingInput = {
@@ -16,7 +16,7 @@ const mockValidListing: ListingInput = {
   opportunityDate: '2024-01-15',
   externalId: 'moteurimmo-123',
   url: 'https://moteurimmo.fr/listing/123',
-  source: ListingSource.MOTEUR_IMMO,
+  source: 'seloger',
   transactionType: 'sale',
   propertyType: PropertyType.APARTMENT,
   description: 'Bel appartement en centre ville',
@@ -32,7 +32,7 @@ const mockValidListing: ListingInput = {
 const mockInvalidListing: any = {
   // Missing required fields to trigger validation failure
   externalId: 'moteurimmo-invalid',
-  source: ListingSource.MOTEUR_IMMO,
+  source: 'seloger',
   // Missing zipCode, department, latitude, longitude, etc.
 };
 

@@ -1,34 +1,5 @@
 # TODO
 
-## Tech
-- DI and import orders
-- licenses check
-- ci pipeline
-- repository tests w/ DB
-
-## Features
-- favoris
-- view mode & filters in URL
-- approximative address bool & display
-- restrain query to map boundaries
-
-## Auctions scraping
-- current price from bids
-- LLMs for address from desc
-
-## Decease scraping
-- refine address
-- scraping job
-
-## Annonces
-- MoteurImmo
-
-## All Jobs
-- Job returns stats (valid ones opposed to the logged ones)
-
-Questions: 
-- DVF uniquement transactions à titre onéreux
-- video mabrikimmo
 
 Accounts to Open 
 - neon
@@ -39,57 +10,23 @@ Accounts to Open
 - cloudflare
 
 ## AVANT EVENT
-- [x] Setup Prod + All data (2j)
-- [ ] Handle DOM TOM + Corse properly everywhere
-
-Encheres (2j)
-- [x] auctions depts 00
-- [x] photos
-- [ ] Auctions price from bids
-- [ ] Auctions address from desc
-
-Liquidations (0.5j)
-- [x] problem on Departments < 10
-- [X] max 1 ans
-
-Passoires Energétiques (0.5j)
-- [x] problem on Departments < 10
-- [X] max 2 ans
-- [x] filtres par coches sur classes spécifiques
 
 Data fetching
-- annonce occupé vs libre
------
-- enchere occupé vs libre
+- [ ] Encheres price from bids
+- [ ] Encheres address from desc
+- [ ] annonce occupé vs libre
+- [ ] enchere occupé vs libre
+- [ ] successions Verif email mairie
 
------
-Successions (0.5j)
-- [ ] Verif email mairie
-
-Encheres filtres (0.5j)
-- [x] type de bien
-- [x] prix réserve
-Encheres - display
-- [ ] dpe
-- [ ] m2
-
-Liquidations (0)
-- [ ] Max 1 an historique + Filtre
-
-Export (0.5j)
-- [x] labels FR sur export
-- [x] Max 1 an historique
-
-Filtres Annonces (0.5j)
-- [x] type de biens
-- [x] prix
+Filtres Annonces + Encheres
+- [x] type de biens (harmonisés)
 - [ ] particuliers vs pro
 - [ ] source pour annonces
 - [ ] occupé vs libre
 
-Export (0.5j)
-- [x] labels FR sur export
-
+Encheres + Annonces - display on card
+- [ ] dpe
+- [ ] m2
 
 DERNIERE SEMAINE
 
@@ -104,12 +41,15 @@ Recherche d'adresse (affiner) (3j)
 
 ## APRES EVENT
 
+- [x] Setup Prod + All data (2j)
+- [ ] Handle DOM TOM + Corse properly everywhere
+
+
 Recherche adresse -(comparaison des photos) (1.5j)
 Panier (demande actes décès auto) (0.5j)
 Favoris (0.5j)
 
 ---------
-
 
 - filtres
 - type de bien
@@ -119,8 +59,27 @@ Favoris (0.5j)
 - Select & Actions
 - favoris
 - deces CP mairies clean
-- Moteur Immo ?
 - DVF 
 - recherche d'adresse
-
 - RAYON DE RECHERCHE
+
+## Tech
+- DI and import orders
+- licenses check
+- ci pipeline
+- repository tests w/ DB
+
+## Features
+- favoris
+- restrain query to map boundaries
+
+## Decease scraping
+- refine address
+- scraping job
+
+## All Jobs
+- Job returns stats (valid ones opposed to the logged ones)
+
+Questions: 
+- DVF uniquement transactions à titre onéreux
+- video mabrikimmo

@@ -1,5 +1,5 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { ListingInput, ListingSource, PropertyType } from '@linkinvests/shared';
+import { ListingInput, PropertyType } from '@linkinvests/shared';
 import type { ConfigType } from '~/config';
 import { CONFIG_TOKEN } from '~/config';
 import { ListingsJobFilters } from '../types';
@@ -271,13 +271,13 @@ export class MoteurImmoService {
         longitude: apiListing.location.coordinates[0],
         opportunityDate: apiListing.creationDate,
         url: apiListing.url,
-        source: apiListing.origin as ListingSource,
+        source: apiListing.origin,
         transactionType: apiListing.type, // 'sale' or 'rental'
         propertyType: this.mapPropertyType(apiListing.category),
         description: apiListing.description,
-        squareFootage: apiListing.surface,
-        rooms: apiListing.rooms,
-        bedrooms: apiListing.bedrooms,
+        squareFootage: apiListing.surface ?? undefined,
+        rooms: apiListing.rooms ?? undefined,
+        bedrooms: apiListing.bedrooms ?? undefined,
         dpe: apiListing.energyGrade,
         price: apiListing.price,
         pictures: apiListing.pictureUrls || [],
@@ -321,8 +321,6 @@ export class MoteurImmoService {
   ): Record<string, unknown> {
     const requestBody: Record<string, unknown> = {
       apiKey: this.apiKey,
-      token: this.apiKey, // Both apiKey and token are required for authentication
-      // API returns fixed 50 results per page, pagination via offset
       page,
       maxLength: this.apiPageSize,
       types: ['sale'],

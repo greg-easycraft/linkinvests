@@ -1,9 +1,9 @@
-import { ListingSource, PropertyType } from '@linkinvests/shared';
+import { PropertyType } from '@linkinvests/shared';
 
 // Raw listing opportunity (before geocoding)
 export interface RawListingOpportunity {
   url: string;
-  source: ListingSource;
+  source: string;
   label: string;
   address?: string;
   city: string;

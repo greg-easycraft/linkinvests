@@ -146,11 +146,11 @@ export class ListingsProcessor extends WorkerHost {
     }
   }
 
-  private validateListing(listing: Partial<ListingInput>): ListingInput | null {
+  private validateListing(listing: ListingInput): ListingInput | null {
     const result = listingInputSchema.safeParse(listing);
 
     if (!result.success) {
-      // this.logger.warn(`Invalid listing: ${JSON.stringify(result.error)}`);
+      this.logger.warn(`Invalid listing: ${JSON.stringify(result.error)}`);
       return null;
     }
 

@@ -14,13 +14,6 @@ export enum PropertyType {
   OTHER = 'other',
 }
 
-export enum ListingSource {
-  LEBONCOIN = 'leboncoin',
-  SELOGER = 'seloger',
-  NOTAIRES = 'notaires',
-  MOTEUR_IMMO = 'moteurimmo',
-}
-
 export enum AuctionSource {
   ENCHERES_PUBLIQUES = 'encheres-publiques',
 }
