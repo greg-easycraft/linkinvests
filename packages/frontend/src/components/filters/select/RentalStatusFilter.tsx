@@ -18,19 +18,21 @@ export function RentalStatusFilter({
     onChange(booleanValue);
   };
 
-  const handleClearStatus = (): void => {
-    onChange(undefined);
+  // Get current value string including undefined for "Tous"
+  const getCurrentValueString = (): string => {
+    if (value === undefined) return 'undefined';
+    return String(value);
   };
 
   return (
     <div>
       <label className="text-sm font-medium mb-2 block font-heading">Statut locatif</label>
       <Select
-        value={value !== undefined ? String(value) : undefined}
+        value={getCurrentValueString()}
         onValueChange={handleRentalStatusChange}
       >
         <SelectTrigger>
-          <SelectValue placeholder="Tous les statuts..." />
+          <SelectValue />
         </SelectTrigger>
         <SelectContent>
           {RENTAL_STATUS_OPTIONS.map((option) => (
@@ -40,19 +42,6 @@ export function RentalStatusFilter({
           ))}
         </SelectContent>
       </Select>
-      {value !== undefined && (
-        <div className="mt-2">
-          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-orange-100 text-orange-800">
-            {RENTAL_STATUS_OPTIONS.find(o => o.value === value)?.label}
-            <button
-              onClick={handleClearStatus}
-              className="ml-1 text-orange-600 hover:text-orange-800"
-            >
-              ×
-            </button>
-          </span>
-        </div>
-      )}
     </div>
   );
 }
