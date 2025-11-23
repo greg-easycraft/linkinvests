@@ -43,33 +43,45 @@ export function ListingFilters({
       />
 
       <PriceRangeFilter
-        value={filters.priceRange}
-        onChange={(value) => onFiltersChange({ ...filters, priceRange: value })}
+        minValue={filters.minPrice}
+        maxValue={filters.maxPrice}
+        onMinChange={(value) => onFiltersChange({ ...filters, minPrice: value })}
+        onMaxChange={(value) => onFiltersChange({ ...filters, maxPrice: value })}
       />
 
       <SquareFootageRangeFilter
-        value={filters.squareFootageRange}
-        onChange={(value) => onFiltersChange({ ...filters, squareFootageRange: value })}
+        minValue={filters.minSquareFootage}
+        maxValue={filters.maxSquareFootage}
+        onMinChange={(value) => onFiltersChange({ ...filters, minSquareFootage: value })}
+        onMaxChange={(value) => onFiltersChange({ ...filters, maxSquareFootage: value })}
       />
 
       <LandAreaRangeFilter
-        value={filters.landAreaRange}
-        onChange={(value) => onFiltersChange({ ...filters, landAreaRange: value })}
+        minValue={filters.minLandArea}
+        maxValue={filters.maxLandArea}
+        onMinChange={(value) => onFiltersChange({ ...filters, minLandArea: value })}
+        onMaxChange={(value) => onFiltersChange({ ...filters, maxLandArea: value })}
       />
 
       <RoomsRangeFilter
-        value={filters.roomsRange}
-        onChange={(value) => onFiltersChange({ ...filters, roomsRange: value })}
+        minValue={filters.minRooms}
+        maxValue={filters.maxRooms}
+        onMinChange={(value) => onFiltersChange({ ...filters, minRooms: value })}
+        onMaxChange={(value) => onFiltersChange({ ...filters, maxRooms: value })}
       />
 
       <BedroomsRangeFilter
-        value={filters.bedroomsRange}
-        onChange={(value) => onFiltersChange({ ...filters, bedroomsRange: value })}
+        minValue={filters.minBedrooms}
+        maxValue={filters.maxBedrooms}
+        onMinChange={(value) => onFiltersChange({ ...filters, minBedrooms: value })}
+        onMaxChange={(value) => onFiltersChange({ ...filters, maxBedrooms: value })}
       />
 
       <ConstructionYearRangeFilter
-        value={filters.constructionYearRange}
-        onChange={(value) => onFiltersChange({ ...filters, constructionYearRange: value })}
+        minValue={filters.minConstructionYear}
+        maxValue={filters.maxConstructionYear}
+        onMinChange={(value) => onFiltersChange({ ...filters, minConstructionYear: value })}
+        onMaxChange={(value) => onFiltersChange({ ...filters, maxConstructionYear: value })}
       />
 
       <EnergyClassFilter

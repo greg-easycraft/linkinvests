@@ -2,15 +2,12 @@
 
 import { Input } from "~/components/ui/input";
 
-export interface RangeFilterValue {
-  min?: number;
-  max?: number;
-}
-
 interface GenericRangeFilterProps {
   label: string;
-  value?: RangeFilterValue;
-  onChange: (value: RangeFilterValue | undefined) => void;
+  minValue?: number;
+  maxValue?: number;
+  onMinChange: (value: number | undefined) => void;
+  onMaxChange: (value: number | undefined) => void;
   placeholder?: {
     min?: string;
     max?: string;
@@ -20,21 +17,22 @@ interface GenericRangeFilterProps {
 
 export function GenericRangeFilter({
   label,
-  value,
-  onChange,
+  minValue,
+  maxValue,
+  onMinChange,
+  onMaxChange,
   placeholder = { min: 'Min', max: 'Max' },
   unit,
 }: GenericRangeFilterProps): React.ReactElement {
 
   const handleRangeChange = (field: 'min' | 'max', inputValue: string): void => {
     const numValue = inputValue === '' ? undefined : parseFloat(inputValue);
-    const currentRange = value ?? {};
-    const newRange = { ...currentRange, [field]: numValue };
 
-    // Remove range if both min and max are undefined
-    const rangeToSet = (newRange.min === undefined && newRange.max === undefined) ? undefined : newRange;
-
-    onChange(rangeToSet);
+    if (field === 'min') {
+      onMinChange(numValue);
+    } else {
+      onMaxChange(numValue);
+    }
   };
 
   return (
@@ -47,13 +45,13 @@ export function GenericRangeFilter({
         <Input
           type="number"
           placeholder={placeholder.min}
-          value={value?.min ?? ''}
+          value={minValue ?? ''}
           onChange={(e) => handleRangeChange('min', e.target.value)}
         />
         <Input
           type="number"
           placeholder={placeholder.max}
-          value={value?.max ?? ''}
+          value={maxValue ?? ''}
           onChange={(e) => handleRangeChange('max', e.target.value)}
         />
       </div>

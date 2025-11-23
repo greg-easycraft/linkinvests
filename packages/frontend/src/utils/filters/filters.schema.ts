@@ -28,40 +28,15 @@ export const auctionFiltersSchema = baseFiltersSchema.extend({
         z.string().transform(val => val.split(',').filter(Boolean)),
         z.array(z.string())
     ]).optional(),
-    priceRange: z.union([
-        z.string().transform(val => {
-            try {
-                const parsed = JSON.parse(val);
-                return {
-                    min: parsed.min ? Number(parsed.min) : undefined,
-                    max: parsed.max ? Number(parsed.max) : undefined,
-                };
-            } catch {
-                return undefined;
-            }
-        }),
-        z.object({
-            min: z.union([z.string().transform(val => Number(val)), z.number()]).optional(),
-            max: z.union([z.string().transform(val => Number(val)), z.number()]).optional(),
-        })
-    ]).optional(),
-    reservePriceRange: z.union([
-        z.string().transform(val => {
-            try {
-                const parsed = JSON.parse(val);
-                return {
-                    min: parsed.min ? Number(parsed.min) : undefined,
-                    max: parsed.max ? Number(parsed.max) : undefined,
-                };
-            } catch {
-                return undefined;
-            }
-        }),
-        z.object({
-            min: z.union([z.string().transform(val => Number(val)), z.number()]).optional(),
-            max: z.union([z.string().transform(val => Number(val)), z.number()]).optional(),
-        })
-    ]).optional(),
+    minPrice: z.string().transform(val => Number(val)).pipe(z.number()).optional(),
+    maxPrice: z.string().transform(val => Number(val)).pipe(z.number()).optional(),
+    minReservePrice: z.string().transform(val => Number(val)).pipe(z.number()).optional(),
+    maxReservePrice: z.string().transform(val => Number(val)).pipe(z.number()).optional(),
+    minSquareFootage: z.string().transform(val => Number(val)).pipe(z.number()).optional(),
+    maxSquareFootage: z.string().transform(val => Number(val)).pipe(z.number()).optional(),
+    minRooms: z.string().transform(val => Number(val)).pipe(z.number()).optional(),
+    maxRooms: z.string().transform(val => Number(val)).pipe(z.number()).optional(),
+
     isSoldRented: z.union([
         z.string().transform(val => val === 'true'),
         z.boolean()
@@ -77,23 +52,19 @@ export const listingFiltersSchema = baseFiltersSchema.extend({
         z.string().transform(val => val.split(',').filter(Boolean)),
         z.array(z.string())
     ]).optional(),
-    priceRange: z.union([
-        z.string().transform(val => {
-            try {
-                const parsed = JSON.parse(val);
-                return {
-                    min: parsed.min ? Number(parsed.min) : undefined,
-                    max: parsed.max ? Number(parsed.max) : undefined,
-                };
-            } catch {
-                return undefined;
-            }
-        }),
-        z.object({
-            min: z.union([z.string().transform(val => Number(val)), z.number()]).optional(),
-            max: z.union([z.string().transform(val => Number(val)), z.number()]).optional(),
-        })
-    ]).optional(),
+
+    minPrice: z.string().transform(val => Number(val)).pipe(z.number()).optional(),
+    maxPrice: z.string().transform(val => Number(val)).pipe(z.number()).optional(),
+    minSquareFootage: z.string().transform(val => Number(val)).pipe(z.number()).optional(),
+    maxSquareFootage: z.string().transform(val => Number(val)).pipe(z.number()).optional(),
+    minLandArea: z.string().transform(val => Number(val)).pipe(z.number()).optional(),
+    maxLandArea: z.string().transform(val => Number(val)).pipe(z.number()).optional(),
+    minRooms: z.string().transform(val => Number(val)).pipe(z.number()).optional(),
+    maxRooms: z.string().transform(val => Number(val)).pipe(z.number()).optional(),
+    minBedrooms: z.string().transform(val => Number(val)).pipe(z.number()).optional(),
+    maxBedrooms: z.string().transform(val => Number(val)).pipe(z.number()).optional(),
+    minConstructionYear: z.string().transform(val => Number(val)).pipe(z.number()).optional(),
+    maxConstructionYear: z.string().transform(val => Number(val)).pipe(z.number()).optional(),  
     isSoldRented: z.union([
         z.string().transform(val => val === 'true'),
         z.boolean()

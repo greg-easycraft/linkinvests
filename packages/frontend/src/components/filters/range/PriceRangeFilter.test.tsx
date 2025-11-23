@@ -1,12 +1,13 @@
 import { render, screen } from '~/test-utils/test-helpers';
 import userEvent from '@testing-library/user-event';
 import { PriceRangeFilter } from './PriceRangeFilter';
-import type { RangeFilterValue } from './GenericRangeFilter';
 
 describe('PriceRangeFilter', () => {
-  const mockOnChange = jest.fn();
+  const mockOnMinChange = jest.fn();
+  const mockOnMaxChange = jest.fn();
   const defaultProps = {
-    onChange: mockOnChange,
+    onMinChange: mockOnMinChange,
+    onMaxChange: mockOnMaxChange,
   };
 
   beforeEach(() => {

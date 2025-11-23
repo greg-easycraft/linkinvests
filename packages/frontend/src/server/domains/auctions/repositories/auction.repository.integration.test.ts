@@ -134,7 +134,8 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
 
     it('should filter by price range', async () => {
       const filters: AuctionFilters = {
-        priceRange: { min: 100000, max: 500000 }
+        minPrice: 100000,
+        maxPrice: 500000
       };
 
       const auctions = await auctionRepository.findAll(filters);
@@ -149,7 +150,8 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
 
     it('should filter by reserve price range', async () => {
       const filters: AuctionFilters = {
-        reservePriceRange: { min: 50000, max: 300000 }
+        minReservePrice: 50000,
+        maxReservePrice: 300000
       };
 
       const auctions = await auctionRepository.findAll(filters);
@@ -164,7 +166,8 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
 
     it('should filter by square footage range', async () => {
       const filters: AuctionFilters = {
-        squareFootageRange: { min: 50, max: 200 }
+        minSquareFootage: 50,
+        maxSquareFootage: 200
       };
 
       const auctions = await auctionRepository.findAll(filters);
@@ -179,7 +182,8 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
 
     it('should filter by rooms range', async () => {
       const filters: AuctionFilters = {
-        roomsRange: { min: 2, max: 5 }
+        minRooms: 2,
+        maxRooms: 5
       };
 
       const auctions = await auctionRepository.findAll(filters);
@@ -196,8 +200,9 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
       const filters: AuctionFilters = {
         departments: ['06'],
         auctionTypes: ['PUBLIC_SALE'],
-        priceRange: { min: 100000, max: 1000000 },
-        squareFootageRange: { min: 50 }
+        minPrice: 100000,
+        maxPrice: 1000000,
+        minSquareFootage: 50
       };
 
       const auctions = await auctionRepository.findAll(filters);

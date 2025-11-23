@@ -69,63 +69,51 @@ export class DrizzleListingRepository implements IListingRepository {
     }
 
     // Filter by price range
-    if (filters.priceRange) {
-      if (filters.priceRange.min !== undefined) {
-        conditions.push(gte(opportunityListings.price, filters.priceRange.min));
-      }
-      if (filters.priceRange.max !== undefined) {
-        conditions.push(lte(opportunityListings.price, filters.priceRange.max));
-      }
+    if (filters.minPrice !== undefined) {
+      conditions.push(gte(opportunityListings.price, filters.minPrice));
+    }
+    if (filters.maxPrice !== undefined) {
+      conditions.push(lte(opportunityListings.price, filters.maxPrice));
     }
 
     // Filter by square footage range
-    if (filters.squareFootageRange) {
-      if (filters.squareFootageRange.min !== undefined) {
-        conditions.push(gte(opportunityListings.squareFootage, filters.squareFootageRange.min));
-      }
-      if (filters.squareFootageRange.max !== undefined) {
-        conditions.push(lte(opportunityListings.squareFootage, filters.squareFootageRange.max));
-      }
+    if (filters.minSquareFootage !== undefined) {
+      conditions.push(gte(opportunityListings.squareFootage, filters.minSquareFootage));
+    }
+    if (filters.maxSquareFootage !== undefined) {
+      conditions.push(lte(opportunityListings.squareFootage, filters.maxSquareFootage));
     }
 
     // Filter by land area range
-    if (filters.landAreaRange) {
-      if (filters.landAreaRange.min !== undefined) {
-        conditions.push(gte(opportunityListings.landArea, filters.landAreaRange.min));
-      }
-      if (filters.landAreaRange.max !== undefined) {
-        conditions.push(lte(opportunityListings.landArea, filters.landAreaRange.max));
-      }
+    if (filters.minLandArea !== undefined) {
+      conditions.push(gte(opportunityListings.landArea, filters.minLandArea));
+    }
+    if (filters.maxLandArea !== undefined) {
+      conditions.push(lte(opportunityListings.landArea, filters.maxLandArea));
     }
 
     // Filter by rooms range
-    if (filters.roomsRange) {
-      if (filters.roomsRange.min !== undefined) {
-        conditions.push(gte(opportunityListings.rooms, filters.roomsRange.min));
-      }
-      if (filters.roomsRange.max !== undefined) {
-        conditions.push(lte(opportunityListings.rooms, filters.roomsRange.max));
-      }
+    if (filters.minRooms !== undefined) {
+      conditions.push(gte(opportunityListings.rooms, filters.minRooms));
+    }
+    if (filters.maxRooms !== undefined) {
+      conditions.push(lte(opportunityListings.rooms, filters.maxRooms));
     }
 
     // Filter by bedrooms range
-    if (filters.bedroomsRange) {
-      if (filters.bedroomsRange.min !== undefined) {
-        conditions.push(gte(opportunityListings.bedrooms, filters.bedroomsRange.min));
-      }
-      if (filters.bedroomsRange.max !== undefined) {
-        conditions.push(lte(opportunityListings.bedrooms, filters.bedroomsRange.max));
-      }
+    if (filters.minBedrooms !== undefined) {
+      conditions.push(gte(opportunityListings.bedrooms, filters.minBedrooms));
+    }
+    if (filters.maxBedrooms !== undefined) {
+      conditions.push(lte(opportunityListings.bedrooms, filters.maxBedrooms));
     }
 
     // Filter by construction year range
-    if (filters.constructionYearRange) {
-      if (filters.constructionYearRange.min !== undefined) {
-        conditions.push(gte(opportunityListings.constructionYear, filters.constructionYearRange.min));
-      }
-      if (filters.constructionYearRange.max !== undefined) {
-        conditions.push(lte(opportunityListings.constructionYear, filters.constructionYearRange.max));
-      }
+    if (filters.minConstructionYear !== undefined) {
+      conditions.push(gte(opportunityListings.constructionYear, filters.minConstructionYear));
+    }
+    if (filters.maxConstructionYear !== undefined) {
+      conditions.push(lte(opportunityListings.constructionYear, filters.maxConstructionYear));
     }
 
     // Filter by features

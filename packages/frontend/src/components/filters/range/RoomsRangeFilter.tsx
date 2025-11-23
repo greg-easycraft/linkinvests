@@ -1,23 +1,29 @@
 "use client";
 
-import { GenericRangeFilter, RangeFilterValue } from './GenericRangeFilter';
+import { GenericRangeFilter } from './GenericRangeFilter';
 
 interface RoomsRangeFilterProps {
-  value?: RangeFilterValue;
-  onChange: (value: RangeFilterValue | undefined) => void;
+  minValue?: number;
+  maxValue?: number;
+  onMinChange: (value: number | undefined) => void;
+  onMaxChange: (value: number | undefined) => void;
   label?: string;
 }
 
 export function RoomsRangeFilter({
-  value,
-  onChange,
+  minValue,
+  maxValue,
+  onMinChange,
+  onMaxChange,
   label = "Nombre de pièces",
 }: RoomsRangeFilterProps): React.ReactElement {
   return (
     <GenericRangeFilter
       label={label}
-      value={value}
-      onChange={onChange}
+      minValue={minValue}
+      maxValue={maxValue}
+      onMinChange={onMinChange}
+      onMaxChange={onMaxChange}
       placeholder={{ min: 'Min', max: 'Max' }}
     />
   );

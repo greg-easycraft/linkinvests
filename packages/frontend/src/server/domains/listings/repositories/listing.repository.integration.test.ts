@@ -64,7 +64,8 @@ describe('DrizzleListingRepository Integration Tests', () => {
 
     it('should filter by price range', async () => {
       const filters: ListingFilters = {
-        priceRange: { min: 200000, max: 800000 }
+        minPrice: 200000,
+        maxPrice: 800000
       };
       const listings = await listingRepository.findAll(filters);
       listings.forEach(listing => {
@@ -77,7 +78,8 @@ describe('DrizzleListingRepository Integration Tests', () => {
 
     it('should filter by square footage range', async () => {
       const filters: ListingFilters = {
-        squareFootageRange: { min: 60, max: 150 }
+        minSquareFootage: 60,
+        maxSquareFootage: 150
       };
       const listings = await listingRepository.findAll(filters);
       listings.forEach(listing => {
@@ -90,7 +92,8 @@ describe('DrizzleListingRepository Integration Tests', () => {
 
     it('should filter by land area range', async () => {
       const filters: ListingFilters = {
-        landAreaRange: { min: 100, max: 1000 }
+        minLandArea: 100,
+        maxLandArea: 1000
       };
       const listings = await listingRepository.findAll(filters);
       listings.forEach(listing => {
@@ -103,7 +106,8 @@ describe('DrizzleListingRepository Integration Tests', () => {
 
     it('should filter by rooms range', async () => {
       const filters: ListingFilters = {
-        roomsRange: { min: 2, max: 6 }
+        minRooms: 2,
+        maxRooms: 6
       };
       const listings = await listingRepository.findAll(filters);
       listings.forEach(listing => {
@@ -116,7 +120,8 @@ describe('DrizzleListingRepository Integration Tests', () => {
 
     it('should filter by bedrooms range', async () => {
       const filters: ListingFilters = {
-        bedroomsRange: { min: 1, max: 4 }
+        minBedrooms: 1,
+        maxBedrooms: 4
       };
       const listings = await listingRepository.findAll(filters);
       listings.forEach(listing => {
@@ -129,7 +134,8 @@ describe('DrizzleListingRepository Integration Tests', () => {
 
     it('should filter by construction year range', async () => {
       const filters: ListingFilters = {
-        constructionYearRange: { min: 1990, max: 2020 }
+        minConstructionYear: 1990,
+        maxConstructionYear: 2020
       };
       const listings = await listingRepository.findAll(filters);
       listings.forEach(listing => {
@@ -267,8 +273,9 @@ describe('DrizzleListingRepository Integration Tests', () => {
         departments: ['75'],
         transactionTypes: ['VENTE'],
         propertyTypes: ['APP'],
-        priceRange: { min: 300000, max: 600000 },
-        squareFootageRange: { min: 50 },
+        minPrice: 300000,
+        maxPrice: 600000,
+        minSquareFootage: 50,
         features: { elevator: true }
       };
       const listings = await listingRepository.findAll(filters);

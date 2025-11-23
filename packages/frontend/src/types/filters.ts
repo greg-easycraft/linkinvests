@@ -62,10 +62,14 @@ export interface AuctionFilters extends OpportunityFilters {
   // Auction-specific filter properties
   auctionTypes?: string[];
   propertyTypes?: string[];
-  priceRange?: PriceRange;
-  reservePriceRange?: PriceRange;
-  squareFootageRange?: PriceRange; // Reusing PriceRange for number ranges
-  roomsRange?: PriceRange; // Reusing PriceRange for number ranges
+  minPrice?: number;
+  maxPrice?: number;
+  minReservePrice?: number;
+  maxReservePrice?: number;
+  minSquareFootage?: number;
+  maxSquareFootage?: number;
+  minRooms?: number;
+  maxRooms?: number;
   auctionVenues?: string[];
   energyClasses?: EnergyClass[];
   isSoldRented?: boolean; // Rental status: true for occupied, false for available
@@ -97,12 +101,18 @@ export interface ListingFilters extends OpportunityFilters {
   // Listing-specific filter properties
   transactionTypes?: string[]; // VENTE, VENTE_EN_L_ETAT_FUTUR_D_ACHEVEMENT, VENTE_AUX_ENCHERES
   propertyTypes?: string[]; // APP, MAI, TER, etc.
-  priceRange?: PriceRange;
-  squareFootageRange?: PriceRange; // Reusing PriceRange for number ranges
-  landAreaRange?: PriceRange; // Reusing PriceRange for number ranges
-  roomsRange?: PriceRange; // Reusing PriceRange for number ranges
-  bedroomsRange?: PriceRange; // Reusing PriceRange for number ranges
-  constructionYearRange?: PriceRange; // Reusing PriceRange for year ranges
+  minPrice?: number;
+  maxPrice?: number;
+  minSquareFootage?: number;
+  maxSquareFootage?: number;
+  minLandArea?: number;
+  maxLandArea?: number;
+  minRooms?: number;
+  maxRooms?: number;
+  minBedrooms?: number;
+  maxBedrooms?: number;
+  minConstructionYear?: number;
+  maxConstructionYear?: number;
   energyClasses?: EnergyClass[]; // Energy performance diagnosis (A-G)
   features?: ListingFeatures; // Boolean features like balcony, garage, etc.
   isSoldRented?: boolean; // Rental status: true for occupied, false for available

@@ -74,43 +74,35 @@ export class DrizzleAuctionRepository implements IAuctionRepository {
     }
 
     // Filter by price range (current price)
-    if (filters.priceRange) {
-      if (filters.priceRange.min !== undefined) {
-        conditions.push(gte(opportunityAuctions.currentPrice, filters.priceRange.min));
-      }
-      if (filters.priceRange.max !== undefined) {
-        conditions.push(lte(opportunityAuctions.currentPrice, filters.priceRange.max));
-      }
+    if (filters.minPrice !== undefined) {
+      conditions.push(gte(opportunityAuctions.currentPrice, filters.minPrice));
+    }
+    if (filters.maxPrice !== undefined) {
+      conditions.push(lte(opportunityAuctions.currentPrice, filters.maxPrice));
     }
 
     // Filter by reserve price range
-    if (filters.reservePriceRange) {
-      if (filters.reservePriceRange.min !== undefined) {
-        conditions.push(gte(opportunityAuctions.reservePrice, filters.reservePriceRange.min));
-      }
-      if (filters.reservePriceRange.max !== undefined) {
-        conditions.push(lte(opportunityAuctions.reservePrice, filters.reservePriceRange.max));
-      }
+    if (filters.minReservePrice !== undefined) {
+      conditions.push(gte(opportunityAuctions.reservePrice, filters.minReservePrice));
+    }
+    if (filters.maxReservePrice !== undefined) {
+      conditions.push(lte(opportunityAuctions.reservePrice, filters.maxReservePrice));
     }
 
     // Filter by square footage range
-    if (filters.squareFootageRange) {
-      if (filters.squareFootageRange.min !== undefined) {
-        conditions.push(gte(opportunityAuctions.squareFootage, filters.squareFootageRange.min));
-      }
-      if (filters.squareFootageRange.max !== undefined) {
-        conditions.push(lte(opportunityAuctions.squareFootage, filters.squareFootageRange.max));
-      }
+    if (filters.minSquareFootage !== undefined) {
+      conditions.push(gte(opportunityAuctions.squareFootage, filters.minSquareFootage));
+    }
+    if (filters.maxSquareFootage !== undefined) {
+      conditions.push(lte(opportunityAuctions.squareFootage, filters.maxSquareFootage));
     }
 
     // Filter by rooms range
-    if (filters.roomsRange) {
-      if (filters.roomsRange.min !== undefined) {
-        conditions.push(gte(opportunityAuctions.rooms, filters.roomsRange.min));
-      }
-      if (filters.roomsRange.max !== undefined) {
-        conditions.push(lte(opportunityAuctions.rooms, filters.roomsRange.max));
-      }
+    if (filters.minRooms !== undefined) {
+      conditions.push(gte(opportunityAuctions.rooms, filters.minRooms));
+    }
+    if (filters.maxRooms !== undefined) {
+      conditions.push(lte(opportunityAuctions.rooms, filters.maxRooms));
     }
 
     // Filter by rental status (isSoldRented)

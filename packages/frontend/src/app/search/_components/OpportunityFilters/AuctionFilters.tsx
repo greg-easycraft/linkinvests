@@ -42,23 +42,31 @@ export function AuctionFilters({
       />
 
       <PriceRangeFilter
-        value={filters.priceRange}
-        onChange={(value) => onFiltersChange({ ...filters, priceRange: value })}
+        minValue={filters.minPrice}
+        maxValue={filters.maxPrice}
+        onMinChange={(value) => onFiltersChange({ ...filters, minPrice: value })}
+        onMaxChange={(value) => onFiltersChange({ ...filters, maxPrice: value })}
       />
 
       <ReservePriceRangeFilter
-        value={filters.reservePriceRange}
-        onChange={(value) => onFiltersChange({ ...filters, reservePriceRange: value })}
+        minValue={filters.minReservePrice}
+        maxValue={filters.maxReservePrice}
+        onMinChange={(value) => onFiltersChange({ ...filters, minReservePrice: value })}
+        onMaxChange={(value) => onFiltersChange({ ...filters, maxReservePrice: value })}
       />
 
       <SquareFootageRangeFilter
-        value={filters.squareFootageRange}
-        onChange={(value) => onFiltersChange({ ...filters, squareFootageRange: value })}
+        minValue={filters.minSquareFootage}
+        maxValue={filters.maxSquareFootage}
+        onMinChange={(value) => onFiltersChange({ ...filters, minSquareFootage: value })}
+        onMaxChange={(value) => onFiltersChange({ ...filters, maxSquareFootage: value })}
       />
 
       <RoomsRangeFilter
-        value={filters.roomsRange}
-        onChange={(value) => onFiltersChange({ ...filters, roomsRange: value })}
+        minValue={filters.minRooms}
+        maxValue={filters.maxRooms}
+        onMinChange={(value) => onFiltersChange({ ...filters, minRooms: value })}
+        onMaxChange={(value) => onFiltersChange({ ...filters, maxRooms: value })}
       />
     </>
   );
