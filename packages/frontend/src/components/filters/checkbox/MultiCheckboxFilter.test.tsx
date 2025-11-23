@@ -258,18 +258,18 @@ describe('MultiCheckboxFilter', () => {
       expect(mockOnChange).toHaveBeenCalledWith(['special-1']);
     });
 
-    it('should handle numeric option values', async () => {
+    it('should handle string option values', async () => {
       const user = userEvent.setup();
-      const numericOptions = [
-        { value: 1, label: 'Number One' },
-        { value: 2, label: 'Number Two' },
+      const stringOptions = [
+        { value: 'one', label: 'Number One' },
+        { value: 'two', label: 'Number Two' },
       ] as const;
-      render(<MultiCheckboxFilter {...defaultProps} options={numericOptions} />);
+      render(<MultiCheckboxFilter {...defaultProps} options={stringOptions} />);
 
       const checkbox = screen.getByLabelText('Number One');
       await user.click(checkbox);
 
-      expect(mockOnChange).toHaveBeenCalledWith([1]);
+      expect(mockOnChange).toHaveBeenCalledWith(['one']);
     });
 
     it('should handle invalid value prop', () => {

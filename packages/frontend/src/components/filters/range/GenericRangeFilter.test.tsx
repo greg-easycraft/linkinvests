@@ -23,7 +23,8 @@ describe('GenericRangeFilter', () => {
     it('should render with unit in label', () => {
       render(<GenericRangeFilter {...defaultProps} unit="€" />);
 
-      expect(screen.getByText('Test Range (€)')).toBeInTheDocument();
+      expect(screen.getByText('Test Range')).toBeInTheDocument();
+      expect(screen.getByText('(€)')).toBeInTheDocument();
     });
 
     it('should render without unit when not provided', () => {
@@ -437,12 +438,12 @@ describe('GenericRangeFilter', () => {
         <GenericRangeFilter {...defaultProps} unit="€" />
       );
 
-      expect(screen.getByText('Test Range (€)')).toBeInTheDocument();
+      expect(screen.getByText('(€)')).toBeInTheDocument();
 
       rerender(<GenericRangeFilter {...defaultProps} unit="m²" />);
 
-      expect(screen.queryByText('Test Range (€)')).not.toBeInTheDocument();
-      expect(screen.getByText('Test Range (m²)')).toBeInTheDocument();
+      expect(screen.queryByText('(€)')).not.toBeInTheDocument();
+      expect(screen.getByText('(m²)')).toBeInTheDocument();
     });
 
     it('should handle clearing value prop', () => {

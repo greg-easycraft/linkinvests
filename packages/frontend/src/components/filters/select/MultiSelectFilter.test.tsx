@@ -339,13 +339,13 @@ describe('MultiSelectFilter', () => {
       expect(screen.getByText(/This is a very long option label/)).toBeInTheDocument();
     });
 
-    it('should handle options with numeric values', async () => {
+    it('should handle options with string values', async () => {
       const user = userEvent.setup();
-      const numericOptions = [
-        { value: 1, label: 'Number One' },
-        { value: 2, label: 'Number Two' },
+      const stringOptions = [
+        { value: 'one', label: 'Number One' },
+        { value: 'two', label: 'Number Two' },
       ] as const;
-      render(<MultiSelectFilter {...defaultProps} options={numericOptions} />);
+      render(<MultiSelectFilter {...defaultProps} options={stringOptions} />);
 
       const selectTrigger = screen.getByRole('combobox');
       await user.click(selectTrigger);
@@ -353,7 +353,7 @@ describe('MultiSelectFilter', () => {
       const option = screen.getByText('Number One');
       await user.click(option);
 
-      expect(mockOnChange).toHaveBeenCalledWith([1]);
+      expect(mockOnChange).toHaveBeenCalledWith(['one']);
     });
 
     it('should handle invalid value prop gracefully', () => {

@@ -166,6 +166,102 @@ describe('DrizzleListingRepository Integration Tests', () => {
       });
     });
 
+    it('should filter by rental status (isSoldRented)', async () => {
+      const filters: ListingFilters = {
+        isSoldRented: true
+      };
+      const listings = await listingRepository.findAll(filters);
+      const count = await listingRepository.count(filters);
+
+      expect(listings.length).toBe(count);
+      listings.forEach(listing => {
+        expect(listing.isSoldRented).toBe(true);
+      });
+    });
+
+    it('should filter by rental status - available properties', async () => {
+      const filters: ListingFilters = {
+        isSoldRented: false
+      };
+      const listings = await listingRepository.findAll(filters);
+      const count = await listingRepository.count(filters);
+
+      expect(listings.length).toBe(count);
+      listings.forEach(listing => {
+        expect(listing.isSoldRented).toBe(false);
+      });
+    });
+
+    it('should filter by sources', async () => {
+      // First get all available sources to test with real data
+      const allListings = await listingRepository.findAll();
+      const availableSources = [...new Set(allListings.map(l => l.source))].filter(Boolean);
+
+      if (availableSources.length === 0) {
+        console.warn('No listings with sources found in fixtures');
+        return;
+      }
+
+      const filters: ListingFilters = {
+        sources: [availableSources[0]!]
+      };
+      const listings = await listingRepository.findAll(filters);
+      const count = await listingRepository.count(filters);
+
+      expect(listings.length).toBe(count);
+      listings.forEach(listing => {
+        expect(listing.source).toBe(availableSources[0]);
+      });
+    });
+
+    it('should filter by multiple sources', async () => {
+      const allListings = await listingRepository.findAll();
+      const availableSources = [...new Set(allListings.map(l => l.source))].filter(Boolean);
+
+      if (availableSources.length < 2) {
+        console.warn('Not enough different sources found in fixtures for multiple sources test');
+        return;
+      }
+
+      const testSources = availableSources.slice(0, 2);
+      const filters: ListingFilters = {
+        sources: testSources
+      };
+      const listings = await listingRepository.findAll(filters);
+      const count = await listingRepository.count(filters);
+
+      expect(listings.length).toBe(count);
+      listings.forEach(listing => {
+        expect(testSources).toContain(listing.source);
+      });
+    });
+
+    it('should filter by seller type - individual', async () => {
+      const filters: ListingFilters = {
+        sellerType: 'individual'
+      };
+      const listings = await listingRepository.findAll(filters);
+      const count = await listingRepository.count(filters);
+
+      expect(listings.length).toBe(count);
+      listings.forEach(listing => {
+        expect(listing.sellerType).toBe('individual');
+      });
+    });
+
+    it('should filter by seller type - professional', async () => {
+      const filters: ListingFilters = {
+        sellerType: 'professional'
+      };
+      const listings = await listingRepository.findAll(filters);
+      const count = await listingRepository.count(filters);
+
+      expect(listings.length).toBe(count);
+      listings.forEach(listing => {
+        expect(listing.sellerType).toBe('professional');
+      });
+    });
+
     it('should filter by multiple listing criteria', async () => {
       const filters: ListingFilters = {
         departments: ['75'],

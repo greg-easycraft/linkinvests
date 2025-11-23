@@ -6,7 +6,7 @@ import { OPPORTUNITY_TYPE_LABELS, OPPORTUNITY_TYPE_DISPLAY_ORDER } from "../cons
 
 interface OpportunityTypeFilterProps {
   value: OpportunityType;
-  onChange: (value: OpportunityType) => void;
+  onChange?: (value: OpportunityType) => void;
 }
 
 export function OpportunityTypeFilter({

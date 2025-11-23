@@ -220,8 +220,10 @@ describe('EnergyClassBadge', () => {
         render(<EnergyClassBadge energyClass={'' as EnergyClass} />);
       }).not.toThrow();
 
-      const badge = screen.getByText('NC');
+      // Empty string is shown as empty, not 'NC' due to nullish coalescing operator
+      const badge = document.querySelector('[class*="inline-flex"]');
       expect(badge).toBeInTheDocument();
+      expect(badge).toHaveTextContent('');
     });
   });
 

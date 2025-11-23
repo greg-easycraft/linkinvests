@@ -8,7 +8,7 @@ export interface CheckboxOption<T = string> {
 
 interface MultiCheckboxFilterProps<T = string> {
   label: string;
-  options: CheckboxOption<T>[];
+  options: readonly CheckboxOption<T>[];
   value?: T[];
   onChange: (value: T[] | undefined) => void;
   idPrefix?: string; // Prefix for input IDs to ensure uniqueness
