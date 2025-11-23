@@ -5,6 +5,7 @@ import { OpportunityType } from "@linkinvests/shared";
 import type { EnergyClass, ListingFilters as IListingFilters } from "~/types/filters";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { BaseFilters } from "./BaseFilters";
+import { RENTAL_STATUS_OPTIONS } from "~/constants/filters";
 
 interface ListingFiltersProps {
   filters: IListingFilters;
@@ -162,6 +163,12 @@ export function ListingFilters({
     onFiltersChange({ ...filters, features: hasAnyFeatures ? updatedFeatures : undefined } as IListingFilters);
   };
 
+  // Rental status handler
+  const handleRentalStatusChange = (value: string): void => {
+    const booleanValue = value === 'true' ? true : value === 'false' ? false : undefined;
+    onFiltersChange({ ...filters, isSoldRented: booleanValue } as IListingFilters);
+  };
+
   const CustomFilters = (
     <>
       {/* Transaction Type Filter */}
@@ -195,6 +202,39 @@ export function ListingFilters({
                 </span>
               );
             })}
+          </div>
+        )}
+      </div>
+
+      {/* Rental Status Filter */}
+      <div>
+        <label className="text-sm font-medium mb-2 block font-heading">Statut locatif</label>
+        <Select
+          value={listingFilters.isSoldRented !== undefined ? String(listingFilters.isSoldRented) : undefined}
+          onValueChange={handleRentalStatusChange}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Tous les statuts..." />
+          </SelectTrigger>
+          <SelectContent>
+            {RENTAL_STATUS_OPTIONS.map((option) => (
+              <SelectItem key={String(option.value)} value={String(option.value)}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        {listingFilters.isSoldRented !== undefined && (
+          <div className="mt-2">
+            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-orange-100 text-orange-800">
+              {RENTAL_STATUS_OPTIONS.find(o => o.value === listingFilters.isSoldRented)?.label}
+              <button
+                onClick={() => handleRentalStatusChange('')}
+                className="ml-1 text-orange-600 hover:text-orange-800"
+              >
+                ×
+              </button>
+            </span>
           </div>
         )}
       </div>

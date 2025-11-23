@@ -5,6 +5,7 @@ import { OpportunityType } from "@linkinvests/shared";
 import type { AuctionFilters as IAuctionFilters } from "~/types/filters";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { BaseFilters } from "./BaseFilters";
+import { RENTAL_STATUS_OPTIONS } from "~/constants/filters";
 
 interface AuctionFiltersProps {
   filters: IAuctionFilters;
@@ -96,6 +97,11 @@ export function AuctionFilters({
     onFiltersChange({ ...filters, roomsRange: rangeToSet } as IAuctionFilters);
   };
 
+  const handleRentalStatusChange = (value: string): void => {
+    const booleanValue = value === 'true' ? true : value === 'false' ? false : undefined;
+    onFiltersChange({ ...filters, isSoldRented: booleanValue } as IAuctionFilters);
+  };
+
   const CustomFilters = (
     <>
       {/* Auction Type Filter */}
@@ -129,6 +135,39 @@ export function AuctionFilters({
                 </span>
               );
             })}
+          </div>
+        )}
+      </div>
+
+      {/* Rental Status Filter */}
+      <div>
+        <label className="text-sm font-medium mb-2 block font-heading">Statut locatif</label>
+        <Select
+          value={filters.isSoldRented !== undefined ? String(filters.isSoldRented) : undefined}
+          onValueChange={handleRentalStatusChange}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Tous les statuts..." />
+          </SelectTrigger>
+          <SelectContent>
+            {RENTAL_STATUS_OPTIONS.map((option) => (
+              <SelectItem key={String(option.value)} value={String(option.value)}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        {filters.isSoldRented !== undefined && (
+          <div className="mt-2">
+            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-orange-100 text-orange-800">
+              {RENTAL_STATUS_OPTIONS.find(o => o.value === filters.isSoldRented)?.label}
+              <button
+                onClick={() => handleRentalStatusChange('')}
+                className="ml-1 text-orange-600 hover:text-orange-800"
+              >
+                ×
+              </button>
+            </span>
           </div>
         )}
       </div>

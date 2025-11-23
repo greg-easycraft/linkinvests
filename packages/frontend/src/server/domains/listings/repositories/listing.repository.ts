@@ -150,6 +150,11 @@ export class DrizzleListingRepository implements IListingRepository {
       }
     }
 
+    // Filter by rental status (isSoldRented)
+    if (filters.isSoldRented !== undefined) {
+      conditions.push(eq(opportunityListings.isSoldRented, filters.isSoldRented));
+    }
+
     return conditions;
   }
 

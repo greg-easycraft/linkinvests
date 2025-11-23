@@ -62,6 +62,10 @@ export const auctionFiltersSchema = baseFiltersSchema.extend({
             max: z.union([z.string().transform(val => Number(val)), z.number()]).optional(),
         })
     ]).optional(),
+    isSoldRented: z.union([
+        z.string().transform(val => val === 'true'),
+        z.boolean()
+    ]).optional(),
 });
 
 export const listingFiltersSchema = baseFiltersSchema.extend({
@@ -89,6 +93,10 @@ export const listingFiltersSchema = baseFiltersSchema.extend({
             min: z.union([z.string().transform(val => Number(val)), z.number()]).optional(),
             max: z.union([z.string().transform(val => Number(val)), z.number()]).optional(),
         })
+    ]).optional(),
+    isSoldRented: z.union([
+        z.string().transform(val => val === 'true'),
+        z.boolean()
     ]).optional(),
 });
 

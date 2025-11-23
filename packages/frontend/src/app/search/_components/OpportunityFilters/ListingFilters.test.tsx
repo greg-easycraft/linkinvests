@@ -78,6 +78,7 @@ describe('ListingFilters Component', () => {
       render(<ListingFilters {...defaultProps} />);
 
       expect(screen.getByText('Type de transaction')).toBeInTheDocument();
+      expect(screen.getByText('Statut locatif')).toBeInTheDocument();
       expect(screen.getByText('Type de bien')).toBeInTheDocument();
       expect(screen.getByText('Prix (€)')).toBeInTheDocument();
       expect(screen.getByText('Surface (m²)')).toBeInTheDocument();
@@ -89,13 +90,14 @@ describe('ListingFilters Component', () => {
       expect(screen.getByText('Équipements')).toBeInTheDocument();
     });
 
-    it('should render transaction and property type selects', () => {
+    it('should render transaction type, rental status, and property type selects', () => {
       render(<ListingFilters {...defaultProps} />);
 
       const selects = screen.getAllByTestId('select');
-      expect(selects).toHaveLength(2); // Transaction type and property type
+      expect(selects).toHaveLength(3); // Transaction type, rental status, and property type
 
       expect(screen.getAllByText('Sélectionner un type...')).toHaveLength(2);
+      expect(screen.getByText('Tous les statuts...')).toBeInTheDocument();
     });
 
     it('should render all range input sections', () => {

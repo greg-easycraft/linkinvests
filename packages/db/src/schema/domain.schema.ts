@@ -37,6 +37,7 @@ export const opportunityAuctions = pgTable('auction', {
   rooms: integer('rooms'),
   energyClass: varchar('energy_class'),
   auctionVenue: varchar('auction_venue'),
+  isSoldRented: boolean('is_sold_rented').default(false).notNull(),
   // Price fields
   currentPrice: numeric('current_price', { mode: 'number' }),
   reservePrice: numeric('reserve_price', { mode: 'number' }),

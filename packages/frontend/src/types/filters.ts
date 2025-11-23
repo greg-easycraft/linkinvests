@@ -68,6 +68,7 @@ export interface AuctionFilters extends OpportunityFilters {
   roomsRange?: PriceRange; // Reusing PriceRange for number ranges
   auctionVenues?: string[];
   energyClasses?: EnergyClass[];
+  isSoldRented?: boolean; // Rental status: true for occupied, false for available
 }
 
 // Placeholder for future succession-specific filters
@@ -104,4 +105,5 @@ export interface ListingFilters extends OpportunityFilters {
   constructionYearRange?: PriceRange; // Reusing PriceRange for year ranges
   energyClasses?: EnergyClass[]; // Energy performance diagnosis (A-G)
   features?: ListingFeatures; // Boolean features like balcony, garage, etc.
+  isSoldRented?: boolean; // Rental status: true for occupied, false for available
 }

@@ -4,7 +4,7 @@ import { opportunityAuctions } from "@linkinvests/db";
 import type { IAuctionRepository, } from "../lib.types";
 import type { AuctionFilters, PaginationFilters } from "~/types/filters";
 import { calculateStartDate } from "~/constants/date-periods";
-import { AuctionSource, PropertyType, type Auction } from "@linkinvests/shared";
+import { AuctionSource, PropertyType, EnergyClass, type Auction } from "@linkinvests/shared";
 
 export class DrizzleAuctionRepository implements IAuctionRepository {
   constructor(private readonly db: DomainDbType) {}
@@ -113,6 +113,11 @@ export class DrizzleAuctionRepository implements IAuctionRepository {
       }
     }
 
+    // Filter by rental status (isSoldRented)
+    if (filters.isSoldRented !== undefined) {
+      conditions.push(eq(opportunityAuctions.isSoldRented, filters.isSoldRented));
+    }
+
     return conditions;
   }
 
@@ -183,7 +188,7 @@ export class DrizzleAuctionRepository implements IAuctionRepository {
       description: auction.description ?? undefined,
       squareFootage: auction.squareFootage ?? undefined,
       rooms: auction.rooms ?? undefined,
-      energyClass: auction.energyClass ?? undefined,
+      energyClass: auction.energyClass as EnergyClass ?? undefined,
       auctionVenue: auction.auctionVenue ?? undefined,
       currentPrice: auction.currentPrice ?? undefined,
       reservePrice: auction.reservePrice ?? undefined,
