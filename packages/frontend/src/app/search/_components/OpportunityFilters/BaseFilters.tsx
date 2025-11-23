@@ -6,9 +6,8 @@ import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import { DepartmentsInput } from "~/components/ui/departments-input";
 import { ZipCodeInput } from "~/components/ui/zip-code-input";
 import { OpportunityType } from "@linkinvests/shared";
-import type { OpportunityFilters as IOpportunityFilters, DatePeriod, DatePeriodOption } from "~/types/filters";
-import { DATE_PERIOD_OPTIONS } from "~/constants/date-periods";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
+import type { OpportunityFilters as IOpportunityFilters, DatePeriodOption } from "~/types/filters";
+import { OpportunityTypeFilter, DatePeriodFilter, OPPORTUNITY_TYPE_TO_PATH } from "~/components/filters";
 import { ViewToggle } from "../ViewToggle";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
@@ -22,44 +21,23 @@ interface OpportunityFiltersProps {
   datePeriodOptions?: DatePeriodOption[];
 }
 
-// @ts-expect-error - TODO: Add real estate listing and divorce types
-const TYPE_LABELS: Record<OpportunityType, string> = {
-  [OpportunityType.SUCCESSION]: "Successions",
-  [OpportunityType.LIQUIDATION]: "Liquidations",
-  [OpportunityType.ENERGY_SIEVE]: "Passoires énergétiques",
-  [OpportunityType.REAL_ESTATE_LISTING]: "Annonces immobilières",
-  [OpportunityType.AUCTION]: "Ventes aux enchères",
-  // [OpportunityType.DIVORCE]: "Divorces",
-};
-
-const TYPE_TO_PATH: Record<OpportunityType, string> = {
-  [OpportunityType.SUCCESSION]: "successions",
-  [OpportunityType.LIQUIDATION]: "liquidations",
-  [OpportunityType.ENERGY_SIEVE]: "energy-sieves",
-  [OpportunityType.REAL_ESTATE_LISTING]: "listings",
-  [OpportunityType.AUCTION]: "auctions",
-  [OpportunityType.DIVORCE]: "divorces",
-};
-
-// Custom order for dropdown display - Succession last
-const TYPE_DISPLAY_ORDER: OpportunityType[] = [
-  OpportunityType.LIQUIDATION,
-  OpportunityType.ENERGY_SIEVE,
-  OpportunityType.REAL_ESTATE_LISTING,
-  OpportunityType.AUCTION,
-  OpportunityType.SUCCESSION, // Last
-];
-
 export function BaseFilters({
   filters,
   currentType,
   onFiltersChange,
   ExtraFilters,
-  datePeriodOptions = DATE_PERIOD_OPTIONS
+  datePeriodOptions
 }: OpportunityFiltersProps): React.ReactElement {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
+
+  const handleTypeChange = useCallback((selectedValue: OpportunityType): void => {
+    const url = `/search/${OPPORTUNITY_TYPE_TO_PATH[selectedValue]}`;
+    const newParams = new URLSearchParams(searchParams);
+    newParams.delete('page');
+    router.push(url + `?${newParams.toString()}`);
+  }, [router, searchParams]);
 
   const viewType = useMemo(() => {
     const param = searchParams.get("view") as ViewType;
@@ -70,16 +48,8 @@ export function BaseFilters({
   const handleViewTypeChange = useCallback((value: ViewType): void => {
     const newParams = new URLSearchParams(searchParams);
     newParams.set("view", value);
-    router.push(`/search/${TYPE_TO_PATH[currentType]}?${newParams.toString()}`);
+    router.push(`/search/${OPPORTUNITY_TYPE_TO_PATH[currentType]}?${newParams.toString()}`);
   }, [router, currentType, searchParams]);
-
-  const handleTypeChange = useCallback((value: string): void => {
-    const url = `/search/${TYPE_TO_PATH[value as OpportunityType]}`
-    const newParams = new URLSearchParams(searchParams);
-    newParams.delete('page');
-    router.push(url + `?${newParams.toString()}`);
-  }, [router, searchParams]);
-
 
   const handleReset = useCallback(() => {
     router.push(pathname);
@@ -95,25 +65,8 @@ export function BaseFilters({
       </CardHeader>
       <CardContent className="flex-1 overflow-y-auto">
         <div className="space-y-4">
-          {/* Type Filter - Single select */}
-          <div>
-            <label className="text-sm font-medium mb-2 block font-heading">Type d&apos;opportunité</label>
-            <Select
-              value={currentType}
-              onValueChange={handleTypeChange}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Sélectionner un type..." />
-              </SelectTrigger>
-              <SelectContent>
-                {TYPE_DISPLAY_ORDER.map((type) => (
-                  <SelectItem key={type} value={type}>
-                    {TYPE_LABELS[type]}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          {/* Type Filter */}
+          <OpportunityTypeFilter value={currentType} onChange={handleTypeChange} />
 
           {/* Department Filter - Custom input with search */}
           <div>
@@ -136,24 +89,11 @@ export function BaseFilters({
           </div>
 
           {/* Date Period Filter */}
-          <div>
-            <label className="text-sm font-medium mb-2 block font-heading">Opportunités depuis</label>
-            <Select
-              value={filters.datePeriod ?? ""}
-              onValueChange={(value) => onFiltersChange({ ...filters, datePeriod: value as DatePeriod })}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Toutes les opportunités" />
-              </SelectTrigger>
-              <SelectContent>
-                {datePeriodOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <DatePeriodFilter
+            value={filters.datePeriod}
+            onChange={(value) => onFiltersChange({ ...filters, datePeriod: value })}
+            datePeriodOptions={datePeriodOptions}
+          />
 
           {ExtraFilters && <div className="space-y-4">{ExtraFilters}</div>}
         </div>
