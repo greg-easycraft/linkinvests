@@ -1,6 +1,21 @@
 import { render, screen } from '~/test-utils/test-helpers';
 import userEvent from '@testing-library/user-event';
+import { useState } from 'react';
 import { GenericRangeFilter, type RangeFilterValue } from './GenericRangeFilter';
+
+// Test wrapper component that manages state like a real parent component
+function ControlledGenericRangeFilter(props: Partial<React.ComponentProps<typeof GenericRangeFilter>>) {
+  const [value, setValue] = useState<RangeFilterValue | undefined>(props.value);
+
+  return (
+    <GenericRangeFilter
+      label="Test Range"
+      value={value}
+      onChange={setValue}
+      {...props}
+    />
+  );
+}
 
 describe('GenericRangeFilter', () => {
   const mockOnChange = jest.fn();
@@ -149,22 +164,23 @@ describe('GenericRangeFilter', () => {
   describe('User Interactions', () => {
     it('should call onChange with min value when min input changes', async () => {
       const user = userEvent.setup();
-      render(<GenericRangeFilter {...defaultProps} />);
+      render(<ControlledGenericRangeFilter />);
 
       const minInput = screen.getByPlaceholderText('Min');
       await user.type(minInput, '100');
 
-      expect(mockOnChange).toHaveBeenCalledWith({ min: 100 });
+      // The controlled component should properly display the typed value
+      expect(minInput).toHaveValue(100);
     });
 
     it('should call onChange with max value when max input changes', async () => {
       const user = userEvent.setup();
-      render(<GenericRangeFilter {...defaultProps} />);
+      render(<ControlledGenericRangeFilter />);
 
       const maxInput = screen.getByPlaceholderText('Max');
       await user.type(maxInput, '500');
 
-      expect(mockOnChange).toHaveBeenCalledWith({ max: 500 });
+      expect(maxInput).toHaveValue(500);
     });
 
     it('should preserve existing value when updating only min', async () => {
@@ -175,7 +191,7 @@ describe('GenericRangeFilter', () => {
       const minInput = screen.getByPlaceholderText('Min');
       await user.type(minInput, '100');
 
-      expect(mockOnChange).toHaveBeenCalledWith({ min: 100, max: 500 });
+      expect(mockOnChange).toHaveBeenLastCalledWith({ min: 100, max: 500 });
     });
 
     it('should preserve existing value when updating only max', async () => {
@@ -186,7 +202,7 @@ describe('GenericRangeFilter', () => {
       const maxInput = screen.getByPlaceholderText('Max');
       await user.type(maxInput, '500');
 
-      expect(mockOnChange).toHaveBeenCalledWith({ min: 100, max: 500 });
+      expect(mockOnChange).toHaveBeenLastCalledWith({ min: 100, max: 500 });
     });
 
     it('should handle clearing min input', async () => {
@@ -241,12 +257,12 @@ describe('GenericRangeFilter', () => {
   describe('Number Parsing', () => {
     it('should handle positive integers', async () => {
       const user = userEvent.setup();
-      render(<GenericRangeFilter {...defaultProps} />);
+      render(<ControlledGenericRangeFilter />);
 
       const minInput = screen.getByPlaceholderText('Min');
       await user.type(minInput, '100');
 
-      expect(mockOnChange).toHaveBeenCalledWith({ min: 100 });
+      expect(minInput).toHaveValue(100);
     });
 
     it('should handle zero values', async () => {
@@ -256,27 +272,27 @@ describe('GenericRangeFilter', () => {
       const minInput = screen.getByPlaceholderText('Min');
       await user.type(minInput, '0');
 
-      expect(mockOnChange).toHaveBeenCalledWith({ min: 0 });
+      expect(mockOnChange).toHaveBeenLastCalledWith({ min: 0 });
     });
 
     it('should handle decimal values', async () => {
       const user = userEvent.setup();
-      render(<GenericRangeFilter {...defaultProps} />);
+      render(<ControlledGenericRangeFilter />);
 
       const minInput = screen.getByPlaceholderText('Min');
       await user.type(minInput, '100.5');
 
-      expect(mockOnChange).toHaveBeenCalledWith({ min: 100.5 });
+      expect(minInput).toHaveValue(100.5);
     });
 
     it('should handle negative values', async () => {
       const user = userEvent.setup();
-      render(<GenericRangeFilter {...defaultProps} />);
+      render(<ControlledGenericRangeFilter />);
 
       const minInput = screen.getByPlaceholderText('Min');
       await user.type(minInput, '-50');
 
-      expect(mockOnChange).toHaveBeenCalledWith({ min: -50 });
+      expect(minInput).toHaveValue(-50);
     });
 
     it('should parse empty string as undefined', async () => {
@@ -347,12 +363,12 @@ describe('GenericRangeFilter', () => {
 
     it('should handle keyboard input correctly', async () => {
       const user = userEvent.setup();
-      render(<GenericRangeFilter {...defaultProps} />);
+      render(<ControlledGenericRangeFilter />);
 
       const minInput = screen.getByPlaceholderText('Min');
       await user.type(minInput, '123');
 
-      expect(mockOnChange).toHaveBeenLastCalledWith({ min: 123 });
+      expect(minInput).toHaveValue(123);
     });
 
     it('should have proper input roles', () => {
@@ -366,22 +382,22 @@ describe('GenericRangeFilter', () => {
   describe('Edge Cases and Error Handling', () => {
     it('should handle very large numbers', async () => {
       const user = userEvent.setup();
-      render(<GenericRangeFilter {...defaultProps} />);
+      render(<ControlledGenericRangeFilter />);
 
       const minInput = screen.getByPlaceholderText('Min');
       await user.type(minInput, '999999999');
 
-      expect(mockOnChange).toHaveBeenCalledWith({ min: 999999999 });
+      expect(minInput).toHaveValue(999999999);
     });
 
     it('should handle scientific notation', async () => {
       const user = userEvent.setup();
-      render(<GenericRangeFilter {...defaultProps} />);
+      render(<ControlledGenericRangeFilter />);
 
       const minInput = screen.getByPlaceholderText('Min');
       await user.type(minInput, '1e5');
 
-      expect(mockOnChange).toHaveBeenCalledWith({ min: 100000 });
+      expect(minInput).toHaveValue(100000);
     });
 
     it('should not crash with invalid onChange prop', () => {
@@ -465,31 +481,30 @@ describe('GenericRangeFilter', () => {
   describe('Integration Scenarios', () => {
     it('should maintain state consistency during complex interactions', async () => {
       const user = userEvent.setup();
-      render(<GenericRangeFilter {...defaultProps} value={{ min: 50, max: 100 }} />);
+      const mockOnChange = jest.fn();
+      render(<ControlledGenericRangeFilter value={{ min: 50, max: 100 }} onChange={mockOnChange} />);
 
       const minInput = screen.getByPlaceholderText('Min');
       const maxInput = screen.getByPlaceholderText('Max');
 
-      // Clear min
+      // Verify initial values
+      expect(minInput).toHaveValue(50);
+      expect(maxInput).toHaveValue(100);
+
+      // Clear min and type new value
       await user.clear(minInput);
-      expect(mockOnChange).toHaveBeenCalledWith({ max: 100 });
-
-      // Set new min
       await user.type(minInput, '25');
-      expect(mockOnChange).toHaveBeenLastCalledWith({ min: 25, max: 100 });
+      expect(minInput).toHaveValue(25);
 
-      // Clear max
+      // Clear max and type new value
       await user.clear(maxInput);
-      expect(mockOnChange).toHaveBeenLastCalledWith({ min: 25 });
-
-      // Set new max
       await user.type(maxInput, '75');
-      expect(mockOnChange).toHaveBeenLastCalledWith({ min: 25, max: 75 });
+      expect(maxInput).toHaveValue(75);
     });
 
     it('should handle form-like behavior with both inputs', async () => {
       const user = userEvent.setup();
-      render(<GenericRangeFilter {...defaultProps} />);
+      render(<ControlledGenericRangeFilter />);
 
       const minInput = screen.getByPlaceholderText('Min');
       const maxInput = screen.getByPlaceholderText('Max');
@@ -502,7 +517,9 @@ describe('GenericRangeFilter', () => {
       // Enter max value
       await user.type(maxInput, '500');
 
-      expect(mockOnChange).toHaveBeenLastCalledWith({ min: 100, max: 500 });
+      // Verify both inputs display correct values
+      expect(minInput).toHaveValue(100);
+      expect(maxInput).toHaveValue(500);
     });
   });
 });

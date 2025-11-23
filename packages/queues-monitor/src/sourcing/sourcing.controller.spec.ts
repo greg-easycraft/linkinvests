@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
 import { HttpStatus } from '@nestjs/common';
 import { getQueueToken } from '@nestjs/bullmq';
@@ -542,6 +541,231 @@ describe('SourcingController', () => {
       expect(controller['logger'].error).toHaveBeenCalledWith({
         error: 'Test error',
         message: 'Failed to enqueue failing companies job',
+      });
+    });
+  });
+
+  describe('enqueueListings', () => {
+    it('should successfully enqueue a listings job with no parameters', async () => {
+      const mockJobId = 'job-200';
+      mockListingsQueue.add.mockResolvedValue({ id: mockJobId } as any);
+
+      const result = await controller.enqueueListings();
+
+      expect(result).toEqual({
+        success: true,
+        jobId: mockJobId,
+        message: 'Listings sourcing job enqueued successfully',
+      });
+
+      expect(mockListingsQueue.add).toHaveBeenCalledWith(
+        'source-listings',
+        {
+          source: undefined,
+          afterDate: undefined,
+          beforeDate: undefined,
+          energyGradeMax: undefined,
+          energyGradeMin: undefined,
+          propertyTypes: undefined,
+          departmentCode: undefined,
+        },
+        {
+          removeOnComplete: 100,
+          removeOnFail: 100,
+        },
+      );
+
+      expect(controller['logger'].log).toHaveBeenCalledWith({
+        jobId: mockJobId,
+        source: undefined,
+        filters: {
+          afterDate: undefined,
+          beforeDate: undefined,
+          energyGradeMax: undefined,
+          energyGradeMin: undefined,
+          propertyTypes: undefined,
+          departmentCode: undefined,
+        },
+        message: 'Listings sourcing job enqueued',
+      });
+    });
+
+    it('should successfully enqueue a listings job with all parameters', async () => {
+      const mockJobId = 'job-201';
+      mockListingsQueue.add.mockResolvedValue({ id: mockJobId } as any);
+
+      const result = await controller.enqueueListings(
+        'notaires',
+        '2024-01-01',
+        '2024-12-31',
+        'C',
+        'A',
+        ['apartment', 'house'],
+        '75',
+      );
+
+      expect(result).toEqual({
+        success: true,
+        jobId: mockJobId,
+        message: 'Listings sourcing job enqueued successfully',
+      });
+
+      expect(mockListingsQueue.add).toHaveBeenCalledWith(
+        'source-listings',
+        {
+          source: 'notaires',
+          afterDate: '2024-01-01',
+          beforeDate: '2024-12-31',
+          energyGradeMax: 'C',
+          energyGradeMin: 'A',
+          propertyTypes: ['apartment', 'house'],
+          departmentCode: '75',
+        },
+        {
+          removeOnComplete: 100,
+          removeOnFail: 100,
+        },
+      );
+
+      expect(controller['logger'].log).toHaveBeenCalledWith({
+        jobId: mockJobId,
+        source: 'notaires',
+        filters: {
+          afterDate: '2024-01-01',
+          beforeDate: '2024-12-31',
+          energyGradeMax: 'C',
+          energyGradeMin: 'A',
+          propertyTypes: ['apartment', 'house'],
+          departmentCode: '75',
+        },
+        message: 'Listings sourcing job enqueued',
+      });
+    });
+
+    it('should successfully enqueue a listings job with partial parameters', async () => {
+      const mockJobId = 'job-202';
+      mockListingsQueue.add.mockResolvedValue({ id: mockJobId } as any);
+
+      const result = await controller.enqueueListings(
+        'mls',
+        '2024-06-01',
+        undefined,
+        'F',
+        undefined,
+        ['house'],
+        undefined,
+      );
+
+      expect(result).toEqual({
+        success: true,
+        jobId: mockJobId,
+        message: 'Listings sourcing job enqueued successfully',
+      });
+
+      expect(mockListingsQueue.add).toHaveBeenCalledWith(
+        'source-listings',
+        {
+          source: 'mls',
+          afterDate: '2024-06-01',
+          beforeDate: undefined,
+          energyGradeMax: 'F',
+          energyGradeMin: undefined,
+          propertyTypes: ['house'],
+          departmentCode: undefined,
+        },
+        {
+          removeOnComplete: 100,
+          removeOnFail: 100,
+        },
+      );
+    });
+
+    it('should handle queue errors gracefully', async () => {
+      const error = new Error('Queue service unavailable');
+      mockListingsQueue.add.mockRejectedValue(error);
+
+      const result = await controller.enqueueListings('notaires', '2024-01-01');
+
+      expect(result).toEqual({
+        success: false,
+        error: 'Queue service unavailable',
+      });
+
+      expect(controller['logger'].error).toHaveBeenCalledWith({
+        error: 'Queue service unavailable',
+        message: 'Failed to enqueue listings sourcing job',
+      });
+    });
+
+    it('should handle non-Error objects thrown from queue', async () => {
+      mockListingsQueue.add.mockRejectedValue('String error');
+
+      const result = await controller.enqueueListings();
+
+      expect(result.success).toBe(false);
+      expect(result.error).toBeUndefined(); // err.message will be undefined for non-Error objects
+    });
+
+    it('should handle empty arrays and empty strings correctly', async () => {
+      const mockJobId = 'job-203';
+      mockListingsQueue.add.mockResolvedValue({ id: mockJobId } as any);
+
+      const result = await controller.enqueueListings(
+        '',
+        '',
+        '',
+        '',
+        '',
+        [],
+        '',
+      );
+
+      expect(result.success).toBe(true);
+
+      expect(mockListingsQueue.add).toHaveBeenCalledWith(
+        'source-listings',
+        {
+          source: '',
+          afterDate: '',
+          beforeDate: '',
+          energyGradeMax: '',
+          energyGradeMin: '',
+          propertyTypes: [],
+          departmentCode: '',
+        },
+        {
+          removeOnComplete: 100,
+          removeOnFail: 100,
+        },
+      );
+    });
+
+    it('should log all parameters correctly', async () => {
+      const mockJobId = 'job-204';
+      mockListingsQueue.add.mockResolvedValue({ id: mockJobId } as any);
+
+      await controller.enqueueListings(
+        'test-source',
+        '2024-03-01',
+        '2024-03-31',
+        'E',
+        'B',
+        ['studio', 'duplex'],
+        '69',
+      );
+
+      expect(controller['logger'].log).toHaveBeenCalledWith({
+        jobId: mockJobId,
+        source: 'test-source',
+        filters: {
+          afterDate: '2024-03-01',
+          beforeDate: '2024-03-31',
+          energyGradeMax: 'E',
+          energyGradeMin: 'B',
+          propertyTypes: ['studio', 'duplex'],
+          departmentCode: '69',
+        },
+        message: 'Listings sourcing job enqueued',
       });
     });
   });

@@ -47,6 +47,41 @@ global.ResizeObserver = jest.fn().mockImplementation(() => ({
   disconnect: jest.fn(),
 }));
 
+// Add polyfills for Node.js globals required by database libraries
+if (typeof global.TextEncoder === 'undefined') {
+  const { TextEncoder, TextDecoder } = require('util');
+  global.TextEncoder = TextEncoder;
+  global.TextDecoder = TextDecoder;
+}
+
+// Mock server-side dependencies to prevent ESM issues in tests
+jest.mock('~/lib/env', () => ({
+  env: {
+    DATABASE_URL: 'test-db-url',
+    GOOGLE_CLIENT_ID: 'test-google-id',
+    GOOGLE_CLIENT_SECRET: 'test-google-secret',
+    BETTER_AUTH_SECRET: 'test-auth-secret',
+    BETTER_AUTH_URL: 'http://localhost:3000',
+    NEXT_PUBLIC_MAPBOX_TOKEN: 'test-mapbox-token',
+    NEXT_PUBLIC_BETTER_AUTH_URL: 'http://localhost:3000',
+  },
+}));
+
+// Mock server database
+jest.mock('~/server/db', () => ({
+  db: {
+    select: jest.fn(),
+    from: jest.fn(),
+    where: jest.fn(),
+    distinct: jest.fn(),
+  },
+}));
+
+// Mock server actions
+jest.mock('~/app/_actions/listings/queries', () => ({
+  getListingSources: jest.fn().mockResolvedValue([]),
+}));
+
 // Mock scrollIntoView (only in browser environment)
 if (typeof HTMLElement !== 'undefined') {
   HTMLElement.prototype.scrollIntoView = jest.fn();

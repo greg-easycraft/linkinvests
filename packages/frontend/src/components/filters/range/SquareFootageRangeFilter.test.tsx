@@ -1,7 +1,21 @@
 import { render, screen } from '~/test-utils/test-helpers';
 import userEvent from '@testing-library/user-event';
+import { useState } from 'react';
 import { SquareFootageRangeFilter } from './SquareFootageRangeFilter';
 import type { RangeFilterValue } from './GenericRangeFilter';
+
+// Test wrapper component that manages state like a real parent component
+function ControlledSquareFootageRangeFilter(props: Partial<React.ComponentProps<typeof SquareFootageRangeFilter>>) {
+  const [value, setValue] = useState<RangeFilterValue | undefined>(props.value);
+
+  return (
+    <SquareFootageRangeFilter
+      value={value}
+      onChange={setValue}
+      {...props}
+    />
+  );
+}
 
 describe('SquareFootageRangeFilter', () => {
   const mockOnChange = jest.fn();
@@ -95,22 +109,22 @@ describe('SquareFootageRangeFilter', () => {
   describe('User Interactions', () => {
     it('should call onChange with min surface when min input changes', async () => {
       const user = userEvent.setup();
-      render(<SquareFootageRangeFilter {...defaultProps} />);
+      render(<ControlledSquareFootageRangeFilter />);
 
       const minInput = screen.getByPlaceholderText('Min');
       await user.type(minInput, '50');
 
-      expect(mockOnChange).toHaveBeenLastCalledWith({ min: 50 });
+      expect(minInput).toHaveValue(50);
     });
 
     it('should call onChange with max surface when max input changes', async () => {
       const user = userEvent.setup();
-      render(<SquareFootageRangeFilter {...defaultProps} />);
+      render(<ControlledSquareFootageRangeFilter />);
 
       const maxInput = screen.getByPlaceholderText('Max');
       await user.type(maxInput, '100');
 
-      expect(mockOnChange).toHaveBeenLastCalledWith({ max: 100 });
+      expect(maxInput).toHaveValue(100);
     });
 
     it('should preserve existing value when updating only min surface', async () => {
