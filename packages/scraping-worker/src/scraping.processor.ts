@@ -6,7 +6,6 @@ import type { Job } from 'bullmq';
 import type { ScrapingJobData } from '~/types/scraping-job.types';
 import { AuctionsScrapingService } from './domains/auctions';
 import { DeceasesScrapingService } from './domains/deceases';
-import { ListingsScrapingService } from './domains/listings';
 
 @Processor(SCRAPING_QUEUE, {
   concurrency: 1, // Process ONE job at a time
@@ -16,14 +15,13 @@ export class ScrapingProcessor extends WorkerHost {
 
   constructor(
     private readonly auctionsScrapingService: AuctionsScrapingService,
-    private readonly deceasesScrapingService: DeceasesScrapingService,
-    private readonly listingsScrapingService: ListingsScrapingService
+    private readonly deceasesScrapingService: DeceasesScrapingService
   ) {
     super();
   }
 
   async process(job: Job<ScrapingJobData>): Promise<void> {
-    const { jobName, startPage, endPage } = job.data;
+    const { jobName } = job.data;
 
     this.logger.log({
       jobId: job.id,
@@ -39,11 +37,6 @@ export class ScrapingProcessor extends WorkerHost {
 
       if (jobName === 'deceases') {
         await this.deceasesScrapingService.scrapeDeceases(job);
-        return;
-      }
-
-      if (jobName === 'notary-listings') {
-        await this.listingsScrapingService.processNotaryListings(startPage, endPage);
         return;
       }
 

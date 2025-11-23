@@ -3,7 +3,7 @@ import { fr } from "date-fns/locale";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
-import { MapPin, Calendar, ExternalLink, Building2, Zap } from "lucide-react";
+import { MapPin, Calendar, ExternalLink, Building2, Zap, Euro } from "lucide-react";
 import { StaticStreetView } from "./StaticStreetView";
 import { TYPE_LABELS, TYPE_COLORS } from "~/constants/opportunity-types";
 import { EnergyClass, Opportunity, OpportunityType } from "@linkinvests/shared";
@@ -17,6 +17,34 @@ const hasPictureFields = (opportunity: Opportunity): opportunity is Extract<Oppo
 // Type guard to check if opportunity has property details (squareFootage and energyClass)
 const hasPropertyDetails = (opportunity: Opportunity): opportunity is Extract<Opportunity, { energyClass?: string; squareFootage?: number }> => {
   return 'energyClass' in opportunity || 'squareFootage' in opportunity;
+};
+
+// Type guard to check if opportunity has price fields
+const hasPriceFields = (opportunity: Opportunity): opportunity is Extract<Opportunity, { price?: number; currentPrice?: number; reservePrice?: number }> => {
+  return 'price' in opportunity || 'currentPrice' in opportunity || 'reservePrice' in opportunity;
+};
+
+// Price formatting utility
+const formatPrice = (price: number): string => {
+  return new Intl.NumberFormat('fr-FR', {
+    style: 'currency',
+    currency: 'EUR',
+    minimumFractionDigits: 0,
+  }).format(price);
+};
+
+// Get price value based on opportunity type and available fields
+const getPriceValue = (opportunity: Opportunity): number | undefined => {
+  if ('currentPrice' in opportunity && opportunity.currentPrice) {
+    return opportunity.currentPrice;
+  }
+  if ('reservePrice' in opportunity && opportunity.reservePrice) {
+    return opportunity.reservePrice;
+  }
+  if ('price' in opportunity && opportunity.price) {
+    return opportunity.price;
+  }
+  return undefined;
 };
 
 interface OpportunityCardProps {
@@ -93,7 +121,7 @@ export function OpportunityCard({ opportunity, onSelect, selectedId, type, exter
                 </div>
 
                 {/* Details Grid */}
-                <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
+                <div className="grid grid-cols-3 gap-x-4 gap-y-2 text-sm">
                   {/* Address */}
                   <div className="flex items-start gap-2">
                     <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0 text-[var(--primary)] opacity-70" />
@@ -115,6 +143,19 @@ export function OpportunityCard({ opportunity, onSelect, selectedId, type, exter
                       </div>
                     </div>
                   </div>
+
+                  {/* Price */}
+                  {hasPriceFields(opportunity) && getPriceValue(opportunity) && (
+                    <div className="flex items-start gap-2">
+                      <Euro className="h-4 w-4 mt-0.5 flex-shrink-0 text-[var(--primary)] opacity-70" />
+                      <div>
+                        <div className="text-xs opacity-70 font-heading">Prix</div>
+                        <div className="font-semibold text-green-600">
+                          {formatPrice(getPriceValue(opportunity)!)}
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Square Meters */}
                   {hasPropertyDetails(opportunity) && opportunity.squareFootage && (
