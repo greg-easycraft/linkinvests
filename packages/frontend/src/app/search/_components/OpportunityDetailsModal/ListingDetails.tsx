@@ -73,10 +73,10 @@ const formatTransactionType = (transactionType: string): string => {
 export function ListingDetails({ opportunity }: ListingDetailsProps) {
   const hasPriceInfo = opportunity.price || opportunity.fees || opportunity.charges;
   const hasPropertyInfo = opportunity.propertyType || opportunity.squareFootage ||
-                         opportunity.landArea || opportunity.rooms || opportunity.bedrooms ||
-                         opportunity.energyClass || opportunity.constructionYear || opportunity.floor;
+    opportunity.landArea || opportunity.rooms || opportunity.bedrooms ||
+    opportunity.energyClass || opportunity.constructionYear || opportunity.floor;
   const hasFeatures = opportunity.balcony || opportunity.terrace || opportunity.garden ||
-                     opportunity.garage || opportunity.parking || opportunity.elevator;
+    opportunity.garage || opportunity.parking || opportunity.elevator;
   const hasContactInfo = opportunity.sellerContact && (
     opportunity.sellerContact.name ||
     opportunity.sellerContact.address ||
@@ -205,15 +205,13 @@ export function ListingDetails({ opportunity }: ListingDetailsProps) {
                   <span>{opportunity.bedrooms}</span>
                 </div>
               )}
-              {opportunity.energyClass && (
-                <div className="flex items-center gap-2">
-                  <Zap className="h-4 w-4 text-gray-600" />
-                  <span className="font-medium">DPE:</span>
-                  <EnergyClassBadge
-                    energyClass={opportunity.energyClass as EnergyClass}
-                  />
-                </div>
-              )}
+              <div className="flex items-center gap-2">
+                <Zap className="h-4 w-4 text-gray-600" />
+                <span className="font-medium">DPE:</span>
+                <EnergyClassBadge
+                  energyClass={opportunity.energyClass}
+                />
+              </div>
               {opportunity.constructionYear && (
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4 text-gray-600" />

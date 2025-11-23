@@ -550,9 +550,9 @@ describe('MoteurImmoService', () => {
       });
 
       expect(result).toHaveLength(3);
-      expect(
-        result.every((listing) => listing.source === 'seloger'),
-      ).toBe(true);
+      expect(result.every((listing) => listing.source === 'seloger')).toBe(
+        true,
+      );
     });
 
     it('should handle empty results', async () => {

@@ -31,14 +31,17 @@
   "author": "",
   "devDependencies": {
     "@types/node": "^22.10.2",
+    "date-fns": "^4.1.0",
     "dotenv": "^17.2.3",
     "eslint": "^9.17.0",
     "prettier": "^3.4.2",
     "tsx": "^4.20.6",
     "typescript": "^5.7.2",
-    "zod": "^4.1.12"
-  },
-  "dependencies": {
-    "date-fns": "^4.1.0"
+    "zod": "^4.1.12",
+    "@typescript-eslint/eslint-plugin": "^8.20.0",
+    "@typescript-eslint/parser": "^8.20.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-prettier": "^5.2.1"
   }
 }

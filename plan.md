@@ -8,8 +8,8 @@ MoteurImmo
 - [ ] tout DPE depuis 3 mois
 
 ## DIMANCHE
+- [ ] enchere occupé vs libre
 - [ ] Encheres price from bids
 - [ ] Encheres address from desc
 - [ ] Encheres onConflictDoUpdate
-- [ ] enchere occupé vs libre
 - [ ] successions Verif email mairie

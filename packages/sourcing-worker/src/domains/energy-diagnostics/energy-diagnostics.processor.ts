@@ -137,7 +137,8 @@ export class EnergyDiagnosticsProcessor extends WorkerHost {
     const [latStr, lonStr] = record._geopoint.split(',');
 
     const opportunityDateStr =
-      record.date_etablissement_energyClass || record.date_reception_energyClass;
+      record.date_etablissement_energyClass ||
+      record.date_reception_energyClass;
     if (!opportunityDateStr) {
       this.logger.warn(
         `Missing opportunity date for record ${record.numero_energyClass}`,
@@ -161,7 +162,8 @@ export class EnergyDiagnosticsProcessor extends WorkerHost {
       squareFootage: record.surface_habitable_logement,
     };
 
-    const validationResult = energyDiagnosticInputSchema.safeParse(energyClassInput);
+    const validationResult =
+      energyDiagnosticInputSchema.safeParse(energyClassInput);
     if (!validationResult.success) {
       this.logger.warn(
         `Invalid DPE record ${record.numero_energyClass}: ${JSON.stringify(validationResult.error.issues)}`,

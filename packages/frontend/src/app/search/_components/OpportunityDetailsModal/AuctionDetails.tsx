@@ -18,7 +18,7 @@ import {
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import type { Auction, EnergyClass } from "@linkinvests/shared";
+import type { Auction } from "@linkinvests/shared";
 import { EnergyClassBadge } from "~/components/ui/energy-class-badge";
 
 interface AuctionDetailsProps {
@@ -39,9 +39,9 @@ const formatSquareFootage = (squareFootage: number): string => {
 
 export function AuctionDetails({ opportunity }: AuctionDetailsProps) {
   const hasPriceInfo = opportunity.currentPrice || opportunity.lowerEstimate ||
-                      opportunity.upperEstimate || opportunity.reservePrice;
+    opportunity.upperEstimate || opportunity.reservePrice;
   const hasPropertyInfo = opportunity.propertyType || opportunity.squareFootage ||
-                         opportunity.rooms || opportunity.energyClass;
+    opportunity.rooms || opportunity.energyClass;
   const hasContactInfo = opportunity.auctionHouseContact && (
     opportunity.auctionHouseContact.name ||
     opportunity.auctionHouseContact.address ||
@@ -138,13 +138,11 @@ export function AuctionDetails({ opportunity }: AuctionDetailsProps) {
                   <span>{opportunity.rooms}</span>
                 </div>
               )}
-              {opportunity.energyClass && (
-                <div className="flex items-center gap-2">
-                  <FileText className="h-4 w-4 text-gray-600" />
-                  <span className="font-medium">DPE:</span>
-                  <EnergyClassBadge energyClass={opportunity.energyClass as EnergyClass} />
-                </div>
-              )}
+              <div className="flex items-center gap-2">
+                <FileText className="h-4 w-4 text-gray-600" />
+                <span className="font-medium">DPE:</span>
+                <EnergyClassBadge energyClass={opportunity.energyClass} />
+              </div>
             </div>
           </div>
         )}

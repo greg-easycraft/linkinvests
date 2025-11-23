@@ -3,14 +3,20 @@ import { fr } from "date-fns/locale";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
-import { MapPin, Calendar, ExternalLink } from "lucide-react";
+import { MapPin, Calendar, ExternalLink, Building2, Zap } from "lucide-react";
 import { StaticStreetView } from "./StaticStreetView";
 import { TYPE_LABELS, TYPE_COLORS } from "~/constants/opportunity-types";
-import { Opportunity, OpportunityType } from "@linkinvests/shared";
+import { EnergyClass, Opportunity, OpportunityType } from "@linkinvests/shared";
+import { EnergyClassBadge } from "~/components/ui/energy-class-badge";
 
 // Type guard to check if opportunity has pictures
 const hasPictureFields = (opportunity: Opportunity): opportunity is Extract<Opportunity, { mainPicture?: string; pictures?: string[] }> => {
   return 'mainPicture' in opportunity;
+};
+
+// Type guard to check if opportunity has property details (squareFootage and energyClass)
+const hasPropertyDetails = (opportunity: Opportunity): opportunity is Extract<Opportunity, { energyClass?: string; squareFootage?: number }> => {
+  return 'energyClass' in opportunity || 'squareFootage' in opportunity;
 };
 
 interface OpportunityCardProps {
@@ -109,6 +115,28 @@ export function OpportunityCard({ opportunity, onSelect, selectedId, type, exter
                       </div>
                     </div>
                   </div>
+
+                  {/* Square Meters */}
+                  {hasPropertyDetails(opportunity) && opportunity.squareFootage && (
+                    <div className="flex items-start gap-2">
+                      <Building2 className="h-4 w-4 mt-0.5 flex-shrink-0 text-[var(--primary)] opacity-70" />
+                      <div>
+                        <div className="text-xs opacity-70 font-heading">Surface</div>
+                        <div>{opportunity.squareFootage} m²</div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Energy Class */}
+                  {hasPropertyDetails(opportunity) && (
+                    <div className="flex items-start gap-2">
+                      <Zap className="h-4 w-4 mt-0.5 flex-shrink-0 text-[var(--primary)] opacity-70" />
+                      <div>
+                        <div className="text-xs opacity-70 font-heading">Classe énergétique</div>
+                        <EnergyClassBadge energyClass={opportunity.energyClass as EnergyClass} />
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

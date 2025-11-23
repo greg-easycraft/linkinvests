@@ -1,6 +1,6 @@
 import { config } from 'dotenv';
 import { z } from 'zod';
-import { isBefore, parseISO, subMonths } from 'date-fns';
+import { isBefore, parseISO, subWeeks } from 'date-fns';
 
 // Load environment variables
 config();
@@ -33,16 +33,16 @@ type Env = z.infer<typeof envSchema>;
     };
 
     const allDepartments = Array
-        .from({ length: 98 }, (_, i) => i + 1);
-    const months = generateMonthsForYears(2024, 2025);
-    console.log(`Generated ${months.length} months for processing`);
+        .from({ length: 95 }, (_, i) => i + 1);
+    const weeks = generateWeeksForYears(2024, 2025);
+    console.log(`Generated ${weeks.length} weeks for processing`);
 
     const today = new Date();
-    const threeMonthsAgo = subMonths(today, 3);
-    // Process all departments and months sequentially
+    const twelveWeeksAgo = subWeeks(today, 12);
+    // Process all departments and weeks sequentially
     let successCount = 0;
     let errorCount = 0;
-    const totalJobs = allDepartments.length * months.length;
+    const totalJobs = allDepartments.length * weeks.length;
 
     const createMoteurImmoJob = buildCreateMoteurImmoJobBody(QUEUES_MONITOR_URL + '/sourcing/jobs/listings', headers);
 
@@ -50,10 +50,10 @@ type Env = z.infer<typeof envSchema>;
 
     for (const department of allDepartments) {
         console.log(`📍 Processing department ${department}/${allDepartments.length}...`);
-        for (const month of months) {
-            const monthDate = parseISO(month.sinceDate);
-            const energySievesOnly = isBefore(monthDate, threeMonthsAgo);
-            const success = await createMoteurImmoJob(department, month.sinceDate, month.beforeDate, energySievesOnly);
+        for (const week of weeks) {
+            const weekDate = parseISO(week.sinceDate);
+            const energySievesOnly = isBefore(weekDate, twelveWeeksAgo);
+            const success = await createMoteurImmoJob(department, week.sinceDate, week.beforeDate, energySievesOnly);
 
             if (success) {
                 successCount++;
@@ -93,22 +93,48 @@ function getEnv(): Env {
     process.exit(1);
 }
 
-function generateMonthsForYears(startYear: number, endYear: number): { year: number, month: number, sinceDate: string, beforeDate: string }[] {
-    const months: { year: number, month: number, sinceDate: string, beforeDate: string }[] = [];
-    for (let year = startYear; year <= endYear; year++) {
-        for (let month = 1; month <= 12; month++) {
-            const startDate = new Date(year, month - 1, 1);
-            const endDate = new Date(year, month, 0); // Last day of the month
+function generateWeeksForYears(startYear: number, endYear: number): { year: number, week: number, sinceDate: string, beforeDate: string }[] {
+    const weeks: { year: number, week: number, sinceDate: string, beforeDate: string }[] = [];
 
-            months.push({
-                year,
-                month,
-                sinceDate: startDate.toISOString().split('T')[0], // YYYY-MM-DD format
-                beforeDate: endDate.toISOString().split('T')[0]
+    // Start from the first Monday of the start year
+    const startDate = new Date(startYear, 0, 1);
+    const firstMonday = new Date(startDate);
+    const dayOfWeek = firstMonday.getDay();
+    if (dayOfWeek !== 1) { // If not Monday
+        firstMonday.setDate(firstMonday.getDate() + (8 - dayOfWeek) % 7);
+    }
+
+    // End at the last day of the end year
+    const endDate = new Date(endYear, 11, 31);
+
+    let currentWeekStart = new Date(firstMonday);
+    let weekNumber = 1;
+
+    while (currentWeekStart <= endDate) {
+        const currentWeekEnd = new Date(currentWeekStart);
+        currentWeekEnd.setDate(currentWeekEnd.getDate() + 6); // Sunday of the same week
+
+        // Only include complete weeks that don't extend significantly beyond the end date
+        if (currentWeekStart.getFullYear() <= endYear) {
+            weeks.push({
+                year: currentWeekStart.getFullYear(),
+                week: weekNumber,
+                sinceDate: currentWeekStart.toISOString().split('T')[0], // YYYY-MM-DD format
+                beforeDate: (currentWeekEnd > endDate ? endDate : currentWeekEnd).toISOString().split('T')[0]
             });
         }
+
+        // Move to next week
+        currentWeekStart.setDate(currentWeekStart.getDate() + 7);
+        weekNumber++;
+
+        // Reset week number at the start of each year
+        if (currentWeekStart.getMonth() === 0 && currentWeekStart.getDate() <= 7) {
+            weekNumber = 1;
+        }
     }
-    return months;
+
+    return weeks;
 };
 
 function buildCreateMoteurImmoJobBody(endpointUrl: string, headers: Record<string, string>) {

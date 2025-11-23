@@ -17,10 +17,6 @@ Filtres Annonces + Encheres
 - [ ] source pour annonces
 - [ ] occupé vs libre
 
-Encheres + Annonces - display on card
-- [ ] energyClass
-- [ ] m2
-
 DERNIERE SEMAINE
 
 
