@@ -274,6 +274,7 @@ describe('MultiCheckboxFilter', () => {
 
     it('should handle invalid value prop', () => {
       expect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         render(<MultiCheckboxFilter {...defaultProps} value={null as any} />);
       }).not.toThrow();
     });
@@ -289,6 +290,7 @@ describe('MultiCheckboxFilter', () => {
 
     it('should handle invalid onChange prop', () => {
       expect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         render(<MultiCheckboxFilter {...defaultProps} onChange={undefined as any} />);
       }).not.toThrow();
     });

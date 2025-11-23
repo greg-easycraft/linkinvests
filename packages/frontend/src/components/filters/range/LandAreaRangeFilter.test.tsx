@@ -251,12 +251,14 @@ describe('LandAreaRangeFilter', () => {
 
     it('should handle invalid onChange prop', () => {
       expect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         render(<LandAreaRangeFilter onChange={undefined as any} />);
       }).not.toThrow();
     });
 
     it('should handle null value prop', () => {
       expect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         render(<LandAreaRangeFilter onChange={mockOnChange} value={null as any} />);
       }).not.toThrow();
     });

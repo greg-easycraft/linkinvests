@@ -29,25 +29,25 @@ describe('EnergyClassFilter', () => {
     it('should render all energy classes by default', () => {
       render(<EnergyClassFilter {...defaultProps} />);
 
-      expect(screen.getByLabelText('A (Très performant)')).toBeInTheDocument();
-      expect(screen.getByLabelText('B (Performant)')).toBeInTheDocument();
-      expect(screen.getByLabelText('C (Assez performant)')).toBeInTheDocument();
-      expect(screen.getByLabelText('D (Peu performant)')).toBeInTheDocument();
-      expect(screen.getByLabelText('E (Peu performant)')).toBeInTheDocument();
-      expect(screen.getByLabelText('F (Très peu performant)')).toBeInTheDocument();
-      expect(screen.getByLabelText('G (Extrêmement peu performant)')).toBeInTheDocument();
+      expect(screen.getByLabelText('A (Très économe)')).toBeInTheDocument();
+      expect(screen.getByLabelText('B (Économe)')).toBeInTheDocument();
+      expect(screen.getByLabelText('C (Conventionnel)')).toBeInTheDocument();
+      expect(screen.getByLabelText('D (Peu économe)')).toBeInTheDocument();
+      expect(screen.getByLabelText('E (Peu économe)')).toBeInTheDocument();
+      expect(screen.getByLabelText('F (Énergivore)')).toBeInTheDocument();
+      expect(screen.getByLabelText('G (Très énergivore)')).toBeInTheDocument();
     });
 
     it('should render only energy sieve classes when type is "sieve"', () => {
       render(<EnergyClassFilter {...defaultProps} type="sieve" />);
 
-      expect(screen.queryByLabelText('A (Très performant)')).not.toBeInTheDocument();
-      expect(screen.queryByLabelText('B (Performant)')).not.toBeInTheDocument();
-      expect(screen.queryByLabelText('C (Assez performant)')).not.toBeInTheDocument();
-      expect(screen.queryByLabelText('D (Peu performant)')).not.toBeInTheDocument();
-      expect(screen.getByLabelText('E (Peu performant)')).toBeInTheDocument();
-      expect(screen.getByLabelText('F (Très peu performant)')).toBeInTheDocument();
-      expect(screen.getByLabelText('G (Extrêmement peu performant)')).toBeInTheDocument();
+      expect(screen.queryByLabelText('A (Très économe)')).not.toBeInTheDocument();
+      expect(screen.queryByLabelText('B (Économe)')).not.toBeInTheDocument();
+      expect(screen.queryByLabelText('C (Conventionnel)')).not.toBeInTheDocument();
+      expect(screen.queryByLabelText('D (Peu économe)')).not.toBeInTheDocument();
+      expect(screen.getByLabelText('E (Peu économe)')).toBeInTheDocument();
+      expect(screen.getByLabelText('F (Énergivore)')).toBeInTheDocument();
+      expect(screen.getByLabelText('G (Très énergivore)')).toBeInTheDocument();
     });
   });
 
@@ -55,21 +55,21 @@ describe('EnergyClassFilter', () => {
     it('should apply correct colors for each energy class', () => {
       render(<EnergyClassFilter {...defaultProps} />);
 
-      expect(screen.getByText('A (Très performant)')).toHaveClass('text-green-600');
-      expect(screen.getByText('B (Performant)')).toHaveClass('text-green-500');
-      expect(screen.getByText('C (Assez performant)')).toHaveClass('text-yellow-500');
-      expect(screen.getByText('D (Peu performant)')).toHaveClass('text-orange-500');
-      expect(screen.getByText('E (Peu performant)')).toHaveClass('text-orange-500');
-      expect(screen.getByText('F (Très peu performant)')).toHaveClass('text-red-500');
-      expect(screen.getByText('G (Extrêmement peu performant)')).toHaveClass('text-red-600');
+      expect(screen.getByText('A (Très économe)')).toHaveClass('text-green-600');
+      expect(screen.getByText('B (Économe)')).toHaveClass('text-green-500');
+      expect(screen.getByText('C (Conventionnel)')).toHaveClass('text-yellow-500');
+      expect(screen.getByText('D (Peu économe)')).toHaveClass('text-orange-400');
+      expect(screen.getByText('E (Peu économe)')).toHaveClass('text-orange-600');
+      expect(screen.getByText('F (Énergivore)')).toHaveClass('text-red-500');
+      expect(screen.getByText('G (Très énergivore)')).toHaveClass('text-red-700');
     });
 
     it('should apply correct colors for energy sieve classes', () => {
       render(<EnergyClassFilter {...defaultProps} type="sieve" />);
 
-      expect(screen.getByText('E (Peu performant)')).toHaveClass('text-orange-500');
-      expect(screen.getByText('F (Très peu performant)')).toHaveClass('text-red-500');
-      expect(screen.getByText('G (Extrêmement peu performant)')).toHaveClass('text-red-600');
+      expect(screen.getByText('E (Peu économe)')).toHaveClass('text-orange-600');
+      expect(screen.getByText('F (Énergivore)')).toHaveClass('text-red-500');
+      expect(screen.getByText('G (Très énergivore)')).toHaveClass('text-red-700');
     });
   });
 
@@ -78,7 +78,7 @@ describe('EnergyClassFilter', () => {
       const user = userEvent.setup();
       render(<EnergyClassFilter {...defaultProps} />);
 
-      const checkbox = screen.getByLabelText('A (Très performant)');
+      const checkbox = screen.getByLabelText('A (Très économe)');
       await user.click(checkbox);
 
       expect(mockOnChange).toHaveBeenCalledWith([EnergyClass.A]);
@@ -89,7 +89,7 @@ describe('EnergyClassFilter', () => {
       const value = [EnergyClass.A];
       render(<EnergyClassFilter {...defaultProps} value={value} />);
 
-      const checkbox = screen.getByLabelText('B (Performant)');
+      const checkbox = screen.getByLabelText('B (Économe)');
       await user.click(checkbox);
 
       expect(mockOnChange).toHaveBeenCalledWith([EnergyClass.A, EnergyClass.B]);
@@ -100,7 +100,7 @@ describe('EnergyClassFilter', () => {
       const value = [EnergyClass.A, EnergyClass.B];
       render(<EnergyClassFilter {...defaultProps} value={value} />);
 
-      const checkbox = screen.getByLabelText('A (Très performant)');
+      const checkbox = screen.getByLabelText('A (Très économe)');
       await user.click(checkbox);
 
       expect(mockOnChange).toHaveBeenCalledWith([EnergyClass.B]);
@@ -111,7 +111,7 @@ describe('EnergyClassFilter', () => {
       const value = [EnergyClass.A];
       render(<EnergyClassFilter {...defaultProps} value={value} />);
 
-      const checkbox = screen.getByLabelText('A (Très performant)');
+      const checkbox = screen.getByLabelText('A (Très économe)');
       await user.click(checkbox);
 
       expect(mockOnChange).toHaveBeenCalledWith(undefined);
@@ -123,32 +123,32 @@ describe('EnergyClassFilter', () => {
       const value = [EnergyClass.A, EnergyClass.C, EnergyClass.E];
       render(<EnergyClassFilter {...defaultProps} value={value} />);
 
-      expect(screen.getByLabelText('A (Très performant)')).toBeChecked();
-      expect(screen.getByLabelText('B (Performant)')).not.toBeChecked();
-      expect(screen.getByLabelText('C (Assez performant)')).toBeChecked();
-      expect(screen.getByLabelText('D (Peu performant)')).not.toBeChecked();
-      expect(screen.getByLabelText('E (Peu performant)')).toBeChecked();
-      expect(screen.getByLabelText('F (Très peu performant)')).not.toBeChecked();
-      expect(screen.getByLabelText('G (Extrêmement peu performant)')).not.toBeChecked();
+      expect(screen.getByLabelText('A (Très économe)')).toBeChecked();
+      expect(screen.getByLabelText('B (Économe)')).not.toBeChecked();
+      expect(screen.getByLabelText('C (Conventionnel)')).toBeChecked();
+      expect(screen.getByLabelText('D (Peu économe)')).not.toBeChecked();
+      expect(screen.getByLabelText('E (Peu économe)')).toBeChecked();
+      expect(screen.getByLabelText('F (Énergivore)')).not.toBeChecked();
+      expect(screen.getByLabelText('G (Très énergivore)')).not.toBeChecked();
     });
 
     it('should handle undefined value', () => {
       render(<EnergyClassFilter {...defaultProps} value={undefined} />);
 
-      expect(screen.getByLabelText('A (Très performant)')).not.toBeChecked();
-      expect(screen.getByLabelText('B (Performant)')).not.toBeChecked();
-      expect(screen.getByLabelText('C (Assez performant)')).not.toBeChecked();
-      expect(screen.getByLabelText('D (Peu performant)')).not.toBeChecked();
-      expect(screen.getByLabelText('E (Peu performant)')).not.toBeChecked();
-      expect(screen.getByLabelText('F (Très peu performant)')).not.toBeChecked();
-      expect(screen.getByLabelText('G (Extrêmement peu performant)')).not.toBeChecked();
+      expect(screen.getByLabelText('A (Très économe)')).not.toBeChecked();
+      expect(screen.getByLabelText('B (Économe)')).not.toBeChecked();
+      expect(screen.getByLabelText('C (Conventionnel)')).not.toBeChecked();
+      expect(screen.getByLabelText('D (Peu économe)')).not.toBeChecked();
+      expect(screen.getByLabelText('E (Peu économe)')).not.toBeChecked();
+      expect(screen.getByLabelText('F (Énergivore)')).not.toBeChecked();
+      expect(screen.getByLabelText('G (Très énergivore)')).not.toBeChecked();
     });
 
     it('should handle empty array value', () => {
       render(<EnergyClassFilter {...defaultProps} value={[]} />);
 
-      expect(screen.getByLabelText('A (Très performant)')).not.toBeChecked();
-      expect(screen.getByLabelText('G (Extrêmement peu performant)')).not.toBeChecked();
+      expect(screen.getByLabelText('A (Très économe)')).not.toBeChecked();
+      expect(screen.getByLabelText('G (Très énergivore)')).not.toBeChecked();
     });
   });
 
@@ -156,8 +156,8 @@ describe('EnergyClassFilter', () => {
     it('should support all energy classes when type is "all"', () => {
       render(<EnergyClassFilter {...defaultProps} type="all" />);
 
-      expect(screen.getByLabelText('A (Très performant)')).toBeInTheDocument();
-      expect(screen.getByLabelText('G (Extrêmement peu performant)')).toBeInTheDocument();
+      expect(screen.getByLabelText('A (Très économe)')).toBeInTheDocument();
+      expect(screen.getByLabelText('G (Très énergivore)')).toBeInTheDocument();
 
       const checkboxes = screen.getAllByRole('checkbox');
       expect(checkboxes).toHaveLength(7);
@@ -166,9 +166,9 @@ describe('EnergyClassFilter', () => {
     it('should only show E, F, G classes when type is "sieve"', () => {
       render(<EnergyClassFilter {...defaultProps} type="sieve" />);
 
-      expect(screen.getByLabelText('E (Peu performant)')).toBeInTheDocument();
-      expect(screen.getByLabelText('F (Très peu performant)')).toBeInTheDocument();
-      expect(screen.getByLabelText('G (Extrêmement peu performant)')).toBeInTheDocument();
+      expect(screen.getByLabelText('E (Peu économe)')).toBeInTheDocument();
+      expect(screen.getByLabelText('F (Énergivore)')).toBeInTheDocument();
+      expect(screen.getByLabelText('G (Très énergivore)')).toBeInTheDocument();
 
       const checkboxes = screen.getAllByRole('checkbox');
       expect(checkboxes).toHaveLength(3);
@@ -188,8 +188,8 @@ describe('EnergyClassFilter', () => {
       render(<EnergyClassFilter value={value} onChange={mockOnChange} label="Test Energy Filter" />);
 
       expect(screen.getByText('Test Energy Filter')).toBeInTheDocument();
-      expect(screen.getByLabelText('A (Très performant)')).toBeChecked();
-      expect(screen.getByLabelText('B (Performant)')).toBeChecked();
+      expect(screen.getByLabelText('A (Très économe)')).toBeChecked();
+      expect(screen.getByLabelText('B (Économe)')).toBeChecked();
     });
 
     it('should maintain proper component hierarchy', () => {
@@ -218,25 +218,28 @@ describe('EnergyClassFilter', () => {
       const value = [EnergyClass.A, 'INVALID' as EnergyClass, EnergyClass.B];
       render(<EnergyClassFilter {...defaultProps} value={value} />);
 
-      expect(screen.getByLabelText('A (Très performant)')).toBeChecked();
-      expect(screen.getByLabelText('B (Performant)')).toBeChecked();
+      expect(screen.getByLabelText('A (Très économe)')).toBeChecked();
+      expect(screen.getByLabelText('B (Économe)')).toBeChecked();
       // Should not crash on invalid value
     });
 
     it('should handle invalid type prop', () => {
       expect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         render(<EnergyClassFilter {...defaultProps} type={'invalid' as any} />);
       }).not.toThrow();
     });
 
     it('should handle null value prop', () => {
       expect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         render(<EnergyClassFilter {...defaultProps} value={null as any} />);
       }).not.toThrow();
     });
 
     it('should handle missing onChange prop', () => {
       expect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         render(<EnergyClassFilter onChange={undefined as any} />);
       }).not.toThrow();
     });
@@ -247,8 +250,8 @@ describe('EnergyClassFilter', () => {
       const user = userEvent.setup();
       render(<EnergyClassFilter {...defaultProps} />);
 
-      const checkboxA = screen.getByLabelText('A (Très performant)');
-      const checkboxB = screen.getByLabelText('B (Performant)');
+      const checkboxA = screen.getByLabelText('A (Très économe)');
+      const checkboxB = screen.getByLabelText('B (Économe)');
 
       await user.click(checkboxA);
       expect(checkboxA).toHaveFocus();
@@ -260,13 +263,13 @@ describe('EnergyClassFilter', () => {
     it('should have proper ARIA labels for energy classes', () => {
       render(<EnergyClassFilter {...defaultProps} />);
 
-      expect(screen.getByLabelText('A (Très performant)')).toBeInTheDocument();
-      expect(screen.getByLabelText('B (Performant)')).toBeInTheDocument();
-      expect(screen.getByLabelText('C (Assez performant)')).toBeInTheDocument();
-      expect(screen.getByLabelText('D (Peu performant)')).toBeInTheDocument();
-      expect(screen.getByLabelText('E (Peu performant)')).toBeInTheDocument();
-      expect(screen.getByLabelText('F (Très peu performant)')).toBeInTheDocument();
-      expect(screen.getByLabelText('G (Extrêmement peu performant)')).toBeInTheDocument();
+      expect(screen.getByLabelText('A (Très économe)')).toBeInTheDocument();
+      expect(screen.getByLabelText('B (Économe)')).toBeInTheDocument();
+      expect(screen.getByLabelText('C (Conventionnel)')).toBeInTheDocument();
+      expect(screen.getByLabelText('D (Peu économe)')).toBeInTheDocument();
+      expect(screen.getByLabelText('E (Peu économe)')).toBeInTheDocument();
+      expect(screen.getByLabelText('F (Énergivore)')).toBeInTheDocument();
+      expect(screen.getByLabelText('G (Très énergivore)')).toBeInTheDocument();
     });
   });
 
@@ -276,16 +279,16 @@ describe('EnergyClassFilter', () => {
         <EnergyClassFilter {...defaultProps} value={[EnergyClass.A]} />
       );
 
-      expect(screen.getByLabelText('A (Très performant)')).toBeChecked();
-      expect(screen.getByLabelText('B (Performant)')).not.toBeChecked();
+      expect(screen.getByLabelText('A (Très économe)')).toBeChecked();
+      expect(screen.getByLabelText('B (Économe)')).not.toBeChecked();
 
       rerender(
         <EnergyClassFilter {...defaultProps} value={[EnergyClass.B, EnergyClass.C]} />
       );
 
-      expect(screen.getByLabelText('A (Très performant)')).not.toBeChecked();
-      expect(screen.getByLabelText('B (Performant)')).toBeChecked();
-      expect(screen.getByLabelText('C (Assez performant)')).toBeChecked();
+      expect(screen.getByLabelText('A (Très économe)')).not.toBeChecked();
+      expect(screen.getByLabelText('B (Économe)')).toBeChecked();
+      expect(screen.getByLabelText('C (Conventionnel)')).toBeChecked();
     });
 
     it('should update when type prop changes', () => {
@@ -293,14 +296,14 @@ describe('EnergyClassFilter', () => {
         <EnergyClassFilter {...defaultProps} type="all" />
       );
 
-      expect(screen.getByLabelText('A (Très performant)')).toBeInTheDocument();
+      expect(screen.getByLabelText('A (Très économe)')).toBeInTheDocument();
 
       rerender(
         <EnergyClassFilter {...defaultProps} type="sieve" />
       );
 
-      expect(screen.queryByLabelText('A (Très performant)')).not.toBeInTheDocument();
-      expect(screen.getByLabelText('E (Peu performant)')).toBeInTheDocument();
+      expect(screen.queryByLabelText('A (Très économe)')).not.toBeInTheDocument();
+      expect(screen.getByLabelText('E (Peu économe)')).toBeInTheDocument();
     });
 
     it('should clear checkboxes when value is set to undefined', () => {
@@ -308,44 +311,60 @@ describe('EnergyClassFilter', () => {
         <EnergyClassFilter {...defaultProps} value={[EnergyClass.A, EnergyClass.B]} />
       );
 
-      expect(screen.getByLabelText('A (Très performant)')).toBeChecked();
-      expect(screen.getByLabelText('B (Performant)')).toBeChecked();
+      expect(screen.getByLabelText('A (Très économe)')).toBeChecked();
+      expect(screen.getByLabelText('B (Économe)')).toBeChecked();
 
       rerender(<EnergyClassFilter {...defaultProps} value={undefined} />);
 
-      expect(screen.getByLabelText('A (Très performant)')).not.toBeChecked();
-      expect(screen.getByLabelText('B (Performant)')).not.toBeChecked();
+      expect(screen.getByLabelText('A (Très économe)')).not.toBeChecked();
+      expect(screen.getByLabelText('B (Économe)')).not.toBeChecked();
     });
   });
 
   describe('Real Estate Energy Efficiency Context', () => {
     it('should handle efficient properties filtering (A-C)', async () => {
       const user = userEvent.setup();
-      render(<EnergyClassFilter {...defaultProps} />);
+      const { rerender } = render(<EnergyClassFilter {...defaultProps} value={[]} />);
 
-      const checkboxA = screen.getByLabelText('A (Très performant)');
-      const checkboxB = screen.getByLabelText('B (Performant)');
-      const checkboxC = screen.getByLabelText('C (Assez performant)');
-
+      const checkboxA = screen.getByLabelText('A (Très économe)');
       await user.click(checkboxA);
-      await user.click(checkboxB);
-      await user.click(checkboxC);
+      expect(mockOnChange).toHaveBeenLastCalledWith([EnergyClass.A]);
 
+      // Re-render with updated value
+      rerender(<EnergyClassFilter {...defaultProps} value={[EnergyClass.A]} />);
+
+      const checkboxB = screen.getByLabelText('B (Économe)');
+      await user.click(checkboxB);
+      expect(mockOnChange).toHaveBeenLastCalledWith([EnergyClass.A, EnergyClass.B]);
+
+      // Re-render with updated value
+      rerender(<EnergyClassFilter {...defaultProps} value={[EnergyClass.A, EnergyClass.B]} />);
+
+      const checkboxC = screen.getByLabelText('C (Conventionnel)');
+      await user.click(checkboxC);
       expect(mockOnChange).toHaveBeenLastCalledWith([EnergyClass.A, EnergyClass.B, EnergyClass.C]);
     });
 
     it('should handle energy sieve filtering for inefficient properties', async () => {
       const user = userEvent.setup();
-      render(<EnergyClassFilter {...defaultProps} type="sieve" />);
+      const { rerender } = render(<EnergyClassFilter {...defaultProps} type="sieve" value={[]} />);
 
-      const checkboxE = screen.getByLabelText('E (Peu performant)');
-      const checkboxF = screen.getByLabelText('F (Très peu performant)');
-      const checkboxG = screen.getByLabelText('G (Extrêmement peu performant)');
-
+      const checkboxE = screen.getByLabelText('E (Peu économe)');
       await user.click(checkboxE);
-      await user.click(checkboxF);
-      await user.click(checkboxG);
+      expect(mockOnChange).toHaveBeenLastCalledWith([EnergyClass.E]);
 
+      // Re-render with updated value
+      rerender(<EnergyClassFilter {...defaultProps} type="sieve" value={[EnergyClass.E]} />);
+
+      const checkboxF = screen.getByLabelText('F (Énergivore)');
+      await user.click(checkboxF);
+      expect(mockOnChange).toHaveBeenLastCalledWith([EnergyClass.E, EnergyClass.F]);
+
+      // Re-render with updated value
+      rerender(<EnergyClassFilter {...defaultProps} type="sieve" value={[EnergyClass.E, EnergyClass.F]} />);
+
+      const checkboxG = screen.getByLabelText('G (Très énergivore)');
+      await user.click(checkboxG);
       expect(mockOnChange).toHaveBeenLastCalledWith([EnergyClass.E, EnergyClass.F, EnergyClass.G]);
     });
   });

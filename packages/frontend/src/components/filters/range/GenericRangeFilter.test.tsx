@@ -386,6 +386,7 @@ describe('GenericRangeFilter', () => {
 
     it('should not crash with invalid onChange prop', () => {
       expect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         render(<GenericRangeFilter label="Test" onChange={undefined as any} />);
       }).not.toThrow();
     });

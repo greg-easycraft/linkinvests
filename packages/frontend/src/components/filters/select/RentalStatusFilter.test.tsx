@@ -129,6 +129,7 @@ describe('RentalStatusFilter', () => {
 
     it('should handle null value gracefully', () => {
       expect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         render(<RentalStatusFilter {...defaultProps} value={null as any} />);
       }).not.toThrow();
 
@@ -165,12 +166,14 @@ describe('RentalStatusFilter', () => {
   describe('Edge Cases', () => {
     it('should handle invalid onChange prop', () => {
       expect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         render(<RentalStatusFilter onChange={undefined as any} />);
       }).not.toThrow();
     });
 
     it('should handle non-boolean values gracefully', () => {
       expect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         render(<RentalStatusFilter {...defaultProps} value={'invalid' as any} />);
       }).not.toThrow();
     });

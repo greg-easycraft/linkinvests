@@ -358,6 +358,7 @@ describe('MultiSelectFilter', () => {
 
     it('should handle invalid value prop gracefully', () => {
       expect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         render(<MultiSelectFilter {...defaultProps} value={null as any} />);
       }).not.toThrow();
     });
@@ -374,6 +375,7 @@ describe('MultiSelectFilter', () => {
 
     it('should handle invalid onChange prop', () => {
       expect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         render(<MultiSelectFilter {...defaultProps} onChange={undefined as any} />);
       }).not.toThrow();
     });

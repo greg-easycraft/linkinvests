@@ -180,17 +180,20 @@ describe('FeaturesFilter', () => {
   describe('Edge Cases', () => {
     it('should handle invalid value prop', () => {
       expect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         render(<FeaturesFilter {...defaultProps} value={null as any} />);
       }).not.toThrow();
     });
 
     it('should handle missing onChange prop', () => {
       expect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         render(<FeaturesFilter onChange={undefined as any} />);
       }).not.toThrow();
     });
 
     it('should handle malformed features object', () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const value: ListingFeatures = { balcony: true, extraProp: 'invalid' } as any;
 
       expect(() => {

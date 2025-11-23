@@ -300,6 +300,7 @@ describe('SourcesInput', () => {
 
     it('should handle invalid onChange prop', async () => {
       expect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         render(<SourcesInput value={[]} onChange={undefined as any} />);
       }).not.toThrow();
 
@@ -310,6 +311,7 @@ describe('SourcesInput', () => {
 
     it('should handle malformed value prop', async () => {
       expect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         render(<SourcesInput value={null as any} onChange={mockOnChange} />);
       }).not.toThrow();
 

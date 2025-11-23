@@ -97,12 +97,14 @@ describe('AuctionTypeFilter', () => {
   describe('Edge Cases', () => {
     it('should handle invalid value prop', () => {
       expect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         render(<AuctionTypeFilter {...defaultProps} value={null as any} />);
       }).not.toThrow();
     });
 
     it('should handle missing onChange prop', () => {
       expect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         render(<AuctionTypeFilter onChange={undefined as any} />);
       }).not.toThrow();
     });

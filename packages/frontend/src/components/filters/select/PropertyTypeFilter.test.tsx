@@ -161,18 +161,21 @@ describe('PropertyTypeFilter', () => {
   describe('Edge Cases', () => {
     it('should handle invalid property type gracefully', () => {
       expect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         render(<PropertyTypeFilter {...defaultProps} type={'invalid' as any} />);
       }).not.toThrow();
     });
 
     it('should handle invalid value prop', () => {
       expect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         render(<PropertyTypeFilter {...defaultProps} value={null as any} />);
       }).not.toThrow();
     });
 
     it('should handle missing onChange prop', () => {
       expect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         render(<PropertyTypeFilter type="auction" onChange={undefined as any} />);
       }).not.toThrow();
     });

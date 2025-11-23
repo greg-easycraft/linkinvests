@@ -143,6 +143,7 @@ describe('SellerTypeFilter', () => {
 
     it('should handle null value gracefully', () => {
       expect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         render(<SellerTypeFilter {...defaultProps} value={null as any} />);
       }).not.toThrow();
 
@@ -179,12 +180,14 @@ describe('SellerTypeFilter', () => {
   describe('Edge Cases', () => {
     it('should handle invalid onChange prop', () => {
       expect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         render(<SellerTypeFilter onChange={undefined as any} />);
       }).not.toThrow();
     });
 
     it('should handle invalid seller type values gracefully', () => {
       expect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         render(<SellerTypeFilter {...defaultProps} value={'invalid' as any} />);
       }).not.toThrow();
     });

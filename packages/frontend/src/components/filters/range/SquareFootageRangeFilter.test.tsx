@@ -17,19 +17,22 @@ describe('SquareFootageRangeFilter', () => {
     it('should render with default label', () => {
       render(<SquareFootageRangeFilter {...defaultProps} />);
 
-      expect(screen.getByText('Surface (m²)')).toBeInTheDocument();
+      expect(screen.getByText('Surface')).toBeInTheDocument();
+      expect(screen.getByText('(m²)')).toBeInTheDocument();
     });
 
     it('should render with custom label', () => {
       render(<SquareFootageRangeFilter {...defaultProps} label="Custom Surface" />);
 
-      expect(screen.getByText('Custom Surface (m²)')).toBeInTheDocument();
+      expect(screen.getByText('Custom Surface')).toBeInTheDocument();
+      expect(screen.getByText('(m²)')).toBeInTheDocument();
     });
 
     it('should have square meter unit displayed', () => {
       render(<SquareFootageRangeFilter {...defaultProps} />);
 
-      expect(screen.getByText('Surface (m²)')).toBeInTheDocument();
+      expect(screen.getByText('Surface')).toBeInTheDocument();
+      expect(screen.getByText('(m²)')).toBeInTheDocument();
     });
 
     it('should render min and max inputs with default placeholders', () => {
@@ -97,7 +100,7 @@ describe('SquareFootageRangeFilter', () => {
       const minInput = screen.getByPlaceholderText('Min');
       await user.type(minInput, '50');
 
-      expect(mockOnChange).toHaveBeenCalledWith({ min: 50 });
+      expect(mockOnChange).toHaveBeenLastCalledWith({ min: 50 });
     });
 
     it('should call onChange with max surface when max input changes', async () => {
@@ -107,7 +110,7 @@ describe('SquareFootageRangeFilter', () => {
       const maxInput = screen.getByPlaceholderText('Max');
       await user.type(maxInput, '100');
 
-      expect(mockOnChange).toHaveBeenCalledWith({ max: 100 });
+      expect(mockOnChange).toHaveBeenLastCalledWith({ max: 100 });
     });
 
     it('should preserve existing value when updating only min surface', async () => {
@@ -118,7 +121,7 @@ describe('SquareFootageRangeFilter', () => {
       const minInput = screen.getByPlaceholderText('Min');
       await user.type(minInput, '40');
 
-      expect(mockOnChange).toHaveBeenCalledWith({ min: 40, max: 100 });
+      expect(mockOnChange).toHaveBeenLastCalledWith({ min: 40, max: 100 });
     });
 
     it('should preserve existing value when updating only max surface', async () => {
@@ -129,7 +132,7 @@ describe('SquareFootageRangeFilter', () => {
       const maxInput = screen.getByPlaceholderText('Max');
       await user.type(maxInput, '100');
 
-      expect(mockOnChange).toHaveBeenCalledWith({ min: 40, max: 100 });
+      expect(mockOnChange).toHaveBeenLastCalledWith({ min: 40, max: 100 });
     });
 
     it('should call onChange with undefined when both inputs are cleared', async () => {
@@ -143,7 +146,7 @@ describe('SquareFootageRangeFilter', () => {
       await user.clear(minInput);
       await user.clear(maxInput);
 
-      expect(mockOnChange).toHaveBeenCalledWith(undefined);
+      expect(mockOnChange).toHaveBeenLastCalledWith(undefined);
     });
   });
 
@@ -181,7 +184,7 @@ describe('SquareFootageRangeFilter', () => {
       const minInput = screen.getByPlaceholderText('Min');
       await user.type(minInput, '200');
 
-      expect(mockOnChange).toHaveBeenCalledWith({ min: 200 });
+      expect(mockOnChange).toHaveBeenLastCalledWith({ min: 200 });
     });
 
     it('should handle very small surfaces', async () => {
@@ -191,7 +194,7 @@ describe('SquareFootageRangeFilter', () => {
       const minInput = screen.getByPlaceholderText('Min');
       await user.type(minInput, '9');
 
-      expect(mockOnChange).toHaveBeenCalledWith({ min: 9 });
+      expect(mockOnChange).toHaveBeenLastCalledWith({ min: 9 });
     });
 
     it('should handle decimal surface values', async () => {
@@ -201,7 +204,7 @@ describe('SquareFootageRangeFilter', () => {
       const minInput = screen.getByPlaceholderText('Min');
       await user.type(minInput, '45.5');
 
-      expect(mockOnChange).toHaveBeenCalledWith({ min: 45.5 });
+      expect(mockOnChange).toHaveBeenLastCalledWith({ min: 45.5 });
     });
 
     it('should handle commercial property surfaces', async () => {
@@ -223,7 +226,8 @@ describe('SquareFootageRangeFilter', () => {
       const value: RangeFilterValue = { min: 50, max: 150 };
       render(<SquareFootageRangeFilter value={value} onChange={mockOnChange} label="Test Surface" />);
 
-      expect(screen.getByText('Test Surface (m²)')).toBeInTheDocument();
+      expect(screen.getByText('Test Surface')).toBeInTheDocument();
+      expect(screen.getByText('(m²)')).toBeInTheDocument();
       expect(screen.getByPlaceholderText('Min')).toHaveValue(50);
       expect(screen.getByPlaceholderText('Max')).toHaveValue(150);
     });
@@ -232,14 +236,14 @@ describe('SquareFootageRangeFilter', () => {
       render(<SquareFootageRangeFilter {...defaultProps} />);
 
       // Should have the grid layout from GenericRangeFilter
-      const container = screen.getByText('Surface (m²)').nextElementSibling;
+      const container = screen.getByText('Surface').parentElement?.nextElementSibling;
       expect(container).toHaveClass('grid', 'grid-cols-2', 'gap-2');
     });
 
     it('should have proper styling inheritance', () => {
       render(<SquareFootageRangeFilter {...defaultProps} />);
 
-      const label = screen.getByText('Surface (m²)');
+      const label = screen.getByText('Surface').parentElement;
       expect(label).toHaveClass(
         'text-sm',
         'font-medium',
@@ -291,7 +295,7 @@ describe('SquareFootageRangeFilter', () => {
       const minInput = screen.getByPlaceholderText('Min');
       await user.type(minInput, '10000');
 
-      expect(mockOnChange).toHaveBeenCalledWith({ min: 10000 });
+      expect(mockOnChange).toHaveBeenLastCalledWith({ min: 10000 });
     });
 
     it('should handle zero surface area', async () => {
@@ -301,7 +305,7 @@ describe('SquareFootageRangeFilter', () => {
       const minInput = screen.getByPlaceholderText('Min');
       await user.type(minInput, '0');
 
-      expect(mockOnChange).toHaveBeenCalledWith({ min: 0 });
+      expect(mockOnChange).toHaveBeenLastCalledWith({ min: 0 });
     });
 
     it('should not accept negative surface areas gracefully', async () => {
@@ -311,17 +315,19 @@ describe('SquareFootageRangeFilter', () => {
       const minInput = screen.getByPlaceholderText('Min');
       await user.type(minInput, '-10');
 
-      expect(mockOnChange).toHaveBeenCalledWith({ min: -10 });
+      expect(mockOnChange).toHaveBeenLastCalledWith({ min: -10 });
     });
 
     it('should handle invalid onChange prop', () => {
       expect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         render(<SquareFootageRangeFilter onChange={undefined as any} />);
       }).not.toThrow();
     });
 
     it('should handle null value prop', () => {
       expect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         render(<SquareFootageRangeFilter onChange={mockOnChange} value={null as any} />);
       }).not.toThrow();
     });
@@ -348,14 +354,16 @@ describe('SquareFootageRangeFilter', () => {
         <SquareFootageRangeFilter onChange={mockOnChange} label="Original Surface" />
       );
 
-      expect(screen.getByText('Original Surface (m²)')).toBeInTheDocument();
+      expect(screen.getByText('Original Surface')).toBeInTheDocument();
+      expect(screen.getByText('(m²)')).toBeInTheDocument();
 
       rerender(
         <SquareFootageRangeFilter onChange={mockOnChange} label="Updated Surface" />
       );
 
-      expect(screen.queryByText('Original Surface (m²)')).not.toBeInTheDocument();
-      expect(screen.getByText('Updated Surface (m²)')).toBeInTheDocument();
+      expect(screen.queryByText('Original Surface')).not.toBeInTheDocument();
+      expect(screen.getByText('Updated Surface')).toBeInTheDocument();
+      expect(screen.getByText('(m²)')).toBeInTheDocument();
     });
 
     it('should clear values when value prop is set to undefined', () => {
@@ -409,7 +417,7 @@ describe('SquareFootageRangeFilter', () => {
       const minInput = screen.getByPlaceholderText('Min');
       await user.type(minInput, '1000');
 
-      expect(mockOnChange).toHaveBeenCalledWith({ min: 1000 });
+      expect(mockOnChange).toHaveBeenLastCalledWith({ min: 1000 });
     });
 
     it('should handle loft and atypical spaces', async () => {
@@ -434,7 +442,7 @@ describe('SquareFootageRangeFilter', () => {
       const minInput = screen.getByPlaceholderText('Min');
       await user.type(minInput, '8'); // Minimum Loi Carrez requirement
 
-      expect(mockOnChange).toHaveBeenCalledWith({ min: 8 });
+      expect(mockOnChange).toHaveBeenLastCalledWith({ min: 8 });
     });
 
     it('should handle typical French apartment categories', async () => {
@@ -458,7 +466,7 @@ describe('SquareFootageRangeFilter', () => {
       const minInput = screen.getByPlaceholderText('Min');
       await user.type(minInput, '150');
 
-      expect(mockOnChange).toHaveBeenCalledWith({ min: 150 });
+      expect(mockOnChange).toHaveBeenLastCalledWith({ min: 150 });
     });
   });
 });

@@ -265,6 +265,7 @@ describe('OpportunityTypeFilter', () => {
   describe('Edge Cases', () => {
     it('should handle invalid onChange prop gracefully', () => {
       expect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         render(<OpportunityTypeFilter value={OpportunityType.AUCTION} onChange={undefined as any} />);
       }).not.toThrow();
     });
