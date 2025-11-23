@@ -9,7 +9,7 @@ export interface SelectOption<T = string> {
 
 interface MultiSelectFilterProps<T = string> {
   label: string;
-  options: SelectOption<T>[];
+  options: readonly SelectOption<T>[];
   value?: T[];
   onChange: (value: T[] | undefined) => void;
   placeholder?: string;

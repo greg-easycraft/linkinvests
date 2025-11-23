@@ -1,6 +1,3 @@
-// Base components
-export * from './base';
-
 // Range filters
 export * from './range';
 
