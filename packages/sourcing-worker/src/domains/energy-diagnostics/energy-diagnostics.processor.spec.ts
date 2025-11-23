@@ -48,16 +48,16 @@ describe('EnergyDiagnosticsProcessor', () => {
 
   describe('transformDpeRecord', () => {
     const validRecord: DpeRecord = {
-      numero_energyClass: 'DPE123',
+      numero_dpe: 'DPE123',
       adresse_ban: '123 Rue de Test',
       code_postal_ban: '75001',
       nom_commune_ban: 'Paris',
       code_departement_ban: '75',
-      etiquette_energyClass: 'F',
+      etiquette_dpe: 'F',
       etiquette_ges: 'F',
       _geopoint: '48.8566,2.3522',
-      date_etablissement_energyClass: '2024-01-15',
-      date_reception_energyClass: '2024-01-16',
+      date_etablissement_dpe: '2024-01-15',
+      date_reception_dpe: '2024-01-16',
       type_batiment: 'Appartement',
       annee_construction: '1950',
       surface_habitable_logement: 50,
@@ -118,22 +118,22 @@ describe('EnergyDiagnosticsProcessor', () => {
     it('should return null for missing opportunity date', () => {
       const record = {
         ...validRecord,
-        date_etablissement_energyClass: '',
-        date_reception_energyClass: '',
+        date_etablissement_dpe: '',
+        date_reception_dpe: '',
       };
       const result = processor['transformDpeRecord'](record);
 
       expect(result).toBeNull();
     });
 
-    it('should use date_etablissement_energyClass as primary date', () => {
+    it('should use date_etablissement_dpe as primary date', () => {
       const result = processor['transformDpeRecord'](validRecord);
 
       expect(result?.opportunityDate).toEqual(new Date('2024-01-15'));
     });
 
-    it('should fall back to date_reception_energyClass when etablissement missing', () => {
-      const record = { ...validRecord, date_etablissement_energyClass: '' };
+    it('should fall back to date_reception_dpe when etablissement missing', () => {
+      const record = { ...validRecord, date_etablissement_dpe: '' };
       const result = processor['transformDpeRecord'](record);
 
       expect(result?.opportunityDate).toEqual(new Date('2024-01-16'));
@@ -183,31 +183,31 @@ describe('EnergyDiagnosticsProcessor', () => {
 
     const mockDpeRecords: DpeRecord[] = [
       {
-        numero_energyClass: 'DPE123',
+        numero_dpe: 'DPE123',
         adresse_ban: '123 Rue de Test',
         code_postal_ban: '75001',
         nom_commune_ban: 'Paris',
         code_departement_ban: '75',
-        etiquette_energyClass: 'F',
+        etiquette_dpe: 'F',
         etiquette_ges: 'F',
         _geopoint: '48.8566,2.3522',
-        date_etablissement_energyClass: '2024-01-15',
-        date_reception_energyClass: '2024-01-16',
+        date_etablissement_dpe: '2024-01-15',
+        date_reception_dpe: '2024-01-16',
         type_batiment: 'Appartement',
         annee_construction: '1950',
         surface_habitable_logement: 50,
       },
       {
-        numero_energyClass: 'DPE456',
+        numero_dpe: 'DPE456',
         adresse_ban: '456 Avenue Test',
         code_postal_ban: '75002',
         nom_commune_ban: 'Paris',
         code_departement_ban: '75',
-        etiquette_energyClass: 'G',
+        etiquette_dpe: 'G',
         etiquette_ges: 'G',
         _geopoint: '48.8700,2.3400',
-        date_etablissement_energyClass: '2024-01-16',
-        date_reception_energyClass: '2024-01-17',
+        date_etablissement_dpe: '2024-01-16',
+        date_reception_dpe: '2024-01-17',
         type_batiment: 'Maison',
         annee_construction: '1960',
         surface_habitable_logement: 100,

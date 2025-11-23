@@ -77,7 +77,7 @@ export class EnergyDiagnosticsProcessor extends WorkerHost {
           stats.errors++;
           stats.invalidRecords++;
           this.logger.warn(
-            `Failed to transform record ${record.numero_energyClass}: ${(error as Error).message}`,
+            `Failed to transform record ${record.numero_dpe}: ${(error as Error).message}`,
           );
         }
       }
@@ -137,11 +137,10 @@ export class EnergyDiagnosticsProcessor extends WorkerHost {
     const [latStr, lonStr] = record._geopoint.split(',');
 
     const opportunityDateStr =
-      record.date_etablissement_energyClass ||
-      record.date_reception_energyClass;
+      record.date_etablissement_dpe || record.date_reception_dpe;
     if (!opportunityDateStr) {
       this.logger.warn(
-        `Missing opportunity date for record ${record.numero_energyClass}`,
+        `Missing opportunity date for record ${record.numero_dpe}`,
       );
       return null;
     }
@@ -150,7 +149,7 @@ export class EnergyDiagnosticsProcessor extends WorkerHost {
       .split('T')[0];
 
     const energyClassInput = {
-      externalId: record.numero_energyClass,
+      externalId: record.numero_dpe,
       label: record.adresse_ban || record.nom_commune_ban || 'Unknown',
       address: record.adresse_ban,
       zipCode: record.code_postal_ban,
@@ -158,7 +157,7 @@ export class EnergyDiagnosticsProcessor extends WorkerHost {
       latitude: parseFloat(latStr || ''),
       longitude: parseFloat(lonStr || ''),
       opportunityDate,
-      energyClass: record.etiquette_energyClass,
+      energyClass: record.etiquette_dpe,
       squareFootage: record.surface_habitable_logement,
     };
 
@@ -166,7 +165,7 @@ export class EnergyDiagnosticsProcessor extends WorkerHost {
       energyDiagnosticInputSchema.safeParse(energyClassInput);
     if (!validationResult.success) {
       this.logger.warn(
-        `Invalid DPE record ${record.numero_energyClass}: ${JSON.stringify(validationResult.error.issues)}`,
+        `Invalid DPE record ${record.numero_dpe}: ${JSON.stringify(validationResult.error.issues)}`,
       );
       return null;
     }

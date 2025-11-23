@@ -126,18 +126,6 @@ export default function PageSkeleton(): React.ReactElement {
                 </div>
               ))}
             </div>
-
-            {/* Pagination Skeleton */}
-            <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-200">
-              <div className="w-40 h-4 bg-gray-300 rounded animate-pulse"></div>
-              <div className="flex gap-2">
-                <div className="w-8 h-8 bg-gray-300 rounded animate-pulse"></div>
-                <div className="w-8 h-8 bg-gray-300 rounded animate-pulse"></div>
-                <div className="w-8 h-8 bg-gray-300 rounded animate-pulse"></div>
-                <div className="w-8 h-8 bg-gray-300 rounded animate-pulse"></div>
-                <div className="w-8 h-8 bg-gray-300 rounded animate-pulse"></div>
-              </div>
-            </div>
           </div>
         </div>
       </div>

@@ -11,12 +11,6 @@ Accounts to Open
 
 ## AVANT EVENT
 
-Filtres Annonces + Encheres
-- [x] type de biens (harmonisés)
-- [x] particuliers vs pro
-- [x] source pour annonces
-- [x] occupé vs libre
-
 DERNIERE SEMAINE
 
 

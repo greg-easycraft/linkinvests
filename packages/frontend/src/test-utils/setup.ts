@@ -47,8 +47,10 @@ global.ResizeObserver = jest.fn().mockImplementation(() => ({
   disconnect: jest.fn(),
 }));
 
-// Mock scrollIntoView
-HTMLElement.prototype.scrollIntoView = jest.fn();
+// Mock scrollIntoView (only in browser environment)
+if (typeof HTMLElement !== 'undefined') {
+  HTMLElement.prototype.scrollIntoView = jest.fn();
+}
 
 // Silence console errors during tests unless needed
 const originalError = console.error;
