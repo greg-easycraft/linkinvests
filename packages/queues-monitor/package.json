@@ -79,6 +79,9 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "^@linkinvests/shared$": "<rootDir>/../__mocks__/@linkinvests/shared.js"
+    }
   }
 }

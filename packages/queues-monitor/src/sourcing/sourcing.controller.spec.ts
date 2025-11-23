@@ -8,6 +8,7 @@ import {
   INGEST_DECEASES_CSV_QUEUE,
   SOURCE_ENERGY_SIEVES_QUEUE,
   SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE,
+  SOURCE_LISTINGS_QUEUE,
 } from '@linkinvests/shared';
 
 import { SourcingController } from './sourcing.controller';
@@ -24,6 +25,9 @@ describe('SourcingController', () => {
     add: jest.fn(),
   } as unknown as jest.Mocked<Queue>;
   const mockFailingCompaniesQueue = {
+    add: jest.fn(),
+  } as unknown as jest.Mocked<Queue>;
+  const mockListingsQueue = {
     add: jest.fn(),
   } as unknown as jest.Mocked<Queue>;
 
@@ -46,6 +50,10 @@ describe('SourcingController', () => {
         {
           provide: getQueueToken(SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE),
           useValue: mockFailingCompaniesQueue,
+        },
+        {
+          provide: getQueueToken(SOURCE_LISTINGS_QUEUE),
+          useValue: mockListingsQueue,
         },
       ],
     }).compile();
@@ -244,39 +252,7 @@ describe('SourcingController', () => {
   });
 
   describe('enqueueIngestDeceasesCsv', () => {
-    it('should successfully enqueue a deceases job with only sinceDate', async () => {
-      const mockJobId = 'job-789';
-      mockDeceasesQueue.add.mockResolvedValue({ id: mockJobId } as any);
-
-      const result = await controller.enqueueIngestDeceasesCsv('2024-01-01');
-
-      expect(result).toEqual({
-        success: true,
-        jobId: mockJobId,
-        message: 'Job enqueued successfully',
-      });
-
-      expect(mockDeceasesQueue.add).toHaveBeenCalledWith(
-        'import-deceases',
-        {
-          sinceDate: '2024-01-01',
-          untilDate: undefined,
-        },
-        {
-          removeOnComplete: 100,
-          removeOnFail: 100,
-        },
-      );
-
-      expect(controller['logger'].log).toHaveBeenCalledWith({
-        jobId: mockJobId,
-        sinceDate: '2024-01-01',
-        untilDate: undefined,
-        message: 'Deceases job enqueued',
-      });
-    });
-
-    it('should successfully enqueue a deceases job with both sinceDate and untilDate', async () => {
+    it('should successfully enqueue a deceases CSV ingestion job', async () => {
       const mockJobId = 'job-789';
       mockDeceasesQueue.add.mockResolvedValue({ id: mockJobId } as any);
 
@@ -289,7 +265,7 @@ describe('SourcingController', () => {
       });
 
       expect(mockDeceasesQueue.add).toHaveBeenCalledWith(
-        'import-deceases',
+        'ingest-deceases-csv',
         {
           fileName: 'test-file.csv',
         },
@@ -302,16 +278,16 @@ describe('SourcingController', () => {
       expect(controller['logger'].log).toHaveBeenCalledWith({
         jobId: mockJobId,
         fileName: 'test-file.csv',
-        message: 'Deceases job enqueued',
+        message: 'Deceases CSV ingestion job enqueued',
       });
     });
 
-    it('should return error when sinceDate is missing', async () => {
+    it('should return error when fileName is missing', async () => {
       const result = await controller.enqueueIngestDeceasesCsv('');
 
       expect(result).toEqual({
         success: false,
-        error: 'sinceDate is required (format: YYYY-MM-DD)',
+        error: 'fileName is required',
       });
 
       expect(mockDeceasesQueue.add).not.toHaveBeenCalled();
@@ -321,7 +297,7 @@ describe('SourcingController', () => {
       const error = new Error('Database connection failed');
       mockDeceasesQueue.add.mockRejectedValue(error);
 
-      const result = await controller.enqueueIngestDeceasesCsv('2024-01-01');
+      const result = await controller.enqueueIngestDeceasesCsv('test-file.csv');
 
       expect(result).toEqual({
         success: false,
@@ -330,7 +306,7 @@ describe('SourcingController', () => {
 
       expect(controller['logger'].error).toHaveBeenCalledWith({
         error: 'Database connection failed',
-        message: 'Failed to enqueue deceases job',
+        message: 'Failed to enqueue deceases CSV ingestion job',
       });
     });
   });

@@ -159,7 +159,7 @@ describe('ScrapingController', () => {
       });
 
       it('should return error when departmentId is greater than 98', async () => {
-        const result = await controller.enqueueAuctionJob(96);
+        const result = await controller.enqueueAuctionJob(99);
 
         expect(result).toEqual({
           success: false,
