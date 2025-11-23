@@ -49,6 +49,7 @@ global.ResizeObserver = jest.fn().mockImplementation(() => ({
 
 // Add polyfills for Node.js globals required by database libraries
 if (typeof global.TextEncoder === 'undefined') {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { TextEncoder, TextDecoder } = require('util');
   global.TextEncoder = TextEncoder;
   global.TextDecoder = TextDecoder;
