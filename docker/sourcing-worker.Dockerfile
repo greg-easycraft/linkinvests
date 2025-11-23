@@ -14,7 +14,6 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json ./
 # Copy only the packages we need for the sourcing worker
 COPY packages/shared ./packages/shared
 COPY packages/db ./packages/db
-COPY packages/eslint-config ./packages/eslint-config
 COPY packages/sourcing-worker ./packages/sourcing-worker
 
 # Install dependencies for the sourcing worker workspace and its dependencies

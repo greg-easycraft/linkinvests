@@ -44,7 +44,6 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json ./
 # Copy only the packages we need for the frontend
 COPY packages/shared ./packages/shared
 COPY packages/db ./packages/db
-COPY packages/eslint-config ./packages/eslint-config
 COPY packages/frontend ./packages/frontend
 
 # Install dependencies for the frontend workspace and its dependencies

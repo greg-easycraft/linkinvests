@@ -14,7 +14,6 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json ./
 # Copy only the packages we need for the scraping worker
 COPY packages/shared ./packages/shared
 COPY packages/db ./packages/db
-COPY packages/eslint-config ./packages/eslint-config
 COPY packages/scraping-worker ./packages/scraping-worker
 
 # Install dependencies for the scraping worker workspace and its dependencies
