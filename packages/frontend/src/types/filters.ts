@@ -106,4 +106,6 @@ export interface ListingFilters extends OpportunityFilters {
   energyClasses?: EnergyClass[]; // Energy performance diagnosis (A-G)
   features?: ListingFeatures; // Boolean features like balcony, garage, etc.
   isSoldRented?: boolean; // Rental status: true for occupied, false for available
+  sources?: string[]; // Source of the listing (dynamic options from database)
+  sellerType?: 'individual' | 'professional'; // Type of seller: individual or professional
 }

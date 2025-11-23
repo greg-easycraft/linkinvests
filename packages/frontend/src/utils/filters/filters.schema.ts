@@ -98,6 +98,16 @@ export const listingFiltersSchema = baseFiltersSchema.extend({
         z.string().transform(val => val === 'true'),
         z.boolean()
     ]).optional(),
+    sources: z.union([
+        z.string().transform(val => val.split(',').filter(Boolean)),
+        z.array(z.string())
+    ]).optional(),
+    sellerType: z.union([
+        z.string().refine(val => ['individual', 'professional'].includes(val), {
+            message: "sellerType must be 'individual' or 'professional'"
+        }).transform(val => val as 'individual' | 'professional'),
+        z.enum(['individual', 'professional'])
+    ]).optional(),
 });
 
 export const energyDiagnosticFiltersSchema = baseFiltersSchema.extend({

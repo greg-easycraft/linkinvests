@@ -44,6 +44,7 @@ describe('ListingService', () => {
       findAll: jest.fn(),
       findById: jest.fn(),
       count: jest.fn(),
+      getDistinctSources: jest.fn(),
     };
 
     mockExportService = {

@@ -6,21 +6,13 @@ import type { EnergyClass, ListingFilters as IListingFilters } from "~/types/fil
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { BaseFilters } from "./BaseFilters";
 import { RENTAL_STATUS_OPTIONS } from "~/constants/filters";
+import { SourcesInput } from "./SourcesInput";
+import { SellerTypeFilter } from "./SellerTypeFilter";
 
 interface ListingFiltersProps {
   filters: IListingFilters;
   onFiltersChange: (filters: IListingFilters) => void;
 }
-
-
-// Transaction types for listings
-const TRANSACTION_TYPE_OPTIONS = [
-  { value: 'VENTE', label: 'Vente' },
-  { value: 'VENTE_EN_L_ETAT_FUTUR_D_ACHEVEMENT', label: 'VEFA' },
-  { value: 'VENTE_AUX_ENCHERES', label: 'Enchères' },
-  { value: 'LOCATION', label: 'Location' },
-  { value: 'LOCATION_VENTE', label: 'Location-vente' },
-];
 
 // Property types for listings
 const PROPERTY_TYPE_OPTIONS = [
@@ -62,16 +54,6 @@ export function ListingFilters({
 
   // filters is already IListingFilters type
   const listingFilters = filters;
-
-  // Transaction type handlers
-  const handleTransactionTypeChange = (value: string): void => {
-    const currentTypes = listingFilters.transactionTypes ?? [];
-    const updatedTypes = currentTypes.includes(value)
-      ? currentTypes.filter(t => t !== value)
-      : [...currentTypes, value];
-
-    onFiltersChange({ ...filters, transactionTypes: updatedTypes.length > 0 ? updatedTypes : undefined } as IListingFilters);
-  };
 
   // Property type handlers
   const handlePropertyTypeChange = (value: string): void => {
@@ -169,43 +151,18 @@ export function ListingFilters({
     onFiltersChange({ ...filters, isSoldRented: booleanValue } as IListingFilters);
   };
 
+  // Sources handler
+  const handleSourcesChange = (sources: string[]): void => {
+    onFiltersChange({ ...filters, sources: sources.length > 0 ? sources : undefined } as IListingFilters);
+  };
+
+  // Seller type handler
+  const handleSellerTypeChange = (sellerType?: 'individual' | 'professional'): void => {
+    onFiltersChange({ ...filters, sellerType } as IListingFilters);
+  };
+
   const CustomFilters = (
     <>
-      {/* Transaction Type Filter */}
-      <div>
-        <label className="text-sm font-medium mb-2 block font-heading">Type de transaction</label>
-        <Select onValueChange={handleTransactionTypeChange}>
-          <SelectTrigger>
-            <SelectValue placeholder="Sélectionner un type..." />
-          </SelectTrigger>
-          <SelectContent>
-            {TRANSACTION_TYPE_OPTIONS.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        {listingFilters.transactionTypes && listingFilters.transactionTypes.length > 0 && (
-          <div className="mt-2 flex flex-wrap gap-1">
-            {listingFilters.transactionTypes.map((type) => {
-              const option = TRANSACTION_TYPE_OPTIONS.find(o => o.value === type);
-              return (
-                <span key={type} className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-800">
-                  {option?.label ?? type}
-                  <button
-                    onClick={() => handleTransactionTypeChange(type)}
-                    className="ml-1 text-blue-600 hover:text-blue-800"
-                  >
-                    ×
-                  </button>
-                </span>
-              );
-            })}
-          </div>
-        )}
-      </div>
-
       {/* Rental Status Filter */}
       <div>
         <label className="text-sm font-medium mb-2 block font-heading">Statut locatif</label>
@@ -440,6 +397,24 @@ export function ListingFilters({
             );
           })}
         </div>
+      </div>
+
+      {/* Source Filter */}
+      <div>
+        <label className="text-sm font-medium mb-2 block font-heading">Sources</label>
+        <SourcesInput
+          value={listingFilters.sources ?? []}
+          onChange={handleSourcesChange}
+        />
+      </div>
+
+      {/* Seller Type Filter */}
+      <div>
+        <label className="text-sm font-medium mb-2 block font-heading">Type de vendeur</label>
+        <SellerTypeFilter
+          value={listingFilters.sellerType}
+          onChange={handleSellerTypeChange}
+        />
       </div>
     </>
   );

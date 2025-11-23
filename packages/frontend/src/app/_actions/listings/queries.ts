@@ -26,6 +26,11 @@ export async function getListingById(id: string): Promise<Listing | null> {
   return await listingService.getListingById(id);
 }
 
+export async function getAvailableSources(): Promise<string[]> {
+  const listingService = resolve('listingService');
+  return await listingService.getAvailableSources();
+}
+
 export async function exportListings(
   filters: OpportunityFilters,
   format: ExportFormat

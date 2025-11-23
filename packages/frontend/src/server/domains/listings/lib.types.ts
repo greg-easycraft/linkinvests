@@ -5,4 +5,5 @@ export interface IListingRepository {
   findAll(filters?: OpportunityFilters, paginationFilters?: PaginationFilters): Promise<Listing[]>;
   findById(id: string): Promise<Listing | null>;
   count(filters?: OpportunityFilters): Promise<number>;
+  getDistinctSources(): Promise<string[]>;
 }

@@ -37,6 +37,10 @@ export class ListingService {
     return await this.listingRepository.findById(id);
   }
 
+  async getAvailableSources(): Promise<string[]> {
+    return await this.listingRepository.getDistinctSources();
+  }
+
   async exportList(filters: ListingFilters, format: ExportFormat): Promise<Blob> {
     // Check if the total count exceeds the export limit
     const total = await this.listingRepository.count(filters);

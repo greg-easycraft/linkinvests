@@ -155,6 +155,16 @@ export class DrizzleListingRepository implements IListingRepository {
       conditions.push(eq(opportunityListings.isSoldRented, filters.isSoldRented));
     }
 
+    // Filter by sources
+    if (filters.sources && filters.sources.length > 0) {
+      conditions.push(inArray(opportunityListings.source, filters.sources));
+    }
+
+    // Filter by seller type
+    if (filters.sellerType) {
+      conditions.push(eq(opportunityListings.sellerType, filters.sellerType));
+    }
+
     return conditions;
   }
 
@@ -213,6 +223,13 @@ export class DrizzleListingRepository implements IListingRepository {
 
     const result = await query;
     return result[0]?.count ?? 0;
+  }
+
+  async getDistinctSources(): Promise<string[]> {
+    const results = await this.db
+      .selectDistinct({ source: opportunityListings.source })
+      .from(opportunityListings);
+    return results.map(r => r.source).filter(Boolean);
   }
 
   private mapListing(listing: typeof opportunityListings.$inferSelect): Listing {
