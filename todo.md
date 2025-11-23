@@ -13,9 +13,9 @@ Accounts to Open
 
 Filtres Annonces + Encheres
 - [x] type de biens (harmonisés)
-- [ ] particuliers vs pro
-- [ ] source pour annonces
-- [ ] occupé vs libre
+- [x] particuliers vs pro
+- [x] source pour annonces
+- [x] occupé vs libre
 
 DERNIERE SEMAINE
 

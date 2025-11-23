@@ -8,8 +8,8 @@ MoteurImmo
 - [ ] tout DPE depuis 3 mois
 
 ## DIMANCHE
+- [ ] rename address fields into streetAddress
+- [ ] Encheres address from desc (TO TEST)
 - [ ] enchere occupé vs libre
-- [ ] Encheres price from bids
-- [ ] Encheres address from desc
-- [ ] Encheres onConflictDoUpdate
+- [ ] Encheres price from bids ?
 - [ ] successions Verif email mairie

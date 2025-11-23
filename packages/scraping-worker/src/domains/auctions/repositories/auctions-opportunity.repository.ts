@@ -3,6 +3,7 @@ import { domainSchema } from '@linkinvests/db';
 
 import { DATABASE_CONNECTION, type DomainDbType } from '~/database';
 import type { AuctionOpportunity } from '../types';
+import { sql } from 'drizzle-orm';
 
 @Injectable()
 export class AuctionsOpportunityRepository {
@@ -105,7 +106,20 @@ export class AuctionsOpportunityRepository {
         await this.db
           .insert(domainSchema.opportunityAuctions)
           .values(records)
-          .onConflictDoNothing();
+          .onConflictDoUpdate({
+            target: [domainSchema.opportunityAuctions.externalId],
+            set: {
+              energyClass: sql`excluded.energy_class`,
+              auctionVenue: sql`excluded.auction_venue`,
+              currentPrice: sql`excluded.current_price`,
+              reservePrice: sql`excluded.reserve_price`,
+              lowerEstimate: sql`excluded.lower_estimate`,
+              upperEstimate: sql`excluded.upper_estimate`,
+              mainPicture: sql`excluded.main_picture`,
+              pictures: sql`excluded.pictures`,
+              auctionHouseContact: sql`excluded.auction_house_contact`,
+            },
+          });
 
         insertedCount += batch.length;
 
