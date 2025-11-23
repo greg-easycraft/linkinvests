@@ -45,7 +45,7 @@ module.exports = {
   },
   overrides: [
     {
-      files: ['**/*.test.ts', '**/*.test.tsx', '**/*.spec.ts', '**/*.spec.tsx'],
+      files: ['**/*.test.ts', '**/*.test.tsx', '**/*.spec.ts', '**/*.spec.tsx', '**/*.e2e-spec.ts', '**/*.e2e-spec.tsx'],
       rules: {
         '@typescript-eslint/unbound-method': 'off',
       },
