@@ -2,6 +2,7 @@
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { RENTAL_STATUS_OPTIONS } from '../constants';
+import { useAuthSafeDropdown } from "~/hooks/useAuthSafeDropdown";
 
 interface RentalStatusFilterProps {
   value?: boolean;
@@ -12,10 +13,12 @@ export function RentalStatusFilter({
   value,
   onChange,
 }: RentalStatusFilterProps): React.ReactElement {
+  const { isOpen, setIsOpen } = useAuthSafeDropdown();
 
   const handleRentalStatusChange = (selectedValue: string): void => {
     const booleanValue = selectedValue === 'true' ? true : selectedValue === 'false' ? false : undefined;
     onChange(booleanValue);
+    setIsOpen(false); // Close dropdown after selection
   };
 
   // Get current value string including undefined for "Tous"
@@ -30,6 +33,8 @@ export function RentalStatusFilter({
       <Select
         value={getCurrentValueString()}
         onValueChange={handleRentalStatusChange}
+        open={isOpen}
+        onOpenChange={setIsOpen}
       >
         <SelectTrigger>
           <SelectValue />
