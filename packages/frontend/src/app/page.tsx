@@ -1,5 +1,7 @@
-import { SignInForm } from "~/components/auth/SignInForm";
+// import { SignInForm } from "~/components/auth/SignInForm";
 import Image from "next/image";
+import { Button } from "~/components/ui/button";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -18,8 +20,11 @@ export default function Home() {
             Plateforme d&apos;investissement immobilier
           </p>
         </div>
-        <SignInForm />
+        {/* <SignInForm /> */}
+        <Link href="/search/auctions">
+            Accéder à la plateforme
+        </Link>
       </div>
-    </div>
+    </div >
   );
 }
