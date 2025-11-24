@@ -37,14 +37,10 @@ export function ListingFilters({
           onChange={(value) => onFiltersChange({ ...filters, sources: value })}
         />
       </div>
-
-      <div>
-        <label className="text-sm font-medium mb-2 block font-heading">Type de vendeur</label>
-        <SellerTypeFilter
-          value={filters.sellerType}
-          onChange={(value) => onFiltersChange({ ...filters, sellerType: value })}
-        />
-      </div>
+      <SellerTypeFilter
+        value={filters.sellerType}
+        onChange={(value) => onFiltersChange({ ...filters, sellerType: value })}
+      />
       <RentalStatusFilter
         value={filters.isSoldRented}
         onChange={(value) => onFiltersChange({ ...filters, isSoldRented: value })}

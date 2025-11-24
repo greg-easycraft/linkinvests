@@ -9,7 +9,7 @@ interface SellerTypeFilterProps {
 }
 
 export function SellerTypeFilter({ value, onChange }: SellerTypeFilterProps) {
-  const handleSellerTypeChange = (selectedValue: string) => {
+  const handleSellerTypeChange = (selectedValue: string): void => {
     if (selectedValue === 'undefined') {
       onChange(undefined);
     } else {
@@ -17,14 +17,21 @@ export function SellerTypeFilter({ value, onChange }: SellerTypeFilterProps) {
     }
   };
 
+  // Get current value string including undefined
+  const getCurrentValueString = (): string => {
+    if (value === undefined) return 'undefined';
+    return value;
+  };
+
   return (
-    <div className="space-y-2">
+    <div>
+      <label className="text-sm font-medium mb-2 block font-heading">Type de vendeur</label>
       <Select
-        value={value !== undefined ? value : 'undefined'}
+        value={getCurrentValueString()}
         onValueChange={handleSellerTypeChange}
       >
         <SelectTrigger>
-          <SelectValue placeholder="Type de vendeur..." />
+          <SelectValue />
         </SelectTrigger>
         <SelectContent>
           {SELLER_TYPE_OPTIONS.map((option) => (
@@ -37,20 +44,6 @@ export function SellerTypeFilter({ value, onChange }: SellerTypeFilterProps) {
           ))}
         </SelectContent>
       </Select>
-
-      {value !== undefined && (
-        <div className="flex flex-wrap gap-1">
-          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-indigo-100 text-indigo-800">
-            {SELLER_TYPE_OPTIONS.find(o => o.value === value)?.label}
-            <button
-              onClick={() => onChange(undefined)}
-              className="ml-1 text-indigo-600 hover:text-indigo-800"
-            >
-              ×
-            </button>
-          </span>
-        </div>
-      )}
     </div>
   );
 }
