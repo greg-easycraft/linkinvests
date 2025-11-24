@@ -285,7 +285,7 @@ describe('ListingFilters Component', () => {
 
       expect(mockOnFiltersChange).toHaveBeenCalledWith({
         ...emptyFilters,
-        priceRange: { min: 200000 },
+        minPrice: 200000,
       });
     });
 
@@ -298,13 +298,14 @@ describe('ListingFilters Component', () => {
 
       expect(mockOnFiltersChange).toHaveBeenCalledWith({
         ...emptyFilters,
-        priceRange: { max: 800000 },
+        maxPrice: 800000,
       });
     });
 
     it('should display existing price range values', () => {
       const filters: IListingFilters = {
-        priceRange: { min: 200000, max: 800000 },
+        minPrice: 200000,
+        maxPrice: 800000,
       };
 
       render(<ListingFilters {...defaultProps} filters={filters} />);
@@ -319,7 +320,8 @@ describe('ListingFilters Component', () => {
     it('should clear price range when both values are empty', async () => {
       const user = userEvent.setup();
       const filters: IListingFilters = {
-        priceRange: { min: 200000, max: 800000 },
+        minPrice: 200000,
+        maxPrice: 800000,
       };
 
       render(<ListingFilters {...defaultProps} filters={filters} />);
@@ -343,7 +345,7 @@ describe('ListingFilters Component', () => {
 
       expect(mockOnFiltersChange).toHaveBeenCalledWith({
         ...emptyFilters,
-        squareFootageRange: { min: 80 },
+        minSquareFootage: 80,
       });
     });
 
@@ -357,7 +359,7 @@ describe('ListingFilters Component', () => {
 
       expect(mockOnFiltersChange).toHaveBeenCalledWith({
         ...emptyFilters,
-        landAreaRange: { min: 500 },
+        minLandArea: 500,
       });
     });
 
@@ -405,11 +407,16 @@ describe('ListingFilters Component', () => {
 
     it('should display all range values when set', () => {
       const filters: IListingFilters = {
-        squareFootageRange: { min: 80, max: 150 },
-        landAreaRange: { min: 500, max: 1000 },
-        roomsRange: { min: 3, max: 6 },
-        bedroomsRange: { min: 2, max: 4 },
-        constructionYearRange: { min: 2010, max: 2020 },
+        minSquareFootage: 80,
+        maxSquareFootage: 150,
+        minLandArea: 500,
+        maxLandArea: 1000,
+        minRooms: 3,
+        maxRooms: 6,
+        minBedrooms: 2,
+        maxBedrooms: 4,
+        minConstructionYear: 2010,
+        maxConstructionYear: 2020,
       };
 
       render(<ListingFilters {...defaultProps} filters={filters} />);
@@ -612,12 +619,18 @@ describe('ListingFilters Component', () => {
       const filters: IListingFilters = {
         transactionTypes: ['VENTE', 'LOCATION'],
         propertyTypes: ['APP', 'MAI'],
-        priceRange: { min: 200000, max: 800000 },
-        squareFootageRange: { min: 80, max: 150 },
-        landAreaRange: { min: 500, max: 1000 },
-        roomsRange: { min: 3, max: 6 },
-        bedroomsRange: { min: 2, max: 4 },
-        constructionYearRange: { min: 2010, max: 2020 },
+        minPrice: 200000,
+        maxPrice: 800000,
+        minSquareFootage: 80,
+        maxSquareFootage: 150,
+        minLandArea: 500,
+        maxLandArea: 1000,
+        minRooms: 3,
+        maxRooms: 6,
+        minBedrooms: 2,
+        maxBedrooms: 4,
+        minConstructionYear: 2010,
+        maxConstructionYear: 2020,
         energyClasses: ['A', 'B', 'C'] as EnergyClass[],
         features: {
           balcony: true,
@@ -650,7 +663,8 @@ describe('ListingFilters Component', () => {
       const user = userEvent.setup();
       const filters: IListingFilters = {
         transactionTypes: ['VENTE'],
-        priceRange: { min: 200000, max: 800000 },
+        minPrice: 200000,
+        maxPrice: 800000,
         features: { balcony: true },
       };
 
@@ -662,7 +676,8 @@ describe('ListingFilters Component', () => {
 
       expect(mockOnFiltersChange).toHaveBeenCalledWith({
         transactionTypes: ['VENTE'],
-        priceRange: { min: 200000, max: 800000 },
+        minPrice: 200000,
+        maxPrice: 800000,
         features: { balcony: true },
         roomsRange: { min: 4 },
       });
@@ -707,7 +722,6 @@ describe('ListingFilters Component', () => {
       const filters: IListingFilters = {
         transactionTypes: undefined,
         propertyTypes: undefined,
-        priceRange: undefined,
         energyClasses: undefined,
         features: undefined,
       };
@@ -740,8 +754,8 @@ describe('ListingFilters Component', () => {
 
     it('should handle range with only min or max value', () => {
       const filters: IListingFilters = {
-        priceRange: { min: 200000 },
-        squareFootageRange: { max: 150 },
+        minPrice: 200000,
+        maxSquareFootage: 150,
       };
 
       expect(() => {

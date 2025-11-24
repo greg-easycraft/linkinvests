@@ -323,7 +323,8 @@ describe('AuctionFilters Component', () => {
       const user = userEvent.setup();
       const filters: IAuctionFilters = {
         auctionTypes: ['judicial'],
-        priceRange: { min: 100000, max: 500000 },
+        minPrice: 100000,
+        maxPrice: 500000,
       };
 
       render(<AuctionFilters {...defaultProps} filters={filters} />);
@@ -342,7 +343,8 @@ describe('AuctionFilters Component', () => {
 
       expect(mockOnFiltersChange).toHaveBeenCalledWith({
         auctionTypes: ['judicial'],
-        priceRange: { min: 100000, max: 500000 },
+        minPrice: 100000,
+        maxPrice: 500000,
         isSoldRented: true,
       });
     });
@@ -396,7 +398,7 @@ describe('AuctionFilters Component', () => {
 
       expect(mockOnFiltersChange).toHaveBeenCalledWith({
         ...emptyFilters,
-        priceRange: { min: 100000 },
+        minPrice: 100000,
       });
     });
 
@@ -409,14 +411,14 @@ describe('AuctionFilters Component', () => {
 
       expect(mockOnFiltersChange).toHaveBeenCalledWith({
         ...emptyFilters,
-        priceRange: { max: 500000 },
+        maxPrice: 500000,
       });
     });
 
     it('should handle complete price range', async () => {
       const user = userEvent.setup();
       const filters: IAuctionFilters = {
-        priceRange: { min: 100000 },
+        minPrice: 100000,
       };
 
       render(<AuctionFilters {...defaultProps} filters={filters} />);
@@ -426,14 +428,16 @@ describe('AuctionFilters Component', () => {
 
       expect(mockOnFiltersChange).toHaveBeenCalledWith({
         ...filters,
-        priceRange: { min: 100000, max: 500000 },
+        minPrice: 100000,
+        maxPrice: 500000,
       });
     });
 
     it('should clear price range when both values are empty', async () => {
       const user = userEvent.setup();
       const filters: IAuctionFilters = {
-        priceRange: { min: 100000, max: 500000 },
+        minPrice: 100000,
+        maxPrice: 500000,
       };
 
       render(<AuctionFilters {...defaultProps} filters={filters} />);
@@ -447,7 +451,8 @@ describe('AuctionFilters Component', () => {
 
     it('should display existing price range values', () => {
       const filters: IAuctionFilters = {
-        priceRange: { min: 100000, max: 500000 },
+        minPrice: 100000,
+        maxPrice: 500000,
       };
 
       render(<AuctionFilters {...defaultProps} filters={filters} />);
@@ -462,7 +467,7 @@ describe('AuctionFilters Component', () => {
     it('should handle empty string input gracefully', async () => {
       const user = userEvent.setup();
       const filters: IAuctionFilters = {
-        priceRange: { min: 100000 },
+        minPrice: 100000,
       };
 
       render(<AuctionFilters {...defaultProps} filters={filters} />);
@@ -472,7 +477,7 @@ describe('AuctionFilters Component', () => {
 
       expect(mockOnFiltersChange).toHaveBeenCalledWith({
         ...filters,
-        priceRange: { min: undefined },
+        minPrice: undefined,
       });
     });
   });
@@ -488,13 +493,14 @@ describe('AuctionFilters Component', () => {
 
       expect(mockOnFiltersChange).toHaveBeenCalledWith({
         ...emptyFilters,
-        reservePriceRange: { min: 50000 },
+        minReservePrice: 50000,
       });
     });
 
     it('should display existing reserve price range values', () => {
       const filters: IAuctionFilters = {
-        reservePriceRange: { min: 50000, max: 200000 },
+        minReservePrice: 50000,
+        maxReservePrice: 200000,
       };
 
       render(<AuctionFilters {...defaultProps} filters={filters} />);
@@ -519,13 +525,14 @@ describe('AuctionFilters Component', () => {
 
       expect(mockOnFiltersChange).toHaveBeenCalledWith({
         ...emptyFilters,
-        squareFootageRange: { min: 100 },
+        minSquareFootage: 100,
       });
     });
 
     it('should display existing square footage values', () => {
       const filters: IAuctionFilters = {
-        squareFootageRange: { min: 100, max: 300 },
+        minSquareFootage: 100,
+        maxSquareFootage: 300,
       };
 
       render(<AuctionFilters {...defaultProps} filters={filters} />);
@@ -550,13 +557,14 @@ describe('AuctionFilters Component', () => {
 
       expect(mockOnFiltersChange).toHaveBeenCalledWith({
         ...emptyFilters,
-        roomsRange: { min: 3 },
+        minRooms: 3,
       });
     });
 
     it('should display existing rooms range values', () => {
       const filters: IAuctionFilters = {
-        roomsRange: { min: 2, max: 5 },
+        minRooms: 2,
+        maxRooms: 5,
       };
 
       render(<AuctionFilters {...defaultProps} filters={filters} />);
@@ -576,10 +584,14 @@ describe('AuctionFilters Component', () => {
         auctionTypes: ['judicial', 'voluntary'],
         isSoldRented: true,
         propertyTypes: ['house', 'apartment'],
-        priceRange: { min: 100000, max: 500000 },
-        reservePriceRange: { min: 50000, max: 200000 },
-        squareFootageRange: { min: 100, max: 300 },
-        roomsRange: { min: 2, max: 5 },
+        minPrice: 100000,
+        maxPrice: 500000,
+        minReservePrice: 50000,
+        maxReservePrice: 200000,
+        minSquareFootage: 100,
+        maxSquareFootage: 300,
+        minRooms: 2,
+        maxRooms: 5,
       };
 
       render(<AuctionFilters {...defaultProps} filters={filters} />);
@@ -604,7 +616,8 @@ describe('AuctionFilters Component', () => {
       const user = userEvent.setup();
       const filters: IAuctionFilters = {
         auctionTypes: ['judicial'],
-        priceRange: { min: 100000, max: 500000 },
+        minPrice: 100000,
+        maxPrice: 500000,
       };
 
       render(<AuctionFilters {...defaultProps} filters={filters} />);
@@ -615,15 +628,16 @@ describe('AuctionFilters Component', () => {
 
       expect(mockOnFiltersChange).toHaveBeenCalledWith({
         auctionTypes: ['judicial'],
-        priceRange: { min: 100000, max: 500000 },
-        reservePriceRange: { min: 50000 },
+        minPrice: 100000,
+        maxPrice: 500000,
+        minReservePrice: 50000,
       });
     });
 
     it('should handle filters state changes during re-renders', () => {
       const filters: IAuctionFilters = {
         auctionTypes: ['judicial'],
-        priceRange: { min: 100000 },
+        minPrice: 100000,
       };
 
       const { rerender } = render(<AuctionFilters {...defaultProps} filters={filters} />);
@@ -658,7 +672,6 @@ describe('AuctionFilters Component', () => {
       const filters: IAuctionFilters = {
         auctionTypes: undefined,
         propertyTypes: undefined,
-        priceRange: undefined,
       };
 
       expect(() => {
@@ -685,8 +698,8 @@ describe('AuctionFilters Component', () => {
 
     it('should handle range with only min or max value', () => {
       const filters: IAuctionFilters = {
-        priceRange: { min: 100000 },
-        reservePriceRange: { max: 200000 },
+        minPrice: 100000,
+        maxReservePrice: 200000,
       };
 
       expect(() => {
