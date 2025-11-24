@@ -44,10 +44,6 @@ export const auctionFiltersSchema = baseFiltersSchema.extend({
 });
 
 export const listingFiltersSchema = baseFiltersSchema.extend({
-    transactionTypes: z.union([
-        z.string().transform(val => val.split(',').filter(Boolean)),
-        z.array(z.string())
-    ]).optional(),
     propertyTypes: z.union([
         z.string().transform(val => val.split(',').filter(Boolean)),
         z.array(z.string())
