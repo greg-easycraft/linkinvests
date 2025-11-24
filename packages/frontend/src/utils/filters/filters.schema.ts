@@ -60,7 +60,14 @@ export const listingFiltersSchema = baseFiltersSchema.extend({
     minBedrooms: z.string().transform(val => Number(val)).pipe(z.number()).optional(),
     maxBedrooms: z.string().transform(val => Number(val)).pipe(z.number()).optional(),
     minConstructionYear: z.string().transform(val => Number(val)).pipe(z.number()).optional(),
-    maxConstructionYear: z.string().transform(val => Number(val)).pipe(z.number()).optional(),  
+    maxConstructionYear: z.string().transform(val => Number(val)).pipe(z.number()).optional(),
+    energyClasses: z.union([
+        z.string().transform(val => {
+            const classes = val.split(',').filter(Boolean);
+            return classes.filter(cls => ['A', 'B', 'C', 'D', 'E', 'F', 'G'].includes(cls)) as EnergyClass[];
+        }),
+        z.array(z.enum(['A', 'B', 'C', 'D', 'E', 'F', 'G'] as const))
+    ]).optional(),
     isSoldRented: z.union([
         z.string().transform(val => val === 'true'),
         z.boolean()
@@ -81,9 +88,9 @@ export const energyDiagnosticFiltersSchema = baseFiltersSchema.extend({
     energyClasses: z.union([
         z.string().transform(val => {
             const classes = val.split(',').filter(Boolean);
-            return classes.filter(cls => ['A', 'B', 'C', 'D', 'E', 'F', 'G'].includes(cls)) as EnergyClass[];
+            return classes.filter(cls => ['E', 'F', 'G'].includes(cls)) as EnergyClass[];
         }),
-        z.array(z.enum(['A', 'B', 'C', 'D', 'E', 'F', 'G'] as const))
+        z.array(z.enum(['E', 'F', 'G'] as const))
     ]).optional(),
 });
 
