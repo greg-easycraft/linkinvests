@@ -25,8 +25,8 @@ export const auctionFiltersSchema = baseFiltersSchema.extend({
         z.array(z.string())
     ]).optional(),
     propertyTypes: z.union([
-        z.string().transform(val => val.split(',').filter(Boolean)),
-        z.array(z.string())
+        z.string().transform(val => val.split(',').filter(Boolean) as PropertyType[]),
+        z.array(z.enum(PropertyType))
     ]).optional(),
     minPrice: z.string().transform(val => Number(val)).pipe(z.number()).optional(),
     maxPrice: z.string().transform(val => Number(val)).pipe(z.number()).optional(),
@@ -45,7 +45,7 @@ export const auctionFiltersSchema = baseFiltersSchema.extend({
 
 export const listingFiltersSchema = baseFiltersSchema.extend({
     propertyTypes: z.union([
-        z.string().transform(val => val.split(',').filter(Boolean)),
+        z.string().transform(val => val.split(',').filter(Boolean)  as PropertyType[]),
         z.array(z.enum(PropertyType))
     ]).optional(),
 
@@ -64,7 +64,7 @@ export const listingFiltersSchema = baseFiltersSchema.extend({
     energyClasses: z.union([
         z.string().transform(val => {
             const classes = val.split(',').filter(Boolean);
-            return classes.filter(cls => ['A', 'B', 'C', 'D', 'E', 'F', 'G'].includes(cls)) as EnergyClass[];
+            return classes.filter(cls => ['A', 'B', 'C', 'D', 'E', 'F', 'G'].includes(cls as EnergyClass)) as EnergyClass[];
         }),
         z.array(z.enum(EnergyClass))
     ]).optional(),
@@ -88,7 +88,7 @@ export const energyDiagnosticFiltersSchema = baseFiltersSchema.extend({
     energyClasses: z.union([
         z.string().transform(val => {
             const classes = val.split(',').filter(Boolean);
-            return classes.filter(cls => ['E', 'F', 'G'].includes(cls)) as EnergyClass[];
+            return classes.filter(cls => ['E', 'F', 'G'].includes(cls as EnergyClass)) as EnergyClass[];
         }),
         z.array(z.enum(['E', 'F', 'G'] as EnergyClass[]))
     ]).optional(),
