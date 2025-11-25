@@ -57,7 +57,6 @@ export interface PriceRange {
 
 export interface IAuctionFilters extends IOpportunityFilters {
   // Auction-specific filter properties
-  auctionTypes?: string[];
   propertyTypes?: PropertyType[];
   minPrice?: number;
   maxPrice?: number;

@@ -20,10 +20,6 @@ export const baseFiltersSchema = z.object({
 });
 
 export const auctionFiltersSchema = baseFiltersSchema.extend({
-    auctionTypes: z.union([
-        z.string().transform(val => val.split(',').filter(Boolean)),
-        z.array(z.string())
-    ]).optional(),
     propertyTypes: z.union([
         z.string().transform(val => val.split(',').filter(Boolean) as PropertyType[]),
         z.array(z.enum(PropertyType))

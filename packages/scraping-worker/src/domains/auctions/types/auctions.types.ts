@@ -90,7 +90,6 @@ export interface AuctionOpportunity {
   extraData?: {
     id?: string; // Auction ID from query
     url?: string; // Original auction URL
-    auctionType?: string; // Type of auction
     propertyType?: PropertyType; // Property category
     currentPrice?: number; // Current bid amount
     lowerEstimate?: number; // Lower price estimate

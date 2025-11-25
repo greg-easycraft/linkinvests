@@ -24,7 +24,6 @@ const baseOpportunityHeaders: Record<string, string> = {
 // Auction-specific headers
 const auctionHeaders: Record<string, string> = {
   ...baseOpportunityHeaders,
-  auctionType: "Type de vente aux enchères",
   propertyType: "Type de bien",
   description: "Description",
   squareFootage: "Surface (m²)",

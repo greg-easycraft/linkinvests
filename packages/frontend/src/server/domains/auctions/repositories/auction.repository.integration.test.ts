@@ -84,18 +84,6 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
     });
 
     // Auction-specific filter tests
-    it('should filter by auction types', async () => {
-      const filters: IAuctionFilters = {
-        auctionTypes: ['PUBLIC_SALE']
-      };
-
-      const auctions = await auctionRepository.findAll(filters);
-
-      auctions.forEach(auction => {
-        expect(auction.auctionType).toBe('PUBLIC_SALE');
-      });
-    });
-
     it('should filter by property types', async () => {
       const filters: IAuctionFilters = {
         propertyTypes: [PropertyType.HOUSE, PropertyType.FLAT]
@@ -199,7 +187,6 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
     it('should filter by multiple auction criteria', async () => {
       const filters: IAuctionFilters = {
         departments: ['06'],
-        auctionTypes: ['PUBLIC_SALE'],
         minPrice: 100000,
         maxPrice: 1000000,
         minSquareFootage: 50
@@ -209,7 +196,6 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
 
       auctions.forEach(auction => {
         expect(auction.department).toBe('06');
-        expect(auction.auctionType).toBe('PUBLIC_SALE');
         if (auction.currentPrice) {
           expect(auction.currentPrice).toBeGreaterThanOrEqual(100000);
           expect(auction.currentPrice).toBeLessThanOrEqual(1000000);

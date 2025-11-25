@@ -53,11 +53,6 @@ export class DrizzleAuctionRepository implements IAuctionRepository {
     }
 
     // Auction-specific filters
-    // Filter by auction types
-    if (filters.auctionTypes && filters.auctionTypes.length > 0) {
-      conditions.push(inArray(opportunityAuctions.auctionType, filters.auctionTypes));
-    }
-
     // Filter by property types
     if (filters.propertyTypes && filters.propertyTypes.length > 0) {
       conditions.push(inArray(opportunityAuctions.propertyType, filters.propertyTypes));
@@ -175,7 +170,6 @@ export class DrizzleAuctionRepository implements IAuctionRepository {
       ...auction,
       address: auction.address ?? undefined,
       source: auction.source as AuctionSource,
-      auctionType: auction.auctionType ?? undefined,
       propertyType: (auction.propertyType ?? undefined) as PropertyType | undefined,
       description: auction.description ?? undefined,
       squareFootage: auction.squareFootage ?? undefined,

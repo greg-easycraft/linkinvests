@@ -4,7 +4,6 @@ import { AuctionSource, EnergyClass, PropertyType } from '../constants/opportuni
 export interface Auction extends BaseOpportunity {
   // Auction-specific fields
   url: string;
-  auctionType?: string;
   propertyType?: PropertyType;
   description?: string;
   squareFootage?: number;

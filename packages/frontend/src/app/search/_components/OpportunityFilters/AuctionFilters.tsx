@@ -10,7 +10,6 @@ import {
   RoomsRangeFilter,
   PropertyTypeFilter,
   RentalStatusFilter,
-  AuctionTypeFilter,
 } from "~/components/filters";
 
 interface AuctionFiltersProps {
@@ -25,11 +24,6 @@ export function AuctionFilters({
 
   const CustomFilters = (
     <>
-      <AuctionTypeFilter
-        value={filters.auctionTypes}
-        onChange={(value) => onFiltersChange({ ...filters, auctionTypes: value })}
-      />
-
       <RentalStatusFilter
         value={filters.isSoldRented}
         onChange={(value) => onFiltersChange({ ...filters, isSoldRented: value })}

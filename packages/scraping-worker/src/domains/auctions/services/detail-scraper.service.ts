@@ -147,7 +147,6 @@ export class DetailScraperService {
     }
 
     // Extract basic query data
-    const auctionType = query.categorie || 'immobilier';
     const propertyType = query.sous_categorie || '';
 
     // Extract address - prefer adresse object, fallback to parsing nom
@@ -171,7 +170,6 @@ export class DetailScraperService {
       pictures,
       extraData: {
         id: `${AuctionSource.ENCHERES_PUBLIQUES}-${lotId}`,
-        auctionType,
         propertyType: this.getPropertyType(propertyType),
         currentPrice: Number(lotData.offre_actuelle) || undefined,
         lowerEstimate: Number(lotData.estimation_basse) || undefined,

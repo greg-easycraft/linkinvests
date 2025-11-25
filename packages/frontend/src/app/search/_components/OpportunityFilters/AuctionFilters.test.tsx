@@ -114,119 +114,6 @@ describe('AuctionFilters Component', () => {
     });
   });
 
-  describe('Auction Type Filter Interactions', () => {
-    it('should handle auction type selection', async () => {
-      const user = userEvent.setup();
-      render(<AuctionFilters {...defaultProps} />);
-
-      // Click the first select (auction type)
-      const auctionTypeSelect = screen.getAllByTestId('select')[0];
-      await user.click(auctionTypeSelect!);
-
-      expect(mockOnFiltersChange).toHaveBeenCalledWith({
-        ...emptyFilters,
-        auctionTypes: ['test-value'],
-      });
-    });
-
-    it('should add multiple auction types', async () => {
-      const user = userEvent.setup();
-      const filters: IAuctionFilters = {
-        auctionTypes: ['judicial'],
-      };
-
-      render(<AuctionFilters {...defaultProps} filters={filters} />);
-
-      const auctionTypeSelect = screen.getAllByTestId('select')[0];
-      await user.click(auctionTypeSelect!);
-
-      expect(mockOnFiltersChange).toHaveBeenCalledWith({
-        ...filters,
-        auctionTypes: ['judicial', 'test-value'],
-      });
-    });
-
-    it('should remove auction type when already selected', async () => {
-      const user = userEvent.setup();
-      const filters: IAuctionFilters = {
-        auctionTypes: ['test-value', 'judicial'],
-      };
-
-      // Mock the onValueChange to simulate removing existing value
-      const selectModule = await import('~/components/ui/select');
-      jest.mocked(selectModule.Select).mockImplementation(({ onValueChange }: any) => (
-        <div data-testid="select" onClick={() => onValueChange?.('test-value')}>
-          Mock Select
-        </div>
-      ));
-
-      render(<AuctionFilters {...defaultProps} filters={filters} />);
-
-      const auctionTypeSelect = screen.getAllByTestId('select')[0];
-      await user.click(auctionTypeSelect!);
-
-      expect(mockOnFiltersChange).toHaveBeenCalledWith({
-        ...filters,
-        auctionTypes: ['judicial'],
-      });
-    });
-
-    it('should display selected auction type badges', () => {
-      const filters: IAuctionFilters = {
-        auctionTypes: ['judicial', 'voluntary'],
-      };
-
-      render(<AuctionFilters {...defaultProps} filters={filters} />);
-
-      expect(screen.getByText('Vente judiciaire')).toBeInTheDocument();
-      expect(screen.getByText('Vente volontaire')).toBeInTheDocument();
-
-      // Should have remove buttons
-      const removeButtons = screen.getAllByText('×');
-      expect(removeButtons.length).toBeGreaterThanOrEqual(2);
-    });
-
-    it('should handle auction type badge removal', async () => {
-      const user = userEvent.setup();
-      const filters: IAuctionFilters = {
-        auctionTypes: ['judicial', 'voluntary'],
-      };
-
-      render(<AuctionFilters {...defaultProps} filters={filters} />);
-
-      // Find and click the first remove button
-      const removeButtons = screen.getAllByText('×');
-      await user.click(removeButtons[0]!);
-
-      expect(mockOnFiltersChange).toHaveBeenCalled();
-    });
-
-    it('should clear auctionTypes when array becomes empty', async () => {
-      const user = userEvent.setup();
-      const filters: IAuctionFilters = {
-        auctionTypes: ['test-value'], // Only one item
-      };
-
-      // Mock the component to simulate removing the last item
-      const selectModule = await import('~/components/ui/select');
-      jest.mocked(selectModule.Select).mockImplementation(({ onValueChange }: any) => (
-        <div data-testid="select" onClick={() => onValueChange?.('test-value')}>
-          Mock Select
-        </div>
-      ));
-
-      render(<AuctionFilters {...defaultProps} filters={filters} />);
-
-      const auctionTypeSelect = screen.getAllByTestId('select')[0];
-      await user.click(auctionTypeSelect!);
-
-      expect(mockOnFiltersChange).toHaveBeenCalledWith({
-        ...filters,
-        auctionTypes: undefined,
-      });
-    });
-  });
-
   describe('Rental Status Filter Interactions', () => {
     it('should handle rental status selection for occupied', async () => {
       const user = userEvent.setup();
@@ -323,7 +210,6 @@ describe('AuctionFilters Component', () => {
     it('should preserve other filters when changing rental status', async () => {
       const user = userEvent.setup();
       const filters: IAuctionFilters = {
-        auctionTypes: ['judicial'],
         minPrice: 100000,
         maxPrice: 500000,
       };
@@ -343,7 +229,6 @@ describe('AuctionFilters Component', () => {
       await user.click(rentalStatusSelect!);
 
       expect(mockOnFiltersChange).toHaveBeenCalledWith({
-        auctionTypes: ['judicial'],
         minPrice: 100000,
         maxPrice: 500000,
         isSoldRented: true,
@@ -580,7 +465,6 @@ describe('AuctionFilters Component', () => {
   describe('Complex Filter Scenarios', () => {
     it('should handle multiple filters simultaneously', () => {
       const filters: IAuctionFilters = {
-        auctionTypes: ['judicial', 'voluntary'],
         isSoldRented: true,
         propertyTypes: [PropertyType.HOUSE, PropertyType.FLAT],
         minPrice: 100000,
@@ -594,10 +478,6 @@ describe('AuctionFilters Component', () => {
       };
 
       render(<AuctionFilters {...defaultProps} filters={filters} />);
-
-      // Verify auction type badges
-      expect(screen.getByText('Vente judiciaire')).toBeInTheDocument();
-      expect(screen.getByText('Vente volontaire')).toBeInTheDocument();
 
       // Verify rental status badge
       expect(screen.getByText('Occupé')).toBeInTheDocument();
@@ -614,7 +494,6 @@ describe('AuctionFilters Component', () => {
     it('should preserve other filters when changing one filter', async () => {
       const user = userEvent.setup();
       const filters: IAuctionFilters = {
-        auctionTypes: ['judicial'],
         minPrice: 100000,
         maxPrice: 500000,
       };
@@ -626,7 +505,6 @@ describe('AuctionFilters Component', () => {
       await user.type(minInputs[0]!, '50000');
 
       expect(mockOnFiltersChange).toHaveBeenCalledWith({
-        auctionTypes: ['judicial'],
         minPrice: 100000,
         maxPrice: 500000,
         minReservePrice: 50000,
@@ -635,7 +513,6 @@ describe('AuctionFilters Component', () => {
 
     it('should handle filters state changes during re-renders', () => {
       const filters: IAuctionFilters = {
-        auctionTypes: ['judicial'],
         minPrice: 100000,
       };
 
@@ -649,8 +526,6 @@ describe('AuctionFilters Component', () => {
 
       rerender(<AuctionFilters {...defaultProps} filters={updatedFilters} />);
 
-      // Both auction types and property types should be visible
-      expect(screen.getByText('Vente judiciaire')).toBeInTheDocument();
       expect(screen.getByText('Maison')).toBeInTheDocument();
     });
   });
@@ -669,7 +544,6 @@ describe('AuctionFilters Component', () => {
 
     it('should handle null/undefined filter values', () => {
       const filters: IAuctionFilters = {
-        auctionTypes: undefined,
         propertyTypes: undefined,
       };
 
@@ -677,14 +551,11 @@ describe('AuctionFilters Component', () => {
         render(<AuctionFilters {...defaultProps} filters={filters} />);
       }).not.toThrow();
 
-      // Should render without selected badges
-      expect(screen.queryByText('Vente judiciaire')).not.toBeInTheDocument();
       expect(screen.queryByText('Maison')).not.toBeInTheDocument();
     });
 
     it('should handle empty arrays gracefully', () => {
       const filters: IAuctionFilters = {
-        auctionTypes: [],
         propertyTypes: [],
       };
 
@@ -692,7 +563,6 @@ describe('AuctionFilters Component', () => {
         render(<AuctionFilters {...defaultProps} filters={filters} />);
       }).not.toThrow();
 
-      expect(screen.queryByText('Vente judiciaire')).not.toBeInTheDocument();
     });
 
     it('should handle range with only min or max value', () => {
@@ -744,7 +614,6 @@ describe('AuctionFilters Component', () => {
 
     it('should have proper button accessibility for badge removal', () => {
       const filters: IAuctionFilters = {
-        auctionTypes: ['judicial'],
       };
 
       render(<AuctionFilters {...defaultProps} filters={filters} />);
@@ -763,7 +632,7 @@ describe('AuctionFilters Component', () => {
 
     it('should pass filters and onFiltersChange to BaseFilters', async () => {
       const user = userEvent.setup();
-      const filters: IAuctionFilters = { auctionTypes: ['judicial'] };
+      const filters: IAuctionFilters = { };
 
       render(<AuctionFilters {...defaultProps} filters={filters} />);
 
@@ -772,7 +641,6 @@ describe('AuctionFilters Component', () => {
       await user.click(resetButton);
 
       expect(mockOnFiltersChange).toHaveBeenCalledWith({
-        auctionTypes: ['judicial'],
         test: 'reset',
       });
     });

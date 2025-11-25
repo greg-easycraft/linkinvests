@@ -17,7 +17,6 @@ const auctionHouseContactSchema = z.object({
 // Schema for auction input extending base opportunity
 export const auctionInputSchema = baseOpportunityInputSchema.extend({
   url: z.url(),
-  auctionType: z.string().optional(),
   propertyType: z.string().optional(),
   description: z.string().optional(),
   squareFootage: z.number().positive().optional(),

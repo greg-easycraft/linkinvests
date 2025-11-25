@@ -30,7 +30,6 @@ export const opportunityAuctions = pgTable('auction', {
   source: varchar('source').notNull(),
   // Auction-specific fields
   url: text('url').notNull(),
-  auctionType: varchar('auction_type'),
   propertyType: varchar('property_type'),
   description: text('description'),
   squareFootage: numeric('square_footage', { mode: 'number' }),

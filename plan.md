@@ -1,9 +1,7 @@
 
 ## MARDI
-- [ ] auction type filter ?? 
 - [ ] enchere: occupé proprio, loué, libre d'occupation, NC
 - [ ] successions Verif email mairie
-- [ ] encheres addresses refinment, only for not previously refined addresses
 
 MoteurImmo
 - [ ] publishing date + lastChange date
@@ -28,6 +26,7 @@ DATA
 
 
 LATER
+- [ ] encheres addresses refinment, only for not previously refined addresses
 - [ ] rename address fields into streetAddress & handle as such
 - map bounds on search
 - [ ] recherche dans un rayon autour de moi ou d'un code postal

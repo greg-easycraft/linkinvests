@@ -79,7 +79,6 @@ export class AuctionsOpportunityRepository {
           source: opp.source,
           // Auction-specific fields (normalized from extraData)
           url: opp.url,
-          auctionType: opp.extraData?.auctionType || null,
           propertyType: opp.extraData?.propertyType || null,
           description: opp.extraData?.description || null,
           squareFootage: opp.extraData?.squareFootage || null,
