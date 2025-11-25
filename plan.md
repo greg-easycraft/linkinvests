@@ -1,8 +1,5 @@
 
 ## MARDI
-## BUGS FILTERS
-- [ ] property types
-- [ ] option toutes sur sources
 
 MoteurImmo
 - [ ] handle land type

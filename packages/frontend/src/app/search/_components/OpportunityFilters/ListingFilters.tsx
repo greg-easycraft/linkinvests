@@ -30,13 +30,10 @@ export function ListingFilters({
 
   const CustomFilters = (
     <>
-      <div>
-        <label className="text-sm font-medium mb-2 block font-heading">Sources</label>
-        <SourcesInput
-          value={filters.sources ?? []}
-          onChange={(value) => onFiltersChange({ ...filters, sources: value })}
-        />
-      </div>
+      <SourcesInput
+        value={filters.sources ?? []}
+        onChange={(value) => onFiltersChange({ ...filters, sources: value })}
+      />
       <SellerTypeFilter
         value={filters.sellerType}
         onChange={(value) => onFiltersChange({ ...filters, sellerType: value })}
