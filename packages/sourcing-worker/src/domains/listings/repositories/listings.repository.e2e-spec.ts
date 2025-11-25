@@ -22,6 +22,8 @@ describe('ListingsRepository (Integration)', () => {
     propertyType: PropertyType.FLAT,
     description: 'Bel appartement en centre ville',
     squareFootage: 75,
+    isSoldRented: false,
+    sellerType: 'individual',
     rooms: 3,
     bedrooms: 2,
     energyClass: EnergyClass.C,

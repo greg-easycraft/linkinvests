@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CONFIG_TOKEN } from '../../../config';
-import { MoteurImmoService } from './moteur-immo.service';
-import { PropertyType } from '@linkinvests/shared';
+import { MoteurImmoListing, MoteurImmoService } from './moteur-immo.service';
+import { EnergyClass, PropertyType } from '@linkinvests/shared';
 
 // Mock global fetch
 global.fetch = jest.fn();
@@ -46,7 +46,6 @@ describe('MoteurImmoService', () => {
       const requestBody = service['buildApiRequestBody'](
         { afterDate: '2024-01-01' },
         1,
-        50,
       );
 
       expect(requestBody).toEqual({
@@ -57,7 +56,7 @@ describe('MoteurImmoService', () => {
     });
 
     it('should handle pagination with offset', () => {
-      const requestBody = service['buildApiRequestBody']({}, 3, 50);
+      const requestBody = service['buildApiRequestBody']({}, 3);
 
       expect(requestBody).toEqual({
         apiKey: 'test-api-key',
@@ -69,10 +68,9 @@ describe('MoteurImmoService', () => {
     it('should handle property type filters', () => {
       const requestBody = service['buildApiRequestBody'](
         {
-          propertyTypes: ['apartment', 'house'],
+          propertyTypes: [PropertyType.FLAT, PropertyType.HOUSE],
         },
         1,
-        50,
       );
 
       expect(requestBody).toEqual({
@@ -84,7 +82,7 @@ describe('MoteurImmoService', () => {
     });
 
     it('should handle empty filters gracefully', () => {
-      const requestBody = service['buildApiRequestBody']({}, 1, 50);
+      const requestBody = service['buildApiRequestBody']({}, 1);
 
       expect(requestBody).toEqual({
         apiKey: 'test-api-key',
@@ -95,7 +93,7 @@ describe('MoteurImmoService', () => {
   });
 
   describe('transformListing', () => {
-    const mockApiListing = {
+    const mockApiListing: MoteurImmoListing = {
       adId: 'test-123',
       reference: 'ref-123',
       origin: 'seloger',
@@ -147,7 +145,7 @@ describe('MoteurImmoService', () => {
       buildingFloors: 5,
       options: ['hasGarage', 'hasBalcony'],
       energyValue: 120,
-      energyGrade: 'C',
+      energyGrade: EnergyClass.C,
       gasValue: 25,
       gasGrade: 'C',
       diagnosticDate: '2024-01-10',
@@ -163,7 +161,7 @@ describe('MoteurImmoService', () => {
       duplicates: [],
       uniqueId: 'unique-123',
       originalPrice: 520000,
-    };
+    } as const;
 
     it('should transform API listing to ListingInput format', () => {
       const result = service['transformListing'](mockApiListing);
@@ -195,13 +193,15 @@ describe('MoteurImmoService', () => {
       expect(service['mapPropertyType']('flat')).toBe(PropertyType.FLAT);
       expect(service['mapPropertyType']('house')).toBe(PropertyType.HOUSE);
       expect(service['mapPropertyType']('land')).toBe(PropertyType.LAND);
-      expect(service['mapPropertyType']('premises')).toBe(PropertyType.COMMERCIAL);
+      expect(service['mapPropertyType']('premises')).toBe(
+        PropertyType.COMMERCIAL,
+      );
       expect(service['mapPropertyType']('unknown')).toBe(PropertyType.OTHER);
       expect(service['mapPropertyType'](undefined)).toBe(PropertyType.OTHER);
     });
 
     it('should handle missing fields gracefully', () => {
-      const minimalListing = {
+      const minimalListing: MoteurImmoListing = {
         adId: 'test-456',
         reference: 'ref-456',
         origin: 'seloger',
@@ -311,7 +311,6 @@ describe('MoteurImmoService', () => {
       const result = await service['fetchListingsPage'](
         { afterDate: '2024-01-01' },
         1,
-        50,
       );
 
       expect(mockFetch).toHaveBeenCalledWith(
@@ -353,11 +352,11 @@ describe('MoteurImmoService', () => {
       } as any);
 
       // First call should not trigger rate limiting
-      await service['fetchListingsPage']({ afterDate: '2024-01-01' }, 1, 100);
+      await service['fetchListingsPage']({ afterDate: '2024-01-01' }, 1);
       expect(sleepSpy).not.toHaveBeenCalled();
 
       // Second call should trigger rate limiting (less than 250ms since last call)
-      await service['fetchListingsPage']({ afterDate: '2024-01-01' }, 2, 100);
+      await service['fetchListingsPage']({ afterDate: '2024-01-01' }, 2);
       expect(sleepSpy).toHaveBeenCalledWith(150); // 250 - 100 = 150ms delay
     });
 
@@ -383,7 +382,6 @@ describe('MoteurImmoService', () => {
       const result = await service['fetchListingsPage'](
         { afterDate: '2024-01-01' },
         1,
-        50,
       );
 
       expect(sleepSpy).toHaveBeenCalledWith(5000); // 5 seconds
@@ -407,7 +405,6 @@ describe('MoteurImmoService', () => {
       const result = await service['fetchListingsPage'](
         { afterDate: '2024-01-01' },
         1,
-        50,
       );
 
       expect(sleepSpy).toHaveBeenCalledTimes(2);
@@ -423,7 +420,7 @@ describe('MoteurImmoService', () => {
       mockFetch.mockRejectedValue(new Error('Network error'));
 
       await expect(
-        service['fetchListingsPage']({ afterDate: '2024-01-01' }, 1, 50),
+        service['fetchListingsPage']({ afterDate: '2024-01-01' }, 1),
       ).rejects.toThrow('Network error');
 
       expect(mockFetch).toHaveBeenCalledTimes(3); // Max retries
@@ -436,7 +433,7 @@ describe('MoteurImmoService', () => {
       } as any);
 
       await expect(
-        service['fetchListingsPage']({ afterDate: '2024-01-01' }, 1, 50),
+        service['fetchListingsPage']({ afterDate: '2024-01-01' }, 1),
       ).rejects.toThrow('Moteur Immo API returned status 400: Bad Request');
     });
   });
@@ -544,7 +541,8 @@ describe('MoteurImmoService', () => {
     it('should fetch all pages and transform results', async () => {
       const result = await service.getListings({
         afterDate: '2024-01-01',
-        energyClassClasses: ['E', 'F'],
+        energyGradeMin: EnergyClass.E,
+        energyGradeMax: EnergyClass.F,
       });
 
       expect(result).toHaveLength(3);

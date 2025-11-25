@@ -4,7 +4,7 @@ import type { ConfigType } from '~/config';
 import { CONFIG_TOKEN } from '~/config';
 import { ListingsJobFilters } from '../types';
 
-interface MoteurImmoListing {
+export interface MoteurImmoListing {
   adId: string;
   reference: string;
   origin: string;
@@ -307,7 +307,7 @@ export class MoteurImmoService {
 
     switch (category) {
       case 'flat':
-        return PropertyType.APARTMENT;
+        return PropertyType.FLAT;
       case 'house':
         return PropertyType.HOUSE;
       case 'land':

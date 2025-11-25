@@ -26,10 +26,8 @@ export function useQueryParamFilters<T extends IOpportunityFilters = IOpportunit
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
   
   const setFilters = useCallback((newFilters: T) => {
-    console.log({newFilters})
     const filtersToUse = { ...newFilters };
     delete filtersToUse.page;
-    console.log({filtersToUse})
     const newSearchParams = createURLSearchParams(filtersToUse);
     router.push(`${pathname}?${newSearchParams.toString()}`);
   }, [router, pathname]);
