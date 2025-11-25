@@ -2,7 +2,7 @@ import { and, eq, gte, inArray, lte, sql, type SQL } from "drizzle-orm";
 import type { DomainDbType } from "~/types/db";
 import { opportunitySuccessions } from "@linkinvests/db";
 import type { ISuccessionRepository } from "../lib.types";
-import type { SuccessionFilters, PaginationFilters } from "~/types/filters";
+import type { ISuccessionFilters, PaginationFilters } from "~/types/filters";
 import { calculateStartDate } from "~/constants/date-periods";
 import type { Succession } from "@linkinvests/shared";
 
@@ -12,7 +12,7 @@ export class DrizzleSuccessionRepository implements ISuccessionRepository {
   /**
    * Builds where clause for succession filters
    */
-  private buildWhereClause(filters?: SuccessionFilters): SQL[] {
+  private buildWhereClause(filters?: ISuccessionFilters): SQL[] {
     const conditions: SQL[] = [];
 
     if (!filters) {
@@ -54,7 +54,7 @@ export class DrizzleSuccessionRepository implements ISuccessionRepository {
     return conditions;
   }
 
-  async findAll(filters?: SuccessionFilters, paginationFilters?: PaginationFilters): Promise<Succession[]> {
+  async findAll(filters?: ISuccessionFilters, paginationFilters?: PaginationFilters): Promise<Succession[]> {
     const conditions = this.buildWhereClause(filters);
 
     let query = this.db
@@ -95,7 +95,7 @@ export class DrizzleSuccessionRepository implements ISuccessionRepository {
     return result[0] ?? null;
   }
 
-  async count(filters?: SuccessionFilters): Promise<number> {
+  async count(filters?: ISuccessionFilters): Promise<number> {
     const conditions = this.buildWhereClause(filters);
 
     let query = this.db

@@ -9,11 +9,12 @@ import { useOpportunityData } from "~/hooks/useOpportunityData";
 import type { ExportFormat } from "~/server/services/export.service";
 import { useCallback } from "react";
 import { listingFiltersSchema } from "~/utils/filters/filters.schema";
+import { IListingFilters } from "~/types/filters";
 
 export default function ListingsPageContent(): React.ReactElement {
   // Use query param hook for filters and view type
   const { currentFilters, debouncedFilters, setFilters: setAppliedFilters } =
-    useQueryParamFilters(listingFiltersSchema);
+    useQueryParamFilters<IListingFilters>(listingFiltersSchema);
 
   // Use unified data fetching - single queries for both list and map views
   const {

@@ -3,8 +3,8 @@
  */
 import { DrizzleEnergyDiagnosticsRepository } from './energy-diagnostics.repository';
 import { useTestDb } from '~/test-utils/use-test-db';
-import { OpportunityType } from '@linkinvests/shared';
-import type { EnergyDiagnosticFilters, PaginationFilters } from '~/types/filters';
+import { EnergyClass, OpportunityType } from '@linkinvests/shared';
+import type { IEnergyDiagnosticFilters, PaginationFilters } from '~/types/filters';
 
 describe('DrizzleEnergyDiagnosticsRepository Integration Tests', () => {
   const db = useTestDb();
@@ -50,7 +50,7 @@ describe('DrizzleEnergyDiagnosticsRepository Integration Tests', () => {
           return;
         }
 
-        const filters: EnergyDiagnosticFilters = {
+        const filters: IEnergyDiagnosticFilters = {
           departments: [existingDepartment]
         };
 
@@ -74,7 +74,7 @@ describe('DrizzleEnergyDiagnosticsRepository Integration Tests', () => {
           return;
         }
 
-        const filters: EnergyDiagnosticFilters = {
+        const filters: IEnergyDiagnosticFilters = {
           departments: departments.slice(0, 2)
         };
 
@@ -90,7 +90,7 @@ describe('DrizzleEnergyDiagnosticsRepository Integration Tests', () => {
       });
 
       it('should return empty array for non-existent department', async () => {
-        const filters: EnergyDiagnosticFilters = {
+        const filters: IEnergyDiagnosticFilters = {
           departments: ['99']
         };
 
@@ -112,7 +112,7 @@ describe('DrizzleEnergyDiagnosticsRepository Integration Tests', () => {
           return;
         }
 
-        const filters: EnergyDiagnosticFilters = {
+        const filters: IEnergyDiagnosticFilters = {
           zipCodes: [existingZipCode]
         };
 
@@ -136,7 +136,7 @@ describe('DrizzleEnergyDiagnosticsRepository Integration Tests', () => {
           return;
         }
 
-        const filters: EnergyDiagnosticFilters = {
+        const filters: IEnergyDiagnosticFilters = {
           zipCodes: zipCodes.slice(0, 2)
         };
 
@@ -152,7 +152,7 @@ describe('DrizzleEnergyDiagnosticsRepository Integration Tests', () => {
       });
 
       it('should return empty array for non-existent zip code', async () => {
-        const filters: EnergyDiagnosticFilters = {
+        const filters: IEnergyDiagnosticFilters = {
           zipCodes: ['00000']
         };
 
@@ -166,7 +166,7 @@ describe('DrizzleEnergyDiagnosticsRepository Integration Tests', () => {
 
     describe('datePeriod filter', () => {
       it('should filter by last month', async () => {
-        const filters: EnergyDiagnosticFilters = {
+        const filters: IEnergyDiagnosticFilters = {
           datePeriod: 'last_month'
         };
 
@@ -181,7 +181,7 @@ describe('DrizzleEnergyDiagnosticsRepository Integration Tests', () => {
       });
 
       it('should filter by last 3 months', async () => {
-        const filters: EnergyDiagnosticFilters = {
+        const filters: IEnergyDiagnosticFilters = {
           datePeriod: 'last_3_months'
         };
 
@@ -196,7 +196,7 @@ describe('DrizzleEnergyDiagnosticsRepository Integration Tests', () => {
       });
 
       it('should filter by last 12 months', async () => {
-        const filters: EnergyDiagnosticFilters = {
+        const filters: IEnergyDiagnosticFilters = {
           datePeriod: '12_months'
         };
 
@@ -226,7 +226,7 @@ describe('DrizzleEnergyDiagnosticsRepository Integration Tests', () => {
         const latitudes = diagnosticsWithCoords.map(d => d.latitude!);
         const longitudes = diagnosticsWithCoords.map(d => d.longitude!);
 
-        const filters: EnergyDiagnosticFilters = {
+        const filters: IEnergyDiagnosticFilters = {
           bounds: {
             north: Math.max(...latitudes) + 0.1,
             south: Math.min(...latitudes) - 0.1,
@@ -252,7 +252,7 @@ describe('DrizzleEnergyDiagnosticsRepository Integration Tests', () => {
       });
 
       it('should return empty array for bounds with no energy diagnostics', async () => {
-        const filters: EnergyDiagnosticFilters = {
+        const filters: IEnergyDiagnosticFilters = {
           bounds: {
             north: 90.0,
             south: 89.0,
@@ -271,8 +271,8 @@ describe('DrizzleEnergyDiagnosticsRepository Integration Tests', () => {
 
     describe('energyClasses filter', () => {
       it('should filter by allowed energy classes (F, G)', async () => {
-        const filters: EnergyDiagnosticFilters = {
-          energyClasses: ['F', 'G']
+        const filters: IEnergyDiagnosticFilters = {
+          energyClasses: [EnergyClass.F, EnergyClass.G]
         };
 
         const diagnostics = await energyDiagnosticsRepository.findAll(filters);
@@ -285,8 +285,8 @@ describe('DrizzleEnergyDiagnosticsRepository Integration Tests', () => {
       });
 
       it('should filter by allowed energy classes (E, F)', async () => {
-        const filters: EnergyDiagnosticFilters = {
-          energyClasses: ['E', 'F']
+        const filters: IEnergyDiagnosticFilters = {
+          energyClasses: [EnergyClass.E, EnergyClass.F]
         };
 
         const diagnostics = await energyDiagnosticsRepository.findAll(filters);
@@ -299,8 +299,8 @@ describe('DrizzleEnergyDiagnosticsRepository Integration Tests', () => {
       });
 
       it('should filter by single energy class (G)', async () => {
-        const filters: EnergyDiagnosticFilters = {
-          energyClasses: ['G']
+        const filters: IEnergyDiagnosticFilters = {
+          energyClasses: [EnergyClass.G]
         };
 
         const diagnostics = await energyDiagnosticsRepository.findAll(filters);
@@ -313,8 +313,8 @@ describe('DrizzleEnergyDiagnosticsRepository Integration Tests', () => {
       });
 
       it('should ignore disallowed energy classes (A, B, C, D)', async () => {
-        const filters: EnergyDiagnosticFilters = {
-          energyClasses: ['A', 'B', 'C', 'D']
+        const filters: IEnergyDiagnosticFilters = {
+          energyClasses: [EnergyClass.A, EnergyClass.B, EnergyClass.C, EnergyClass.D]
         };
 
         const diagnostics = await energyDiagnosticsRepository.findAll(filters);
@@ -326,8 +326,8 @@ describe('DrizzleEnergyDiagnosticsRepository Integration Tests', () => {
       });
 
       it('should filter mixed allowed and disallowed energy classes', async () => {
-        const filters: EnergyDiagnosticFilters = {
-          energyClasses: ['A', 'F', 'G'] // Should only consider F and G
+        const filters: IEnergyDiagnosticFilters = {
+          energyClasses: [EnergyClass.A, EnergyClass.F, EnergyClass.G] // Should only consider F and G
         };
 
         const diagnostics = await energyDiagnosticsRepository.findAll(filters);
@@ -340,7 +340,7 @@ describe('DrizzleEnergyDiagnosticsRepository Integration Tests', () => {
       });
 
       it('should default to E, F, G when no energyClasses specified', async () => {
-        const filters: EnergyDiagnosticFilters = {
+        const filters: IEnergyDiagnosticFilters = {
           departments: ['75'] // Any other filter without energyClasses
         };
 
@@ -362,9 +362,9 @@ describe('DrizzleEnergyDiagnosticsRepository Integration Tests', () => {
           return;
         }
 
-        const filters: EnergyDiagnosticFilters = {
+        const filters: IEnergyDiagnosticFilters = {
           departments: [existingDepartment],
-          energyClasses: ['F', 'G']
+          energyClasses: [EnergyClass.F, EnergyClass.G]
         };
 
         const diagnostics = await energyDiagnosticsRepository.findAll(filters);
@@ -387,10 +387,10 @@ describe('DrizzleEnergyDiagnosticsRepository Integration Tests', () => {
           return;
         }
 
-        const filters: EnergyDiagnosticFilters = {
+        const filters: IEnergyDiagnosticFilters = {
           departments: [existingDepartment],
           zipCodes: [existingZipCode],
-          energyClasses: ['E', 'F', 'G'],
+          energyClasses: [EnergyClass.E, EnergyClass.F, EnergyClass.G],
           datePeriod: '12_months'
         };
 
@@ -430,7 +430,7 @@ describe('DrizzleEnergyDiagnosticsRepository Integration Tests', () => {
           return;
         }
 
-        const filters: EnergyDiagnosticFilters = {
+        const filters: IEnergyDiagnosticFilters = {
           departments: [existingDepartment]
         };
         const paginationFilters: PaginationFilters = {
@@ -464,7 +464,7 @@ describe('DrizzleEnergyDiagnosticsRepository Integration Tests', () => {
       });
 
       it('should sort by specified field ascending', async () => {
-        const filters: EnergyDiagnosticFilters = {
+        const filters: IEnergyDiagnosticFilters = {
           sortBy: 'address',
           sortOrder: 'asc'
         };
@@ -485,7 +485,7 @@ describe('DrizzleEnergyDiagnosticsRepository Integration Tests', () => {
       });
 
       it('should sort by specified field descending', async () => {
-        const filters: EnergyDiagnosticFilters = {
+        const filters: IEnergyDiagnosticFilters = {
           sortBy: 'address',
           sortOrder: 'desc'
         };

@@ -5,7 +5,6 @@ import { fr } from "date-fns/locale";
 import {
   Home,
   Euro,
-  FileText,
   MapPin as VenueIcon,
   Phone,
   Mail,
@@ -59,17 +58,6 @@ const formatPropertyType = (propertyType: string): string => {
   return types[propertyType] || propertyType;
 };
 
-const formatTransactionType = (transactionType: string): string => {
-  const types: Record<string, string> = {
-    'VENTE': 'Vente',
-    'VENTE_EN_L_ETAT_FUTUR_D_ACHEVEMENT': 'VEFA',
-    'VENTE_AUX_ENCHERES': 'Enchères',
-    'LOCATION': 'Location',
-    'LOCATION_VENTE': 'Location-vente',
-  };
-  return types[transactionType] || transactionType;
-};
-
 export function ListingDetails({ opportunity }: ListingDetailsProps) {
   const hasPriceInfo = opportunity.price || opportunity.fees || opportunity.charges;
   const hasPropertyInfo = opportunity.propertyType || opportunity.squareFootage ||
@@ -120,13 +108,6 @@ export function ListingDetails({ opportunity }: ListingDetailsProps) {
         <div className="space-y-3">
           <h4 className="font-medium text-sm">Type de transaction</h4>
           <div className="grid grid-cols-1 gap-2 text-sm">
-            <div className="flex items-center gap-2">
-              <FileText className="h-4 w-4 text-blue-600" />
-              <span className="font-medium">Transaction:</span>
-              <Badge variant="outline" className="!text-blue-600 border-blue-600">
-                {formatTransactionType(opportunity.transactionType)}
-              </Badge>
-            </div>
             <div className="flex items-center gap-2">
               <Building className="h-4 w-4 text-purple-600" />
               <span className="font-medium">Type de bien:</span>

@@ -1,7 +1,7 @@
 import { SuccessionService } from './succession.service';
 import type { ISuccessionRepository } from '../lib.types';
 import type { IExportService, ExportFormat } from '~/server/services/export.service';
-import type { OpportunityFilters } from '~/types/filters';
+import type { IOpportunityFilters } from '~/types/filters';
 import { OpportunityType, type Succession } from '@linkinvests/shared';
 import { DEFAULT_PAGE_SIZE } from '~/constants/filters';
 import { getOpportunityHeaders } from '~/server/services/export-headers.service';
@@ -82,7 +82,7 @@ describe('SuccessionService', () => {
     });
 
     it('should return paginated succession data with custom pagination', async () => {
-      const filters: OpportunityFilters = { page: 3, pageSize: 25 };
+      const filters: IOpportunityFilters = { page: 3, pageSize: 25 };
       const mockSuccessions = [mockSuccession];
       mockSuccessionRepository.findAll.mockResolvedValue(mockSuccessions);
 
@@ -100,7 +100,7 @@ describe('SuccessionService', () => {
     });
 
     it('should handle filters correctly', async () => {
-      const filters: OpportunityFilters = {
+      const filters: IOpportunityFilters = {
         departments: ['75'],
         zipCodes: ['75001'],
         page: 2,
@@ -137,7 +137,7 @@ describe('SuccessionService', () => {
     });
 
     it('should return succession count with filters', async () => {
-      const filters: OpportunityFilters = { departments: ['75'] };
+      const filters: IOpportunityFilters = { departments: ['75'] };
       const expectedCount = 95;
       mockSuccessionRepository.count.mockResolvedValue(expectedCount);
 
@@ -186,7 +186,7 @@ describe('SuccessionService', () => {
   });
 
   describe('exportList', () => {
-    const filters: OpportunityFilters = { departments: ['75'] };
+    const filters: IOpportunityFilters = { departments: ['75'] };
     const mockSuccessionsForExport = [mockSuccession, { ...mockSuccession, id: 'succession-2' }];
     const mockBlob = new Blob(['test data']);
 

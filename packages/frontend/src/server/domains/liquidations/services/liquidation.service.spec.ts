@@ -1,7 +1,7 @@
 import { LiquidationService } from './liquidation.service';
 import type { ILiquidationRepository } from '../lib.types';
 import type { IExportService, ExportFormat } from '~/server/services/export.service';
-import type { OpportunityFilters } from '~/types/filters';
+import type { IOpportunityFilters } from '~/types/filters';
 import { OpportunityType, type Liquidation } from '@linkinvests/shared';
 import { DEFAULT_PAGE_SIZE } from '~/constants/filters';
 import { getOpportunityHeaders } from '~/server/services/export-headers.service';
@@ -82,7 +82,7 @@ describe('LiquidationService', () => {
     });
 
     it('should return paginated liquidation data with custom pagination', async () => {
-      const filters: OpportunityFilters = { page: 3, pageSize: 25 };
+      const filters: IOpportunityFilters = { page: 3, pageSize: 25 };
       const mockLiquidations = [mockLiquidation];
       mockLiquidationRepository.findAll.mockResolvedValue(mockLiquidations);
 
@@ -100,7 +100,7 @@ describe('LiquidationService', () => {
     });
 
     it('should handle filters correctly', async () => {
-      const filters: OpportunityFilters = {
+      const filters: IOpportunityFilters = {
         departments: ['75'],
         zipCodes: ['75001'],
         page: 2,
@@ -137,7 +137,7 @@ describe('LiquidationService', () => {
     });
 
     it('should return liquidation count with filters', async () => {
-      const filters: OpportunityFilters = { departments: ['75'] };
+      const filters: IOpportunityFilters = { departments: ['75'] };
       const expectedCount = 85;
       mockLiquidationRepository.count.mockResolvedValue(expectedCount);
 
@@ -186,7 +186,7 @@ describe('LiquidationService', () => {
   });
 
   describe('exportList', () => {
-    const filters: OpportunityFilters = { departments: ['75'] };
+    const filters: IOpportunityFilters = { departments: ['75'] };
     const mockLiquidationsForExport = [mockLiquidation, { ...mockLiquidation, id: 'liquidation-2' }];
     const mockBlob = new Blob(['test data']);
 

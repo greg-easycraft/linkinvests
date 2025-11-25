@@ -1,20 +1,20 @@
 "use server";
 
 import { resolve } from "~/server/di/di.container";
-import type { OpportunityFilters } from "~/types/filters";
+import type { IOpportunityFilters } from "~/types/filters";
 import type { Listing } from "@linkinvests/shared";
 import { OpportunitiesDataQueryResult } from "~/types/query-result";
 import type { ExportFormat } from "~/server/services/export.service";
 
 export async function getListingsData(
-  filters?: OpportunityFilters,
+  filters?: IOpportunityFilters,
 ): Promise<OpportunitiesDataQueryResult<Listing>> {
   const listingService = resolve('listingService');
   return await listingService.getListingsData(filters);
 }
 
 export async function getListingsCount(
-  filters?: OpportunityFilters,
+  filters?: IOpportunityFilters,
 ): Promise<number> {
   const listingService = resolve('listingService');
   return await listingService.getListingsCount(filters);
@@ -32,7 +32,7 @@ export async function getAvailableSources(): Promise<string[]> {
 }
 
 export async function exportListings(
-  filters: OpportunityFilters,
+  filters: IOpportunityFilters,
   format: ExportFormat
 ): Promise<{ success: boolean; error?: string; blob?: Blob }> {
   try {

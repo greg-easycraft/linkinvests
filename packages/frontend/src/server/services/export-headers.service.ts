@@ -66,7 +66,6 @@ const successionHeaders: Record<string, string> = {
 const listingHeaders: Record<string, string> = {
   ...baseOpportunityHeaders,
   source: "Source",
-  transactionType: "Type de transaction",
   propertyType: "Type de bien",
   description: "Description",
   squareFootage: "Surface habitable (m²)",

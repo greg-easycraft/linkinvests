@@ -1,7 +1,7 @@
 import { AuctionService } from './auction.service';
 import type { IAuctionRepository } from '../lib.types';
 import type { IExportService, ExportFormat } from '~/server/services/export.service';
-import type { OpportunityFilters } from '~/types/filters';
+import type { IOpportunityFilters } from '~/types/filters';
 import { OpportunityType, type Auction } from '@linkinvests/shared';
 import { DEFAULT_PAGE_SIZE } from '~/constants/filters';
 import { getOpportunityHeaders } from '~/server/services/export-headers.service';
@@ -82,7 +82,7 @@ describe('AuctionService', () => {
     });
 
     it('should return paginated auction data with custom pagination', async () => {
-      const filters: OpportunityFilters = { page: 3, pageSize: 25 };
+      const filters: IOpportunityFilters = { page: 3, pageSize: 25 };
       const mockAuctions = [mockAuction];
       mockAuctionRepository.findAll.mockResolvedValue(mockAuctions);
 
@@ -100,7 +100,7 @@ describe('AuctionService', () => {
     });
 
     it('should handle filters correctly', async () => {
-      const filters: OpportunityFilters = {
+      const filters: IOpportunityFilters = {
         departments: ['75'],
         zipCodes: ['75001'],
         page: 2,
@@ -137,7 +137,7 @@ describe('AuctionService', () => {
     });
 
     it('should return auction count with filters', async () => {
-      const filters: OpportunityFilters = { departments: ['75'] };
+      const filters: IOpportunityFilters = { departments: ['75'] };
       const expectedCount = 50;
       mockAuctionRepository.count.mockResolvedValue(expectedCount);
 
@@ -186,7 +186,7 @@ describe('AuctionService', () => {
   });
 
   describe('exportList', () => {
-    const filters: OpportunityFilters = { departments: ['75'] };
+    const filters: IOpportunityFilters = { departments: ['75'] };
     const mockAuctionsForExport = [mockAuction, { ...mockAuction, id: 'auction-2' }];
     const mockBlob = new Blob(['test data']);
 

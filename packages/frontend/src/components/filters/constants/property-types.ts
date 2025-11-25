@@ -1,21 +1,10 @@
-// Property types for auctions
-export const AUCTION_PROPERTY_TYPE_OPTIONS = [
-  { value: 'house', label: 'Maison' },
-  { value: 'apartment', label: 'Appartement' },
-  { value: 'land', label: 'Terrain' },
-  { value: 'commercial', label: 'Local commercial' },
-  { value: 'industrial', label: 'Industriel' },
-  { value: 'garage', label: 'Garage/Parking' },
-] as const;
+import { PropertyType } from "@linkinvests/shared";
 
-// Property types for listings
-export const LISTING_PROPERTY_TYPE_OPTIONS = [
-  { value: 'APP', label: 'Appartement' },
-  { value: 'MAI', label: 'Maison' },
-  { value: 'TER', label: 'Terrain' },
-  { value: 'LOC', label: 'Local commercial' },
-  { value: 'IMM', label: 'Immeuble' },
-  { value: 'GAR', label: 'Garage/Parking' },
-  { value: 'CAV', label: 'Cave' },
-  { value: 'BOX', label: 'Box' },
+// Property types for auctions
+export const PROPERTY_TYPE_OPTIONS = [
+  { value: PropertyType.HOUSE, label: 'Maison' },
+  { value: PropertyType.FLAT, label: 'Appartement' },
+  { value: PropertyType.LAND, label: 'Terrain' },
+  { value: PropertyType.COMMERCIAL, label: 'Industriel' },
+  { value: PropertyType.OTHER, label: 'Autre' },
 ] as const;

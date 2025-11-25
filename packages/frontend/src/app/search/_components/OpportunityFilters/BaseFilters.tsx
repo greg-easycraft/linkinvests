@@ -6,16 +6,16 @@ import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import { DepartmentsInput } from "~/components/ui/departments-input";
 import { ZipCodeInput } from "~/components/ui/zip-code-input";
 import { OpportunityType } from "@linkinvests/shared";
-import type { OpportunityFilters as IOpportunityFilters, DatePeriodOption } from "~/types/filters";
+import type { IOpportunityFilters, DatePeriodOption } from "~/types/filters";
 import { OpportunityTypeFilter, DatePeriodFilter, OPPORTUNITY_TYPE_TO_PATH } from "~/components/filters";
 import { ViewToggle } from "../ViewToggle";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 type ViewType = "list" | "map";
 
-interface OpportunityFiltersProps {
-  filters: IOpportunityFilters;
-  onFiltersChange: (filters: IOpportunityFilters) => void;
+interface OpportunityFiltersProps<T extends IOpportunityFilters> {
+  filters: T;
+  onFiltersChange: (filters: T) => void;
   currentType: OpportunityType;
   ExtraFilters?: React.ReactNode;
   datePeriodOptions?: DatePeriodOption[];
@@ -27,7 +27,7 @@ export function BaseFilters({
   onFiltersChange,
   ExtraFilters,
   datePeriodOptions
-}: OpportunityFiltersProps): React.ReactElement {
+}: OpportunityFiltersProps<IOpportunityFilters>): React.ReactElement {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
-import type { OpportunityFilters } from "~/types/filters";
+import type { IOpportunityFilters } from "~/types/filters";
 
 import { z } from "zod";
 
@@ -18,7 +18,7 @@ import { z } from "zod";
  * @param opportunityType - The opportunity type for the current page
  * @returns Object containing current state and setter functions
  */
-export function useQueryParamFilters<T extends OpportunityFilters>(schema: z.ZodSchema<T>) {
+export function useQueryParamFilters<T extends IOpportunityFilters = IOpportunityFilters>(schema: z.ZodSchema<T>) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -71,7 +71,7 @@ export function useQueryParamFilters<T extends OpportunityFilters>(schema: z.Zod
   };
 }
 
-function getRetainedFiltersFromParams<T extends OpportunityFilters>(searchParams: URLSearchParams, schema: z.ZodSchema<T>): T {
+function getRetainedFiltersFromParams<T extends IOpportunityFilters>(searchParams: URLSearchParams, schema: z.ZodSchema<T>): T {
   const queryParams = parseURLSearchParams(searchParams);
   const result = schema.safeParse(queryParams);
 
@@ -102,7 +102,7 @@ function getRetainedFiltersFromParams<T extends OpportunityFilters>(searchParams
   return finalResult.success ? finalResult.data : ({} as T);
 }
 
-function createURLSearchParams<T extends OpportunityFilters = OpportunityFilters>(
+function createURLSearchParams<T extends IOpportunityFilters = IOpportunityFilters>(
   params: T): URLSearchParams {
   const searchParams = new URLSearchParams();
 

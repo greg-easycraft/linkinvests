@@ -1,26 +1,22 @@
 "use client";
 
 import { MultiSelectFilter } from './MultiSelectFilter';
-import { AUCTION_PROPERTY_TYPE_OPTIONS, LISTING_PROPERTY_TYPE_OPTIONS } from '../constants';
+import { PROPERTY_TYPE_OPTIONS } from '../constants';
+import { PropertyType } from '@linkinvests/shared';
 
 interface PropertyTypeFilterProps {
-  value?: string[];
-  onChange: (value: string[] | undefined) => void;
-  type: 'auction' | 'listing';
+  value?: PropertyType[];
+  onChange: (value: PropertyType[] | undefined) => void;
 }
 
 export function PropertyTypeFilter({
   value,
   onChange,
-  type,
 }: PropertyTypeFilterProps): React.ReactElement {
-
-  const options = type === 'auction' ? AUCTION_PROPERTY_TYPE_OPTIONS : LISTING_PROPERTY_TYPE_OPTIONS;
-
   return (
     <MultiSelectFilter
       label="Type de bien"
-      options={options}
+      options={PROPERTY_TYPE_OPTIONS}
       value={value}
       onChange={onChange}
       placeholder="Sélectionner un type..."

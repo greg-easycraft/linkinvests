@@ -7,7 +7,6 @@ import { EnergyClass, PropertyType } from '@linkinvests/shared';
 // Intermediate data structures for extraction
 interface TitleInfo {
   label: string;
-  transactionType: string;
   propertyType: PropertyType;
   city: string;
   department: string;
@@ -176,7 +175,6 @@ export class DetailScraperService {
         department: titleInfo.department,
 
         // Transaction info
-        transactionType: titleInfo.transactionType,
         propertyType: titleInfo.propertyType,
 
         // Pricing
@@ -365,21 +363,18 @@ export class DetailScraperService {
 
   private parseTitleComponents(titleText: string): {
     propertyType: PropertyType;
-    transactionType: string;
   } {
     // Example title: "Vente Maison 10 pièces - Guingamp - Côtes-d'Armor (22)"
     const result: {
       propertyType: PropertyType;
-      transactionType: string;
     } = {
-      transactionType: 'VENTE',
       propertyType: PropertyType.OTHER,
     };
     const formattedText = titleText.toLowerCase();
     if (formattedText.includes('maison'))
       result.propertyType = PropertyType.HOUSE;
     else if (formattedText.includes('appartement'))
-      result.propertyType = PropertyType.APARTMENT;
+      result.propertyType = PropertyType.FLAT;
     else if (formattedText.includes('terrain'))
       result.propertyType = PropertyType.LAND;
 

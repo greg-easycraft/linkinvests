@@ -1,20 +1,20 @@
 "use server";
 
 import { resolve } from "~/server/di/di.container";
-import type { OpportunityFilters } from "~/types/filters";
+import type { IOpportunityFilters } from "~/types/filters";
 import type { Succession } from "@linkinvests/shared";
 import { OpportunitiesDataQueryResult } from "~/types/query-result";
 import type { ExportFormat } from "~/server/services/export.service";
 
 export async function getSuccessionsData(
-  filters?: OpportunityFilters,
+  filters?: IOpportunityFilters,
 ): Promise<OpportunitiesDataQueryResult<Succession>> {
   const successionService = resolve('successionService');
   return await successionService.getSuccessionsData(filters);
 }
 
 export async function getSuccessionsCount(
-  filters?: OpportunityFilters,
+  filters?: IOpportunityFilters,
 ): Promise<number> {
   const successionService = resolve('successionService');
   return await successionService.getSuccessionsCount(filters);
@@ -27,7 +27,7 @@ export async function getSuccessionById(id: string): Promise<Succession | null> 
 }
 
 export async function exportSuccessions(
-  filters: OpportunityFilters,
+  filters: IOpportunityFilters,
   format: ExportFormat
 ): Promise<{ success: boolean; error?: string; blob?: Blob }> {
   try {

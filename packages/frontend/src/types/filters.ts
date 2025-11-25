@@ -1,4 +1,4 @@
-import type { OpportunityType } from "@linkinvests/shared";
+import type { OpportunityType, PropertyType, EnergyClass } from "@linkinvests/shared";
 
 export interface MapBounds {
   north: number;
@@ -26,10 +26,7 @@ export interface DepartmentOption {
   label: string; // Formatted as "ID - Name" for display
 }
 
-// Energy class type for energy diagnostics
-export type EnergyClass = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G';
-
-export interface OpportunityFilters {
+export interface IOpportunityFilters {
   view?: "list" | "map";
   types?: OpportunityType[];
   departments?: string[];
@@ -48,7 +45,7 @@ export interface PaginationFilters {
   offset: number;
 }
 
-export interface EnergyDiagnosticFilters extends OpportunityFilters {
+export interface IEnergyDiagnosticFilters extends IOpportunityFilters {
   energyClasses?: EnergyClass[];
 }
 
@@ -58,10 +55,10 @@ export interface PriceRange {
   max?: number;
 }
 
-export interface AuctionFilters extends OpportunityFilters {
+export interface IAuctionFilters extends IOpportunityFilters {
   // Auction-specific filter properties
   auctionTypes?: string[];
-  propertyTypes?: string[];
+  propertyTypes?: PropertyType[];
   minPrice?: number;
   maxPrice?: number;
   minReservePrice?: number;
@@ -77,13 +74,13 @@ export interface AuctionFilters extends OpportunityFilters {
 
 // Placeholder for future succession-specific filters
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface SuccessionFilters extends OpportunityFilters {
+export interface ISuccessionFilters extends IOpportunityFilters {
   // Future: Add succession-specific filter properties here
 }
 
 // Placeholder for future liquidation-specific filters
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface LiquidationFilters extends OpportunityFilters {
+export interface ILiquidationFilters extends IOpportunityFilters {
   // Future: Add liquidation-specific filter properties here
 }
 
@@ -97,10 +94,9 @@ export interface ListingFeatures {
   elevator?: boolean;
 }
 
-export interface ListingFilters extends OpportunityFilters {
+export interface IListingFilters extends IOpportunityFilters {
   // Listing-specific filter properties
-  transactionTypes?: string[]; // VENTE, VENTE_EN_L_ETAT_FUTUR_D_ACHEVEMENT, VENTE_AUX_ENCHERES
-  propertyTypes?: string[]; // APP, MAI, TER, etc.
+  propertyTypes?: PropertyType[];
   minPrice?: number;
   maxPrice?: number;
   minSquareFootage?: number;

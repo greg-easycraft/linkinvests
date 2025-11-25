@@ -131,7 +131,6 @@ export class ListingsScrapingService {
       updatedAt: new Date(),
 
       // Listing-specific fields
-      transactionType: opp.transactionType,
       propertyType: opp.propertyType,
       description: opp.description,
       squareFootage: opp.squareFootage,

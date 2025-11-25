@@ -1,20 +1,20 @@
 "use server";
 
 import { resolve } from "~/server/di/di.container";
-import type { OpportunityFilters } from "~/types/filters";
+import type { IOpportunityFilters } from "~/types/filters";
 import type { EnergyDiagnostic } from "@linkinvests/shared";
 import { OpportunitiesDataQueryResult } from "~/types/query-result";
 import type { ExportFormat } from "~/server/services/export.service";
 
 export async function getEnergyDiagnosticsData(
-  filters?: OpportunityFilters,
+  filters?: IOpportunityFilters,
 ): Promise<OpportunitiesDataQueryResult<EnergyDiagnostic>> {
   const energyDiagnosticsService = resolve('energyDiagnosticsService');
   return await energyDiagnosticsService.getEnergyDiagnosticsData(filters);
 }
 
 export async function getEnergyDiagnosticsCount(
-  filters?: OpportunityFilters,
+  filters?: IOpportunityFilters,
 ): Promise<number> {
   const energyDiagnosticsService = resolve('energyDiagnosticsService');
   return await energyDiagnosticsService.getEnergyDiagnosticsCount(filters);
@@ -27,7 +27,7 @@ export async function getEnergyDiagnosticById(id: string): Promise<EnergyDiagnos
 }
 
 export async function exportEnergyDiagnostics(
-  filters: OpportunityFilters,
+  filters: IOpportunityFilters,
   format: ExportFormat
 ): Promise<{ success: boolean; error?: string; blob?: Blob }> {
   try {

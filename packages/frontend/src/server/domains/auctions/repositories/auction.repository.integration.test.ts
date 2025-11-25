@@ -3,8 +3,8 @@
  */
 import { DrizzleAuctionRepository } from './auction.repository';
 import { useTestDb } from '~/test-utils/use-test-db';
-import type { AuctionFilters, PaginationFilters } from '~/types/filters';
-import { OpportunityType } from '@linkinvests/shared';
+import type { IAuctionFilters, PaginationFilters } from '~/types/filters';
+import { EnergyClass, OpportunityType, PropertyType } from '@linkinvests/shared';
 
 describe('DrizzleAuctionRepository Integration Tests', () => {
   const db = useTestDb();
@@ -22,7 +22,7 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
     });
 
     it('should filter by departments', async () => {
-      const filters: AuctionFilters = {
+      const filters: IAuctionFilters = {
         departments: ['06'] // CA department from fixtures
       };
 
@@ -35,7 +35,7 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
     });
 
     it('should filter by multiple departments', async () => {
-      const filters: AuctionFilters = {
+      const filters: IAuctionFilters = {
         departments: ['06', '10'] // CA and NY departments
       };
 
@@ -48,7 +48,7 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
     });
 
     it('should filter by zipCodes', async () => {
-      const filters: AuctionFilters = {
+      const filters: IAuctionFilters = {
         zipCodes: ['90210'] // Beverly Hills from fixtures
       };
 
@@ -60,7 +60,7 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
     });
 
     it('should filter by multiple zipCodes', async () => {
-      const filters: AuctionFilters = {
+      const filters: IAuctionFilters = {
         zipCodes: ['90210', '10001'] // Beverly Hills and NYC
       };
 
@@ -72,7 +72,7 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
     });
 
     it('should filter by date period', async () => {
-      const filters: AuctionFilters = {
+      const filters: IAuctionFilters = {
         datePeriod: 'last_month'
       };
 
@@ -85,7 +85,7 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
 
     // Auction-specific filter tests
     it('should filter by auction types', async () => {
-      const filters: AuctionFilters = {
+      const filters: IAuctionFilters = {
         auctionTypes: ['PUBLIC_SALE']
       };
 
@@ -97,19 +97,19 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
     });
 
     it('should filter by property types', async () => {
-      const filters: AuctionFilters = {
-        propertyTypes: ['HOUSE', 'APARTMENT']
+      const filters: IAuctionFilters = {
+        propertyTypes: [PropertyType.HOUSE, PropertyType.FLAT]
       };
 
       const auctions = await auctionRepository.findAll(filters);
 
       auctions.forEach(auction => {
-        expect(['HOUSE', 'APARTMENT']).toContain(auction.propertyType);
+        expect([PropertyType.HOUSE, PropertyType.FLAT]).toContain(auction.propertyType);
       });
     });
 
     it('should filter by auction venues', async () => {
-      const filters: AuctionFilters = {
+      const filters: IAuctionFilters = {
         auctionVenues: ['COURTHOUSE_A', 'AUCTION_HOUSE_B']
       };
 
@@ -121,8 +121,8 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
     });
 
     it('should filter by energy classes', async () => {
-      const filters: AuctionFilters = {
-        energyClasses: ['D', 'E', 'F']
+      const filters: IAuctionFilters = {
+        energyClasses: [EnergyClass.D, EnergyClass.E, EnergyClass.F]
       };
 
       const auctions = await auctionRepository.findAll(filters);
@@ -133,7 +133,7 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
     });
 
     it('should filter by price range', async () => {
-      const filters: AuctionFilters = {
+      const filters: IAuctionFilters = {
         minPrice: 100000,
         maxPrice: 500000
       };
@@ -149,7 +149,7 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
     });
 
     it('should filter by reserve price range', async () => {
-      const filters: AuctionFilters = {
+      const filters: IAuctionFilters = {
         minReservePrice: 50000,
         maxReservePrice: 300000
       };
@@ -165,7 +165,7 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
     });
 
     it('should filter by square footage range', async () => {
-      const filters: AuctionFilters = {
+      const filters: IAuctionFilters = {
         minSquareFootage: 50,
         maxSquareFootage: 200
       };
@@ -181,7 +181,7 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
     });
 
     it('should filter by rooms range', async () => {
-      const filters: AuctionFilters = {
+      const filters: IAuctionFilters = {
         minRooms: 2,
         maxRooms: 5
       };
@@ -197,7 +197,7 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
     });
 
     it('should filter by multiple auction criteria', async () => {
-      const filters: AuctionFilters = {
+      const filters: IAuctionFilters = {
         departments: ['06'],
         auctionTypes: ['PUBLIC_SALE'],
         minPrice: 100000,
@@ -221,7 +221,7 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
     });
 
     it('should filter by map bounds', async () => {
-      const filters: AuctionFilters = {
+      const filters: IAuctionFilters = {
         bounds: {
           north: 35.0,  // Covers Los Angeles area
           south: 33.0,
@@ -241,7 +241,7 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
     });
 
     it('should combine multiple filters', async () => {
-      const filters: AuctionFilters = {
+      const filters: IAuctionFilters = {
         departments: ['06'],
         zipCodes: ['90210'],
         datePeriod: 'last_3_months'
@@ -267,7 +267,7 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
     });
 
     it('should apply pagination with filters', async () => {
-      const filters: AuctionFilters = {
+      const filters: IAuctionFilters = {
         departments: ['06', '10']
       };
       const paginationFilters: PaginationFilters = {
@@ -282,7 +282,7 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
     });
 
     it('should sort by price ascending', async () => {
-      const filters: AuctionFilters = {
+      const filters: IAuctionFilters = {
         sortBy: 'currentPrice',
         sortOrder: 'asc'
       };
@@ -297,7 +297,7 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
     });
 
     it('should sort by price descending', async () => {
-      const filters: AuctionFilters = {
+      const filters: IAuctionFilters = {
         sortBy: 'currentPrice',
         sortOrder: 'desc'
       };
@@ -312,7 +312,7 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
     });
 
     it('should sort by title alphabetically', async () => {
-      const filters: AuctionFilters = {
+      const filters: IAuctionFilters = {
         sortBy: 'title',
         sortOrder: 'asc'
       };
@@ -343,7 +343,7 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
     });
 
     it('should return empty array when no matches found', async () => {
-      const filters: AuctionFilters = {
+      const filters: IAuctionFilters = {
         zipCodes: ['99999'] // Non-existent zip code
       };
 
@@ -353,7 +353,7 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
     });
 
     it('should handle empty departments filter', async () => {
-      const filters: AuctionFilters = {
+      const filters: IAuctionFilters = {
         departments: []
       };
 
@@ -363,7 +363,7 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
     });
 
     it('should handle empty zipCodes filter', async () => {
-      const filters: AuctionFilters = {
+      const filters: IAuctionFilters = {
         zipCodes: []
       };
 
@@ -423,7 +423,7 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
     });
 
     it('should count auctions with department filter', async () => {
-      const filters: AuctionFilters = {
+      const filters: IAuctionFilters = {
         departments: ['06'] // CA department
       };
 
@@ -434,7 +434,7 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
     });
 
     it('should count auctions with zipCode filter', async () => {
-      const filters: AuctionFilters = {
+      const filters: IAuctionFilters = {
         zipCodes: ['90210']
       };
 
@@ -445,7 +445,7 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
     });
 
     it('should count auctions with multiple filters', async () => {
-      const filters: AuctionFilters = {
+      const filters: IAuctionFilters = {
         departments: ['06', '10'],
         datePeriod: 'last_3_months'
       };
@@ -457,7 +457,7 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
     });
 
     it('should count auctions with bounds filter', async () => {
-      const filters: AuctionFilters = {
+      const filters: IAuctionFilters = {
         bounds: {
           north: 35.0,
           south: 33.0,
@@ -473,7 +473,7 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
     });
 
     it('should return 0 for filters with no matches', async () => {
-      const filters: AuctionFilters = {
+      const filters: IAuctionFilters = {
         zipCodes: ['99999'] // Non-existent zip code
       };
 
@@ -483,7 +483,7 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
     });
 
     it('should match count with findAll results', async () => {
-      const filters: AuctionFilters = {
+      const filters: IAuctionFilters = {
         departments: ['06', '10']
       };
 

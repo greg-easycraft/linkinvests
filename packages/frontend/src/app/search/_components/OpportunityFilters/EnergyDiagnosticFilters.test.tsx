@@ -2,7 +2,8 @@
 import { render, screen } from '~/test-utils/test-helpers';
 import userEvent from '@testing-library/user-event';
 import { EnergyDiagnosticFilters } from './EnergyDiagnosticFilters';
-import type { EnergyDiagnosticFilters as IEnergyDiagnosticFilters, EnergyClass } from '~/types/filters';
+import type { IEnergyDiagnosticFilters } from '~/types/filters';
+import { EnergyClass } from '@linkinvests/shared';
 
 // Mock BaseFilters
 jest.mock('./BaseFilters', () => ({

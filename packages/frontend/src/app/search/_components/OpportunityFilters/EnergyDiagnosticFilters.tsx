@@ -1,7 +1,7 @@
 "use client";
 
 import { OpportunityType } from "@linkinvests/shared";
-import type { EnergyDiagnosticFilters as IEnergyDiagnosticFilters } from "~/types/filters";
+import type { IEnergyDiagnosticFilters } from "~/types/filters";
 import { BaseFilters } from "./BaseFilters";
 import { EnergyClassFilter } from "~/components/filters";
 

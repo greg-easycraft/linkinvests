@@ -4,7 +4,7 @@
 import { DrizzleLiquidationRepository } from './liquidation.repository';
 import { useTestDb } from '~/test-utils/use-test-db';
 import { OpportunityType } from '@linkinvests/shared';
-import type { LiquidationFilters, PaginationFilters } from '~/types/filters';
+import type { ILiquidationFilters, PaginationFilters } from '~/types/filters';
 
 describe('DrizzleLiquidationRepository Integration Tests', () => {
   const db = useTestDb();
@@ -46,7 +46,7 @@ describe('DrizzleLiquidationRepository Integration Tests', () => {
           return;
         }
 
-        const filters: LiquidationFilters = {
+        const filters: ILiquidationFilters = {
           departments: [existingDepartment]
         };
 
@@ -69,7 +69,7 @@ describe('DrizzleLiquidationRepository Integration Tests', () => {
           return;
         }
 
-        const filters: LiquidationFilters = {
+        const filters: ILiquidationFilters = {
           departments: departments.slice(0, 2)
         };
 
@@ -84,7 +84,7 @@ describe('DrizzleLiquidationRepository Integration Tests', () => {
       });
 
       it('should return empty array for non-existent department', async () => {
-        const filters: LiquidationFilters = {
+        const filters: ILiquidationFilters = {
           departments: ['99']
         };
 
@@ -106,7 +106,7 @@ describe('DrizzleLiquidationRepository Integration Tests', () => {
           return;
         }
 
-        const filters: LiquidationFilters = {
+        const filters: ILiquidationFilters = {
           zipCodes: [existingZipCode]
         };
 
@@ -129,7 +129,7 @@ describe('DrizzleLiquidationRepository Integration Tests', () => {
           return;
         }
 
-        const filters: LiquidationFilters = {
+        const filters: ILiquidationFilters = {
           zipCodes: zipCodes.slice(0, 2)
         };
 
@@ -144,7 +144,7 @@ describe('DrizzleLiquidationRepository Integration Tests', () => {
       });
 
       it('should return empty array for non-existent zip code', async () => {
-        const filters: LiquidationFilters = {
+        const filters: ILiquidationFilters = {
           zipCodes: ['00000']
         };
 
@@ -158,7 +158,7 @@ describe('DrizzleLiquidationRepository Integration Tests', () => {
 
     describe('datePeriod filter', () => {
       it('should filter by last month', async () => {
-        const filters: LiquidationFilters = {
+        const filters: ILiquidationFilters = {
           datePeriod: 'last_month'
         };
 
@@ -171,7 +171,7 @@ describe('DrizzleLiquidationRepository Integration Tests', () => {
       });
 
       it('should filter by last 3 months', async () => {
-        const filters: LiquidationFilters = {
+        const filters: ILiquidationFilters = {
           datePeriod: 'last_3_months'
         };
 
@@ -183,7 +183,7 @@ describe('DrizzleLiquidationRepository Integration Tests', () => {
       });
 
       it('should filter by last 12 months', async () => {
-        const filters: LiquidationFilters = {
+        const filters: ILiquidationFilters = {
           datePeriod: '12_months'
         };
 
@@ -211,7 +211,7 @@ describe('DrizzleLiquidationRepository Integration Tests', () => {
         const latitudes = liquidationsWithCoords.map(l => l.latitude!);
         const longitudes = liquidationsWithCoords.map(l => l.longitude!);
 
-        const filters: LiquidationFilters = {
+        const filters: ILiquidationFilters = {
           bounds: {
             north: Math.max(...latitudes) + 0.1,
             south: Math.min(...latitudes) - 0.1,
@@ -236,7 +236,7 @@ describe('DrizzleLiquidationRepository Integration Tests', () => {
       });
 
       it('should return empty array for bounds with no liquidations', async () => {
-        const filters: LiquidationFilters = {
+        const filters: ILiquidationFilters = {
           bounds: {
             north: 90.0,
             south: 89.0,
@@ -264,7 +264,7 @@ describe('DrizzleLiquidationRepository Integration Tests', () => {
           return;
         }
 
-        const filters: LiquidationFilters = {
+        const filters: ILiquidationFilters = {
           departments: [existingDepartment],
           zipCodes: [existingZipCode]
         };
@@ -288,7 +288,7 @@ describe('DrizzleLiquidationRepository Integration Tests', () => {
           return;
         }
 
-        const filters: LiquidationFilters = {
+        const filters: ILiquidationFilters = {
           departments: [existingDepartment],
           datePeriod: '12_months'
         };
@@ -324,7 +324,7 @@ describe('DrizzleLiquidationRepository Integration Tests', () => {
           return;
         }
 
-        const filters: LiquidationFilters = {
+        const filters: ILiquidationFilters = {
           departments: [existingDepartment]
         };
         const paginationFilters: PaginationFilters = {
@@ -355,7 +355,7 @@ describe('DrizzleLiquidationRepository Integration Tests', () => {
       });
 
       it('should sort by specified field ascending', async () => {
-        const filters: LiquidationFilters = {
+        const filters: ILiquidationFilters = {
           sortBy: 'address',
           sortOrder: 'asc'
         };
@@ -374,7 +374,7 @@ describe('DrizzleLiquidationRepository Integration Tests', () => {
       });
 
       it('should sort by specified field descending', async () => {
-        const filters: LiquidationFilters = {
+        const filters: ILiquidationFilters = {
           sortBy: 'address',
           sortOrder: 'desc'
         };

@@ -2,7 +2,7 @@
 
 import { MultiCheckboxFilter } from './MultiCheckboxFilter';
 import { ENERGY_CLASSES, ENERGY_SIEVE_CLASSES } from '../constants';
-import type { EnergyClass } from "~/types/filters";
+import type { EnergyClass } from "@linkinvests/shared";
 
 interface EnergyClassFilterProps {
   value?: EnergyClass[];

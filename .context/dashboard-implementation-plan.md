@@ -45,10 +45,10 @@ Implement a comprehensive search for displaying opportunities with list view, ma
 **Location:** `packages/frontend/src/server/domains/opportunities/repositories/`
 
 - [ ] Create `IOpportunityRepository.ts` interface
-  - `findAll(filters?: OpportunityFilters): Promise<Opportunity[]>`
+  - `findAll(filters?: IOpportunityFilters): Promise<Opportunity[]>`
   - `findById(id: number): Promise<Opportunity | null>`
-  - `findByBounds(bounds: MapBounds, filters?: OpportunityFilters): Promise<Opportunity[]>`
-  - `count(filters?: OpportunityFilters): Promise<number>`
+  - `findByBounds(bounds: MapBounds, filters?: IOpportunityFilters): Promise<Opportunity[]>`
+  - `count(filters?: IOpportunityFilters): Promise<number>`
 
 - [ ] Create `DrizzleOpportunityRepository.ts` implementation
   - Implement filtering by type, status, department, zipCode, date range
@@ -84,7 +84,7 @@ Implement a comprehensive search for displaying opportunities with list view, ma
 ### 3.1 Component Structure
 **Location:** `packages/frontend/src/app/search/components/`
 
-#### OpportunityFilters.tsx (Client Component)
+#### IOpportunityFilters.tsx (Client Component)
 - [ ] Type filter (multi-select)
 - [ ] Status filter (select)
 - [ ] Department filter (select/input)
@@ -211,7 +211,7 @@ Implement a comprehensive search for displaying opportunities with list view, ma
 ### Adaptation Required (90%)
 - [ ] MapsCard → OpportunityMap (change data model from Succession to Opportunity)
 - [ ] MapSidebar → OpportunitySidebar (update data structure)
-- [ ] MapSearchBar → integrate into OpportunityFilters
+- [ ] MapSearchBar → integrate into IOpportunityFilters
 
 ---
 

@@ -1,7 +1,7 @@
 "use server";
 
 import { resolve } from "~/server/di/di.container";
-import type { OpportunityFilters } from "~/types/filters";
+import type { IAuctionFilters } from "~/types/filters";
 import type { Auction } from "@linkinvests/shared";
 import { OpportunitiesDataQueryResult } from "~/types/query-result";
 import type { ExportFormat } from "~/server/services/export.service";
@@ -9,14 +9,14 @@ import type { ExportFormat } from "~/server/services/export.service";
 
 
 export async function getAuctionsData(
-  filters?: OpportunityFilters,
+  filters?: IAuctionFilters,
 ): Promise<OpportunitiesDataQueryResult<Auction>> {
   const auctionService = resolve('auctionService');
   return await auctionService.getAuctionsData(filters);
 }
 
 export async function getAuctionsCount(
-  filters?: OpportunityFilters,
+  filters?: IAuctionFilters,
 ): Promise<number> {
   const auctionService = resolve('auctionService');
   return await auctionService.getAuctionsCount(filters);
@@ -29,7 +29,7 @@ export async function getAuctionById(id: string): Promise<Auction | null> {
 }
 
 export async function exportAuctions(
-  filters: OpportunityFilters,
+  filters: IAuctionFilters,
   format: ExportFormat
 ): Promise<{ success: boolean; error?: string; blob?: Blob }> {
   try {

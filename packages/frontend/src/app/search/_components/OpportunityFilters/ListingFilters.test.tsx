@@ -2,7 +2,8 @@
 import { render, screen } from '~/test-utils/test-helpers';
 import userEvent from '@testing-library/user-event';
 import { ListingFilters } from './ListingFilters';
-import type { ListingFilters as IListingFilters, EnergyClass } from '~/types/filters';
+import type { IListingFilters } from '~/types/filters';
+import { EnergyClass, PropertyType } from '@linkinvests/shared';
 
 // Mock BaseFilters
 jest.mock('./BaseFilters', () => ({
@@ -137,104 +138,6 @@ describe('ListingFilters Component', () => {
     });
   });
 
-  describe('Transaction Type Filter Interactions', () => {
-    it('should handle transaction type selection', async () => {
-      const user = userEvent.setup();
-      render(<ListingFilters {...defaultProps} />);
-
-      // Click the first select (transaction type)
-      const transactionTypeSelect = screen.getAllByTestId('select')[0];
-      await user.click(transactionTypeSelect!);
-
-      expect(mockOnFiltersChange).toHaveBeenCalledWith({
-        ...emptyFilters,
-        transactionTypes: ['test-value'],
-      });
-    });
-
-    it('should display transaction type options', () => {
-      render(<ListingFilters {...defaultProps} />);
-
-      expect(screen.getByText('Vente')).toBeInTheDocument();
-      expect(screen.getByText('VEFA')).toBeInTheDocument();
-      expect(screen.getByText('Enchères')).toBeInTheDocument();
-      expect(screen.getByText('Location')).toBeInTheDocument();
-      expect(screen.getByText('Location-vente')).toBeInTheDocument();
-    });
-
-    it('should add multiple transaction types', async () => {
-      const user = userEvent.setup();
-      const filters: IListingFilters = {
-        transactionTypes: ['VENTE'],
-      };
-
-      render(<ListingFilters {...defaultProps} filters={filters} />);
-
-      const transactionTypeSelect = screen.getAllByTestId('select')[0];
-      await user.click(transactionTypeSelect!);
-
-      expect(mockOnFiltersChange).toHaveBeenCalledWith({
-        ...filters,
-        transactionTypes: ['VENTE', 'test-value'],
-      });
-    });
-
-    it('should display selected transaction type badges', () => {
-      const filters: IListingFilters = {
-        transactionTypes: ['VENTE', 'LOCATION'],
-      };
-
-      render(<ListingFilters {...defaultProps} filters={filters} />);
-
-      expect(screen.getByText('Vente')).toBeInTheDocument();
-      expect(screen.getByText('Location')).toBeInTheDocument();
-
-      // Should have remove buttons
-      const removeButtons = screen.getAllByText('×');
-      expect(removeButtons.length).toBeGreaterThanOrEqual(2);
-    });
-
-    it('should handle transaction type badge removal', async () => {
-      const user = userEvent.setup();
-      const filters: IListingFilters = {
-        transactionTypes: ['VENTE', 'LOCATION'],
-      };
-
-      render(<ListingFilters {...defaultProps} filters={filters} />);
-
-      // Find and click the first remove button
-      const removeButtons = screen.getAllByText('×');
-      await user.click(removeButtons[0]!);
-
-      expect(mockOnFiltersChange).toHaveBeenCalled();
-    });
-
-    it('should clear transactionTypes when array becomes empty', async () => {
-      const user = userEvent.setup();
-      const filters: IListingFilters = {
-        transactionTypes: ['test-value'], // Only one item
-      };
-
-      // Mock the component to simulate removing the last item
-      const selectModule = await import('~/components/ui/select');
-      jest.mocked(selectModule.Select).mockImplementation(({ onValueChange }: any) => (
-        <div data-testid="select" onClick={() => onValueChange?.('test-value')}>
-          Mock Select
-        </div>
-      ));
-
-      render(<ListingFilters {...defaultProps} filters={filters} />);
-
-      const transactionTypeSelect = screen.getAllByTestId('select')[0];
-      await user.click(transactionTypeSelect!);
-
-      expect(mockOnFiltersChange).toHaveBeenCalledWith({
-        ...filters,
-        transactionTypes: undefined,
-      });
-    });
-  });
-
   describe('Property Type Filter Interactions', () => {
     it('should handle property type selection', async () => {
       const user = userEvent.setup();
@@ -265,7 +168,7 @@ describe('ListingFilters Component', () => {
 
     it('should display selected property type badges', () => {
       const filters: IListingFilters = {
-        propertyTypes: ['APP', 'MAI'],
+        propertyTypes: [PropertyType.FLAT, PropertyType.HOUSE],
       };
 
       render(<ListingFilters {...defaultProps} filters={filters} />);
@@ -454,7 +357,7 @@ describe('ListingFilters Component', () => {
     it('should handle multiple energy class selections', async () => {
       const user = userEvent.setup();
       const filters: IListingFilters = {
-        energyClasses: ['A'],
+        energyClasses: [EnergyClass.A],
       };
 
       render(<ListingFilters {...defaultProps} filters={filters} />);
@@ -617,8 +520,7 @@ describe('ListingFilters Component', () => {
   describe('Complex Filter Scenarios', () => {
     it('should handle all filters simultaneously', () => {
       const filters: IListingFilters = {
-        transactionTypes: ['VENTE', 'LOCATION'],
-        propertyTypes: ['APP', 'MAI'],
+        propertyTypes: [PropertyType.FLAT, PropertyType.HOUSE],
         minPrice: 200000,
         maxPrice: 800000,
         minSquareFootage: 80,
@@ -662,7 +564,7 @@ describe('ListingFilters Component', () => {
     it('should preserve other filters when changing one filter', async () => {
       const user = userEvent.setup();
       const filters: IListingFilters = {
-        transactionTypes: ['VENTE'],
+        propertyTypes: [PropertyType.FLAT],
         minPrice: 200000,
         maxPrice: 800000,
         features: { balcony: true },
@@ -675,7 +577,7 @@ describe('ListingFilters Component', () => {
       await user.type(minInputs[2]!, '4'); // Rooms min
 
       expect(mockOnFiltersChange).toHaveBeenCalledWith({
-        transactionTypes: ['VENTE'],
+        propertyTypes: [PropertyType.FLAT],
         minPrice: 200000,
         maxPrice: 800000,
         features: { balcony: true },
@@ -685,7 +587,7 @@ describe('ListingFilters Component', () => {
 
     it('should handle state changes during re-renders', () => {
       const filters: IListingFilters = {
-        transactionTypes: ['VENTE'],
+        propertyTypes: [PropertyType.FLAT],
         energyClasses: ['A'] as EnergyClass[],
       };
 
@@ -720,7 +622,6 @@ describe('ListingFilters Component', () => {
 
     it('should handle null/undefined filter values', () => {
       const filters: IListingFilters = {
-        transactionTypes: undefined,
         propertyTypes: undefined,
         energyClasses: undefined,
         features: undefined,
@@ -738,7 +639,6 @@ describe('ListingFilters Component', () => {
 
     it('should handle empty arrays and objects gracefully', () => {
       const filters: IListingFilters = {
-        transactionTypes: [],
         propertyTypes: [],
         energyClasses: [],
         features: {},
@@ -816,7 +716,7 @@ describe('ListingFilters Component', () => {
 
     it('should have proper button accessibility for badge removal', () => {
       const filters: IListingFilters = {
-        transactionTypes: ['VENTE'],
+        propertyTypes: [PropertyType.FLAT],
       };
 
       render(<ListingFilters {...defaultProps} filters={filters} />);
@@ -835,7 +735,7 @@ describe('ListingFilters Component', () => {
 
     it('should pass filters and onFiltersChange to BaseFilters', async () => {
       const user = userEvent.setup();
-      const filters: IListingFilters = { transactionTypes: ['VENTE'] };
+      const filters: IListingFilters = { propertyTypes: [PropertyType.FLAT] };
 
       render(<ListingFilters {...defaultProps} filters={filters} />);
 
@@ -844,7 +744,7 @@ describe('ListingFilters Component', () => {
       await user.click(resetButton);
 
       expect(mockOnFiltersChange).toHaveBeenCalledWith({
-        transactionTypes: ['VENTE'],
+        propertyTypes: [PropertyType.FLAT],
         test: 'reset',
       });
     });

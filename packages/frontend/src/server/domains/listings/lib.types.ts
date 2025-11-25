@@ -1,9 +1,9 @@
-import type { OpportunityFilters, PaginationFilters } from "~/types/filters";
+import type { IOpportunityFilters, PaginationFilters } from "~/types/filters";
 import type { Listing } from "@linkinvests/shared";
 
 export interface IListingRepository {
-  findAll(filters?: OpportunityFilters, paginationFilters?: PaginationFilters): Promise<Listing[]>;
+  findAll(filters?: IOpportunityFilters, paginationFilters?: PaginationFilters): Promise<Listing[]>;
   findById(id: string): Promise<Listing | null>;
-  count(filters?: OpportunityFilters): Promise<number>;
+  count(filters?: IOpportunityFilters): Promise<number>;
   getDistinctSources(): Promise<string[]>;
 }

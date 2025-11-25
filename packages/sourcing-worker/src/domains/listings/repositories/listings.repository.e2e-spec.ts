@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ListingsRepository } from './listings.repository';
 import { DATABASE_CONNECTION } from '~/database';
-import { ListingInput, PropertyType } from '@linkinvests/shared';
+import { EnergyClass, ListingInput, PropertyType } from '@linkinvests/shared';
 
 describe('ListingsRepository (Integration)', () => {
   let repository: ListingsRepository;
@@ -19,13 +19,12 @@ describe('ListingsRepository (Integration)', () => {
     externalId: 'moteurimmo-123',
     url: 'https://moteurimmo.fr/listing/123',
     source: 'seloger',
-    transactionType: 'sale',
-    propertyType: PropertyType.APARTMENT,
+    propertyType: PropertyType.FLAT,
     description: 'Bel appartement en centre ville',
     squareFootage: 75,
     rooms: 3,
     bedrooms: 2,
-    energyClass: 'C',
+    energyClass: EnergyClass.C,
     price: 500000,
     pictures: ['image1.jpg', 'image2.jpg'],
     mainPicture: 'image1.jpg',

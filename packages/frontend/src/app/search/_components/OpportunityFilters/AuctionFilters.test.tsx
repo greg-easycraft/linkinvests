@@ -2,7 +2,8 @@
 import { render, screen } from '~/test-utils/test-helpers';
 import userEvent from '@testing-library/user-event';
 import { AuctionFilters } from './AuctionFilters';
-import type { AuctionFilters as IAuctionFilters } from '~/types/filters';
+import type { IAuctionFilters } from '~/types/filters';
+import { PropertyType } from '@linkinvests/shared';
 
 // Mock BaseFilters
 jest.mock('./BaseFilters', () => ({
@@ -378,7 +379,7 @@ describe('AuctionFilters Component', () => {
 
     it('should display selected property type badges', () => {
       const filters: IAuctionFilters = {
-        propertyTypes: ['house', 'apartment'],
+        propertyTypes: [PropertyType.HOUSE, PropertyType.FLAT],
       };
 
       render(<AuctionFilters {...defaultProps} filters={filters} />);
@@ -583,7 +584,7 @@ describe('AuctionFilters Component', () => {
       const filters: IAuctionFilters = {
         auctionTypes: ['judicial', 'voluntary'],
         isSoldRented: true,
-        propertyTypes: ['house', 'apartment'],
+        propertyTypes: [PropertyType.HOUSE, PropertyType.FLAT],
         minPrice: 100000,
         maxPrice: 500000,
         minReservePrice: 50000,
@@ -645,7 +646,7 @@ describe('AuctionFilters Component', () => {
       // Update filters and re-render
       const updatedFilters = {
         ...filters,
-        propertyTypes: ['house'],
+        propertyTypes: [PropertyType.HOUSE],
       };
 
       rerender(<AuctionFilters {...defaultProps} filters={updatedFilters} />);

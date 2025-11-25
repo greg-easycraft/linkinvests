@@ -1,7 +1,7 @@
 "use client";
 
 import { OpportunityType } from "@linkinvests/shared";
-import type { AuctionFilters as IAuctionFilters } from "~/types/filters";
+import type { IAuctionFilters } from "~/types/filters";
 import { BaseFilters } from "./BaseFilters";
 import {
   PriceRangeFilter,
@@ -38,7 +38,6 @@ export function AuctionFilters({
       <PropertyTypeFilter
         value={filters.propertyTypes}
         onChange={(value) => onFiltersChange({ ...filters, propertyTypes: value })}
-        type="auction"
       />
 
       <PriceRangeFilter

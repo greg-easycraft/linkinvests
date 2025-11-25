@@ -215,7 +215,6 @@ export const opportunityListings = pgTable('listing', {
   externalId: varchar('external_id').notNull().unique(),
   // Listing-specific fields
   url: text('url').notNull(),
-  transactionType: varchar('transaction_type').notNull(),
   propertyType: varchar('property_type').notNull(),
   description: text('description'),
   squareFootage: numeric('square_footage', { mode: 'number' }),
@@ -270,7 +269,6 @@ export const opportunityListings = pgTable('listing', {
   index('idx_listing_latitude').on(table.latitude),
   index('idx_listing_longitude').on(table.longitude),
   index('idx_listing_location').on(table.latitude, table.longitude),
-  index('idx_listing_transaction_type').on(table.transactionType),
   index('idx_listing_property_type').on(table.propertyType),
   index('idx_listing_price').on(table.price),
 ]);

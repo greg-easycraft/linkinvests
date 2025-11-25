@@ -2,7 +2,7 @@ import { and, eq, gte, inArray, lte, sql, type SQL } from "drizzle-orm";
 import type { DomainDbType } from "~/types/db";
 import { energyDiagnostics } from "@linkinvests/db";
 import type { IEnergyDiagnosticsRepository } from "../lib.types";
-import type { EnergyDiagnosticFilters, PaginationFilters } from "~/types/filters";
+import type { IEnergyDiagnosticFilters, PaginationFilters } from "~/types/filters";
 import { calculateStartDate } from "~/constants/date-periods";
 import type { EnergyDiagnostic } from "@linkinvests/shared";
 import { DEFAULT_PAGE_SIZE } from "~/constants/filters";
@@ -14,7 +14,7 @@ export class DrizzleEnergyDiagnosticsRepository implements IEnergyDiagnosticsRep
    * Builds where clause for energy diagnostics filters
    * Always filters for F and G energy classes only, as per user requirement
    */
-  private buildWhereClause(filters?: EnergyDiagnosticFilters): SQL[] {
+  private buildWhereClause(filters?: IEnergyDiagnosticFilters): SQL[] {
     const conditions: SQL[] = [];
 
     if (!filters) {
@@ -69,7 +69,7 @@ export class DrizzleEnergyDiagnosticsRepository implements IEnergyDiagnosticsRep
     return conditions;
   }
 
-  async findAll(filters?: EnergyDiagnosticFilters, paginationFilters: PaginationFilters = { limit: DEFAULT_PAGE_SIZE, offset: 0 }): Promise<EnergyDiagnostic[]> {
+  async findAll(filters?: IEnergyDiagnosticFilters, paginationFilters: PaginationFilters = { limit: DEFAULT_PAGE_SIZE, offset: 0 }): Promise<EnergyDiagnostic[]> {
     const conditions = this.buildWhereClause(filters);
 
     let query = this.db
@@ -114,7 +114,7 @@ export class DrizzleEnergyDiagnosticsRepository implements IEnergyDiagnosticsRep
     return result[0] ?? null;
   }
 
-  async count(filters?: EnergyDiagnosticFilters): Promise<number> {
+  async count(filters?: IEnergyDiagnosticFilters): Promise<number> {
     const conditions = this.buildWhereClause(filters);
 
     let query = this.db

@@ -1,5 +1,5 @@
 import type { ILiquidationRepository } from "../lib.types";
-import type { DatePeriod, OpportunityFilters } from "~/types/filters";
+import type { DatePeriod, IOpportunityFilters } from "~/types/filters";
 import type { Liquidation } from "@linkinvests/shared";
 import { OpportunityType } from "@linkinvests/shared";
 import { OpportunitiesDataQueryResult } from "~/types/query-result";
@@ -16,7 +16,7 @@ export class LiquidationService {
     private readonly exportService: IExportService
   ) { }
 
-  async getLiquidationsData(filters?: OpportunityFilters): Promise<OpportunitiesDataQueryResult<Liquidation>> {
+  async getLiquidationsData(filters?: IOpportunityFilters): Promise<OpportunitiesDataQueryResult<Liquidation>> {
     const pageSize = filters?.pageSize ?? DEFAULT_PAGE_SIZE;
     const page = filters?.page ?? 1;
     const offset = (page - 1) * pageSize;
@@ -31,7 +31,7 @@ export class LiquidationService {
     };
   }
 
-  getLiquidationsCount(filters?: OpportunityFilters): Promise<number> {
+  getLiquidationsCount(filters?: IOpportunityFilters): Promise<number> {
     const filtersToUse = this.ensureDatePeriodFilter(filters ?? {});
     return this.liquidationRepository.count(filtersToUse);
   }
@@ -40,7 +40,7 @@ export class LiquidationService {
     return this.liquidationRepository.findById(id);
   }
 
-  async exportList(filters: OpportunityFilters, format: ExportFormat): Promise<Blob> {
+  async exportList(filters: IOpportunityFilters, format: ExportFormat): Promise<Blob> {
     const filtersToUse = this.ensureDatePeriodFilter(filters ?? {});
     // Check if the total count exceeds the export limit
     const total = await this.liquidationRepository.count(filtersToUse);
@@ -65,7 +65,7 @@ export class LiquidationService {
     throw new Error(`Unsupported export format: ${format}`);
   }
 
-  private ensureDatePeriodFilter(filters: OpportunityFilters): OpportunityFilters {
+  private ensureDatePeriodFilter(filters: IOpportunityFilters): IOpportunityFilters {
     const filtersToUse = { ...filters };
     if (filtersToUse.datePeriod && this.allowedDatePeriodsSet.has(filtersToUse.datePeriod)) return filtersToUse;
     return {

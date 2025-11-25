@@ -1,5 +1,5 @@
 import type { IEnergyDiagnosticsRepository } from "../lib.types";
-import type { EnergyDiagnosticFilters } from "~/types/filters";
+import type { IEnergyDiagnosticFilters } from "~/types/filters";
 import type { EnergyDiagnostic } from "@linkinvests/shared";
 import { OpportunityType } from "@linkinvests/shared";
 import { OpportunitiesDataQueryResult } from "~/types/query-result";
@@ -15,7 +15,7 @@ export class EnergyDiagnosticsService {
     private readonly exportService: IExportService
   ) {}
 
-  async getEnergyDiagnosticsData(filters?: EnergyDiagnosticFilters): Promise<OpportunitiesDataQueryResult<EnergyDiagnostic>> {
+  async getEnergyDiagnosticsData(filters?: IEnergyDiagnosticFilters): Promise<OpportunitiesDataQueryResult<EnergyDiagnostic>> {
     const pageSize = filters?.pageSize ?? DEFAULT_PAGE_SIZE;
     const page = filters?.page ?? 1;
 
@@ -30,7 +30,7 @@ export class EnergyDiagnosticsService {
     };
   }
 
-  async getEnergyDiagnosticsCount(filters?: EnergyDiagnosticFilters): Promise<number> {
+  async getEnergyDiagnosticsCount(filters?: IEnergyDiagnosticFilters): Promise<number> {
     return await this.energyDiagnosticsRepository.count(filters);
   }
 
@@ -38,7 +38,7 @@ export class EnergyDiagnosticsService {
     return await this.energyDiagnosticsRepository.findById(id);
   }
 
-  async exportList(filters: EnergyDiagnosticFilters, format: ExportFormat): Promise<Blob> {
+  async exportList(filters: IEnergyDiagnosticFilters, format: ExportFormat): Promise<Blob> {
     // Check if the total count exceeds the export limit
     const total = await this.energyDiagnosticsRepository.count(filters);
 

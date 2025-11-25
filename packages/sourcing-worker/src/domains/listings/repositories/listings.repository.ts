@@ -61,7 +61,6 @@ export class ListingsRepository {
               longitude: sql`excluded.longitude`,
               opportunityDate: sql`excluded.opportunity_date`,
               url: sql`excluded.url`,
-              transactionType: sql`excluded.transaction_type`,
               propertyType: sql`excluded.property_type`,
               description: sql`excluded.description`,
               squareFootage: sql`excluded.square_footage`,

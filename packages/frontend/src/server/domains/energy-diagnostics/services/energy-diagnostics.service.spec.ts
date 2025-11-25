@@ -1,7 +1,7 @@
 import { EnergyDiagnosticsService } from './energy-diagnostics.service';
 import type { IEnergyDiagnosticsRepository } from '../lib.types';
 import type { IExportService, ExportFormat } from '~/server/services/export.service';
-import type { OpportunityFilters } from '~/types/filters';
+import type { IOpportunityFilters } from '~/types/filters';
 import { OpportunityType, type EnergyDiagnostic } from '@linkinvests/shared';
 import { DEFAULT_PAGE_SIZE } from '~/constants/filters';
 import { getOpportunityHeaders } from '~/server/services/export-headers.service';
@@ -83,7 +83,7 @@ describe('EnergyDiagnosticsService', () => {
     });
 
     it('should return paginated energy diagnostic data with custom pagination', async () => {
-      const filters: OpportunityFilters = { page: 3, pageSize: 25 };
+      const filters: IOpportunityFilters = { page: 3, pageSize: 25 };
       const mockEnergyDiagnostics = [mockEnergyDiagnostic];
       mockEnergyDiagnosticsRepository.findAll.mockResolvedValue(mockEnergyDiagnostics);
 
@@ -101,10 +101,10 @@ describe('EnergyDiagnosticsService', () => {
     });
 
     it('should handle filters correctly including energy class filters', async () => {
-      const filters: OpportunityFilters = {
+      const filters: IOpportunityFilters = {
         departments: ['75'],
         zipCodes: ['75001'],
-        // @ts-expect-error - energyClasses property doesn't exist on OpportunityFilters but needed for test
+        // @ts-expect-error - energyClasses property doesn't exist on IOpportunityFilters but needed for test
         energyClasses: ['F', 'G'],
         page: 2,
         pageSize: 10,
@@ -140,9 +140,9 @@ describe('EnergyDiagnosticsService', () => {
     });
 
     it('should return energy diagnostic count with filters', async () => {
-      const filters: OpportunityFilters = {
+      const filters: IOpportunityFilters = {
         departments: ['75'],
-        // @ts-expect-error - energyClasses property doesn't exist on OpportunityFilters but needed for test
+        // @ts-expect-error - energyClasses property doesn't exist on IOpportunityFilters but needed for test
         energyClasses: ['F', 'G']
       };
       const expectedCount = 340;
@@ -193,9 +193,9 @@ describe('EnergyDiagnosticsService', () => {
   });
 
   describe('exportList', () => {
-    const filters: OpportunityFilters = {
+    const filters: IOpportunityFilters = {
       departments: ['75'],
-      // @ts-expect-error - energyClasses property doesn't exist on OpportunityFilters but needed for test
+      // @ts-expect-error - energyClasses property doesn't exist on IOpportunityFilters but needed for test
       energyClasses: ['F', 'G']
     };
     const mockEnergyDiagnosticsForExport = [mockEnergyDiagnostic, { ...mockEnergyDiagnostic, id: 'energy-diagnostic-2' }];

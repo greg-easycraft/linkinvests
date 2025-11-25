@@ -179,8 +179,7 @@ describe('MoteurImmoService', () => {
         externalId: 'moteurimmo-test-123',
         url: 'https://moteurimmo.fr/listing/test-123',
         source: 'seloger',
-        transactionType: 'sale',
-        propertyType: PropertyType.APARTMENT,
+        propertyType: PropertyType.FLAT,
         description: 'Bel appartement en centre ville',
         squareFootage: 75,
         rooms: 3,
@@ -193,10 +192,10 @@ describe('MoteurImmoService', () => {
     });
 
     it('should map property types correctly', () => {
-      expect(service['mapPropertyType']('flat')).toBe(PropertyType.APARTMENT);
+      expect(service['mapPropertyType']('flat')).toBe(PropertyType.FLAT);
       expect(service['mapPropertyType']('house')).toBe(PropertyType.HOUSE);
       expect(service['mapPropertyType']('land')).toBe(PropertyType.LAND);
-      expect(service['mapPropertyType']('premises')).toBe(PropertyType.OTHER);
+      expect(service['mapPropertyType']('premises')).toBe(PropertyType.COMMERCIAL);
       expect(service['mapPropertyType']('unknown')).toBe(PropertyType.OTHER);
       expect(service['mapPropertyType'](undefined)).toBe(PropertyType.OTHER);
     });
@@ -246,7 +245,6 @@ describe('MoteurImmoService', () => {
         source: 'seloger',
         latitude: 48.8566,
         longitude: 2.3522,
-        transactionType: 'sale',
         propertyType: PropertyType.OTHER,
         pictures: [],
       });

@@ -1,7 +1,7 @@
 "use client";
 
 import { OpportunityType } from "@linkinvests/shared";
-import type { ListingFilters as IListingFilters } from "~/types/filters";
+import type { IListingFilters } from "~/types/filters";
 import { BaseFilters } from "./BaseFilters";
 import {
   PriceRangeFilter,
@@ -49,7 +49,6 @@ export function ListingFilters({
       <PropertyTypeFilter
         value={filters.propertyTypes}
         onChange={(value) => onFiltersChange({ ...filters, propertyTypes: value })}
-        type="listing"
       />
 
       <PriceRangeFilter

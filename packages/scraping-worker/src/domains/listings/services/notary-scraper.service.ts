@@ -200,9 +200,6 @@ export class NotaryScraperService {
         // Set property and transaction types from URL params if missing
         propertyType:
           listing.propertyType || this.extractPropertyTypeFromUrl(listing.url),
-        transactionType:
-          listing.transactionType ||
-          this.extractTransactionTypeFromUrl(listing.url),
         // Ensure images array exists
         images: listing.images || [],
         // Set default opportunity date to today if missing

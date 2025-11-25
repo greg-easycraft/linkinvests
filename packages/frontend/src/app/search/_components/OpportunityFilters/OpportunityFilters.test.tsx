@@ -3,7 +3,7 @@ import { render, screen } from '~/test-utils/test-helpers';
 import userEvent from '@testing-library/user-event';
 import { BaseFilters } from './BaseFilters';
 import { OpportunityType } from '@linkinvests/shared';
-import type { OpportunityFilters as IOpportunityFilters, DatePeriodOption } from '~/types/filters';
+import type { IOpportunityFilters as IOpportunityFilters, DatePeriodOption } from '~/types/filters';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 
 // Mock Next.js navigation hooks

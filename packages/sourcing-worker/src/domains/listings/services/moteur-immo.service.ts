@@ -269,7 +269,6 @@ export class MoteurImmoService {
         opportunityDate: apiListing.creationDate,
         url: apiListing.url,
         source: apiListing.origin,
-        transactionType: apiListing.type, // 'sale' or 'rental'
         propertyType: this.mapPropertyType(apiListing.category),
         description: apiListing.description,
         squareFootage: apiListing.surface ?? undefined,

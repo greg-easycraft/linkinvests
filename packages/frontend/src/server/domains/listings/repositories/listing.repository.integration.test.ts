@@ -3,8 +3,8 @@
  */
 import { DrizzleListingRepository } from './listing.repository';
 import { useTestDb } from '~/test-utils/use-test-db';
-import type { ListingFilters, PaginationFilters } from '~/types/filters';
-import { OpportunityType } from '@linkinvests/shared';
+import type { IListingFilters, PaginationFilters } from '~/types/filters';
+import { EnergyClass, OpportunityType, PropertyType } from '@linkinvests/shared';
 
 describe('DrizzleListingRepository Integration Tests', () => {
   const db = useTestDb();
@@ -18,41 +18,31 @@ describe('DrizzleListingRepository Integration Tests', () => {
     });
 
     it('should filter by departments', async () => {
-      const filters: ListingFilters = { departments: ['75'] };
+      const filters: IListingFilters = { departments: ['75'] };
       const listings = await listingRepository.findAll(filters);
       listings.forEach(listing => expect(listing.department).toBe('75'));
     });
 
     it('should filter by zipCodes', async () => {
-      const filters: ListingFilters = { zipCodes: ['75001'] };
+      const filters: IListingFilters = { zipCodes: ['75001'] };
       const listings = await listingRepository.findAll(filters);
       listings.forEach(listing => expect(listing.zipCode).toBe('75001'));
     });
 
     // Listing-specific filter tests
-    it('should filter by transaction types', async () => {
-      const filters: ListingFilters = {
-        transactionTypes: ['VENTE', 'LOCATION']
-      };
-      const listings = await listingRepository.findAll(filters);
-      listings.forEach(listing => {
-        expect(['VENTE', 'LOCATION']).toContain(listing.transactionType);
-      });
-    });
-
     it('should filter by property types', async () => {
-      const filters: ListingFilters = {
-        propertyTypes: ['APP', 'MAI']
+      const filters: IListingFilters = {
+        propertyTypes: [PropertyType.FLAT, PropertyType.HOUSE]
       };
       const listings = await listingRepository.findAll(filters);
       listings.forEach(listing => {
-        expect(['APP', 'MAI']).toContain(listing.propertyType);
+        expect([PropertyType.FLAT, PropertyType.HOUSE]).toContain(listing.propertyType);
       });
     });
 
     it('should filter by energy classes', async () => {
-      const filters: ListingFilters = {
-        energyClasses: ['B', 'C', 'D']
+      const filters: IListingFilters = {
+        energyClasses: [EnergyClass.B, EnergyClass.C, EnergyClass.D]
       };
       const listings = await listingRepository.findAll(filters);
       listings.forEach(listing => {
@@ -63,7 +53,7 @@ describe('DrizzleListingRepository Integration Tests', () => {
     });
 
     it('should filter by price range', async () => {
-      const filters: ListingFilters = {
+      const filters: IListingFilters = {
         minPrice: 200000,
         maxPrice: 800000
       };
@@ -77,7 +67,7 @@ describe('DrizzleListingRepository Integration Tests', () => {
     });
 
     it('should filter by square footage range', async () => {
-      const filters: ListingFilters = {
+      const filters: IListingFilters = {
         minSquareFootage: 60,
         maxSquareFootage: 150
       };
@@ -91,7 +81,7 @@ describe('DrizzleListingRepository Integration Tests', () => {
     });
 
     it('should filter by land area range', async () => {
-      const filters: ListingFilters = {
+      const filters: IListingFilters = {
         minLandArea: 100,
         maxLandArea: 1000
       };
@@ -105,7 +95,7 @@ describe('DrizzleListingRepository Integration Tests', () => {
     });
 
     it('should filter by rooms range', async () => {
-      const filters: ListingFilters = {
+      const filters: IListingFilters = {
         minRooms: 2,
         maxRooms: 6
       };
@@ -119,7 +109,7 @@ describe('DrizzleListingRepository Integration Tests', () => {
     });
 
     it('should filter by bedrooms range', async () => {
-      const filters: ListingFilters = {
+      const filters: IListingFilters = {
         minBedrooms: 1,
         maxBedrooms: 4
       };
@@ -133,7 +123,7 @@ describe('DrizzleListingRepository Integration Tests', () => {
     });
 
     it('should filter by construction year range', async () => {
-      const filters: ListingFilters = {
+      const filters: IListingFilters = {
         minConstructionYear: 1990,
         maxConstructionYear: 2020
       };
@@ -147,7 +137,7 @@ describe('DrizzleListingRepository Integration Tests', () => {
     });
 
     it('should filter by features - balcony', async () => {
-      const filters: ListingFilters = {
+      const filters: IListingFilters = {
         features: { balcony: true }
       };
       const listings = await listingRepository.findAll(filters);
@@ -157,7 +147,7 @@ describe('DrizzleListingRepository Integration Tests', () => {
     });
 
     it('should filter by features - multiple features', async () => {
-      const filters: ListingFilters = {
+      const filters: IListingFilters = {
         features: {
           garage: true,
           elevator: false,
@@ -173,7 +163,7 @@ describe('DrizzleListingRepository Integration Tests', () => {
     });
 
     it('should filter by rental status (isSoldRented)', async () => {
-      const filters: ListingFilters = {
+      const filters: IListingFilters = {
         isSoldRented: true
       };
       const listings = await listingRepository.findAll(filters);
@@ -186,7 +176,7 @@ describe('DrizzleListingRepository Integration Tests', () => {
     });
 
     it('should filter by rental status - available properties', async () => {
-      const filters: ListingFilters = {
+      const filters: IListingFilters = {
         isSoldRented: false
       };
       const listings = await listingRepository.findAll(filters);
@@ -208,7 +198,7 @@ describe('DrizzleListingRepository Integration Tests', () => {
         return;
       }
 
-      const filters: ListingFilters = {
+      const filters: IListingFilters = {
         sources: [availableSources[0]!]
       };
       const listings = await listingRepository.findAll(filters);
@@ -230,7 +220,7 @@ describe('DrizzleListingRepository Integration Tests', () => {
       }
 
       const testSources = availableSources.slice(0, 2);
-      const filters: ListingFilters = {
+      const filters: IListingFilters = {
         sources: testSources
       };
       const listings = await listingRepository.findAll(filters);
@@ -243,7 +233,7 @@ describe('DrizzleListingRepository Integration Tests', () => {
     });
 
     it('should filter by seller type - individual', async () => {
-      const filters: ListingFilters = {
+      const filters: IListingFilters = {
         sellerType: 'individual'
       };
       const listings = await listingRepository.findAll(filters);
@@ -256,7 +246,7 @@ describe('DrizzleListingRepository Integration Tests', () => {
     });
 
     it('should filter by seller type - professional', async () => {
-      const filters: ListingFilters = {
+      const filters: IListingFilters = {
         sellerType: 'professional'
       };
       const listings = await listingRepository.findAll(filters);
@@ -269,10 +259,9 @@ describe('DrizzleListingRepository Integration Tests', () => {
     });
 
     it('should filter by multiple listing criteria', async () => {
-      const filters: ListingFilters = {
+      const filters: IListingFilters = {
         departments: ['75'],
-        transactionTypes: ['VENTE'],
-        propertyTypes: ['APP'],
+        propertyTypes: [PropertyType.FLAT],
         minPrice: 300000,
         maxPrice: 600000,
         minSquareFootage: 50,
@@ -281,8 +270,7 @@ describe('DrizzleListingRepository Integration Tests', () => {
       const listings = await listingRepository.findAll(filters);
       listings.forEach(listing => {
         expect(listing.department).toBe('75');
-        expect(listing.transactionType).toBe('VENTE');
-        expect(listing.propertyType).toBe('APP');
+        expect(listing.propertyType).toBe(PropertyType.FLAT);
         if (listing.price) {
           expect(listing.price).toBeGreaterThanOrEqual(300000);
           expect(listing.price).toBeLessThanOrEqual(600000);
@@ -301,7 +289,7 @@ describe('DrizzleListingRepository Integration Tests', () => {
     });
 
     it('should sort by price', async () => {
-      const filters: ListingFilters = { sortBy: 'price', sortOrder: 'asc' };
+      const filters: IListingFilters = { sortBy: 'price', sortOrder: 'asc' };
       const listings = await listingRepository.findAll(filters);
       for (let i = 1; i < listings.length; i++) {
         expect(listings[i]?.price || 0).toBeGreaterThanOrEqual(listings[i-1]?.price || 0);
@@ -330,7 +318,7 @@ describe('DrizzleListingRepository Integration Tests', () => {
     });
 
     it('should count with filters', async () => {
-      const filters: ListingFilters = { departments: ['75'] };
+      const filters: IListingFilters = { departments: ['75'] };
       const count = await listingRepository.count(filters);
       expect(count).toBeGreaterThanOrEqual(0);
     });

@@ -4,7 +4,7 @@
 import { DrizzleSuccessionRepository } from './succession.repository';
 import { useTestDb } from '~/test-utils/use-test-db';
 import { OpportunityType } from '@linkinvests/shared';
-import type { SuccessionFilters, PaginationFilters } from '~/types/filters';
+import type { ISuccessionFilters, PaginationFilters } from '~/types/filters';
 
 describe('DrizzleSuccessionRepository Integration Tests', () => {
   const db = useTestDb();
@@ -46,7 +46,7 @@ describe('DrizzleSuccessionRepository Integration Tests', () => {
           return;
         }
 
-        const filters: SuccessionFilters = {
+        const filters: ISuccessionFilters = {
           departments: [existingDepartment]
         };
 
@@ -69,7 +69,7 @@ describe('DrizzleSuccessionRepository Integration Tests', () => {
           return;
         }
 
-        const filters: SuccessionFilters = {
+        const filters: ISuccessionFilters = {
           departments: departments.slice(0, 2)
         };
 
@@ -84,7 +84,7 @@ describe('DrizzleSuccessionRepository Integration Tests', () => {
       });
 
       it('should return empty array for non-existent department', async () => {
-        const filters: SuccessionFilters = {
+        const filters: ISuccessionFilters = {
           departments: ['99']
         };
 
@@ -106,7 +106,7 @@ describe('DrizzleSuccessionRepository Integration Tests', () => {
           return;
         }
 
-        const filters: SuccessionFilters = {
+        const filters: ISuccessionFilters = {
           zipCodes: [existingZipCode]
         };
 
@@ -129,7 +129,7 @@ describe('DrizzleSuccessionRepository Integration Tests', () => {
           return;
         }
 
-        const filters: SuccessionFilters = {
+        const filters: ISuccessionFilters = {
           zipCodes: zipCodes.slice(0, 2)
         };
 
@@ -144,7 +144,7 @@ describe('DrizzleSuccessionRepository Integration Tests', () => {
       });
 
       it('should return empty array for non-existent zip code', async () => {
-        const filters: SuccessionFilters = {
+        const filters: ISuccessionFilters = {
           zipCodes: ['00000']
         };
 
@@ -158,7 +158,7 @@ describe('DrizzleSuccessionRepository Integration Tests', () => {
 
     describe('datePeriod filter', () => {
       it('should filter by last month', async () => {
-        const filters: SuccessionFilters = {
+        const filters: ISuccessionFilters = {
           datePeriod: 'last_month'
         };
 
@@ -171,7 +171,7 @@ describe('DrizzleSuccessionRepository Integration Tests', () => {
       });
 
       it('should filter by last 3 months', async () => {
-        const filters: SuccessionFilters = {
+        const filters: ISuccessionFilters = {
           datePeriod: 'last_3_months'
         };
 
@@ -183,7 +183,7 @@ describe('DrizzleSuccessionRepository Integration Tests', () => {
       });
 
       it('should filter by last 12 months', async () => {
-        const filters: SuccessionFilters = {
+        const filters: ISuccessionFilters = {
           datePeriod: '12_months'
         };
 
@@ -211,7 +211,7 @@ describe('DrizzleSuccessionRepository Integration Tests', () => {
         const latitudes = successionsWithCoords.map(s => s.latitude!);
         const longitudes = successionsWithCoords.map(s => s.longitude!);
 
-        const filters: SuccessionFilters = {
+        const filters: ISuccessionFilters = {
           bounds: {
             north: Math.max(...latitudes) + 0.1,
             south: Math.min(...latitudes) - 0.1,
@@ -236,7 +236,7 @@ describe('DrizzleSuccessionRepository Integration Tests', () => {
       });
 
       it('should return empty array for bounds with no successions', async () => {
-        const filters: SuccessionFilters = {
+        const filters: ISuccessionFilters = {
           bounds: {
             north: 90.0,
             south: 89.0,
@@ -264,7 +264,7 @@ describe('DrizzleSuccessionRepository Integration Tests', () => {
           return;
         }
 
-        const filters: SuccessionFilters = {
+        const filters: ISuccessionFilters = {
           departments: [existingDepartment],
           zipCodes: [existingZipCode]
         };
@@ -288,7 +288,7 @@ describe('DrizzleSuccessionRepository Integration Tests', () => {
           return;
         }
 
-        const filters: SuccessionFilters = {
+        const filters: ISuccessionFilters = {
           departments: [existingDepartment],
           datePeriod: '12_months'
         };
@@ -324,7 +324,7 @@ describe('DrizzleSuccessionRepository Integration Tests', () => {
           return;
         }
 
-        const filters: SuccessionFilters = {
+        const filters: ISuccessionFilters = {
           departments: [existingDepartment]
         };
         const paginationFilters: PaginationFilters = {
@@ -355,7 +355,7 @@ describe('DrizzleSuccessionRepository Integration Tests', () => {
       });
 
       it('should sort by specified field ascending', async () => {
-        const filters: SuccessionFilters = {
+        const filters: ISuccessionFilters = {
           sortBy: 'label',
           sortOrder: 'asc'
         };
@@ -374,7 +374,7 @@ describe('DrizzleSuccessionRepository Integration Tests', () => {
       });
 
       it('should sort by specified field descending', async () => {
-        const filters: SuccessionFilters = {
+        const filters: ISuccessionFilters = {
           sortBy: 'label',
           sortOrder: 'desc'
         };

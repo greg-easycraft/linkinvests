@@ -8,13 +8,13 @@ import {
   TooltipTrigger,
 } from "~/components/ui/tooltip";
 import type { ExportFormat } from "~/server/services/export.service";
-import type { OpportunityFilters } from "~/types/filters";
+import type { IOpportunityFilters } from "~/types/filters";
 import { ExportDropdown } from "./ExportDropDown";
 import { formatNumber } from "~/lib/utils";
 
 interface ExportButtonProps {
   onExport: (format: ExportFormat) => Promise<{ success: boolean; error?: string; blob?: Blob }>;
-  filters: OpportunityFilters;
+  filters: IOpportunityFilters;
   totalCount: number;
   disabled?: boolean;
   className?: string;

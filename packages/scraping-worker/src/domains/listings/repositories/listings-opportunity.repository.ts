@@ -73,7 +73,6 @@ export class ListingsOpportunityRepository {
 
           // Listing-specific fields
           url: opp.url,
-          transactionType: opp.transactionType,
           propertyType: opp.propertyType,
           description: opp.description || null,
           squareFootage: opp.squareFootage || null,

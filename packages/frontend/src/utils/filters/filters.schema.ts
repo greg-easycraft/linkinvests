@@ -1,7 +1,7 @@
-import { OpportunityType } from "@linkinvests/shared";
+import { EnergyClass, OpportunityType, PropertyType } from "@linkinvests/shared";
 import { z } from "zod";
 import { DATE_PERIOD_OPTIONS } from "~/constants/date-periods";
-import { DatePeriod, EnergyClass } from "~/types/filters";
+import { DatePeriod } from "~/types/filters";
 
 
 export const baseFiltersSchema = z.object({
@@ -46,7 +46,7 @@ export const auctionFiltersSchema = baseFiltersSchema.extend({
 export const listingFiltersSchema = baseFiltersSchema.extend({
     propertyTypes: z.union([
         z.string().transform(val => val.split(',').filter(Boolean)),
-        z.array(z.string())
+        z.array(z.enum(PropertyType))
     ]).optional(),
 
     minPrice: z.string().transform(val => Number(val)).pipe(z.number()).optional(),
@@ -66,7 +66,7 @@ export const listingFiltersSchema = baseFiltersSchema.extend({
             const classes = val.split(',').filter(Boolean);
             return classes.filter(cls => ['A', 'B', 'C', 'D', 'E', 'F', 'G'].includes(cls)) as EnergyClass[];
         }),
-        z.array(z.enum(['A', 'B', 'C', 'D', 'E', 'F', 'G'] as const))
+        z.array(z.enum(EnergyClass))
     ]).optional(),
     isSoldRented: z.union([
         z.string().transform(val => val === 'true'),
@@ -90,7 +90,7 @@ export const energyDiagnosticFiltersSchema = baseFiltersSchema.extend({
             const classes = val.split(',').filter(Boolean);
             return classes.filter(cls => ['E', 'F', 'G'].includes(cls)) as EnergyClass[];
         }),
-        z.array(z.enum(['E', 'F', 'G'] as const))
+        z.array(z.enum(['E', 'F', 'G'] as EnergyClass[]))
     ]).optional(),
 });
 

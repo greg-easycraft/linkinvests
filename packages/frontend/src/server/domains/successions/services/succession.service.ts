@@ -1,5 +1,5 @@
 import type { ISuccessionRepository } from "../lib.types";
-import type { OpportunityFilters } from "~/types/filters";
+import type { IOpportunityFilters } from "~/types/filters";
 import type { Succession } from "@linkinvests/shared";
 import { OpportunityType } from "@linkinvests/shared";
 import { OpportunitiesDataQueryResult } from "~/types/query-result";
@@ -15,7 +15,7 @@ export class SuccessionService {
     private readonly exportService: IExportService
   ) {}
 
-  async getSuccessionsData(filters?: OpportunityFilters): Promise<OpportunitiesDataQueryResult<Succession>> {
+  async getSuccessionsData(filters?: IOpportunityFilters): Promise<OpportunitiesDataQueryResult<Succession>> {
     const pageSize = filters?.pageSize ?? DEFAULT_PAGE_SIZE;
     const page = filters?.page ?? 1;
     const offset = (page - 1) * pageSize;
@@ -29,7 +29,7 @@ export class SuccessionService {
     };
   }
 
-  async getSuccessionsCount(filters?: OpportunityFilters): Promise<number> {
+  async getSuccessionsCount(filters?: IOpportunityFilters): Promise<number> {
     return await this.successionRepository.count(filters);
   }
 
@@ -37,7 +37,7 @@ export class SuccessionService {
     return await this.successionRepository.findById(id);
   }
 
-  async exportList(filters: OpportunityFilters, format: ExportFormat): Promise<Blob> {
+  async exportList(filters: IOpportunityFilters, format: ExportFormat): Promise<Blob> {
     // Check if the total count exceeds the export limit
     const total = await this.successionRepository.count(filters);
 

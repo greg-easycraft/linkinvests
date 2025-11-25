@@ -1,8 +1,8 @@
-import type { OpportunityFilters, PaginationFilters } from "~/types/filters";
+import type { IOpportunityFilters, PaginationFilters } from "~/types/filters";
 import type { Liquidation } from "@linkinvests/shared";
 
 export interface ILiquidationRepository {
-  findAll(filters?: OpportunityFilters, paginationFilters?: PaginationFilters): Promise<Liquidation[]>;
+  findAll(filters?: IOpportunityFilters, paginationFilters?: PaginationFilters): Promise<Liquidation[]>;
   findById(id: string): Promise<Liquidation | null>;
-  count(filters?: OpportunityFilters): Promise<number>;
+  count(filters?: IOpportunityFilters): Promise<number>;
 }

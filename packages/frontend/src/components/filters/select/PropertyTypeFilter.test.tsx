@@ -1,6 +1,7 @@
 import { render, screen } from '~/test-utils/test-helpers';
 import userEvent from '@testing-library/user-event';
 import { PropertyTypeFilter } from './PropertyTypeFilter';
+import { PropertyType } from '@linkinvests/shared';
 
 describe('PropertyTypeFilter', () => {
   const mockOnChange = jest.fn();
@@ -32,7 +33,7 @@ describe('PropertyTypeFilter', () => {
 
     it('should render with listing type options', async () => {
       const user = userEvent.setup();
-      render(<PropertyTypeFilter {...defaultProps} type="listing" />);
+      render(<PropertyTypeFilter {...defaultProps} />);
 
       const selectTrigger = screen.getByRole('combobox');
       await user.click(selectTrigger);
@@ -49,7 +50,7 @@ describe('PropertyTypeFilter', () => {
     });
 
     it('should have green badge color', () => {
-      const value = ['house'];
+      const value = [PropertyType.HOUSE];
       render(<PropertyTypeFilter {...defaultProps} value={value} />);
 
       const badge = screen.getByText('Maison');
@@ -68,12 +69,12 @@ describe('PropertyTypeFilter', () => {
       const option = screen.getByText('Maison');
       await user.click(option);
 
-      expect(mockOnChange).toHaveBeenCalledWith(['house']);
+      expect(mockOnChange).toHaveBeenCalledWith([PropertyType.HOUSE]);
     });
 
     it('should handle multiple selections', async () => {
       const user = userEvent.setup();
-      const value = ['house'];
+      const value = [PropertyType.HOUSE];
       render(<PropertyTypeFilter {...defaultProps} value={value} />);
 
       const selectTrigger = screen.getByRole('combobox');
@@ -82,12 +83,12 @@ describe('PropertyTypeFilter', () => {
       const option = screen.getByText('Appartement');
       await user.click(option);
 
-      expect(mockOnChange).toHaveBeenCalledWith(['house', 'apartment']);
+      expect(mockOnChange).toHaveBeenCalledWith([PropertyType.HOUSE, PropertyType.FLAT]);
     });
 
     it('should toggle selection when already selected option is clicked', async () => {
       const user = userEvent.setup();
-      const value = ['house', 'apartment'];
+      const value = [PropertyType.HOUSE, PropertyType.FLAT];
       render(<PropertyTypeFilter {...defaultProps} value={value} />);
 
       const selectTrigger = screen.getByRole('combobox');
@@ -96,12 +97,12 @@ describe('PropertyTypeFilter', () => {
       const option = screen.getByText('Maison');
       await user.click(option);
 
-      expect(mockOnChange).toHaveBeenCalledWith(['apartment']);
+      expect(mockOnChange).toHaveBeenCalledWith([PropertyType.FLAT]);
     });
 
     it('should call onChange with undefined when last item is deselected', async () => {
       const user = userEvent.setup();
-      const value = ['house'];
+      const value = [PropertyType.HOUSE];
       render(<PropertyTypeFilter {...defaultProps} value={value} />);
 
       const selectTrigger = screen.getByRole('combobox');
@@ -116,7 +117,7 @@ describe('PropertyTypeFilter', () => {
 
   describe('Value Display', () => {
     it('should display selected property types', () => {
-      const value = ['house', 'apartment'];
+      const value = [PropertyType.HOUSE, PropertyType.FLAT];
       render(<PropertyTypeFilter {...defaultProps} value={value} />);
 
       expect(screen.getByText('Maison')).toBeInTheDocument();
@@ -140,7 +141,7 @@ describe('PropertyTypeFilter', () => {
     it('should show different options for auction vs listing types', async () => {
       const user = userEvent.setup();
 
-      const { rerender } = render(<PropertyTypeFilter {...defaultProps} type="auction" />);
+      const { rerender } = render(<PropertyTypeFilter {...defaultProps} />);
 
       let selectTrigger = screen.getByRole('combobox');
       await user.click(selectTrigger);
@@ -148,7 +149,7 @@ describe('PropertyTypeFilter', () => {
       expect(screen.getByText('Local industriel')).toBeInTheDocument();
       await user.keyboard('{Escape}');
 
-      rerender(<PropertyTypeFilter {...defaultProps} type="listing" />);
+      rerender(<PropertyTypeFilter {...defaultProps} />);
 
       selectTrigger = screen.getByRole('combobox');
       await user.click(selectTrigger);
@@ -162,7 +163,7 @@ describe('PropertyTypeFilter', () => {
     it('should handle invalid property type gracefully', () => {
       expect(() => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        render(<PropertyTypeFilter {...defaultProps} type={'invalid' as any} />);
+        render(<PropertyTypeFilter {...defaultProps} value={['invalid' as any]} />);
       }).not.toThrow();
     });
 
@@ -176,7 +177,7 @@ describe('PropertyTypeFilter', () => {
     it('should handle missing onChange prop', () => {
       expect(() => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        render(<PropertyTypeFilter type="auction" onChange={undefined as any} />);
+        render(<PropertyTypeFilter value={undefined as any} onChange={undefined as any} />);
       }).not.toThrow();
     });
   });
@@ -184,37 +185,17 @@ describe('PropertyTypeFilter', () => {
   describe('Re-rendering Behavior', () => {
     it('should update when value prop changes', () => {
       const { rerender } = render(
-        <PropertyTypeFilter {...defaultProps} value={['house']} />
+        <PropertyTypeFilter {...defaultProps} value={[PropertyType.FLAT]} />
       );
 
       expect(screen.getByText('Maison')).toBeInTheDocument();
 
       rerender(
-        <PropertyTypeFilter {...defaultProps} value={['apartment']} />
+        <PropertyTypeFilter {...defaultProps} value={[PropertyType.FLAT]} />
       );
 
       expect(screen.queryByText('Maison')).not.toBeInTheDocument();
       expect(screen.getByText('Appartement')).toBeInTheDocument();
-    });
-
-    it('should update when type prop changes', async () => {
-      const user = userEvent.setup();
-      const { rerender } = render(<PropertyTypeFilter {...defaultProps} type="auction" />);
-
-      let selectTrigger = screen.getByRole('combobox');
-      await user.click(selectTrigger);
-
-      expect(screen.getByText('Local industriel')).toBeInTheDocument();
-
-      await user.keyboard('{Escape}');
-
-      rerender(<PropertyTypeFilter {...defaultProps} type="listing" />);
-
-      selectTrigger = screen.getByRole('combobox');
-      await user.click(selectTrigger);
-
-      expect(screen.queryByText('Local industriel')).not.toBeInTheDocument();
-      expect(screen.getByText('Cave')).toBeInTheDocument();
     });
   });
 });

@@ -14,7 +14,6 @@ export interface RawListingOpportunity {
   opportunityDate: Date; // ISO date string
   externalId: string; // Generated from notary listing ID
   // Listing-specific fields
-  transactionType: string; // "VENTE", "VNI", "VAE"
   propertyType: PropertyType;
   price?: number;
   priceType?: string; // e.g., "FAI", "CC", etc.
