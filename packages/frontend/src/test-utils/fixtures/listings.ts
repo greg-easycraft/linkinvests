@@ -4,6 +4,7 @@ import { EnergyClass, Listing, PropertyType } from "@linkinvests/shared";
 
 export const LISTING_1: Listing = {
     id: randomUUID(),
+    lastChangeDate: new Date('2024-01-15').toISOString().split('T')[0] as string,
     sellerType: 'individual',
     label: 'Modern Apartment in Paris',
     address: '15 Avenue des Champs-Élysées, Paris',
@@ -56,6 +57,7 @@ export const LISTING_1: Listing = {
 
 export const LISTING_2: Listing = {
     id: randomUUID(),
+    lastChangeDate: new Date('2024-02-20').toISOString().split('T')[0] as string,
     sellerType: 'professional',
     label: 'Charming House in Lyon',
     address: '42 Rue de la République, Lyon',
@@ -107,6 +109,7 @@ export const LISTING_2: Listing = {
 
 export const LISTING_3: Listing = {
     id: randomUUID(),
+    lastChangeDate: new Date('2024-03-05').toISOString().split('T')[0] as string,
     sellerType: 'individual',
     label: 'Building Land in Bordeaux',
     address: 'Chemin du Vignoble, Bordeaux',
@@ -142,6 +145,7 @@ export const LISTING_3: Listing = {
 
 export const LISTING_4: Listing = {
     id: randomUUID(),
+    lastChangeDate: new Date('2024-04-12').toISOString().split('T')[0] as string,
     sellerType: 'professional',
     label: 'Studio in Nice',
     address: '8 Promenade des Anglais, Nice',
@@ -193,6 +197,7 @@ export const LISTING_4: Listing = {
 
 export const LISTING_5: Listing = {
     id: randomUUID(),
+    lastChangeDate: new Date('2024-05-18').toISOString().split('T')[0] as string,
     sellerType: 'professional',
     label: 'Family House in Toulouse',
     address: '35 Rue du Capitole, Toulouse',

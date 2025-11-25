@@ -218,6 +218,7 @@ export class DrizzleListingRepository implements IListingRepository {
   private mapListing(listing: typeof opportunityListings.$inferSelect): Listing {
     return {
       ...listing,
+      lastChangeDate: listing.lastChangeDate ?? (new Date()).toISOString().split('T')[0] as string,
       address: listing.address ?? undefined,
       mainPicture: listing.mainPicture ?? undefined,
       pictures: listing.pictures ?? undefined,
