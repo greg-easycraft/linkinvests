@@ -35,6 +35,12 @@ export interface OrganisateurData {
   __typename?: string;
 }
 
+export enum LotOccupationStatus {
+  OCCUPIED_BY_OWNER = 'Occupé',
+  RENTED = 'Loué',
+  FREE = 'Libre de toute occupation',
+}
+
 export interface LotData {
   __typename?: 'Lot';
   id: string;
@@ -51,6 +57,7 @@ export interface LotData {
   critere_consommation_energetique?: EnergyClass;
   critere_surface_habitable?: number | string;
   critere_nombre_de_pieces?: number | string;
+  critere_occupation_du_bien?: LotOccupationStatus;
   photos?: {
     src: string;
   }[];

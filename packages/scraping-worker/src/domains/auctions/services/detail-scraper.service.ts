@@ -1,15 +1,20 @@
 import { Injectable, Logger } from '@nestjs/common';
 import type { Page } from 'playwright';
 
-import type {
-  NextDataJson,
-  LotData,
-  AdressData,
-  RawAuctionInput,
+import {
+  type NextDataJson,
+  type LotData,
+  type AdressData,
+  type RawAuctionInput,
+  LotOccupationStatus,
 } from '../types';
 import { BrowserService } from './browser.service';
 import { DEPARTMENT_IDS_MAP } from '../constants/departments';
-import { AuctionSource, PropertyType } from '@linkinvests/shared';
+import {
+  AuctionOccupationStatus,
+  AuctionSource,
+  PropertyType,
+} from '@linkinvests/shared';
 
 interface DetailScraperResult {
   success: boolean;
@@ -179,6 +184,7 @@ export class DetailScraperService {
       squareFootage: Number(lotData.critere_surface_habitable) || undefined,
       rooms: Number(lotData.critere_nombre_de_pieces) || undefined,
       auctionVenue: lotData.organisateur?.nom || undefined,
+      occupationStatus: this.extractOccupationStatus(lotData),
     };
 
     return opportunity;
@@ -312,5 +318,23 @@ export class DetailScraperService {
     }
 
     return { text, city, departmentId };
+  }
+
+  private extractOccupationStatus(lotData: LotData): AuctionOccupationStatus {
+    const rawStatus = lotData.critere_occupation_du_bien;
+    if (!rawStatus) {
+      return AuctionOccupationStatus.UNKNOWN;
+    }
+
+    switch (rawStatus) {
+      case LotOccupationStatus.OCCUPIED_BY_OWNER:
+        return AuctionOccupationStatus.OCCUPIED_BY_OWNER;
+      case LotOccupationStatus.RENTED:
+        return AuctionOccupationStatus.RENTED;
+      case LotOccupationStatus.FREE:
+        return AuctionOccupationStatus.FREE;
+      default:
+        return AuctionOccupationStatus.UNKNOWN;
+    }
   }
 }

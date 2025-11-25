@@ -14,6 +14,7 @@ import {
   boolean,
 } from 'drizzle-orm/pg-core';
 import { desc } from 'drizzle-orm';
+import { AuctionOccupationStatus } from '@linkinvests/shared';
 
 // Auction Opportunities Table
 export const opportunityAuctions = pgTable('auction', {
@@ -36,7 +37,7 @@ export const opportunityAuctions = pgTable('auction', {
   rooms: integer('rooms'),
   energyClass: varchar('energy_class'),
   auctionVenue: varchar('auction_venue'),
-  isSoldRented: boolean('is_sold_rented').default(false).notNull(),
+  occupationStatus: varchar('occupation_status').notNull().default(AuctionOccupationStatus.UNKNOWN),
   // Price fields
   currentPrice: numeric('current_price', { mode: 'number' }),
   reservePrice: numeric('reserve_price', { mode: 'number' }),

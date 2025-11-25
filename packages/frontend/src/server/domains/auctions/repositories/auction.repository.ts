@@ -4,7 +4,7 @@ import { opportunityAuctions } from "@linkinvests/db";
 import type { IAuctionRepository, } from "../lib.types";
 import type { IAuctionFilters, PaginationFilters } from "~/types/filters";
 import { calculateStartDate } from "~/constants/date-periods";
-import { AuctionSource, PropertyType, EnergyClass, type Auction } from "@linkinvests/shared";
+import { AuctionOccupationStatus, AuctionSource, PropertyType, EnergyClass, type Auction } from "@linkinvests/shared";
 
 export class DrizzleAuctionRepository implements IAuctionRepository {
   constructor(private readonly db: DomainDbType) {}
@@ -100,9 +100,9 @@ export class DrizzleAuctionRepository implements IAuctionRepository {
       conditions.push(lte(opportunityAuctions.rooms, filters.maxRooms));
     }
 
-    // Filter by rental status (isSoldRented)
-    if (filters.isSoldRented !== undefined) {
-      conditions.push(eq(opportunityAuctions.isSoldRented, filters.isSoldRented));
+    // Filter by occupation status
+    if (filters.occupationStatuses && filters.occupationStatuses.length > 0) {
+      conditions.push(inArray(opportunityAuctions.occupationStatus, filters.occupationStatuses));
     }
 
     return conditions;
@@ -183,6 +183,7 @@ export class DrizzleAuctionRepository implements IAuctionRepository {
       mainPicture: auction.mainPicture ?? undefined,
       pictures: auction.pictures ?? undefined,
       auctionHouseContact: auction.auctionHouseContact ?? undefined,
+      occupationStatus: (auction.occupationStatus ?? AuctionOccupationStatus.UNKNOWN) as AuctionOccupationStatus,
     };
   }
 }

@@ -1,4 +1,4 @@
-import { EnergyClass, OpportunityType, PropertyType } from "@linkinvests/shared";
+import { AuctionOccupationStatus, EnergyClass, OpportunityType, PropertyType } from "@linkinvests/shared";
 import { z } from "zod";
 import { DATE_PERIOD_OPTIONS } from "~/constants/date-periods";
 import { DatePeriod } from "~/types/filters";
@@ -32,10 +32,9 @@ export const auctionFiltersSchema = baseFiltersSchema.extend({
     maxSquareFootage: z.string().transform(val => Number(val)).pipe(z.number()).optional(),
     minRooms: z.string().transform(val => Number(val)).pipe(z.number()).optional(),
     maxRooms: z.string().transform(val => Number(val)).pipe(z.number()).optional(),
-
-    isSoldRented: z.union([
-        z.string().transform(val => val === 'true'),
-        z.boolean()
+    occupationStatuses: z.union([
+        z.string().transform(val => val.split(',').filter(Boolean) as AuctionOccupationStatus[]),
+        z.array(z.enum(AuctionOccupationStatus))
     ]).optional(),
 });
 

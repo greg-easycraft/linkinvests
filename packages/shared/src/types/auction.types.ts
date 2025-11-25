@@ -1,5 +1,5 @@
 import { BaseOpportunity } from './base-opportunity.types.js';
-import { AuctionSource, EnergyClass, PropertyType } from '../constants/opportunity.js';
+import { AuctionOccupationStatus, AuctionSource, EnergyClass, PropertyType } from '../constants/opportunity.js';
 
 export interface Auction extends BaseOpportunity {
   // Auction-specific fields
@@ -29,6 +29,7 @@ export interface Auction extends BaseOpportunity {
     depositAmount?: number;
   };
   source: AuctionSource;
+  occupationStatus: AuctionOccupationStatus;
 }
 
 export type AuctionInput = Omit<Auction, 'id' | 'createdAt' | 'updatedAt'> ;

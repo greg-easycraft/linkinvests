@@ -28,3 +28,10 @@ export enum EnergyClass {
   F = 'F',
   G = 'G',
 }
+
+export enum AuctionOccupationStatus {
+  OCCUPIED_BY_OWNER = 'occupied_by_owner',
+  RENTED = 'rented',
+  FREE = 'free',
+  UNKNOWN = 'unknown',
+}

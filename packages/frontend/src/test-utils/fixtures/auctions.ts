@@ -1,4 +1,4 @@
-import { Auction, AuctionSource } from "@linkinvests/shared";
+import { Auction, AuctionOccupationStatus, AuctionSource } from "@linkinvests/shared";
 
 export const AUCTION_1: Auction = {
     id: '1',
@@ -14,6 +14,7 @@ export const AUCTION_1: Auction = {
     url: 'https://www.encheres-publiques.fr/lot/1234567890',
     createdAt: new Date('2021-01-01'),
     updatedAt: new Date('2021-01-01'),
+    occupationStatus: AuctionOccupationStatus.UNKNOWN,
 }
 
 export const AUCTION_2: Auction = {
@@ -30,6 +31,7 @@ export const AUCTION_2: Auction = {
     url: 'https://www.interencheres.com/lot/9876543210',
     createdAt: new Date('2021-02-10'),
     updatedAt: new Date('2021-02-13'),
+    occupationStatus: AuctionOccupationStatus.FREE,
 }
 
 export const AUCTION_3: Auction = {
@@ -46,6 +48,7 @@ export const AUCTION_3: Auction = {
     url: 'https://www.encheres-publiques.fr/lot/2468135790',
     createdAt: new Date('2021-02-25'),
     updatedAt: new Date('2021-02-28'),
+    occupationStatus: AuctionOccupationStatus.RENTED,
 }
 
 export const AUCTION_4: Auction = {
@@ -62,6 +65,7 @@ export const AUCTION_4: Auction = {
     url: 'https://www.encheres-publiques.fr/lot/1357924680',
     createdAt: new Date('2021-04-05'),
     updatedAt: new Date('2021-04-08'),
+    occupationStatus: AuctionOccupationStatus.OCCUPIED_BY_OWNER,
 }
 
 export const AUCTION_5: Auction = {
@@ -78,6 +82,7 @@ export const AUCTION_5: Auction = {
     url: 'https://www.encheres-publiques.fr/lot/1122334455',
     createdAt: new Date('2021-05-18'),
     updatedAt: new Date('2021-05-20'),
+    occupationStatus: AuctionOccupationStatus.UNKNOWN,
 }
 
 export const ALL_AUCTIONS: Auction[] = [AUCTION_1, AUCTION_2, AUCTION_3, AUCTION_4, AUCTION_5];

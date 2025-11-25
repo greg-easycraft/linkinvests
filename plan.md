@@ -1,6 +1,6 @@
 
 ## MARDI
-- [ ] enchere: occupé proprio, loué, libre d'occupation, NC
+- [ ] unknown / NC on DPE
 
 MoteurImmo
 - [ ] publishing date + lastChange date

@@ -41,6 +41,7 @@ export class AuctionsOpportunityRepository {
           .onConflictDoUpdate({
             target: [domainSchema.opportunityAuctions.externalId],
             set: {
+              occupationStatus: sql`excluded.occupation_status`,
               energyClass: sql`excluded.energy_class`,
               auctionVenue: sql`excluded.auction_venue`,
               currentPrice: sql`excluded.current_price`,

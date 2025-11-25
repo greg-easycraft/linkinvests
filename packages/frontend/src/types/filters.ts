@@ -1,4 +1,4 @@
-import type { OpportunityType, PropertyType, EnergyClass } from "@linkinvests/shared";
+import type { OpportunityType, PropertyType, EnergyClass, AuctionOccupationStatus } from "@linkinvests/shared";
 
 export interface MapBounds {
   north: number;
@@ -68,7 +68,7 @@ export interface IAuctionFilters extends IOpportunityFilters {
   maxRooms?: number;
   auctionVenues?: string[];
   energyClasses?: EnergyClass[];
-  isSoldRented?: boolean; // Rental status: true for occupied, false for available
+  occupationStatuses?: AuctionOccupationStatus[];
 }
 
 // Placeholder for future succession-specific filters

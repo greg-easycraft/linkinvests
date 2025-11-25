@@ -3,7 +3,7 @@ import { render, screen } from '~/test-utils/test-helpers';
 import userEvent from '@testing-library/user-event';
 import { AuctionFilters } from './AuctionFilters';
 import type { IAuctionFilters } from '~/types/filters';
-import { PropertyType } from '@linkinvests/shared';
+import { PropertyType, AuctionOccupationStatus } from '@linkinvests/shared';
 
 // Mock BaseFilters
 jest.mock('./BaseFilters', () => ({
@@ -79,7 +79,7 @@ describe('AuctionFilters Component', () => {
       render(<AuctionFilters {...defaultProps} />);
 
       expect(screen.getByText("Type d'enchère")).toBeInTheDocument();
-      expect(screen.getByText('Statut locatif')).toBeInTheDocument();
+      expect(screen.getByText("Statut d'occupation")).toBeInTheDocument();
       expect(screen.getByText('Type de bien')).toBeInTheDocument();
       expect(screen.getByText('Prix (€)')).toBeInTheDocument();
       expect(screen.getByText('Prix de réserve (€)')).toBeInTheDocument();
@@ -87,14 +87,14 @@ describe('AuctionFilters Component', () => {
       expect(screen.getByText('Nombre de pièces')).toBeInTheDocument();
     });
 
-    it('should render select components for auction types, rental status, and property types', () => {
+    it('should render select components for auction types, occupation status, and property types', () => {
       render(<AuctionFilters {...defaultProps} />);
 
       const selects = screen.getAllByTestId('select');
-      expect(selects).toHaveLength(3); // Auction type, rental status, and property type
+      expect(selects).toHaveLength(3); // Auction type, occupation status, and property type
 
       expect(screen.getByText('Sélectionner un type...')).toBeInTheDocument();
-      expect(screen.getByText('Tous les statuts...')).toBeInTheDocument();
+      expect(screen.getByText('Sélectionner un statut...')).toBeInTheDocument();
     });
 
     it('should render range input fields', () => {
@@ -114,100 +114,80 @@ describe('AuctionFilters Component', () => {
     });
   });
 
-  describe('Rental Status Filter Interactions', () => {
-    it('should handle rental status selection for occupied', async () => {
+  describe('Occupation Status Filter Interactions', () => {
+    it('should handle occupation status selection', async () => {
       const user = userEvent.setup();
       render(<AuctionFilters {...defaultProps} />);
 
-      // Click the second select (rental status)
-      const rentalStatusSelect = screen.getAllByTestId('select')[1];
+      // Click the second select (occupation status)
+      const occupationStatusSelect = screen.getAllByTestId('select')[1];
 
-      // Mock the select to return 'true' for occupied
+      // Mock the select to return occupation status value
       const selectModule = await import('~/components/ui/select');
       jest.mocked(selectModule.Select).mockImplementation(({ onValueChange }: any) => (
-        <div data-testid="select" onClick={() => onValueChange?.('true')}>
+        <div data-testid="select" onClick={() => onValueChange?.(AuctionOccupationStatus.OCCUPIED_BY_OWNER)}>
           Mock Select
         </div>
       ));
 
-      await user.click(rentalStatusSelect!);
+      await user.click(occupationStatusSelect!);
 
       expect(mockOnFiltersChange).toHaveBeenCalledWith({
         ...emptyFilters,
-        isSoldRented: true,
+        occupationStatuses: [AuctionOccupationStatus.OCCUPIED_BY_OWNER],
       });
     });
 
-    it('should handle rental status selection for available', async () => {
-      const user = userEvent.setup();
-      render(<AuctionFilters {...defaultProps} />);
-
-      const rentalStatusSelect = screen.getAllByTestId('select')[1];
-
-      // Mock the select to return 'false' for available
-      const selectModule = await import('~/components/ui/select');
-      jest.mocked(selectModule.Select).mockImplementation(({ onValueChange }: any) => (
-        <div data-testid="select" onClick={() => onValueChange?.('false')}>
-          Mock Select
-        </div>
-      ));
-
-      await user.click(rentalStatusSelect!);
-
-      expect(mockOnFiltersChange).toHaveBeenCalledWith({
-        ...emptyFilters,
-        isSoldRented: false,
-      });
-    });
-
-    it('should display rental status badge when selected', () => {
+    it('should display occupation status badge when selected', () => {
       const filters: IAuctionFilters = {
-        isSoldRented: true,
+        occupationStatuses: [AuctionOccupationStatus.OCCUPIED_BY_OWNER],
       };
 
       render(<AuctionFilters {...defaultProps} filters={filters} />);
 
-      expect(screen.getByText('Occupé')).toBeInTheDocument();
+      expect(screen.getByText('Occupé proprio')).toBeInTheDocument();
       expect(screen.getByText('×')).toBeInTheDocument(); // Remove button
     });
 
-    it('should display available badge when false is selected', () => {
+    it('should display free badge when free is selected', () => {
       const filters: IAuctionFilters = {
-        isSoldRented: false,
+        occupationStatuses: [AuctionOccupationStatus.FREE],
       };
 
       render(<AuctionFilters {...defaultProps} filters={filters} />);
 
-      expect(screen.getByText('Libre')).toBeInTheDocument();
+      expect(screen.getByText("Libre d'occupation")).toBeInTheDocument();
     });
 
-    it('should handle rental status badge removal', async () => {
+    it('should handle occupation status badge removal', async () => {
       const user = userEvent.setup();
       const filters: IAuctionFilters = {
-        isSoldRented: true,
+        occupationStatuses: [AuctionOccupationStatus.OCCUPIED_BY_OWNER],
       };
 
       render(<AuctionFilters {...defaultProps} filters={filters} />);
 
-      // Find and click the remove button in the rental status badge
-      const badge = screen.getByText('Occupé').closest('span');
+      // Find and click the remove button in the occupation status badge
+      const badge = screen.getByText('Occupé proprio').closest('span');
       const removeButton = badge?.querySelector('button');
       await user.click(removeButton!);
 
       expect(mockOnFiltersChange).toHaveBeenCalledWith({
         ...filters,
-        isSoldRented: undefined,
+        occupationStatuses: undefined,
       });
     });
 
-    it('should show rental status options', () => {
+    it('should show occupation status options', () => {
       render(<AuctionFilters {...defaultProps} />);
 
-      expect(screen.getByText('Libre')).toBeInTheDocument();
-      expect(screen.getByText('Occupé')).toBeInTheDocument();
+      expect(screen.getByText("Libre d'occupation")).toBeInTheDocument();
+      expect(screen.getByText('Occupé proprio')).toBeInTheDocument();
+      expect(screen.getByText('Loué')).toBeInTheDocument();
+      expect(screen.getByText('NC')).toBeInTheDocument();
     });
 
-    it('should preserve other filters when changing rental status', async () => {
+    it('should preserve other filters when changing occupation status', async () => {
       const user = userEvent.setup();
       const filters: IAuctionFilters = {
         minPrice: 100000,
@@ -216,22 +196,22 @@ describe('AuctionFilters Component', () => {
 
       render(<AuctionFilters {...defaultProps} filters={filters} />);
 
-      const rentalStatusSelect = screen.getAllByTestId('select')[1];
+      const occupationStatusSelect = screen.getAllByTestId('select')[1];
 
-      // Mock the select to return 'true' for occupied
+      // Mock the select to return occupation status value
       const selectModule = await import('~/components/ui/select');
       jest.mocked(selectModule.Select).mockImplementation(({ onValueChange }: any) => (
-        <div data-testid="select" onClick={() => onValueChange?.('true')}>
+        <div data-testid="select" onClick={() => onValueChange?.(AuctionOccupationStatus.FREE)}>
           Mock Select
         </div>
       ));
 
-      await user.click(rentalStatusSelect!);
+      await user.click(occupationStatusSelect!);
 
       expect(mockOnFiltersChange).toHaveBeenCalledWith({
         minPrice: 100000,
         maxPrice: 500000,
-        isSoldRented: true,
+        occupationStatuses: [AuctionOccupationStatus.FREE],
       });
     });
   });
@@ -465,7 +445,7 @@ describe('AuctionFilters Component', () => {
   describe('Complex Filter Scenarios', () => {
     it('should handle multiple filters simultaneously', () => {
       const filters: IAuctionFilters = {
-        isSoldRented: true,
+        occupationStatuses: [AuctionOccupationStatus.OCCUPIED_BY_OWNER],
         propertyTypes: [PropertyType.HOUSE, PropertyType.FLAT],
         minPrice: 100000,
         maxPrice: 500000,
@@ -479,8 +459,8 @@ describe('AuctionFilters Component', () => {
 
       render(<AuctionFilters {...defaultProps} filters={filters} />);
 
-      // Verify rental status badge
-      expect(screen.getByText('Occupé')).toBeInTheDocument();
+      // Verify occupation status badge
+      expect(screen.getByText('Occupé proprio')).toBeInTheDocument();
 
       // Verify property type badges
       expect(screen.getByText('Maison')).toBeInTheDocument();
@@ -585,7 +565,7 @@ describe('AuctionFilters Component', () => {
       render(<AuctionFilters {...defaultProps} />);
 
       expect(screen.getByText("Type d'enchère")).toBeInTheDocument();
-      expect(screen.getByText('Statut locatif')).toBeInTheDocument();
+      expect(screen.getByText("Statut d'occupation")).toBeInTheDocument();
       expect(screen.getByText('Type de bien')).toBeInTheDocument();
       expect(screen.getByText('Prix (€)')).toBeInTheDocument();
       expect(screen.getByText('Prix de réserve (€)')).toBeInTheDocument();
@@ -652,7 +632,7 @@ describe('AuctionFilters Component', () => {
       expect(extraFilters).toBeInTheDocument();
 
       // Verify auction-specific content is in extra filters
-      expect(extraFilters).toHaveTextContent("Type d'enchère");
+      expect(extraFilters).toHaveTextContent("Statut d'occupation");
       expect(extraFilters).toHaveTextContent('Type de bien');
     });
   });
