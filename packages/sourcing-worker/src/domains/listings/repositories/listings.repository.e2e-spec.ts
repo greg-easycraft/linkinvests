@@ -9,6 +9,7 @@ describe('ListingsRepository (Integration)', () => {
 
   // Mock listing data for testing
   const mockListing: ListingInput = {
+    lastChangeDate: '2024-01-15',
     label: 'Appartement 3 pièces',
     address: '123 Rue de la Paix',
     zipCode: '75001',

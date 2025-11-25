@@ -39,7 +39,7 @@ describe('InseeApiService', () => {
       {
         nom: 'Mairie de Paris',
         telephone: '01 42 76 40 40',
-        email: 'contact@paris.fr',
+        adresse_courriel: 'contact@paris.fr',
         adresse: JSON.stringify([
           {
             type_adresse: 'Adresse',
@@ -65,7 +65,7 @@ describe('InseeApiService', () => {
       {
         nom: 'Mairie de Test',
         telephone: '01 23 45 67 89',
-        email: 'test@mairie.fr',
+        adresse_courriel: 'test@mairie.fr',
         adresse: JSON.stringify([
           {
             type_adresse: 'Adresse',
@@ -217,7 +217,7 @@ describe('InseeApiService', () => {
           {
             nom: 'Mairie Test',
             telephone: '01 23 45 67 89',
-            email: 'test@test.fr',
+            adresse_courriel: 'test@test.fr',
             adresse: JSON.stringify([]),
           },
         ],
