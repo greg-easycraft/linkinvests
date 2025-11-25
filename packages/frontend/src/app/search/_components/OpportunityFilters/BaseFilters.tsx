@@ -100,13 +100,13 @@ export function BaseFilters({
       </CardContent>
 
       {/* Fixed Action Buttons */}
-      <div className="flex-shrink-0 p-6 pt-0">
+      {searchParams.size && (<div className="flex-shrink-0 p-6 pt-0">
         <div className="flex gap-2">
           <Button onClick={handleReset} variant="outline" className="flex-1">
             Réinitialiser
           </Button>
         </div>
-      </div>
+      </div>)}
     </Card>
   );
 }

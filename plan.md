@@ -1,15 +1,57 @@
 
-## SAMEDI
+## MARDI
+## BUGS FILTERS
+- [ ] property types
+- [ ] option toutes sur sources
+
 MoteurImmo
 - [ ] handle land type
 - [ ] publishing date + lastChange date
--------------
 - [ ] DPEs E,F,G depuis 24 mois
 - [ ] tout DPE depuis 3 mois
 
-## DIMANCHE
-- [ ] rename address fields into streetAddress
+DATA 
+1. annonces publiées > 3 mois & < 9 mois & DPE E,F,G
+2. annonces publiées > 9 mois & < 12 mois & DPE E,F,G
+3. annonces publiées < 3 mois & DPE E,F,G
+
+- statut sur encheres : occupé proprio, loué, libre d'occupation, NC
+- modal details lien vers nouvelle onglet
+
+## DIVERS
 - [ ] Encheres address from desc (TO TEST)
 - [ ] enchere occupé vs libre
-- [ ] Encheres price from bids ?
 - [ ] successions Verif email mairie
+- [ ] select opportunities + actions (email mairie)
+- [ ] skeletons
+
+## RECHERCHE ADRESSE
+- [ ] lien d'une enchere chez nous
+- [ ] lien d'une annonce chez nous
+
+
+LATER
+- [ ] rename address fields into streetAddress
+- [ ] historique des encheres avec filtre réalisées (judiciaires uniquement) vs non réalisées
+
+
+
+
+--------------------------------------------
+
+BUG CAROLE 
+3508c6d45-93f4447431aac32b.js:1 Uncaught NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
+    at ud (508c6d45-93f4447431aac32b.js:1:96626)
+    at uf (508c6d45-93f4447431aac32b.js:1:96076)
+    at ud (508c6d45-93f4447431aac32b.js:1:96927)
+    at uf (508c6d45-93f4447431aac32b.js:1:96076)
+    at ud (508c6d45-93f4447431aac32b.js:1:97012)
+    at uf (508c6d45-93f4447431aac32b.js:1:96076)
+    at ud (508c6d45-93f4447431aac32b.js:1:96514)
+    at uf (508c6d45-93f4447431aac32b.js:1:96076)
+    at ud (508c6d45-93f4447431aac32b.js:1:97012)
+    at uf (508c6d45-93f4447431aac32b.js:1:96076)Understand this error
+
+
+    - when clicking on type, type de biens, type de vendeur modif, deconnecter
+    - when deconnecting

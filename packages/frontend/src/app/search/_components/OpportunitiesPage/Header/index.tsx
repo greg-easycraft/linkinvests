@@ -65,7 +65,7 @@ export function OpportunityHeader({
   }, [router, searchParams]);
 
   return (
-    <div className="flex-shrink-0 pb-4 border-b border-[var(--primary)]/10">
+    <div className="flex-shrink-0">
       <div className="flex items-center justify-between mb-4">
         {/* Left side: Results count and page size */}
         <div className="flex items-center gap-6">

@@ -50,23 +50,11 @@ function OpportunityCardSkeleton(): React.ReactElement {
 export function OpportunitiesListSkeleton(): React.ReactElement {
   return (
     <div className="space-y-4">
-      {/* Stats skeleton */}
-      <div className="h-3 bg-gray-300 rounded w-32 animate-pulse" />
-
       {/* Cards Grid Skeleton */}
       <div className="space-y-2">
-        {[...Array(5)].map((_, index) => (
+        {[...Array(8)].map((_, index) => (
           <OpportunityCardSkeleton key={index} />
         ))}
-      </div>
-
-      {/* Pagination Skeleton */}
-      <div className="flex items-center justify-center pt-2">
-        <div className="flex items-center gap-2">
-          <div className="h-6 bg-gray-300 rounded w-16 animate-pulse" />
-          <div className="h-3 bg-gray-300 rounded w-20 animate-pulse" />
-          <div className="h-6 bg-gray-300 rounded w-12 animate-pulse" />
-        </div>
       </div>
     </div>
   );
