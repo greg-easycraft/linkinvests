@@ -8,22 +8,18 @@ import type {
   AIAddressServiceConfig,
 } from '../types/ai-address.types';
 import type { RawAuctionOpportunity } from '../types';
-import { standardizeAddress } from '../flows/address-standardization.flow';
+import { refineAddressFlow } from '../flows/address-standardization.flow';
 
 @Injectable()
 export class AIAddressService {
   private readonly logger = new Logger(AIAddressService.name);
-  private readonly config: AIAddressServiceConfig;
+  private readonly config: AIAddressServiceConfig = {
+    maxRetries: 3,
+    retryDelay: 1000, // 1 second
+    minRequestInterval: 1000 / 32, // 1900 requests per minute / 60 seconds = 31.66 requests per second
+    minConfidence: 0.6, // Minimum confidence score to accept AI result (0.6 = 60%)
+  };
   private lastRequestTime = 0;
-
-  constructor(@Inject(CONFIG_TOKEN) private readonly appConfig: ConfigType) {
-    this.config = {
-      maxRetries: 3,
-      retryDelay: 1000, // 1 second
-      minRequestInterval: 500, // 500ms between AI requests to avoid rate limiting
-      minConfidence: 0.6, // Minimum confidence score to accept AI result
-    };
-  }
 
   private async standardizeAddress(
     input: AddressRefinementInput
@@ -50,10 +46,9 @@ export class AIAddressService {
         try {
           this.lastRequestTime = Date.now();
 
-          const result = await standardizeAddress(
-            input,
-            this.appConfig.GEMINI_API_KEY
-          );
+          const result = await refineAddressFlow(input);
+          this.logger.debug({ before: input.currentAddress }, 'AI refining address');
+          this.logger.debug({ result }, 'AI refined address');
 
           if (!result) {
             this.logger.warn({ input }, 'AI returned empty result');
@@ -122,22 +117,19 @@ export class AIAddressService {
 
   async standardizeBatch(
     auctionOpportunities: RawAuctionOpportunity[]
-  ): Promise<
-    Array<RawAuctionOpportunity & { aiAddressData?: AddressRefinementOutput }>
-  > {
-    const results: Array<
-      RawAuctionOpportunity & { aiAddressData?: AddressRefinementOutput }
-    > = [];
-    const failures: Array<RawAuctionOpportunity> = [];
+  ): Promise<RawAuctionOpportunity[]> {
+    const results: RawAuctionOpportunity[] = [];
 
     this.logger.log(
       { total: auctionOpportunities.length },
       `AI standardizing batch of ${auctionOpportunities.length} auction opportunities`
     );
 
-    for (let i = 0; i < auctionOpportunities.length; i++) {
-      const opportunity = auctionOpportunities[i];
+    let iteration = 0;
+    const refinedAddresses: AddressRefinementOutput[] = [];
 
+    for (const opportunity of auctionOpportunities) {
+      iteration += 1;
       // Prepare input for AI standardization
       const input: AddressRefinementInput = {
         currentAddress: opportunity.address,
@@ -153,7 +145,6 @@ export class AIAddressService {
           'AI standardization failed, keeping original'
         );
         results.push(opportunity); // Keep original if AI fails
-        failures.push(opportunity);
         continue;
       }
 
@@ -161,37 +152,34 @@ export class AIAddressService {
       results.push({
         ...opportunity,
         address: aiResult.refinedAddress, // Update address with AI refined version
-        aiAddressData: aiResult, // Keep AI metadata for debugging/validation
       });
+      refinedAddresses.push(aiResult);
 
-      if ((i + 1) % 50 === 0) {
+      if (iteration % 50 === 0) {
         this.logger.log(
-          { processed: i + 1, total: auctionOpportunities.length },
-          `AI standardized ${i + 1}/${auctionOpportunities.length} auction opportunities`
+          { processed: iteration, total: auctionOpportunities.length },
+          `AI standardized ${iteration}/${auctionOpportunities.length} auction opportunities`
         );
       }
     }
 
+    const avgConfidence =
+      refinedAddresses.reduce((sum, r) => sum + r.confidence, 0) /
+      Math.max(1, refinedAddresses.length);
+    const failedCount = auctionOpportunities.length - refinedAddresses.length;
+
     this.logger.log(
       {
         total: auctionOpportunities.length,
-        standardized: results.length - failures.length,
-        failed: failures.length,
-        avgConfidence:
-          results
-            .filter((r) => r.aiAddressData?.confidence)
-            .reduce((sum, r) => sum + (r.aiAddressData?.confidence || 0), 0) /
-          Math.max(
-            1,
-            results.filter((r) => r.aiAddressData?.confidence).length
-          ),
+        refined: refinedAddresses.length,
+        avgConfidence,
       },
-      `Batch AI standardization complete: ${results.length - failures.length}/${auctionOpportunities.length} standardized`
+      `Batch AI standardization complete: ${refinedAddresses.length}/${auctionOpportunities.length} standardized`
     );
 
-    if (failures.length > 0) {
+    if (failedCount > 0) {
       this.logger.warn(
-        { failureCount: failures.length },
+        { failureCount: failedCount },
         'Some addresses could not be standardized with AI'
       );
     }

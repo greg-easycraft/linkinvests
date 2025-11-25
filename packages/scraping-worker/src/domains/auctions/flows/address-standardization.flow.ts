@@ -1,10 +1,17 @@
-import { z } from 'zod';
-import type {
-  AddressRefinementInput,
-  AddressRefinementOutput,
-} from '../types/ai-address.types';
+import { genkit, z } from 'genkit';
+import { googleAI } from '@genkit-ai/google-genai';
 
-// Zod schema for output validation
+const ai = genkit({
+  plugins: [googleAI()],
+  model: googleAI.model('gemini-2.5-flash'),
+});
+
+const addressRefinementInputSchema = z.object({
+  currentAddress: z.string(),
+  description: z.string().optional(),
+  additionalContext: z.string().optional(),
+});
+
 const addressRefinementOutputSchema = z.object({
   refinedAddress: z.string(),
   confidence: z.number().min(0).max(1),
@@ -12,14 +19,16 @@ const addressRefinementOutputSchema = z.object({
   reasoning: z.string().optional(),
 });
 
-export async function standardizeAddress(
-  input: AddressRefinementInput,
-  apiKey: string
-): Promise<AddressRefinementOutput> {
-  const { currentAddress, description, additionalContext } = input;
+export const refineAddressFlow = ai.defineFlow(
+  {
+    name: 'refineAddressFlow',
+    inputSchema: addressRefinementInputSchema,
+    outputSchema: addressRefinementOutputSchema,
+  },
+  async (input) => {
+    const { currentAddress, description, additionalContext } = input;
 
-  // Construct the prompt for address refinement
-  const prompt = `
+    const prompt = `
 You are an AI assistant specializing in French real estate street address extraction and standardization.
 
 Task: Extract and refine the STREET ADDRESS ONLY (street number + street name) from the property information. DO NOT include postal codes, city names, or other location information.
@@ -58,69 +67,12 @@ Examples:
 Please respond with only a valid JSON object.
 `;
 
-  try {
-    // Use Google AI REST API directly
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [
-                {
-                  text: prompt,
-                },
-              ],
-            },
-          ],
-          generationConfig: {
-            temperature: 0.1,
-            topK: 1,
-            topP: 0.8,
-            maxOutputTokens: 1024,
-          },
-        }),
-      }
-    );
+    const { output } = await ai.generate({
+      prompt,
+      output: { schema: addressRefinementOutputSchema },
+    });
 
-    if (!response.ok) {
-      throw new Error(
-        `Google AI API error: ${response.status} ${response.statusText}`
-      );
-    }
-
-    const responseData = await response.json();
-
-    // Extract text from Google AI response
-    const rawOutput = responseData?.candidates?.[0]?.content?.parts?.[0]?.text;
-
-    if (!rawOutput) {
-      throw new Error('No text content in Google AI response');
-    }
-
-    let parsedOutput;
-
-    try {
-      parsedOutput = JSON.parse(rawOutput);
-    } catch (parseError) {
-      throw new Error(`Failed to parse AI response as JSON: ${rawOutput}`);
-    }
-
-    // Validate the output
-    const validatedOutput = addressRefinementOutputSchema.parse(parsedOutput);
-
-    return validatedOutput;
-  } catch (error) {
-    // Fallback to original address if AI processing fails
-    return {
-      refinedAddress: currentAddress,
-      confidence: 0.5,
-      extractedFromDescription: false,
-      reasoning: `AI processing failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
-    };
+    if (!output) throw new Error('Failed to refine address');
+    return output;
   }
-}
+);

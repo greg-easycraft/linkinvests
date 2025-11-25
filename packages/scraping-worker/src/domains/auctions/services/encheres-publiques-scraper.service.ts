@@ -5,6 +5,7 @@ import { BrowserService } from './browser.service';
 import { DetailScraperService } from './detail-scraper.service';
 import { ListingExtractorService } from './listing-extractor.service';
 import { AuctionsGeocodingService } from './geocoding.service';
+import { AIAddressService } from './ai-address.service';
 
 @Injectable()
 export class EncheresPubliquesScraperService {
@@ -16,6 +17,7 @@ export class EncheresPubliquesScraperService {
     private readonly browserService: BrowserService,
     private readonly listingExtractor: ListingExtractorService,
     private readonly detailScraper: DetailScraperService,
+    private readonly aiAddressService: AIAddressService,
     private readonly geocodingService: AuctionsGeocodingService
   ) {}
 
@@ -42,10 +44,7 @@ export class EncheresPubliquesScraperService {
       const page = this.browserService.getPage();
 
       const listingUrls =
-        await this.listingExtractor.extractAllListingsWithPagination(
-          page,
-          50 // Max 50 scroll attempts (smart stopping after 2 empty scrolls)
-        );
+        await this.listingExtractor.extractAllListingsWithPagination(page);
 
       if (listingUrls.length === 0) {
         this.logger.error('No listings found');
@@ -65,7 +64,10 @@ export class EncheresPubliquesScraperService {
 
       this.logger.log({ total: rawOpportunities.length }, 'Scraping complete');
 
-      return this.geocodingService.geocodeBatch(rawOpportunities);
+      const standardizedOpportunities =
+        await this.aiAddressService.standardizeBatch(rawOpportunities);
+
+      return this.geocodingService.geocodeBatch(standardizedOpportunities);
     } finally {
       // Always close browser
       await this.browserService.close();

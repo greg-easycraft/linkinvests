@@ -372,9 +372,7 @@ describe('AuctionFilters Component', () => {
       expect(screen.getByText('Maison')).toBeInTheDocument();
       expect(screen.getByText('Appartement')).toBeInTheDocument();
       expect(screen.getByText('Terrain')).toBeInTheDocument();
-      expect(screen.getByText('Local commercial')).toBeInTheDocument();
-      expect(screen.getByText('Industriel')).toBeInTheDocument();
-      expect(screen.getByText('Garage/Parking')).toBeInTheDocument();
+      expect(screen.getByText('Commercial')).toBeInTheDocument();
     });
 
     it('should display selected property type badges', () => {

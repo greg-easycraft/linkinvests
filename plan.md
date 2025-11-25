@@ -1,8 +1,11 @@
 
 ## MARDI
+- [ ] auction type filter ?? 
+- [ ] enchere: occupé proprio, loué, libre d'occupation, NC
+- [ ] successions Verif email mairie
+- [ ] encheres addresses refinment, only for not previously refined addresses
 
 MoteurImmo
-- [ ] handle land type
 - [ ] publishing date + lastChange date
 - [ ] DPEs E,F,G depuis 24 mois
 - [ ] tout DPE depuis 3 mois
@@ -13,12 +16,9 @@ DATA
 3. annonces publiées < 3 mois & DPE E,F,G
 
 - statut sur encheres : occupé proprio, loué, libre d'occupation, NC
-- modal details lien vers nouvelle onglet
+- modal details lien vers nouvel onglet
 
-## DIVERS
-- [ ] Encheres address from desc (TO TEST)
-- [ ] enchere occupé vs libre
-- [ ] successions Verif email mairie
+## MERCREDI
 - [ ] select opportunities + actions (email mairie)
 - [ ] skeletons
 
@@ -28,8 +28,12 @@ DATA
 
 
 LATER
-- [ ] rename address fields into streetAddress
+- [ ] rename address fields into streetAddress & handle as such
+- map bounds on search
+- [ ] recherche dans un rayon autour de moi ou d'un code postal
 - [ ] historique des encheres avec filtre réalisées (judiciaires uniquement) vs non réalisées
+- [ ] handle land type (moteur immo)
+- [ ] extension Chrome
 
 
 

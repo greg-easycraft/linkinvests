@@ -310,6 +310,10 @@ export class MoteurImmoService {
         return PropertyType.FLAT;
       case 'house':
         return PropertyType.HOUSE;
+      case 'shop':
+      case 'office':
+      case 'premises':
+        return PropertyType.COMMERCIAL;
       case 'land':
         return PropertyType.LAND; // Commercial/office premises
       default:
