@@ -211,7 +211,8 @@ export const opportunityListings = pgTable('listing', {
   department: varchar('department').notNull(),
   latitude: doublePrecision('latitude').notNull(),
   longitude: doublePrecision('longitude').notNull(),
-  opportunityDate: date('opportunity_date').notNull(),
+  opportunityDate: date('opportunity_date').notNull(), // publication date
+  lastChangeDate: date('last_change_date'),
   externalId: varchar('external_id').notNull().unique(),
   // Listing-specific fields
   url: text('url').notNull(),

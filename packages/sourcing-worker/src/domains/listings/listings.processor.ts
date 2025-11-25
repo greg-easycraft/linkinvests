@@ -31,6 +31,7 @@ export class ListingsProcessor extends WorkerHost {
       energyGradeMax,
       propertyTypes,
       departmentCode,
+      usePublicationDate,
     } = filtersToUse;
 
     this.logger.log(`Starting to process listings`, {
@@ -41,6 +42,7 @@ export class ListingsProcessor extends WorkerHost {
       energyGradeMax,
       propertyTypes,
       departmentCode,
+      usePublicationDate,
     });
 
     const stats = {

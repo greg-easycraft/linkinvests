@@ -129,7 +129,7 @@ export class ListingsScrapingService {
       url: opp.url,
       createdAt: new Date(),
       updatedAt: new Date(),
-
+      lastChangeDate: opp.opportunityDate.toISOString().split('T')[0],
       // Listing-specific fields
       propertyType: opp.propertyType,
       description: opp.description,

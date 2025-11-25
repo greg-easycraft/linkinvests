@@ -6,6 +6,7 @@ export interface Listing extends BaseOpportunity {
   url: string;
   source: string;
   propertyType: PropertyType;
+  lastChangeDate: string;
   description?: string;
   squareFootage?: number;
   landArea?: number;

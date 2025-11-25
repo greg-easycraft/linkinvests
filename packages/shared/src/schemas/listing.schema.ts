@@ -18,6 +18,7 @@ const sellerContactSchema = z.object({
 export const listingInputSchema = baseOpportunityInputSchema.extend({
   url: z.url(),
   source: z.string(),
+  lastChangeDate: z.string().optional(),
   propertyType: z.enum(PropertyType),
   description: z.string().optional(),
   squareFootage: z.number().positive().optional(),

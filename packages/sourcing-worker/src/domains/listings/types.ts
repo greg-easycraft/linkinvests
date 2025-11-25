@@ -7,6 +7,7 @@ export interface ListingsJobFilters {
   energyGradeMin?: EnergyClass;
   propertyTypes?: PropertyType[];
   departmentCode?: string;
+  usePublicationDate?: boolean;
 }
 
 export interface ListingJobData extends ListingsJobFilters {

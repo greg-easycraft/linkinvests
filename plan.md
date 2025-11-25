@@ -1,9 +1,7 @@
 
 ## MARDI
-- [ ] unknown / NC on DPE
 
 MoteurImmo
-- [ ] publishing date + lastChange date
 - [ ] DPEs E,F,G depuis 24 mois
 - [ ] tout DPE depuis 3 mois
 
@@ -12,20 +10,20 @@ DATA
 2. annonces publiées > 9 mois & < 12 mois & DPE E,F,G
 3. annonces publiées < 3 mois & DPE E,F,G
 
-- statut sur encheres : occupé proprio, loué, libre d'occupation, NC
-- modal details lien vers nouvel onglet
 
 ## MERCREDI
 - [ ] select opportunities + actions (email mairie)
-- [ ] skeletons
+- modal details lien vers nouvel onglet
+- [ ] unknown / NC on DPE
 
 ### RECHERCHE ADRESSE
 - [ ] lien d'une enchere chez nous
 - [ ] lien d'une annonce chez nous
 
+JEUDI
+- [ ] skeletons
 
 LATER
-- [ ] encheres addresses refinment, only for not previously refined addresses
 - [ ] rename address fields into streetAddress & handle as such
 - map bounds on search
 - [ ] recherche dans un rayon autour de moi ou d'un code postal

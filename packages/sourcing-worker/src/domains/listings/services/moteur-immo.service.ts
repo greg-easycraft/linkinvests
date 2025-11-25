@@ -10,7 +10,7 @@ export interface MoteurImmoListing {
   origin: string;
   creationDate: string;
   lastCheckDate: string;
-  publicationDate: string;
+  publicationDate?: string;
   lastModificationDate?: string;
   lastEventDate: string;
   title: string;
@@ -266,7 +266,12 @@ export class MoteurImmoService {
           .padStart(2, '0'),
         latitude: apiListing.location.coordinates[1], // coordinates are [longitude, latitude]
         longitude: apiListing.location.coordinates[0],
-        opportunityDate: apiListing.creationDate,
+        opportunityDate: (
+          apiListing.publicationDate ?? apiListing.creationDate
+        ).split('T')[0],
+        lastChangeDate: (
+          apiListing.lastEventDate ?? apiListing.creationDate
+        ).split('T')[0],
         url: apiListing.url,
         source: apiListing.origin,
         propertyType: this.mapPropertyType(apiListing.category),
@@ -338,14 +343,26 @@ export class MoteurImmoService {
     };
 
     if (filters.afterDate) {
-      requestBody.lastEventDateAfter = new Date(
-        filters.afterDate,
-      ).toISOString();
+      if (filters.usePublicationDate) {
+        requestBody.publicationDateAfter = new Date(
+          filters.afterDate,
+        ).toISOString();
+      } else {
+        requestBody.lastEventDateAfter = new Date(
+          filters.afterDate,
+        ).toISOString();
+      }
     }
     if (filters.beforeDate) {
-      requestBody.lastEventDateBefore = new Date(
-        filters.beforeDate,
-      ).toISOString();
+      if (filters.usePublicationDate) {
+        requestBody.publicationDateBefore = new Date(
+          filters.beforeDate,
+        ).toISOString();
+      } else {
+        requestBody.lastEventDateBefore = new Date(
+          filters.beforeDate,
+        ).toISOString();
+      }
     }
 
     if (filters.energyGradeMax) {
