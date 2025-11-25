@@ -2,7 +2,6 @@
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { SELLER_TYPE_OPTIONS } from "~/constants/filters";
-import { useAuthSafeDropdown } from "~/hooks/useAuthSafeDropdown";
 
 interface SellerTypeFilterProps {
   value?: 'individual' | 'professional';
@@ -10,15 +9,12 @@ interface SellerTypeFilterProps {
 }
 
 export function SellerTypeFilter({ value, onChange }: SellerTypeFilterProps) {
-  const { isOpen, setIsOpen } = useAuthSafeDropdown();
-
   const handleSellerTypeChange = (selectedValue: string) => {
     if (selectedValue === 'undefined') {
       onChange(undefined);
     } else {
       onChange(selectedValue as 'individual' | 'professional');
     }
-    setIsOpen(false); // Close dropdown after selection
   };
 
   return (
@@ -26,8 +22,6 @@ export function SellerTypeFilter({ value, onChange }: SellerTypeFilterProps) {
       <Select
         value={value !== undefined ? value : 'undefined'}
         onValueChange={handleSellerTypeChange}
-        open={isOpen}
-        onOpenChange={setIsOpen}
       >
         <SelectTrigger>
           <SelectValue placeholder="Type de vendeur..." />
