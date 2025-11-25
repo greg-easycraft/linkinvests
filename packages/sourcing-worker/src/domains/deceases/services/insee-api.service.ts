@@ -121,7 +121,7 @@ export class InseeApiService {
         contactInfo: {
           name: data.nom,
           phone: phoneData?.value,
-          email: data.email,
+          email: data.adresse_courriel,
           address: {
             complement1: address.complement1,
             complement2: address.complement2,
@@ -154,7 +154,7 @@ export class InseeApiService {
       contactInfo: {
         name: data.nom,
         phone: data.telephone,
-        email: data.email,
+        email: data.adresse_courriel,
         address: {
           complement1:
             postalAddress?.complement1 ?? addressWithCoordinates.complement1,

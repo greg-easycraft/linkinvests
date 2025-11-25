@@ -1,7 +1,6 @@
 
 ## MARDI
 - [ ] enchere: occupé proprio, loué, libre d'occupation, NC
-- [ ] successions Verif email mairie
 
 MoteurImmo
 - [ ] publishing date + lastChange date
@@ -20,7 +19,7 @@ DATA
 - [ ] select opportunities + actions (email mairie)
 - [ ] skeletons
 
-## RECHERCHE ADRESSE
+### RECHERCHE ADRESSE
 - [ ] lien d'une enchere chez nous
 - [ ] lien d'une annonce chez nous
 
@@ -33,9 +32,6 @@ LATER
 - [ ] historique des encheres avec filtre réalisées (judiciaires uniquement) vs non réalisées
 - [ ] handle land type (moteur immo)
 - [ ] extension Chrome
-
-
-
 
 --------------------------------------------
 

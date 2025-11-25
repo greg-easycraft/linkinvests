@@ -100,7 +100,6 @@ export interface RawMairieAddress {
 export interface RawMairieData {
   nom: string;
   telephone?: string;
-  email?: string;
   adresse_courriel?: string;
   telephone_accueil?: string;
   adresse: string;
