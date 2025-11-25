@@ -78,7 +78,14 @@ export class EncheresPubliquesScraperService {
         { auctionsToUpdate: [], auctionsToCreate: [] }
       );
 
-      this.logger.log({ total: scrapedAuctions.length }, 'Scraping complete');
+      this.logger.log(
+        {
+          total: scrapedAuctions.length,
+          auctionsToUpdate: auctionsToUpdate.length,
+          auctionsToCreate: auctionsToCreate.length,
+        },
+        'Scraping complete'
+      );
 
       const standardizedAuctions =
         await this.aiAddressService.standardizeBatch(auctionsToCreate);
