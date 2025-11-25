@@ -1,13 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
-import type { AuctionOpportunity } from '../types/auctions.types';
 import type { Job } from 'bullmq';
 
 import { EncheresPubliquesScraperService } from './encheres-publiques-scraper.service';
+import { AuctionInput } from '@linkinvests/shared';
 
 export abstract class AbstractAuctionsRepository {
-  abstract insertOpportunities(
-    opportunities: AuctionOpportunity[]
-  ): Promise<number>;
+  abstract insertOpportunities(opportunities: AuctionInput[]): Promise<number>;
+  abstract getAllExternalIds(): Promise<string[]>;
 }
 
 @Injectable()
@@ -24,71 +23,63 @@ export class AuctionsScrapingService {
       jobId: job.id,
     });
 
-    const opportunities = await this.scraperService.scrapeAuctions();
+    const existingExternalIds = await this.repository.getAllExternalIds();
+
+    const auctions = await this.scraperService.scrapeAuctions(
+      new Set(existingExternalIds)
+    );
 
     this.logger.log({
       jobId: job.id,
-      found: opportunities.length,
-      message: `Found ${opportunities.length} opportunities`,
+      found: auctions.length,
+      message: `Found ${auctions.length} auctions`,
     });
 
-    if (opportunities.length === 0) {
-      this.logger.warn({ jobId: job.id }, 'No opportunities found');
+    if (auctions.length === 0) {
+      this.logger.warn({ jobId: job.id }, 'No auctions found');
       return;
     }
 
     // Step 2: Collect statistics about data quality
-    const geocodedCount = opportunities.filter(
+    const geocodedCount = auctions.filter(
       (opp) => opp.latitude !== 0 && opp.longitude !== 0
     ).length;
 
-    const aiExtractedCount = opportunities.filter(
-      (opp) =>
-        opp.extraData?.price ||
-        opp.extraData?.propertyType ||
-        opp.extraData?.squareFootage ||
-        opp.extraData?.auctionVenue
-    ).length;
-
-    const withImagesCount = opportunities.filter(
+    const withImagesCount = auctions.filter(
       (opp) => opp.mainPicture && opp.pictures && opp.pictures.length > 0
     ).length;
 
-    const failedGeocoding = opportunities.length - geocodedCount;
+    const failedGeocoding = auctions.length - geocodedCount;
 
     if (failedGeocoding > 0) {
       this.logger.warn({
         jobId: job.id,
         count: failedGeocoding,
-        total: opportunities.length,
-        message: `${failedGeocoding}/${opportunities.length} opportunities failed geocoding`,
+        total: auctions.length,
+        message: `${failedGeocoding}/${auctions.length} auctions failed geocoding`,
       });
     }
 
-    // Step 3: Insert all opportunities (including those without coords)
+    // Step 3: Insert all auctions (including those without coords)
     // Note: Opportunities without coordinates may fail DB insert if lat/lng are NOT NULL
     this.logger.log({
       jobId: job.id,
-      count: opportunities.length,
+      count: auctions.length,
       geocoded: geocodedCount,
-      aiExtracted: aiExtractedCount,
       withImages: withImagesCount,
-      message: 'Inserting opportunities into database',
+      message: 'Inserting auctions into database',
     });
 
-    const insertedCount =
-      await this.repository.insertOpportunities(opportunities);
+    const insertedCount = await this.repository.insertOpportunities(auctions);
 
     this.logger.log('Auctions scraping job completed successfully', {
       jobId: job.id,
       inserted: insertedCount,
-      total: opportunities.length,
+      total: auctions.length,
       geocoded: geocodedCount,
-      aiExtracted: aiExtractedCount,
       withImages: withImagesCount,
-      aiExtractionRate: `${Math.round((aiExtractedCount / opportunities.length) * 100)}%`,
-      imageRate: `${Math.round((withImagesCount / opportunities.length) * 100)}%`,
-      geocodingRate: `${Math.round((geocodedCount / opportunities.length) * 100)}%`,
+      imageRate: `${Math.round((withImagesCount / auctions.length) * 100)}%`,
+      geocodingRate: `${Math.round((geocodedCount / auctions.length) * 100)}%`,
     });
   }
 }

@@ -1,13 +1,11 @@
-import { Injectable, Logger, Inject } from '@nestjs/common';
-import type { ConfigType } from '~/config';
-import { CONFIG_TOKEN } from '~/config';
+import { Injectable, Logger } from '@nestjs/common';
 
 import type {
   AddressRefinementInput,
   AddressRefinementOutput,
   AIAddressServiceConfig,
 } from '../types/ai-address.types';
-import type { RawAuctionOpportunity } from '../types';
+import type { RawAuctionInput } from '../types';
 import { refineAddressFlow } from '../flows/address-standardization.flow';
 
 @Injectable()
@@ -116,9 +114,9 @@ export class AIAddressService {
   }
 
   async standardizeBatch(
-    auctionOpportunities: RawAuctionOpportunity[]
-  ): Promise<RawAuctionOpportunity[]> {
-    const results: RawAuctionOpportunity[] = [];
+    auctionOpportunities: RawAuctionInput[]
+  ): Promise<RawAuctionInput[]> {
+    const results: RawAuctionInput[] = [];
 
     this.logger.log(
       { total: auctionOpportunities.length },
@@ -132,8 +130,8 @@ export class AIAddressService {
       iteration += 1;
       // Prepare input for AI standardization
       const input: AddressRefinementInput = {
-        currentAddress: opportunity.address,
-        description: opportunity.extraData?.description,
+        currentAddress: opportunity.address ?? '',
+        description: opportunity.description,
         additionalContext: `City: ${opportunity.city}`, // Additional context from raw data
       };
 

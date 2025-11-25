@@ -1,11 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
 
-import type { AuctionOpportunity } from '../types';
+import type { RawAuctionInput } from '../types';
 import { BrowserService } from './browser.service';
 import { DetailScraperService } from './detail-scraper.service';
 import { ListingExtractorService } from './listing-extractor.service';
 import { AuctionsGeocodingService } from './geocoding.service';
 import { AIAddressService } from './ai-address.service';
+import { AuctionInput } from '@linkinvests/shared';
 
 @Injectable()
 export class EncheresPubliquesScraperService {
@@ -21,7 +22,7 @@ export class EncheresPubliquesScraperService {
     private readonly geocodingService: AuctionsGeocodingService
   ) {}
 
-  async scrapeAuctions(): Promise<AuctionOpportunity[]> {
+  async scrapeAuctions(externalIds: Set<string>): Promise<AuctionInput[]> {
     this.logger.log('Starting auction scraping process');
 
     try {
@@ -57,17 +58,45 @@ export class EncheresPubliquesScraperService {
       );
 
       // Scrape details for each listing (in batches of 10)
-      const rawOpportunities = await this.detailScraper.scrapeDetailsBatch(
+      const scrapedAuctions = await this.detailScraper.scrapeDetailsBatch(
         listingUrls,
         10
       );
 
-      this.logger.log({ total: rawOpportunities.length }, 'Scraping complete');
+      const { auctionsToUpdate, auctionsToCreate } = scrapedAuctions.reduce<{
+        auctionsToUpdate: RawAuctionInput[];
+        auctionsToCreate: RawAuctionInput[];
+      }>(
+        (acc, auction) => {
+          if (externalIds.has(auction.externalId)) {
+            acc.auctionsToUpdate.push(auction);
+            return acc;
+          }
+          acc.auctionsToCreate.push(auction);
+          return acc;
+        },
+        { auctionsToUpdate: [], auctionsToCreate: [] }
+      );
 
-      const standardizedOpportunities =
-        await this.aiAddressService.standardizeBatch(rawOpportunities);
+      this.logger.log({ total: scrapedAuctions.length }, 'Scraping complete');
 
-      return this.geocodingService.geocodeBatch(standardizedOpportunities);
+      const standardizedAuctions =
+        await this.aiAddressService.standardizeBatch(auctionsToCreate);
+
+      const geocodedAuctions =
+        await this.geocodingService.geocodeBatch(standardizedAuctions);
+
+      const allAuctions: AuctionInput[] = [
+        ...geocodedAuctions,
+        ...auctionsToUpdate.map((auction) => ({
+          ...auction,
+          latitude: 0,
+          longitude: 0,
+          zipCode: '00000',
+        })),
+      ];
+
+      return allAuctions;
     } finally {
       // Always close browser
       await this.browserService.close();

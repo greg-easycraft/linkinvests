@@ -1,8 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 
 import type { GeocodingResponse } from '../types/geocoding.types';
-import { AuctionOpportunity, RawAuctionOpportunity } from '../types';
+import { RawAuctionInput } from '../types';
 import { DEPARTMENT_NAMES_MAP } from '../constants/departments';
+import { AuctionInput } from '@linkinvests/shared';
 
 @Injectable()
 export class AuctionsGeocodingService {
@@ -155,10 +156,10 @@ export class AuctionsGeocodingService {
   }
 
   async geocodeBatch(
-    auctionOpportunities: RawAuctionOpportunity[]
-  ): Promise<Array<AuctionOpportunity>> {
-    const results: Array<AuctionOpportunity> = [];
-    const failures: Array<RawAuctionOpportunity> = [];
+    auctionOpportunities: RawAuctionInput[]
+  ): Promise<Array<AuctionInput>> {
+    const results: Array<AuctionInput> = [];
+    const failures: Array<RawAuctionInput> = [];
 
     this.logger.log(
       { total: auctionOpportunities.length },
@@ -219,7 +220,7 @@ export class AuctionsGeocodingService {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
-  private formatAddressForRequest(opportunity: RawAuctionOpportunity): string {
+  private formatAddressForRequest(opportunity: RawAuctionInput): string {
     return `${opportunity.address} ${DEPARTMENT_NAMES_MAP[Number(opportunity.department)]?.split('-').join(' ') ?? ''}`.trim();
   }
 }

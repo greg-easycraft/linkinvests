@@ -5,7 +5,7 @@ import type {
   NextDataJson,
   LotData,
   AdressData,
-  RawAuctionOpportunity,
+  RawAuctionInput,
 } from '../types';
 import { BrowserService } from './browser.service';
 import { DEPARTMENT_IDS_MAP } from '../constants/departments';
@@ -13,7 +13,7 @@ import { AuctionSource, PropertyType } from '@linkinvests/shared';
 
 interface DetailScraperResult {
   success: boolean;
-  opportunity?: RawAuctionOpportunity;
+  scrapedAuction?: RawAuctionInput;
   error?: string;
 }
 
@@ -40,14 +40,14 @@ export class DetailScraperService {
       }
 
       // Parse auction data from JSON
-      const opportunity = this.parseAuctionDataFromJson(jsonData, fullUrl);
+      const scrapedAuction = this.parseAuctionDataFromJson(jsonData, fullUrl);
 
       this.logger.debug(
-        { url: fullUrl, lotId: opportunity.extraData?.id },
+        { url: fullUrl, lotId: scrapedAuction.externalId },
         'Successfully extracted auction data from JSON'
       );
 
-      return { success: true, opportunity };
+      return { success: true, scrapedAuction };
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
@@ -62,8 +62,8 @@ export class DetailScraperService {
   async scrapeDetailsBatch(
     urls: string[],
     batchSize: number = 10
-  ): Promise<RawAuctionOpportunity[]> {
-    const opportunities: RawAuctionOpportunity[] = [];
+  ): Promise<RawAuctionInput[]> {
+    const scrapedAuctions: RawAuctionInput[] = [];
     let processed = 0;
     let failed = 0;
 
@@ -82,8 +82,8 @@ export class DetailScraperService {
 
         const result = await this.scrapeDetails(url);
 
-        if (result.success && result.opportunity) {
-          opportunities.push(result.opportunity);
+        if (result.success && result.scrapedAuction) {
+          scrapedAuctions.push(result.scrapedAuction);
           processed++;
         } else {
           failed++;
@@ -97,11 +97,11 @@ export class DetailScraperService {
     }
 
     this.logger.log(
-      { total: opportunities.length, processed, failed },
-      `Detail scraping complete: ${opportunities.length} opportunities extracted`
+      { total: scrapedAuctions.length, processed, failed },
+      `Detail scraping complete: ${scrapedAuctions.length} scrapedAuctions extracted`
     );
 
-    return opportunities;
+    return scrapedAuctions;
   }
 
   /**
@@ -128,7 +128,7 @@ export class DetailScraperService {
   private parseAuctionDataFromJson(
     jsonData: NextDataJson,
     url: string
-  ): RawAuctionOpportunity {
+  ): RawAuctionInput {
     const props = jsonData.props;
     const query = jsonData.query;
     const apolloState = props?.pageProps?.apolloState?.data || {};
@@ -156,7 +156,7 @@ export class DetailScraperService {
     const { mainPicture, pictures } = this.getPictures(lotData);
 
     // Build the opportunity object
-    const opportunity: RawAuctionOpportunity = {
+    const opportunity: RawAuctionInput = {
       url,
       label: this.extractTitleFromNom(lotData.nom),
       address: text,
@@ -164,23 +164,21 @@ export class DetailScraperService {
       department: departmentId.toString().padStart(2, '0'),
       latitude: latitude || 0,
       longitude: longitude || 0,
-      auctionDate: this.extractAuctionDate(lotData),
+      opportunityDate: this.extractAuctionDate(lotData),
       mainPicture,
       source: AuctionSource.ENCHERES_PUBLIQUES,
       pictures,
-      extraData: {
-        id: `${AuctionSource.ENCHERES_PUBLIQUES}-${lotId}`,
-        propertyType: this.getPropertyType(propertyType),
-        currentPrice: Number(lotData.offre_actuelle) || undefined,
-        lowerEstimate: Number(lotData.estimation_basse) || undefined,
-        upperEstimate: Number(lotData.estimation_haute) || undefined,
-        reservePrice: Number(lotData.prix_plancher) || undefined,
-        description: lotData.description || undefined,
-        energyClass: lotData.critere_consommation_energetique || undefined,
-        squareFootage: Number(lotData.critere_surface_habitable) || undefined,
-        rooms: Number(lotData.critere_nombre_de_pieces) || undefined,
-        auctionVenue: lotData.organisateur?.nom || undefined,
-      },
+      externalId: `${AuctionSource.ENCHERES_PUBLIQUES}-${lotId}`,
+      propertyType: this.getPropertyType(propertyType),
+      currentPrice: Number(lotData.offre_actuelle) || undefined,
+      lowerEstimate: Number(lotData.estimation_basse) || undefined,
+      upperEstimate: Number(lotData.estimation_haute) || undefined,
+      reservePrice: Number(lotData.prix_plancher) || undefined,
+      description: lotData.description || undefined,
+      energyClass: lotData.critere_consommation_energetique || undefined,
+      squareFootage: Number(lotData.critere_surface_habitable) || undefined,
+      rooms: Number(lotData.critere_nombre_de_pieces) || undefined,
+      auctionVenue: lotData.organisateur?.nom || undefined,
     };
 
     return opportunity;

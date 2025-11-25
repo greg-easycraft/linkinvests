@@ -1,4 +1,4 @@
-import { AuctionSource, PropertyType } from '@linkinvests/shared';
+import { AuctionInput, EnergyClass } from '@linkinvests/shared';
 
 export interface AuctionListing {
   url: string;
@@ -48,7 +48,7 @@ export interface LotData {
   fermeture_reelle_date?: number | string;
   encheres_fermeture_date?: number | string;
   fermeture_date?: number | string;
-  critere_consommation_energetique?: string;
+  critere_consommation_energetique?: EnergyClass;
   critere_surface_habitable?: number | string;
   critere_nombre_de_pieces?: number | string;
   photos?: {
@@ -76,37 +76,7 @@ export interface AdressData {
   coords: [number, number];
 }
 
-// Local type for scraping worker - includes URL and uses auctionDate
-export interface AuctionOpportunity {
-  url: string; // URL of the auction listing (for externalId)
-  label: string;
-  address: string;
-  zipCode: string;
-  department: string;
-  latitude: number;
-  longitude: number;
-  source: AuctionSource;
-  auctionDate: string; // Will be mapped to opportunityDate in repository
-  extraData?: {
-    id?: string; // Auction ID from query
-    url?: string; // Original auction URL
-    propertyType?: PropertyType; // Property category
-    currentPrice?: number; // Current bid amount
-    lowerEstimate?: number; // Lower price estimate
-    upperEstimate?: number; // Upper price estimate
-    reservePrice?: number; // Reserve price (prix_plancher)
-    price?: number; // Legacy field for compatibility
-    description?: string;
-    energyClass?: string; // Energy performance rating
-    squareFootage?: number; // Surface area in m²
-    rooms?: number; // Number of rooms
-    auctionVenue?: string; // Will be used for contactData
-  };
-  mainPicture?: string;
-  pictures?: string[];
-}
-
-export type RawAuctionOpportunity = Omit<AuctionOpportunity, 'zipCode'> & {
+export type RawAuctionInput = Omit<AuctionInput, 'zipCode'> & {
   city: string;
   latitude?: number;
   longitude?: number;
