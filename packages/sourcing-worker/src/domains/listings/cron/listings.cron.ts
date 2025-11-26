@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
-import { SOURCE_LISTINGS_QUEUE } from '@linkinvests/shared';
+import { EnergyClass, SOURCE_LISTINGS_QUEUE } from '@linkinvests/shared';
 import { format, subDays } from 'date-fns';
 import { ListingJobData } from '../types';
 
@@ -35,9 +35,9 @@ export class ListingsCron {
 
       for (const department of departments) {
         const jobData: ListingJobData = {
-          source: 'moteurimmo',
           afterDate,
           departmentCode: department.toString().padStart(2, '0'),
+          energyGradeMax: EnergyClass.E,
         };
         const job = await this.queue.add('fetch-recent-listings', jobData, {
           removeOnComplete: 10,
