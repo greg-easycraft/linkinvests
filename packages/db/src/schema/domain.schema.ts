@@ -289,3 +289,27 @@ export const scrapedDeceasesFiles = pgTable('scraped_deceases_file', {
   fileName: text('file_name').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
+
+// Junction table: Auction <-> Energy Diagnostic links
+export const auctionEnergyDiagnosticLinks = pgTable('auction_energy_diagnostic_link', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  auctionId: uuid('auction_id').notNull().references(() => opportunityAuctions.id, { onDelete: 'cascade' }),
+  energyDiagnosticId: uuid('energy_diagnostic_id').notNull().references(() => energyDiagnostics.id, { onDelete: 'cascade' }),
+  matchScore: integer('match_score').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => [
+  uniqueIndex('uq_auction_energy_diagnostic').on(table.auctionId, table.energyDiagnosticId),
+  index('idx_auction_energy_diagnostic_auction').on(table.auctionId),
+]);
+
+// Junction table: Listing <-> Energy Diagnostic links
+export const listingEnergyDiagnosticLinks = pgTable('listing_energy_diagnostic_link', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  listingId: uuid('listing_id').notNull().references(() => opportunityListings.id, { onDelete: 'cascade' }),
+  energyDiagnosticId: uuid('energy_diagnostic_id').notNull().references(() => energyDiagnostics.id, { onDelete: 'cascade' }),
+  matchScore: integer('match_score').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => [
+  uniqueIndex('uq_listing_energy_diagnostic').on(table.listingId, table.energyDiagnosticId),
+  index('idx_listing_energy_diagnostic_listing').on(table.listingId),
+]);

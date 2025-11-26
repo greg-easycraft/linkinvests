@@ -1,11 +1,24 @@
 'use client';
 
+import { useEffect, useState, useCallback } from "react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { MapPin, Calendar } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import type { Listing, Opportunity } from "@linkinvests/shared";
-import { ImageCarousel, StreetView, ListingDetails } from "~/app/_components/opportunity";
+import type { Listing, Opportunity, EnergyClass } from "@linkinvests/shared";
+import {
+  ImageCarousel,
+  StreetView,
+  ListingDetails,
+  AddressRefinementButton,
+  addressNeedsRefinement,
+  DiagnosticLinksTable,
+} from "~/app/_components/opportunity";
+import {
+  getListingDiagnosticLinks,
+  searchAndLinkDiagnostics,
+  type DiagnosticLink,
+} from "~/app/_actions/address-refinement/queries";
 
 interface ListingDetailContentProps {
   listing: Listing;
@@ -23,6 +36,54 @@ const hasAvailablePictures = (opportunity: Opportunity): boolean => {
 };
 
 export function ListingDetailContent({ listing }: ListingDetailContentProps) {
+  const [diagnosticLinks, setDiagnosticLinks] = useState<DiagnosticLink[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [isLoadingLinks, setIsLoadingLinks] = useState(true);
+
+  // Load existing links on mount
+  useEffect(() => {
+    async function loadExistingLinks() {
+      if (!addressNeedsRefinement(listing.address ?? null)) {
+        setIsLoadingLinks(false);
+        return;
+      }
+
+      try {
+        const links = await getListingDiagnosticLinks(listing.id);
+        setDiagnosticLinks(links);
+      } catch (error) {
+        console.error('Failed to load diagnostic links:', error);
+      } finally {
+        setIsLoadingLinks(false);
+      }
+    }
+
+    loadExistingLinks();
+  }, [listing.id, listing.address]);
+
+  const handleRefineAddress = useCallback(async () => {
+    if (!listing.energyClass) return;
+
+    setIsSearching(true);
+    try {
+      const links = await searchAndLinkDiagnostics({
+        opportunityId: listing.id,
+        opportunityType: 'listing',
+        zipCode: listing.zipCode,
+        energyClass: listing.energyClass as EnergyClass,
+        squareFootage: listing.squareFootage ?? undefined,
+        address: listing.address ?? undefined,
+      });
+      setDiagnosticLinks(links);
+    } catch (error) {
+      console.error('Failed to search and link diagnostics:', error);
+    } finally {
+      setIsSearching(false);
+    }
+  }, [listing]);
+
+  const showRefinementUI = addressNeedsRefinement(listing.address ?? null);
+
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Title Card */}
@@ -51,7 +112,18 @@ export function ListingDetailContent({ listing }: ListingDetailContentProps) {
             <div className="flex gap-3">
               <MapPin className="h-5 w-5 text-neutral-500 mt-0.5" />
               <div className="flex-1">
-                <div className="text-sm font-medium mb-1 font-heading text-[var(--primary)]">Adresse</div>
+                <div className="flex items-center justify-between mb-1">
+                  <div className="text-sm font-medium font-heading text-[var(--primary)]">Adresse</div>
+                  {showRefinementUI && !isLoadingLinks && (
+                    <AddressRefinementButton
+                      address={listing.address ?? null}
+                      energyClass={listing.energyClass}
+                      onRefine={handleRefineAddress}
+                      isLoading={isSearching}
+                      hasExistingLinks={diagnosticLinks.length > 0}
+                    />
+                  )}
+                </div>
                 <div className="text-sm text-neutral-600">
                   {listing.address ?? "Non disponible"}
                 </div>
@@ -79,6 +151,11 @@ export function ListingDetailContent({ listing }: ListingDetailContentProps) {
 
       {/* Type-specific details */}
       <ListingDetails opportunity={listing} />
+
+      {/* Diagnostic Links Table */}
+      {showRefinementUI && (diagnosticLinks.length > 0 || isSearching) && (
+        <DiagnosticLinksTable links={diagnosticLinks} isLoading={isSearching} />
+      )}
 
       {/* Timestamps */}
       <Card>

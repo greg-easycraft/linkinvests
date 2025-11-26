@@ -1,12 +1,16 @@
-import type { IAddressSearchRepository } from "../lib.types";
-import type { AddressSearchInput, AddressSearchResult, EnergyDiagnostic} from "@linkinvests/shared";
+import type { IAddressSearchRepository, DiagnosticLink, IAddressLinksRepository } from "../lib.types";
+import { MAX_DIAGNOSTIC_LINKS } from "../lib.types";
+import type { AddressSearchInput, AddressSearchResult, EnergyDiagnostic } from "@linkinvests/shared";
+
+export type OpportunityType = 'auction' | 'listing';
 
 export class AddressSearchService {
   private MAX_SQUARE_FOOTAGE_DIFFERENCE_PERCENTAGE = 10;
 
   constructor(
-    private readonly energyDiagnosticsRepository: IAddressSearchRepository
-  ) {}
+    private readonly energyDiagnosticsRepository: IAddressSearchRepository,
+    private readonly addressLinksRepository: IAddressLinksRepository
+  ) { }
 
   async getPlausibleAddresses(input: AddressSearchInput): Promise<AddressSearchResult[]> {
     const { energyClass, squareFootage, zipCode } = input;
@@ -22,7 +26,7 @@ export class AddressSearchService {
       squareFootageMax: maxSquareFootage,
     });
 
-    if(!results.length) {
+    if (!results.length) {
       return [];
     }
 
@@ -33,6 +37,47 @@ export class AddressSearchService {
     })).sort((a, b) => b.matchScore - a.matchScore);
 
     return resultsWithMatchScore as AddressSearchResult[];
+  }
+
+  async searchAndLinkForOpportunity(
+    input: AddressSearchInput,
+    opportunityId: string,
+    opportunityType: OpportunityType
+  ): Promise<DiagnosticLink[]> {
+    // Search for plausible addresses
+    const searchResults = await this.getPlausibleAddresses(input);
+
+    if (searchResults.length === 0) {
+      return [];
+    }
+
+    // Take top N results
+    const topResults = searchResults.slice(0, MAX_DIAGNOSTIC_LINKS);
+
+    // Prepare links for saving
+    const linksToSave = topResults.map(result => ({
+      opportunityId,
+      energyDiagnosticId: result.id,
+      matchScore: Math.round(result.matchScore),
+    }));
+
+    // Save to appropriate junction table
+    if (opportunityType === 'auction') {
+      await this.addressLinksRepository.saveAuctionDiagnosticLinks(linksToSave);
+      return this.addressLinksRepository.getAuctionDiagnosticLinks(opportunityId);
+    }
+    await this.addressLinksRepository.saveListingDiagnosticLinks(linksToSave);
+    return this.addressLinksRepository.getListingDiagnosticLinks(opportunityId);
+  }
+
+  async getDiagnosticLinks(
+    opportunityId: string,
+    opportunityType: OpportunityType
+  ): Promise<DiagnosticLink[]> {
+    if (opportunityType === 'auction') {
+      return this.addressLinksRepository.getAuctionDiagnosticLinks(opportunityId);
+    }
+    return this.addressLinksRepository.getListingDiagnosticLinks(opportunityId);
   }
 
   private calculateMatchScore(result: EnergyDiagnostic, input: AddressSearchInput): number {

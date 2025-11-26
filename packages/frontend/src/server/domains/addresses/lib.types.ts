@@ -1,6 +1,7 @@
 import type { EnergyClass, EnergyDiagnostic } from "@linkinvests/shared";
 
 export const MAX_NUMBER_OF_RESULTS = 50;
+export const MAX_DIAGNOSTIC_LINKS = 5;
 
 export type DiagnosticQueryInput = {
   zipCode: string;
@@ -9,7 +10,33 @@ export type DiagnosticQueryInput = {
   squareFootageMax: number;
 }
 
+export type DiagnosticLinkInput = {
+  opportunityId: string;
+  energyDiagnosticId: string;
+  matchScore: number;
+}
+
+export type DiagnosticLink = {
+  id: string;
+  energyDiagnosticId: string;
+  matchScore: number;
+  energyDiagnostic: {
+    id: string;
+    address: string;
+    zipCode: string;
+    energyClass: string;
+    squareFootage: number;
+  };
+}
+
 export interface IAddressSearchRepository {
   findAllForAddressSearch(input: DiagnosticQueryInput): Promise<EnergyDiagnostic[]>;
   findById(id: string): Promise<EnergyDiagnostic | null>;
+}
+
+export interface IAddressLinksRepository {
+  saveAuctionDiagnosticLinks(links: DiagnosticLinkInput[]): Promise<void>;
+  saveListingDiagnosticLinks(links: DiagnosticLinkInput[]): Promise<void>;
+  getAuctionDiagnosticLinks(auctionId: string): Promise<DiagnosticLink[]>;
+  getListingDiagnosticLinks(listingId: string): Promise<DiagnosticLink[]>;
 }

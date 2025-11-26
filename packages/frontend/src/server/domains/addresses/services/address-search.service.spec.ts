@@ -1,12 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { AddressSearchService } from './address-search.service';
-import type { IAddressSearchRepository } from '../lib.types';
+import type { IAddressLinksRepository, IAddressSearchRepository } from '../lib.types';
 import type { AddressSearchInput, EnergyDiagnostic } from '@linkinvests/shared';
 import { EnergyClass, OpportunityType } from '@linkinvests/shared';
 
 describe('AddressSearchService', () => {
   let addressSearchService: AddressSearchService;
-  let mockAddressSearchRepository: jest.Mocked<IAddressSearchRepository>;
+  const mockAddressSearchRepository ={
+    findAllForAddressSearch: jest.fn(),
+    findById: jest.fn(),
+  } as jest.Mocked<IAddressSearchRepository>;
+  const mockAddressLinksRepository ={
+    saveAuctionDiagnosticLinks: jest.fn(),
+    saveListingDiagnosticLinks: jest.fn(),
+    getAuctionDiagnosticLinks: jest.fn(),
+    getListingDiagnosticLinks: jest.fn(),
+  } as jest.Mocked<IAddressLinksRepository>;
 
   const mockEnergyDiagnostic: EnergyDiagnostic = {
     id: 'energy-diagnostic-1',
@@ -32,15 +41,8 @@ describe('AddressSearchService', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-
-    // Create mocked repository
-    mockAddressSearchRepository = {
-      findAllForAddressSearch: jest.fn(),
-      findById: jest.fn(),
-    };
-
-    // Initialize service with mocked dependency
-    addressSearchService = new AddressSearchService(mockAddressSearchRepository);
+    // Initialize service with mocked dependencies
+    addressSearchService = new AddressSearchService(mockAddressSearchRepository, mockAddressLinksRepository);
   });
 
   describe('getPlausibleAddresses', () => {

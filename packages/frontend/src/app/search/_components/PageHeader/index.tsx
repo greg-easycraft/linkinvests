@@ -32,8 +32,8 @@ export function PageHeader(): React.ReactElement {
               href="/search"
               className={`px-3 py-2 text-sm rounded-sm font-medium ${
                 pathname.startsWith('/search') && pathname !== '/address-search'
-                  ? 'text-[var(--secundary)]'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                ? 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                  : 'text-[var(--secundary)]'
               }`}
             >
               Recherche
@@ -42,8 +42,8 @@ export function PageHeader(): React.ReactElement {
               href="/address-search"
               className={`px-3 py-2 text-sm rounded-sm font-medium ${
                 pathname === '/address-search'
-                  ? 'text-[var(--secundary)]'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                ? 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                : 'text-[var(--secundary)]'
               }`}
             >
               Recherche d&apos;adresse

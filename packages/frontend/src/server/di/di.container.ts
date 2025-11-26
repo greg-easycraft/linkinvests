@@ -10,7 +10,7 @@ import { ListingService, DrizzleListingRepository } from '~/server/domains/listi
 
 // Shared services
 import { ExportService } from '~/server/services/export.service';
-import { AddressSearchService, DrizzleAddressSearchRepository } from '../domains/addresses';
+import { AddressSearchService, DrizzleAddressSearchRepository, DrizzleAddressLinksRepository } from '../domains/addresses';
 
 // Type definitions for DI container
 export interface DIContainer {
@@ -27,7 +27,7 @@ export interface DIContainer {
   energyDiagnosticsRepository: DrizzleEnergyDiagnosticsRepository;
   listingRepository: DrizzleListingRepository;
   addressSearchRepository: DrizzleAddressSearchRepository;
-
+  addressLinksRepository: DrizzleAddressLinksRepository;
   // Domain-specific services
   auctionService: AuctionService;
   successionService: SuccessionService;
@@ -55,13 +55,14 @@ function createDIContainer(): AwilixContainer<DIContainer> {
     energyDiagnosticsRepository: asFunction(() => new DrizzleEnergyDiagnosticsRepository(container.resolve('db'))),
     listingRepository: asFunction(() => new DrizzleListingRepository(container.resolve('db'))),
     addressSearchRepository: asFunction(() => new DrizzleAddressSearchRepository(container.resolve('db'))),
+    addressLinksRepository: asFunction(() => new DrizzleAddressLinksRepository(container.resolve('db'))),
     // Domain-specific services
     auctionService: asFunction(() => new AuctionService(container.resolve('auctionRepository'), container.resolve('exportService'))),
     successionService: asFunction(() => new SuccessionService(container.resolve('successionRepository'), container.resolve('exportService'))),
     liquidationService: asFunction(() => new LiquidationService(container.resolve('liquidationRepository'), container.resolve('exportService'))),
     energyDiagnosticsService: asFunction(() => new EnergyDiagnosticsService(container.resolve('energyDiagnosticsRepository'), container.resolve('exportService'))),
     listingService: asFunction(() => new ListingService(container.resolve('listingRepository'), container.resolve('exportService'))),
-    addressSearchService: asFunction(() => new AddressSearchService(container.resolve('addressSearchRepository'))),
+    addressSearchService: asFunction(() => new AddressSearchService(container.resolve('addressSearchRepository'), container.resolve('addressLinksRepository'))),
   });
 
   return container;
