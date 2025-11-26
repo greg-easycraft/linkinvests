@@ -12,6 +12,7 @@ import {
   CsvProcessingStats,
 } from './types/deceases.types';
 import {
+  createSuccessionExternalId,
   INGEST_DECEASES_CSV_QUEUE,
   SuccessionInput,
 } from '@linkinvests/shared';
@@ -240,7 +241,11 @@ export class DeceasesCsvProcessor extends WorkerHost {
    */
   private generateDeathId(row: InseeCsvRow): string {
     // Combine lieu de décès, date de décès, and acte de décès for unique ID
-    return `${row.lieudeces}_${row.datedeces}_${row.actedeces}`;
+    return createSuccessionExternalId({
+      cityCode: row.lieudeces,
+      dateStr: row.datedeces,
+      docId: row.actedeces,
+    });
   }
 
   /**

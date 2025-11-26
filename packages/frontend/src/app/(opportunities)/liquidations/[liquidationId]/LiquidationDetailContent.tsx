@@ -67,7 +67,7 @@ export function LiquidationDetailContent({ liquidation }: LiquidationDetailConte
 
       {/* Timestamps */}
       <Card>
-        <CardContent className="pt-6">
+        <CardContent className="pt-6 bg-[var(--secundary)]">
           <div className="text-xs text-neutral-500 space-y-1">
             <div>Créé le : {format(new Date(liquidation.createdAt), "dd/MM/yyyy à HH:mm")}</div>
             {liquidation.updatedAt && (

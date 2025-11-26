@@ -6,5 +6,5 @@ interface MailtoParams {
 
 export function openMailto({ to, subject, body }: MailtoParams): void {
   const mailto = `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  window.open(mailto);
+  window.open(mailto, '_blank');
 }

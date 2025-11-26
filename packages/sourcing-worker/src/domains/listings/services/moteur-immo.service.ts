@@ -344,7 +344,7 @@ export class MoteurImmoService {
 
     if (filters.afterDate) {
       if (filters.usePublicationDate) {
-        requestBody.publicationDateAfter = new Date(
+        requestBody.creationDateAfter = new Date(
           filters.afterDate,
         ).toISOString();
       } else {
@@ -355,7 +355,7 @@ export class MoteurImmoService {
     }
     if (filters.beforeDate) {
       if (filters.usePublicationDate) {
-        requestBody.publicationDateBefore = new Date(
+        requestBody.creationDateBefore = new Date(
           filters.beforeDate,
         ).toISOString();
       } else {

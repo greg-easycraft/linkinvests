@@ -6,7 +6,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { OpportunitiesMap } from "./OpportunitiesMap";
 import { OpportunityDetailsModal } from "../OpportunityDetailsModal";
-import { Auction, BaseOpportunity, EnergyDiagnostic, Liquidation, Listing, type Opportunity, OpportunityType, Succession } from "@linkinvests/shared";
+import { Auction, BaseOpportunity, EnergyDiagnostic, getDocIdFromSuccessionExternalId, Liquidation, Listing, type Opportunity, OpportunityType, Succession } from "@linkinvests/shared";
 import { OpportunitiesDataQueryResult } from "~/types/query-result";
 import { OpportunityHeader } from "./Header";
 import { PageHeader } from "../PageHeader";
@@ -15,6 +15,7 @@ import type { ExportFormat } from "~/server/services/export.service";
 import { useDelayedSkeleton } from "~/hooks/useDelayedSkeleton";
 import { OpportunitiesList } from "./OpportunitiesList";
 import { openMailto } from "~/utils/mailto";
+import { toast } from "sonner";
 
 type OpportunitiesPageProps<T extends BaseOpportunity> = {
   // Unified data structure
@@ -100,25 +101,17 @@ export default function OpportunitiesPage({
   }, []);
 
   const handleEmailMairie = useCallback(() => {
-    // Group by unique mairie email
-    const byEmail = new Map<string, Succession[]>();
-
-    selectedOpportunities.forEach(succession => {
+    selectedOpportunities.forEach((succession) => {
       const email = succession.mairieContact?.email;
-      if (email) {
-        const existing = byEmail.get(email) ?? [];
-        existing.push(succession);
-        byEmail.set(email, existing);
-      }
-    });
-
-    // Open mailto for each unique mairie
-    byEmail.forEach((successions, email) => {
-      const externalIds = successions.map(s => s.externalId).join(', ');
+      if (!email) {
+        toast.warning(`Aucun email de mairie trouvé pour la succession ${succession.firstName} ${succession.lastName}`);
+        return;
+      };
+      const docId = getDocIdFromSuccessionExternalId(succession.externalId);
       openMailto({
         to: email,
         subject: "Demande d'acte de décès",
-        body: `Madame, Monsieur,\n\nJe souhaiterais obtenir un acte de décès pour la/les référence(s) suivante(s) :\n${externalIds}\n\nCordialement,`,
+        body: `Madame, Monsieur,\n\nJe souhaiterais obtenir l'acte de décès pour de ${succession.firstName} ${succession.lastName} (acte n° ${docId}).\n\nCordialement,`,
       });
     });
   }, [selectedOpportunities]);
