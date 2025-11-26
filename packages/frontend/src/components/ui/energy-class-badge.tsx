@@ -9,9 +9,9 @@ export const EnergyClassBadge = ({ energyClass }: { energyClass: EnergyClassType
         inline-flex items-center rounded-full 
         px-2.5 py-0.5 text-xs font-semibold 
         bg-${energyClassInfo?.color ?? '[var(--primary)]'}
-        ${!energyClass ? 'text-[var(--secundary)]' : ''}
+        ${!energyClassInfo ? 'text-[var(--secundary)]' : ''}
       `}>
-            {energyClass ?? 'NC'}
+            {energyClass === UNKNOWN_ENERGY_CLASS ? 'NC' : energyClass}
         </div>
     )
 }

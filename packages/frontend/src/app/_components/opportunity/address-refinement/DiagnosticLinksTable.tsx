@@ -5,6 +5,8 @@ import { Badge } from "~/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~/components/ui/table";
 import { Zap, MapPin, Loader2 } from "lucide-react";
 import type { DiagnosticLink } from "~/app/_actions/address-refinement/queries";
+import { EnergyClassBadge } from "~/components/ui/energy-class-badge";
+import { EnergyClass } from "@linkinvests/shared";
 
 interface DiagnosticLinksTableProps {
   links: DiagnosticLink[];
@@ -12,23 +14,10 @@ interface DiagnosticLinksTableProps {
 }
 
 function getMatchScoreColor(score: number): string {
-  if (score >= 80) return "bg-green-100 text-green-800 border-green-200";
-  if (score >= 60) return "bg-yellow-100 text-yellow-800 border-yellow-200";
-  if (score >= 40) return "bg-orange-100 text-orange-800 border-orange-200";
+  if (score >= 80) return "bg-green-600 text-white";
+  if (score >= 60) return "bg-yellow-600 text-white";
+  if (score >= 40) return "bg-orange-600 text-white";
   return "bg-red-100 text-red-800 border-red-200";
-}
-
-function getDpeColor(energyClass: string): string {
-  const energyClassColors: Record<string, string> = {
-    'A': 'bg-green-600 text-white',
-    'B': 'bg-green-500 text-white',
-    'C': 'bg-yellow-500 text-white',
-    'D': 'bg-yellow-600 text-white',
-    'E': 'bg-orange-500 text-white',
-    'F': 'bg-red-500 text-white',
-    'G': 'bg-red-600 text-white',
-  };
-  return energyClassColors[energyClass] || 'bg-gray-500 text-white';
 }
 
 export function DiagnosticLinksTable({ links, isLoading = false }: DiagnosticLinksTableProps) {
@@ -64,19 +53,19 @@ export function DiagnosticLinksTable({ links, isLoading = false }: DiagnosticLin
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <Table>
+        <Table className="border-[var(--primary)]">
           <TableHeader>
-            <TableRow>
-              <TableHead>Adresse</TableHead>
-              <TableHead className="w-24">Code Postal</TableHead>
-              <TableHead className="w-20 text-center">DPE</TableHead>
-              <TableHead className="w-28 text-right">Surface</TableHead>
-              <TableHead className="w-28 text-right">Score</TableHead>
+            <TableRow className="hover:!bg-transparent border-[var(--primary)]">
+              <TableHead className="!text-[var(--primary)]">Adresse</TableHead>
+              <TableHead className="w-24 !text-[var(--primary)]">Code Postal</TableHead>
+              <TableHead className="w-20 text-center !text-[var(--primary)]">DPE</TableHead>
+              <TableHead className="w-28 text-right !text-[var(--primary)]">Surface</TableHead>
+              <TableHead className="w-28 text-right !text-[var(--primary)]">Score</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {links.map((link) => (
-              <TableRow key={link.id}>
+              <TableRow key={link.id} className="hover:!bg-transparent border-[var(--primary)]">
                 <TableCell>
                   <div className="flex items-start gap-2">
                     <MapPin className="h-4 w-4 text-neutral-400 mt-0.5 flex-shrink-0" />
@@ -85,9 +74,7 @@ export function DiagnosticLinksTable({ links, isLoading = false }: DiagnosticLin
                 </TableCell>
                 <TableCell className="text-sm">{link.energyDiagnostic.zipCode}</TableCell>
                 <TableCell className="text-center">
-                  <Badge className={`${getDpeColor(link.energyDiagnostic.energyClass)} px-2 py-0.5 text-xs font-bold`}>
-                    {link.energyDiagnostic.energyClass}
-                  </Badge>
+                  <EnergyClassBadge energyClass={link.energyDiagnostic.energyClass as EnergyClass}/>
                 </TableCell>
                 <TableCell className="text-right text-sm">
                   {link.energyDiagnostic.squareFootage} m²
