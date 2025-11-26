@@ -2,8 +2,8 @@
 ## MARDI
 ## MERCREDI
 - [ ] email mairie (multiple)
-- [ ] access button home page
 - [ ] skeletons
+- [ ] address search refined scoring (city name etc)
 
 LATER
 - [ ] rename address fields into streetAddress & handle as such

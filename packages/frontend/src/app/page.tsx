@@ -1,6 +1,7 @@
 // import { SignInForm } from "~/components/auth/SignInForm";
 import Image from "next/image";
 import Link from "next/link";
+import { Button } from "~/components/ui/button";
 
 export default function Home() {
   return (
@@ -20,9 +21,13 @@ export default function Home() {
           </p>
         </div>
         {/* <SignInForm /> */}
-        <Link href="/search/auctions">
-            Accéder à la plateforme
-        </Link>
+        <div className="flex justify-center">
+          <Button variant="outline" asChild>
+            <Link href="/search/listings">
+              Accéder à la plateforme
+            </Link>
+          </Button>
+        </div>
       </div>
     </div >
   );
