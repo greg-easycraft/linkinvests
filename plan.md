@@ -2,7 +2,6 @@
 ## MARDI
 ## MERCREDI
 - [ ] email mairie (multiple)
-- [ ] skeletons
 - [ ] address search refined scoring (city name etc)
 
 LATER

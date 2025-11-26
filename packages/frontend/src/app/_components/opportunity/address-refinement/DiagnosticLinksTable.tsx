@@ -58,6 +58,8 @@ export function DiagnosticLinksTable({ links, isLoading = false }: DiagnosticLin
             <TableRow className="hover:!bg-transparent border-[var(--primary)]">
               <TableHead className="!text-[var(--primary)]">Adresse</TableHead>
               <TableHead className="w-24 !text-[var(--primary)]">Code Postal</TableHead>
+              <TableHead className="w-36 !text-[var(--primary)]">N° DPE</TableHead>
+              <TableHead className="w-28 !text-[var(--primary)]">Date</TableHead>
               <TableHead className="w-20 text-center !text-[var(--primary)]">DPE</TableHead>
               <TableHead className="w-28 text-right !text-[var(--primary)]">Surface</TableHead>
               <TableHead className="w-28 text-right !text-[var(--primary)]">Score</TableHead>
@@ -73,6 +75,8 @@ export function DiagnosticLinksTable({ links, isLoading = false }: DiagnosticLin
                   </div>
                 </TableCell>
                 <TableCell className="text-sm">{link.energyDiagnostic.zipCode}</TableCell>
+                <TableCell className="text-sm font-mono">{link.energyDiagnostic.externalId}</TableCell>
+                <TableCell className="text-sm">{new Date(link.energyDiagnostic.opportunityDate).toLocaleDateString('fr-FR')}</TableCell>
                 <TableCell className="text-center">
                   <EnergyClassBadge energyClass={link.energyDiagnostic.energyClass as EnergyClass}/>
                 </TableCell>

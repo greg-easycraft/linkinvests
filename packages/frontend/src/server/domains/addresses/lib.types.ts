@@ -26,6 +26,8 @@ export type DiagnosticLink = {
     zipCode: string;
     energyClass: string;
     squareFootage: number;
+    opportunityDate: string;
+    externalId: string;
   };
 }
 

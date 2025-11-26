@@ -45,6 +45,8 @@ export class DrizzleAddressLinksRepository implements IAddressLinksRepository {
           zipCode: energyDiagnostics.zipCode,
           energyClass: energyDiagnostics.energyClass,
           squareFootage: energyDiagnostics.squareFootage,
+          opportunityDate: energyDiagnostics.opportunityDate,
+          externalId: energyDiagnostics.externalId,
         },
       })
       .from(auctionEnergyDiagnosticLinks)
@@ -67,6 +69,8 @@ export class DrizzleAddressLinksRepository implements IAddressLinksRepository {
           zipCode: energyDiagnostics.zipCode,
           energyClass: energyDiagnostics.energyClass,
           squareFootage: energyDiagnostics.squareFootage,
+          opportunityDate: energyDiagnostics.opportunityDate,
+          externalId: energyDiagnostics.externalId,
         },
       })
       .from(listingEnergyDiagnosticLinks)
