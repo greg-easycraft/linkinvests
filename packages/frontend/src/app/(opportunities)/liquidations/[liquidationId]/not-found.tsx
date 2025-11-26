@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
 
 export default function LiquidationNotFound() {
   return (
-    <div className="max-w-md mx-auto mt-20">
+    <div className="max-w-md mx-auto mt-20 min-h-screen bg-[var(--secundary)]">
       <Card>
         <CardHeader>
           <CardTitle>Liquidation non trouvée</CardTitle>

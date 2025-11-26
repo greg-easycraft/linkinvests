@@ -87,12 +87,11 @@ export function ImageCarousel({ opportunity, className = '' }: ImageCarouselProp
 
           {/* Image slides */}
           {images.map((imageUrl, index) => (
-            <div key={index} className="flex-[0_0_100%] min-w-0 relative" style={{ height: '300px' }}>
+            <div key={index} className="flex-[0_0_100%] min-w-0 flex items-center justify-center">
               <img
                 src={imageUrl}
                 alt={`Property image ${index + 1}`}
-                className="object-cover rounded-lg border border-black"
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                className="max-w-full max-h-[300px] w-auto h-auto rounded-lg border border-black"
               />
             </div>
           ))}

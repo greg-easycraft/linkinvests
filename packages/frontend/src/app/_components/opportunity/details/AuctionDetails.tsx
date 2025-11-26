@@ -23,6 +23,7 @@ import { EnergyClassBadge } from "~/components/ui/energy-class-badge";
 
 interface AuctionDetailsProps {
   opportunity: Auction;
+  detailPageUrl?: string;
 }
 
 const formatPrice = (price: number): string => {
@@ -37,7 +38,7 @@ const formatSquareFootage = (squareFootage: number): string => {
   return `${squareFootage} m²`;
 };
 
-export function AuctionDetails({ opportunity }: AuctionDetailsProps) {
+export function AuctionDetails({ opportunity, detailPageUrl }: AuctionDetailsProps) {
   const hasPriceInfo = opportunity.currentPrice || opportunity.lowerEstimate ||
     opportunity.upperEstimate || opportunity.reservePrice;
   const hasPropertyInfo = opportunity.propertyType || opportunity.squareFootage ||
@@ -63,17 +64,30 @@ export function AuctionDetails({ opportunity }: AuctionDetailsProps) {
           <Gavel className="h-5 w-5" />
           Détails de l&apos;enchère
         </CardTitle>
-        {opportunity.url && (
-          <div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => window.open(opportunity.url!, '_blank', 'noopener,noreferrer')}
-              title="Voir l'annonce originale"
-            >
-              <ExternalLink className="h-4 w-4 mr-2" />
-              Voir l&apos;annonce
-            </Button>
+        {(detailPageUrl || opportunity.url) && (
+          <div className="flex gap-2">
+            {detailPageUrl && (
+              <Button
+                variant="default"
+                size="sm"
+                onClick={() => window.open(detailPageUrl, '_blank')}
+                title="Voir le détail"
+              >
+                <ExternalLink className="h-4 w-4 mr-2" />
+                Voir le détail
+              </Button>
+            )}
+            {opportunity.url && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => window.open(opportunity.url!, '_blank', 'noopener,noreferrer')}
+                title="Voir le site"
+              >
+                <ExternalLink className="h-4 w-4 mr-2" />
+                Voir le site
+              </Button>
+            )}
           </div>
         )}
       </CardHeader>

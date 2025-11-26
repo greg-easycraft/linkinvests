@@ -10,13 +10,16 @@ import {
   Hash,
   Calendar,
   FileText,
+  ExternalLink,
 } from "lucide-react";
 import { Badge } from "~/components/ui/badge";
+import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import type { Liquidation } from "@linkinvests/shared";
 
 interface LiquidationDetailsProps {
   opportunity: Liquidation;
+  detailPageUrl?: string;
 }
 
 const formatSiret = (siret: string): string => {
@@ -27,7 +30,7 @@ const formatSiret = (siret: string): string => {
   return siret;
 };
 
-export function LiquidationDetails({ opportunity }: LiquidationDetailsProps) {
+export function LiquidationDetails({ opportunity, detailPageUrl }: LiquidationDetailsProps) {
   const hasCompanyInfo = opportunity.companyContact && (
     opportunity.companyContact.name ||
     opportunity.companyContact.phone ||
@@ -43,10 +46,23 @@ export function LiquidationDetails({ opportunity }: LiquidationDetailsProps) {
   return (
     <Card className="mt-6 text-[var(--primary)] border-[var(--primary)] bg-[var(--secundary)]">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
+        <CardTitle className="flex items-center gap-2 mb-2">
           <Building2 className="h-5 w-5" />
           Détails de la liquidation
         </CardTitle>
+        {detailPageUrl && (
+          <div className="flex gap-2">
+            <Button
+              variant="default"
+              size="sm"
+              onClick={() => window.open(detailPageUrl, '_blank')}
+              title="Voir le détail"
+            >
+              <ExternalLink className="h-4 w-4 mr-2" />
+              Voir le détail
+            </Button>
+          </div>
+        )}
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Company Information */}

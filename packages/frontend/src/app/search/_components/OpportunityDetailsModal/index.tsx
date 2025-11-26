@@ -2,7 +2,7 @@
 
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { X, MapPin, Calendar, ExternalLink } from "lucide-react";
+import { X, MapPin, Calendar } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import * as Dialog from "@radix-ui/react-dialog";
 import {
@@ -70,26 +70,15 @@ export function OpportunityDetailsModal({
         <Dialog.Content className="fixed left-[50%] top-[50%] z-50 grid w-full max-w-2xl max-h-[90vh] translate-x-[-50%] translate-y-[-50%] gap-4 border bg-[var(--secundary)] p-6 shadow-lg duration-200 sm:rounded-lg overflow-y-auto">
           <div className="flex flex-row items-center justify-between space-y-0 pb-4">
             <Dialog.Title className="text-xl pr-8 text-[var(--primary)]">{opportunity.label}</Dialog.Title>
-            <div className="flex items-center gap-2">
+            <Dialog.Close asChild>
               <Button
                 variant="ghost"
                 size="icon"
                 className="h-6 w-6 shrink-0 text-[var(--primary)]"
-                onClick={() => window.open(getDetailPageUrl(opportunity, type), '_blank')}
-                title="Ouvrir dans un nouvel onglet"
               >
-                <ExternalLink className="h-4 w-4" />
+                <X className="h-4 w-4" />
               </Button>
-              <Dialog.Close asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-6 w-6 shrink-0 text-[var(--primary)]"
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </Dialog.Close>
-            </div>
+            </Dialog.Close>
           </div>
 
         <div className="space-y-6">
@@ -137,19 +126,19 @@ export function OpportunityDetailsModal({
 
           {/* Type-specific Details */}
           {type === OpportunityType.AUCTION && (
-            <AuctionDetails opportunity={opportunity as Auction} />
+            <AuctionDetails opportunity={opportunity as Auction} detailPageUrl={getDetailPageUrl(opportunity, type)} />
           )}
           {type === OpportunityType.REAL_ESTATE_LISTING && (
-            <ListingDetails opportunity={opportunity as Listing} />
+            <ListingDetails opportunity={opportunity as Listing} detailPageUrl={getDetailPageUrl(opportunity, type)} />
           )}
           {type === OpportunityType.SUCCESSION && (
-            <SuccessionDetails opportunity={opportunity as Succession} />
+            <SuccessionDetails opportunity={opportunity as Succession} detailPageUrl={getDetailPageUrl(opportunity, type)} />
           )}
           {type === OpportunityType.LIQUIDATION && (
-            <LiquidationDetails opportunity={opportunity as Liquidation} />
+            <LiquidationDetails opportunity={opportunity as Liquidation} detailPageUrl={getDetailPageUrl(opportunity, type)} />
           )}
           {type === OpportunityType.ENERGY_SIEVE && (
-            <EnergySieveDetails opportunity={opportunity as EnergyDiagnostic & { type: 'energy_sieve' }} />
+            <EnergySieveDetails opportunity={opportunity as EnergyDiagnostic & { type: 'energy_sieve' }} detailPageUrl={getDetailPageUrl(opportunity, type)} />
           )}
 
           {/* Timestamps */}

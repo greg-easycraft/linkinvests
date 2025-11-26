@@ -1,10 +1,12 @@
 'use client';
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { MapPin, Calendar } from "lucide-react";
+import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import { FullPageSpinner } from "~/components/ui/full-page-spinner";
 import type { Listing, Opportunity, EnergyClass } from "@linkinvests/shared";
 import {
   ImageCarousel,
@@ -39,6 +41,7 @@ export function ListingDetailContent({ listing }: ListingDetailContentProps) {
   const [diagnosticLinks, setDiagnosticLinks] = useState<DiagnosticLink[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [isLoadingLinks, setIsLoadingLinks] = useState(true);
+  const resultsRef = useRef<HTMLDivElement>(null);
 
   // Load existing links on mount
   useEffect(() => {
@@ -75,8 +78,21 @@ export function ListingDetailContent({ listing }: ListingDetailContentProps) {
         address: listing.address ?? undefined,
       });
       setDiagnosticLinks(links);
+
+      // Show toast with results count
+      if (links.length === 0) {
+        toast.warning("Aucun diagnostic correspondant trouvé");
+      } else {
+        toast.success(`${links.length} diagnostic${links.length > 1 ? 's' : ''} correspondant${links.length > 1 ? 's' : ''} trouvé${links.length > 1 ? 's' : ''}`);
+      }
+
+      // Scroll to results after a short delay to ensure DOM is updated
+      setTimeout(() => {
+        resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
     } catch (error) {
       console.error('Failed to search and link diagnostics:', error);
+      toast.error("Erreur lors de la recherche de diagnostics");
     } finally {
       setIsSearching(false);
     }
@@ -85,7 +101,9 @@ export function ListingDetailContent({ listing }: ListingDetailContentProps) {
   const showRefinementUI = addressNeedsRefinement(listing.address ?? null);
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <>
+      {isSearching && <FullPageSpinner message="Recherche de diagnostics en cours..." />}
+      <div className="max-w-4xl mx-auto space-y-6">
       {/* Title Card */}
       <Card className="bg-[var(--secundary)]">
         <CardHeader>
@@ -154,7 +172,9 @@ export function ListingDetailContent({ listing }: ListingDetailContentProps) {
 
       {/* Diagnostic Links Table */}
       {showRefinementUI && (diagnosticLinks.length > 0 || isSearching) && (
-        <DiagnosticLinksTable links={diagnosticLinks} isLoading={isSearching} />
+        <div ref={resultsRef}>
+          <DiagnosticLinksTable links={diagnosticLinks} isLoading={isSearching} />
+        </div>
       )}
 
       {/* Timestamps */}
@@ -169,5 +189,6 @@ export function ListingDetailContent({ listing }: ListingDetailContentProps) {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }
