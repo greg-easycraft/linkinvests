@@ -2,7 +2,7 @@
 
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { X, MapPin, Calendar } from "lucide-react";
+import { X, MapPin, Calendar, ExternalLink } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import * as Dialog from "@radix-ui/react-dialog";
 import {
@@ -14,13 +14,15 @@ import {
   type Listing,
   OpportunityType,
 } from "@linkinvests/shared";
-import { StreetView } from "./StreetView";
-import { ImageCarousel } from "./ImageCarousel";
-import { AuctionDetails } from "./AuctionDetails";
-import { SuccessionDetails } from "./SuccessionDetails";
-import { LiquidationDetails } from "./LiquidationDetails";
-import { EnergySieveDetails } from "./EnergySieveDetails";
-import { ListingDetails } from "./ListingDetails";
+import {
+  StreetView,
+  ImageCarousel,
+  AuctionDetails,
+  SuccessionDetails,
+  LiquidationDetails,
+  EnergySieveDetails,
+  ListingDetails,
+} from "~/app/_components/opportunity";
 
 interface OpportunityDetailsModalProps {
   opportunity: Opportunity | null;
@@ -40,6 +42,19 @@ const hasAvailablePictures = (opportunity: Opportunity): boolean => {
   return !!(opportunity.mainPicture || (opportunity.pictures && opportunity.pictures.length > 0));
 };
 
+// Helper to get the detail page URL for an opportunity
+const getDetailPageUrl = (opportunity: Opportunity, type: OpportunityType): string => {
+  const typeToPath: Record<OpportunityType, string> = {
+    [OpportunityType.AUCTION]: 'auctions',
+    [OpportunityType.REAL_ESTATE_LISTING]: 'listings',
+    [OpportunityType.SUCCESSION]: 'successions',
+    [OpportunityType.LIQUIDATION]: 'liquidations',
+    [OpportunityType.ENERGY_SIEVE]: 'energy-sieves',
+    [OpportunityType.DIVORCE]: 'divorces',
+  };
+  return `/${typeToPath[type]}/${opportunity.id}`;
+};
+
 export function OpportunityDetailsModal({
   opportunity,
   isOpen,
@@ -55,15 +70,26 @@ export function OpportunityDetailsModal({
         <Dialog.Content className="fixed left-[50%] top-[50%] z-50 grid w-full max-w-2xl max-h-[90vh] translate-x-[-50%] translate-y-[-50%] gap-4 border bg-[var(--secundary)] p-6 shadow-lg duration-200 sm:rounded-lg overflow-y-auto">
           <div className="flex flex-row items-center justify-between space-y-0 pb-4">
             <Dialog.Title className="text-xl pr-8 text-[var(--primary)]">{opportunity.label}</Dialog.Title>
-            <Dialog.Close asChild>
+            <div className="flex items-center gap-2">
               <Button
                 variant="ghost"
                 size="icon"
                 className="h-6 w-6 shrink-0 text-[var(--primary)]"
+                onClick={() => window.open(getDetailPageUrl(opportunity, type), '_blank')}
+                title="Ouvrir dans un nouvel onglet"
               >
-                <X className="h-4 w-4" />
+                <ExternalLink className="h-4 w-4" />
               </Button>
-            </Dialog.Close>
+              <Dialog.Close asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-6 w-6 shrink-0 text-[var(--primary)]"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </Dialog.Close>
+            </div>
           </div>
 
         <div className="space-y-6">
