@@ -17,9 +17,8 @@ export class AddressSearchService {
     const { energyClass, squareFootage, zipCode } = input;
 
     // Default to reasonable square footage range if not specified
-    const baseSquareFootage = squareFootage || 50;
-    const minSquareFootage = baseSquareFootage * (1 - (this.MAX_SQUARE_FOOTAGE_DIFFERENCE_PERCENTAGE / 100));
-    const maxSquareFootage = baseSquareFootage * (1 + (this.MAX_SQUARE_FOOTAGE_DIFFERENCE_PERCENTAGE / 100));
+    const minSquareFootage = squareFootage * (1 - (this.MAX_SQUARE_FOOTAGE_DIFFERENCE_PERCENTAGE / 100));
+    const maxSquareFootage = squareFootage * (1 + (this.MAX_SQUARE_FOOTAGE_DIFFERENCE_PERCENTAGE / 100));
     const results = await this.energyDiagnosticsRepository.findAllForAddressSearch({
       zipCode,
       energyClass,
@@ -85,11 +84,6 @@ export class AddressSearchService {
     // Simple scoring algorithm - can be improved later
     let score = 100; // Base score
 
-    // Reduce score if energy class doesn't match exactly
-    if (input.energyClass && result.energyClass !== input.energyClass) {
-      score -= 10;
-    }
-
     // Reduce score based on square footage difference
     if (input.squareFootage && result.squareFootage) {
       const difference = Math.abs(result.squareFootage - input.squareFootage);
@@ -106,7 +100,7 @@ export class AddressSearchService {
     // Street matching: up to 35 points penalty (high weight - most important)
     if (inputStreet && resultStreet) {
       const streetScore = calculateStreetMatchScore(inputStreet, resultStreet);
-      score -= (100 - streetScore) * 0.3; // 0-35 point penalty
+      score -= (100 - streetScore) * 0.35; // 0-35 point penalty
     }
 
     // City matching: up to 30 points penalty (medium weight)
