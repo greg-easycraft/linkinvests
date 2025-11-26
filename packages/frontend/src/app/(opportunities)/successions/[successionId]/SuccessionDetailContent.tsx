@@ -2,9 +2,7 @@
 
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { MapPin, Calendar, ArrowLeft } from "lucide-react";
-import Link from "next/link";
-import { Button } from "~/components/ui/button";
+import { MapPin, Calendar } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import type { Succession } from "@linkinvests/shared";
 import { StreetView, SuccessionDetails } from "~/app/_components/opportunity";
@@ -16,16 +14,8 @@ interface SuccessionDetailContentProps {
 export function SuccessionDetailContent({ succession }: SuccessionDetailContentProps) {
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      {/* Back button */}
-      <Link href="/search/successions">
-        <Button variant="ghost" size="sm" className="mb-4">
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Retour aux successions
-        </Button>
-      </Link>
-
       {/* Title Card */}
-      <Card>
+      <Card className="bg-[var(--secundary)]">
         <CardHeader>
           <CardTitle className="text-2xl text-[var(--primary)]">
             {succession.label}

@@ -83,7 +83,7 @@ export function ListingDetails({ opportunity }: ListingDetailsProps) {
   }
 
   return (
-    <Card className="mt-6 text-[var(--primary)]">
+    <Card className="mt-6 text-[var(--primary)] bg-[var(--secundary)]">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 mb-2">
           <Home className="h-5 w-5" />

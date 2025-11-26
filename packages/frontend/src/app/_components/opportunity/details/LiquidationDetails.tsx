@@ -41,7 +41,7 @@ export function LiquidationDetails({ opportunity }: LiquidationDetailsProps) {
   }
 
   return (
-    <Card className="mt-6 text-[var(--primary)] border-[var(--primary)]">
+    <Card className="mt-6 text-[var(--primary)] border-[var(--primary)] bg-[var(--secundary)]">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Building2 className="h-5 w-5" />

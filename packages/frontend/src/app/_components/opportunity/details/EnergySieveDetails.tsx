@@ -21,7 +21,7 @@ export function EnergySieveDetails({ opportunity }: EnergySieveDetailsProps) {
   const energyClassInfo = ENERGY_CLASS_INFO[opportunity.energyClass as EnergyClass];
 
   return (
-    <Card className="mt-6 text-[var(--primary)] border-[var(--primary)]">
+    <Card className="mt-6 text-[var(--primary)] border-[var(--primary)] bg-[var(--secundary)]">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Zap className="h-5 w-5" />

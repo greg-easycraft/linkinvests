@@ -52,7 +52,7 @@ export default function OpportunitiesLayout({
     <GoogleMapsAPIProvider apiKey={env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}>
       <div className="flex h-screen flex-col overflow-hidden">
         <PageHeader />
-        <main className="flex-1 overflow-auto bg-[var(--secundary)] p-6">
+        <main className="flex-1 overflow-auto p-6">
           {children}
         </main>
       </div>

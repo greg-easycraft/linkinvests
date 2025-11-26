@@ -2,9 +2,7 @@
 
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { MapPin, Calendar, ArrowLeft } from "lucide-react";
-import Link from "next/link";
-import { Button } from "~/components/ui/button";
+import { MapPin, Calendar } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import type { Listing, Opportunity } from "@linkinvests/shared";
 import { ImageCarousel, StreetView, ListingDetails } from "~/app/_components/opportunity";
@@ -27,16 +25,8 @@ const hasAvailablePictures = (opportunity: Opportunity): boolean => {
 export function ListingDetailContent({ listing }: ListingDetailContentProps) {
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      {/* Back button */}
-      <Link href="/search/listings">
-        <Button variant="ghost" size="sm" className="mb-4">
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Retour aux annonces
-        </Button>
-      </Link>
-
       {/* Title Card */}
-      <Card>
+      <Card className="bg-[var(--secundary)]">
         <CardHeader>
           <CardTitle className="text-2xl text-[var(--primary)]">
             {listing.label}
