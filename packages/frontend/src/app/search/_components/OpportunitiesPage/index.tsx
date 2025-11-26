@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "~/components/ui/button";
@@ -10,9 +10,11 @@ import { Auction, BaseOpportunity, EnergyDiagnostic, Liquidation, Listing, type 
 import { OpportunitiesDataQueryResult } from "~/types/query-result";
 import { OpportunityHeader } from "./Header";
 import { PageHeader } from "../PageHeader";
+import { SelectionActionBar } from "./SelectionActionBar";
 import type { ExportFormat } from "~/server/services/export.service";
 import { useDelayedSkeleton } from "~/hooks/useDelayedSkeleton";
 import { OpportunitiesList } from "./OpportunitiesList";
+import { openMailto } from "~/utils/mailto";
 
 type OpportunitiesPageProps<T extends BaseOpportunity> = {
   // Unified data structure
@@ -63,7 +65,63 @@ export default function OpportunitiesPage({
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isFiltersSidebarOpen, setIsFiltersSidebarOpen] = useState(true);
+  const [selectedOpportunities, setSelectedOpportunities] = useState<Map<string, Succession>>(new Map());
   const searchParams = useSearchParams();
+
+  // Selection is only enabled for successions
+  const isSelectionEnabled = opportunityType === OpportunityType.SUCCESSION;
+
+  // Clear selection when page/filters change
+  useEffect(() => {
+    setSelectedOpportunities(new Map());
+  }, [searchParams]);
+
+  const selectedIds = useMemo(() => new Set(selectedOpportunities.keys()), [selectedOpportunities]);
+
+  const handleToggleSelection = useCallback((opportunity: Opportunity) => {
+    setSelectedOpportunities(prev => {
+      const next = new Map(prev);
+      if (next.has(opportunity.id)) {
+        next.delete(opportunity.id);
+      } else {
+        next.set(opportunity.id, opportunity as Succession);
+      }
+      return next;
+    });
+  }, []);
+
+  const handleSelectAll = useCallback(() => {
+    const opportunities = data?.opportunities ?? [];
+    setSelectedOpportunities(new Map(opportunities.map(o => [o.id, o as Succession])));
+  }, [data?.opportunities]);
+
+  const handleClearSelection = useCallback(() => {
+    setSelectedOpportunities(new Map());
+  }, []);
+
+  const handleEmailMairie = useCallback(() => {
+    // Group by unique mairie email
+    const byEmail = new Map<string, Succession[]>();
+
+    selectedOpportunities.forEach(succession => {
+      const email = succession.mairieContact?.email;
+      if (email) {
+        const existing = byEmail.get(email) ?? [];
+        existing.push(succession);
+        byEmail.set(email, existing);
+      }
+    });
+
+    // Open mailto for each unique mairie
+    byEmail.forEach((successions, email) => {
+      const externalIds = successions.map(s => s.externalId).join(', ');
+      openMailto({
+        to: email,
+        subject: "Demande d'acte de décès",
+        body: `Madame, Monsieur,\n\nJe souhaiterais obtenir un acte de décès pour la/les référence(s) suivante(s) :\n${externalIds}\n\nCordialement,`,
+      });
+    });
+  }, [selectedOpportunities]);
 
   const viewMode = useMemo(() => {
     const viewType = searchParams.get("view");
@@ -133,6 +191,10 @@ export default function OpportunitiesPage({
               isCountLoading={isCountLoading}
               itemsOnPage={(data?.opportunities ?? []).length}
               onExport={onExport}
+              isSelectionEnabled={isSelectionEnabled}
+              selectedCount={selectedOpportunities.size}
+              onSelectAll={handleSelectAll}
+              onClearSelection={handleClearSelection}
             />
 
             {/* Content Area */}
@@ -145,6 +207,9 @@ export default function OpportunitiesPage({
                   opportunities={data?.opportunities ?? []}
                   selectedId={selectedOpportunity?.id}
                   onSelect={handleSelectOpportunity}
+                  isSelectionEnabled={isSelectionEnabled}
+                  selectedIds={selectedIds}
+                  onToggleSelection={handleToggleSelection}
                 />
               ) : (
                 <OpportunitiesMap
@@ -167,6 +232,15 @@ export default function OpportunitiesPage({
         isOpen={isModalOpen}
         onClose={handleCloseModal}
       />
+
+      {/* Selection Action Bar (only for successions) */}
+      {isSelectionEnabled && (
+        <SelectionActionBar
+          selectedCount={selectedOpportunities.size}
+          onEmailMairie={handleEmailMairie}
+          onClearSelection={handleClearSelection}
+        />
+      )}
     </div>
   );
 }

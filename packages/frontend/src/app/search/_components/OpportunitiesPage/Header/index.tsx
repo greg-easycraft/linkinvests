@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "~/components/ui/button";
+import { Checkbox } from "~/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { ExportButton } from "~/components/ExportButton";
@@ -32,6 +33,11 @@ interface OpportunityHeaderProps {
   isCountLoading?: boolean;
   itemsOnPage: number;
   onExport: (format: ExportFormat) => Promise<{ success: boolean; error?: string; blob?: Blob }>;
+  // Selection props (optional, only used for successions)
+  isSelectionEnabled?: boolean;
+  selectedCount?: number;
+  onSelectAll?: () => void;
+  onClearSelection?: () => void;
 }
 
 const pageSizeOptions = [25, 50, 100, 200];
@@ -41,7 +47,11 @@ export function OpportunityHeader({
   total,
   isCountLoading = false,
   itemsOnPage,
-  onExport
+  onExport,
+  isSelectionEnabled,
+  selectedCount = 0,
+  onSelectAll,
+  onClearSelection,
 }: OpportunityHeaderProps): React.ReactElement {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -50,6 +60,19 @@ export function OpportunityHeader({
   const totalPages = Math.ceil((total ?? 0) / pageSize);
   const startItem = (currentPage - 1) * pageSize + 1;
   const endItem = startItem + itemsOnPage - 1;
+
+  // Determine checkbox state: unchecked, indeterminate, or checked
+  const allSelected = selectedCount > 0 && selectedCount === itemsOnPage;
+  const someSelected = selectedCount > 0 && selectedCount < itemsOnPage;
+  const checkboxState = allSelected ? true : someSelected ? "indeterminate" : false;
+
+  const handleSelectAllChange = useCallback(() => {
+    if (allSelected) {
+      onClearSelection?.();
+    } else {
+      onSelectAll?.();
+    }
+  }, [allSelected, onSelectAll, onClearSelection]);
 
   const handlePageSizeChange = useCallback((pageSize: number): void => {
     const newSearchParams = new URLSearchParams(searchParams);
@@ -67,8 +90,18 @@ export function OpportunityHeader({
   return (
     <div className="flex-shrink-0">
       <div className="flex items-center justify-between mb-4">
-        {/* Left side: Results count and page size */}
+        {/* Left side: Selection checkbox, Results count and page size */}
         <div className="flex items-center gap-6">
+          {isSelectionEnabled && (
+            <div className="flex items-center gap-2">
+              <Checkbox
+                checked={checkboxState}
+                onCheckedChange={handleSelectAllChange}
+                aria-label="Tout sélectionner"
+              />
+              <span className="text-sm text-[var(--secundary)]">Tout</span>
+            </div>
+          )}
           <div className="text-sm text-[var(--secundary)]">
             Affichage de <span className="font-bold">{startItem}-{endItem}</span> sur{' '}
             {isCountLoading ? (

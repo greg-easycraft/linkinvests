@@ -3,6 +3,7 @@ import { fr } from "date-fns/locale";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
+import { Checkbox } from "~/components/ui/checkbox";
 import { MapPin, Calendar, ExternalLink, Building2, Zap, Euro } from "lucide-react";
 import { StaticStreetView } from "./StaticStreetView";
 import { TYPE_LABELS, TYPE_COLORS } from "~/constants/opportunity-types";
@@ -53,9 +54,12 @@ interface OpportunityCardProps {
   selectedId?: string;
   type: OpportunityType;
   externalUrl?: string;
+  isSelectionEnabled?: boolean;
+  isSelected?: boolean;
+  onToggleSelection?: (opportunity: Opportunity) => void;
 }
 
-export function OpportunityCard({ opportunity, onSelect, selectedId, type, externalUrl }: OpportunityCardProps): React.ReactElement {
+export function OpportunityCard({ opportunity, onSelect, selectedId, type, externalUrl, isSelectionEnabled, isSelected, onToggleSelection }: OpportunityCardProps): React.ReactElement {
     return (
         <Card
           key={opportunity.id}
@@ -66,6 +70,16 @@ export function OpportunityCard({ opportunity, onSelect, selectedId, type, exter
             }`}
         >
           <div className="flex gap-4 p-4">
+            {/* Checkbox for selection */}
+            {isSelectionEnabled && (
+              <div className="flex-shrink-0 flex items-center">
+                <Checkbox
+                  checked={isSelected}
+                  onCheckedChange={() => onToggleSelection?.(opportunity)}
+                  onClick={(e) => e.stopPropagation()}
+                />
+              </div>
+            )}
             {/* Thumbnail - Main Picture or Street View fallback */}
             <div className="flex-shrink-0">
               {hasPictureFields(opportunity) && opportunity.mainPicture ? (

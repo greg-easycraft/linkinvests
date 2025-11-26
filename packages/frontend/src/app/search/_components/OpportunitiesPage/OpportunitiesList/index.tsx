@@ -11,6 +11,9 @@ interface OpportunitiesListProps {
   onSelect: (opportunity: Opportunity) => void;
   type: OpportunityType;
   isLoading: boolean;
+  isSelectionEnabled?: boolean;
+  selectedIds?: Set<string>;
+  onToggleSelection?: (opportunity: Opportunity) => void;
 }
 
 export function OpportunitiesList({
@@ -19,7 +22,9 @@ export function OpportunitiesList({
   onSelect,
   type,
   isLoading,
-
+  isSelectionEnabled,
+  selectedIds,
+  onToggleSelection,
 }: OpportunitiesListProps): React.ReactElement {
   if(isLoading) {
     return <OpportunitiesListSkeleton />;
@@ -38,6 +43,9 @@ export function OpportunitiesList({
            selectedId={selectedId}
            onSelect={onSelect}
            type={type}
+           isSelectionEnabled={isSelectionEnabled}
+           isSelected={selectedIds?.has(opportunity.id)}
+           onToggleSelection={onToggleSelection}
          />
        ))}
      </div>
