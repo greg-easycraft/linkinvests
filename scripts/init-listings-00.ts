@@ -1,6 +1,6 @@
 import { config } from 'dotenv';
 import { z } from 'zod';
-import { isBefore, parseISO, subWeeks } from 'date-fns';
+import { subMonths } from 'date-fns';
 
 // Load environment variables
 config();
@@ -16,12 +16,12 @@ type Env = z.infer<typeof envSchema>;
 
 
 const today = new Date();
-const twelveWeeksAgo = subWeeks(today, 12);
+const threeMonthsAgo = subMonths(today, 3);
 
 const ENERGY_CLASS = 'G';
-const NB_OF_WEEKS = 4;
-const END_DATE = twelveWeeksAgo;
-const START_DATE = subWeeks(END_DATE, NB_OF_WEEKS);
+const NB_OF_MONTHS = 3;
+const END_DATE = threeMonthsAgo;
+const START_DATE = subMonths(END_DATE, NB_OF_MONTHS);
 
 
 (async () => {
@@ -100,8 +100,8 @@ function buildCreateMoteurImmoJobBody(endpointUrl: string, headers: Record<strin
                     departmentCode: departmentId.toString().padStart(2, '0'),
                     afterDate,
                     beforeDate,
-                    maxEnergyGrade: ENERGY_CLASS,
-                    minEnergyGrade: ENERGY_CLASS,
+                    energyGradeMax: ENERGY_CLASS,
+                    energyGradeMin: ENERGY_CLASS,
                     usePublicationDate: true,
                 })
             });

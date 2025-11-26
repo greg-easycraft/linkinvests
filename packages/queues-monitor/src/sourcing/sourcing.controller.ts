@@ -264,6 +264,7 @@ export class SourcingController {
     @Body('energyGradeMin') energyGradeMin?: string,
     @Body('propertyTypes') propertyTypes?: string[],
     @Body('departmentCode') departmentCode?: string,
+    @Body('usePublicationDate') usePublicationDate?: boolean,
   ) {
     try {
       const { id: jobId } = await this.listingsQueue.add(
@@ -276,6 +277,7 @@ export class SourcingController {
           energyGradeMin,
           propertyTypes,
           departmentCode,
+          usePublicationDate,
         },
         {
           removeOnComplete: 100,
@@ -293,6 +295,7 @@ export class SourcingController {
           energyGradeMin,
           propertyTypes,
           departmentCode,
+          usePublicationDate,
         },
         message: 'Listings sourcing job enqueued',
       });
