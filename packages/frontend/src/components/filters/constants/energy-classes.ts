@@ -1,7 +1,8 @@
-import { EnergyClass } from "@linkinvests/shared";
+import { EnergyClass, EnergyClassType, UNKNOWN_ENERGY_CLASS } from "@linkinvests/shared";
 
 // Energy classes with labels and colors
-export const ENERGY_CLASSES: { value: EnergyClass; label: string; color: string }[] = [
+export const ENERGY_CLASSES: { value: EnergyClassType; label: string; color: string }[] = [
+  { value: UNKNOWN_ENERGY_CLASS, label: 'NC', color: 'text-[var(--primary)]' },
   { value: EnergyClass.A, label: 'A (Très économe)', color: 'text-green-600' },
   { value: EnergyClass.B, label: 'B (Économe)', color: 'text-green-500' },
   { value: EnergyClass.C, label: 'C (Conventionnel)', color: 'text-yellow-500' },
@@ -13,5 +14,5 @@ export const ENERGY_CLASSES: { value: EnergyClass; label: string; color: string 
 
 // Energy classes for energy sieve (only E, F, G)
 export const ENERGY_SIEVE_CLASSES = ENERGY_CLASSES.filter(
-  cls => [EnergyClass.E, EnergyClass.F, EnergyClass.G].includes(cls.value)
+  cls => [EnergyClass.E, EnergyClass.F, EnergyClass.G].includes(cls.value as EnergyClass)
 ) as { value: EnergyClass; label: string; color: string }[];

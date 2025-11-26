@@ -29,6 +29,10 @@ export enum EnergyClass {
   G = 'G',
 }
 
+export const UNKNOWN_ENERGY_CLASS = 'UNKNOWN' as const;
+
+export type EnergyClassType = EnergyClass | typeof UNKNOWN_ENERGY_CLASS;
+
 export enum AuctionOccupationStatus {
   OCCUPIED_BY_OWNER = 'occupied_by_owner',
   RENTED = 'rented',

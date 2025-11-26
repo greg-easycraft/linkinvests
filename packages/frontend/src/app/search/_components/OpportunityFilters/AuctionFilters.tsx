@@ -10,6 +10,7 @@ import {
   RoomsRangeFilter,
   PropertyTypeFilter,
   OccupationStatusFilter,
+  EnergyClassFilter,
 } from "~/components/filters";
 
 interface AuctionFiltersProps {
@@ -60,6 +61,11 @@ export function AuctionFilters({
         maxValue={filters.maxRooms}
         onMinChange={(value) => onFiltersChange({ ...filters, minRooms: value })}
         onMaxChange={(value) => onFiltersChange({ ...filters, maxRooms: value })}
+      />
+      <EnergyClassFilter
+        value={filters.energyClasses}
+        onChange={(value) => onFiltersChange({ ...filters, energyClasses: value })}
+        type="all"
       />
     </>
   );

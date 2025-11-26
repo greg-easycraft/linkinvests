@@ -1,26 +1,8 @@
 
 ## MARDI
-
-MoteurImmo
-- [ ] DPEs E,F,G depuis 24 mois
-- [ ] tout DPE depuis 3 mois
-
-DATA 
-1. annonces publiées > 3 mois & < 9 mois & DPE E,F,G
-2. annonces publiées > 9 mois & < 12 mois & DPE E,F,G
-3. annonces publiées < 3 mois & DPE E,F,G
-
-
 ## MERCREDI
-- [ ] select opportunities + actions (email mairie)
-- modal details lien vers nouvel onglet
-- [ ] unknown / NC on DPE
-
-### RECHERCHE ADRESSE
-- [ ] lien d'une enchere chez nous
-- [ ] lien d'une annonce chez nous
-
-JEUDI
+- [ ] email mairie (multiple)
+- [ ] access button home page
 - [ ] skeletons
 
 LATER

@@ -1,4 +1,4 @@
-import type { OpportunityType, PropertyType, EnergyClass, AuctionOccupationStatus } from "@linkinvests/shared";
+import type { OpportunityType, PropertyType, AuctionOccupationStatus, EnergyClass, EnergyClassType } from "@linkinvests/shared";
 
 export interface MapBounds {
   north: number;
@@ -67,7 +67,7 @@ export interface IAuctionFilters extends IOpportunityFilters {
   minRooms?: number;
   maxRooms?: number;
   auctionVenues?: string[];
-  energyClasses?: EnergyClass[];
+  energyClasses?: EnergyClassType[];
   occupationStatuses?: AuctionOccupationStatus[];
 }
 
@@ -108,7 +108,7 @@ export interface IListingFilters extends IOpportunityFilters {
   maxBedrooms?: number;
   minConstructionYear?: number;
   maxConstructionYear?: number;
-  energyClasses?: EnergyClass[]; // Energy performance diagnosis (A-G)
+  energyClasses?: EnergyClassType[]; // Energy performance diagnosis (A-G)
   features?: ListingFeatures; // Boolean features like balcony, garage, etc.
   isSoldRented?: boolean; // Rental status: true for occupied, false for available
   sources?: string[]; // Source of the listing (dynamic options from database)

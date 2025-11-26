@@ -1,4 +1,4 @@
-import { AuctionOccupationStatus, EnergyClass, OpportunityType, PropertyType } from "@linkinvests/shared";
+import { AuctionOccupationStatus, EnergyClass, EnergyClassType, OpportunityType, PropertyType, UNKNOWN_ENERGY_CLASS } from "@linkinvests/shared";
 import { z } from "zod";
 import { DATE_PERIOD_OPTIONS } from "~/constants/date-periods";
 import { DatePeriod } from "~/types/filters";
@@ -36,6 +36,13 @@ export const auctionFiltersSchema = baseFiltersSchema.extend({
         z.string().transform(val => val.split(',').filter(Boolean) as AuctionOccupationStatus[]),
         z.array(z.enum(AuctionOccupationStatus))
     ]).optional(),
+    energyClasses: z.union([
+        z.string().transform(val => {
+            const classes = val.split(',').filter(Boolean);
+            return classes.filter(cls => [UNKNOWN_ENERGY_CLASS, EnergyClass.A, EnergyClass.B, EnergyClass.C, EnergyClass.D, EnergyClass.E, EnergyClass.F, EnergyClass.G].includes(cls as EnergyClassType)) as EnergyClassType[];
+        }),
+        z.array(z.union([z.literal(UNKNOWN_ENERGY_CLASS), z.enum(EnergyClass)]))
+    ]).optional(),
 });
 
 export const listingFiltersSchema = baseFiltersSchema.extend({
@@ -59,9 +66,9 @@ export const listingFiltersSchema = baseFiltersSchema.extend({
     energyClasses: z.union([
         z.string().transform(val => {
             const classes = val.split(',').filter(Boolean);
-            return classes.filter(cls => ['A', 'B', 'C', 'D', 'E', 'F', 'G'].includes(cls as EnergyClass)) as EnergyClass[];
+            return classes.filter(cls => [UNKNOWN_ENERGY_CLASS, EnergyClass.A, EnergyClass.B, EnergyClass.C, EnergyClass.D, EnergyClass.E, EnergyClass.F, EnergyClass.G].includes(cls as EnergyClassType)) as EnergyClassType[];
         }),
-        z.array(z.enum(EnergyClass))
+        z.array(z.union([z.literal(UNKNOWN_ENERGY_CLASS), z.enum(EnergyClass)]))
     ]).optional(),
     isSoldRented: z.union([
         z.string().transform(val => val === 'true'),
@@ -83,9 +90,9 @@ export const energyDiagnosticFiltersSchema = baseFiltersSchema.extend({
     energyClasses: z.union([
         z.string().transform(val => {
             const classes = val.split(',').filter(Boolean);
-            return classes.filter(cls => ['E', 'F', 'G'].includes(cls as EnergyClass)) as EnergyClass[];
+            return classes.filter(cls => [EnergyClass.E, EnergyClass.F, EnergyClass.G].includes(cls as EnergyClass)) as EnergyClass[];
         }),
-        z.array(z.enum(['E', 'F', 'G'] as EnergyClass[]))
+        z.array(z.enum([EnergyClass.E, EnergyClass.F, EnergyClass.G] as EnergyClass[]))
     ]).optional(),
 });
 

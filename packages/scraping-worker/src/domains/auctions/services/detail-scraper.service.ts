@@ -14,6 +14,7 @@ import {
   AuctionOccupationStatus,
   AuctionSource,
   PropertyType,
+  UNKNOWN_ENERGY_CLASS,
 } from '@linkinvests/shared';
 
 interface DetailScraperResult {
@@ -180,7 +181,7 @@ export class DetailScraperService {
       upperEstimate: Number(lotData.estimation_haute) || undefined,
       reservePrice: Number(lotData.prix_plancher) || undefined,
       description: lotData.description || undefined,
-      energyClass: lotData.critere_consommation_energetique || undefined,
+      energyClass: lotData.critere_consommation_energetique ?? UNKNOWN_ENERGY_CLASS,
       squareFootage: Number(lotData.critere_surface_habitable) || undefined,
       rooms: Number(lotData.critere_nombre_de_pieces) || undefined,
       auctionVenue: lotData.organisateur?.nom || undefined,

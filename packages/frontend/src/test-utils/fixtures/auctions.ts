@@ -1,4 +1,4 @@
-import { Auction, AuctionOccupationStatus, AuctionSource } from "@linkinvests/shared";
+import { Auction, AuctionOccupationStatus, AuctionSource, EnergyClass, UNKNOWN_ENERGY_CLASS } from "@linkinvests/shared";
 
 export const AUCTION_1: Auction = {
     id: '1',
@@ -7,6 +7,7 @@ export const AUCTION_1: Auction = {
     zipCode: '12345',
     department: 'CA',
     latitude: 37.7749,
+    energyClass: EnergyClass.A,
     longitude: -122.4194,
     opportunityDate: new Date('2021-01-01').toISOString().split('T')[0] as string,
     externalId: '1234567890',
@@ -20,6 +21,7 @@ export const AUCTION_1: Auction = {
 export const AUCTION_2: Auction = {
     id: '2',
     label: 'Auction 2',
+    energyClass: EnergyClass.B,
     address: '456 Elm St, Othertown, USA',
     zipCode: '23456',
     department: 'NY',
@@ -37,6 +39,7 @@ export const AUCTION_2: Auction = {
 export const AUCTION_3: Auction = {
     id: '3',
     label: 'Auction 3',
+    energyClass: EnergyClass.C,
     address: '789 Oak St, Sample City, USA',
     zipCode: '34567',
     department: 'TX',
@@ -54,6 +57,7 @@ export const AUCTION_3: Auction = {
 export const AUCTION_4: Auction = {
     id: '4',
     label: 'Auction 4',
+    energyClass: UNKNOWN_ENERGY_CLASS,
     address: '159 Maple Ave, Demo Town, USA',
     zipCode: '45678',
     department: 'FL',
@@ -71,6 +75,7 @@ export const AUCTION_4: Auction = {
 export const AUCTION_5: Auction = {
     id: '5',
     label: 'Auction 5',
+    energyClass: UNKNOWN_ENERGY_CLASS,
     address: '321 Pine Rd, Exampleville, USA',
     zipCode: '56789',
     department: 'IL',

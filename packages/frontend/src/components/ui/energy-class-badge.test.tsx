@@ -1,5 +1,5 @@
 import { render, screen } from '~/test-utils/test-helpers';
-import { EnergyClass } from '@linkinvests/shared';
+import { EnergyClass, UNKNOWN_ENERGY_CLASS } from '@linkinvests/shared';
 import { EnergyClassBadge } from './energy-class-badge';
 
 describe('EnergyClassBadge', () => {
@@ -58,14 +58,14 @@ describe('EnergyClassBadge', () => {
     });
 
     it('should render "NC" when energyClass is undefined', () => {
-      render(<EnergyClassBadge />);
+      render(<EnergyClassBadge energyClass={UNKNOWN_ENERGY_CLASS} />);
 
       const badge = screen.getByText('NC');
       expect(badge).toBeInTheDocument();
     });
 
     it('should render "NC" when energyClass is explicitly undefined', () => {
-      render(<EnergyClassBadge energyClass={undefined} />);
+      render(<EnergyClassBadge energyClass={UNKNOWN_ENERGY_CLASS} />);
 
       const badge = screen.getByText('NC');
       expect(badge).toBeInTheDocument();
@@ -123,14 +123,14 @@ describe('EnergyClassBadge', () => {
     });
 
     it('should apply default primary color when energyClass is undefined', () => {
-      render(<EnergyClassBadge />);
+      render(<EnergyClassBadge energyClass={UNKNOWN_ENERGY_CLASS} />);
 
       const badge = screen.getByText('NC');
       expect(badge).toHaveClass('bg-[var(--primary)]');
     });
 
     it('should apply secondary text color when energyClass is undefined', () => {
-      render(<EnergyClassBadge />);
+      render(<EnergyClassBadge energyClass={UNKNOWN_ENERGY_CLASS} />);
 
       const badge = screen.getByText('NC');
       expect(badge).toHaveClass('text-[var(--secundary)]');
@@ -154,7 +154,7 @@ describe('EnergyClassBadge', () => {
     });
 
     it('should maintain base styling when no energy class is provided', () => {
-      render(<EnergyClassBadge />);
+      render(<EnergyClassBadge energyClass={UNKNOWN_ENERGY_CLASS} />);
 
       const badge = screen.getByText('NC');
       expect(badge).toHaveClass(
@@ -186,7 +186,7 @@ describe('EnergyClassBadge', () => {
     });
 
     it('should contain only "NC" when undefined', () => {
-      render(<EnergyClassBadge />);
+      render(<EnergyClassBadge energyClass={UNKNOWN_ENERGY_CLASS} />);
 
       const badge = screen.getByText('NC');
       expect(badge).toHaveTextContent('NC');
@@ -237,7 +237,7 @@ describe('EnergyClassBadge', () => {
     });
 
     it('should be accessible with NC content', () => {
-      render(<EnergyClassBadge />);
+      render(<EnergyClassBadge energyClass={UNKNOWN_ENERGY_CLASS} />);
 
       const badge = screen.getByText('NC');
       expect(badge).toBeInTheDocument();
@@ -277,7 +277,7 @@ describe('EnergyClassBadge', () => {
       expect(screen.getByText('C')).toBeInTheDocument();
       expect(screen.getByText('C')).toHaveClass('bg-yellow-500');
 
-      rerender(<EnergyClassBadge />);
+      rerender(<EnergyClassBadge energyClass={UNKNOWN_ENERGY_CLASS} />);
 
       expect(screen.queryByText('C')).not.toBeInTheDocument();
       expect(screen.getByText('NC')).toBeInTheDocument();
@@ -286,7 +286,7 @@ describe('EnergyClassBadge', () => {
     });
 
     it('should update from NC to energy class', () => {
-      const { rerender } = render(<EnergyClassBadge />);
+      const { rerender } = render(<EnergyClassBadge energyClass={UNKNOWN_ENERGY_CLASS} />);
 
       expect(screen.getByText('NC')).toBeInTheDocument();
       expect(screen.getByText('NC')).toHaveClass('text-[var(--secundary)]');
@@ -306,7 +306,7 @@ describe('EnergyClassBadge', () => {
         <div>
           <EnergyClassBadge energyClass={EnergyClass.A} />
           <EnergyClassBadge energyClass={EnergyClass.E} />
-          <EnergyClassBadge />
+          <EnergyClassBadge energyClass={UNKNOWN_ENERGY_CLASS} />
         </div>
       );
 

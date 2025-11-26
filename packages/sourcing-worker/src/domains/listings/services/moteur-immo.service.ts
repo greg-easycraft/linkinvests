@@ -1,5 +1,5 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { EnergyClass, ListingInput, PropertyType } from '@linkinvests/shared';
+import { EnergyClass, ListingInput, PropertyType, UNKNOWN_ENERGY_CLASS } from '@linkinvests/shared';
 import type { ConfigType } from '~/config';
 import { CONFIG_TOKEN } from '~/config';
 import { ListingsJobFilters } from '../types';
@@ -279,7 +279,7 @@ export class MoteurImmoService {
         squareFootage: apiListing.surface ?? undefined,
         rooms: apiListing.rooms ?? undefined,
         bedrooms: apiListing.bedrooms ?? undefined,
-        energyClass: apiListing.energyGrade ?? undefined,
+        energyClass: apiListing.energyGrade ?? UNKNOWN_ENERGY_CLASS,
         price: apiListing.price,
         pictures: apiListing.pictureUrls || [],
         sellerType: apiListing.publisher.type,

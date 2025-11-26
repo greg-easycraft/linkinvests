@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { baseOpportunityInputSchema } from './base-opportunity.schema.js';
 import { AuctionInput } from '../types/auction.types.js';
-import { AuctionOccupationStatus, AuctionSource } from '../constants/opportunity.js';
+import { AuctionOccupationStatus, AuctionSource, EnergyClass, UNKNOWN_ENERGY_CLASS } from '../constants/opportunity.js';
 
 // Schema for auction house contact info
 const auctionHouseContactSchema = z.object({
@@ -21,7 +21,7 @@ export const auctionInputSchema = baseOpportunityInputSchema.extend({
   description: z.string().optional(),
   squareFootage: z.number().positive().optional(),
   rooms: z.number().int().positive().optional(),
-  energyClass: z.string().optional(),
+  energyClass: z.union([z.enum(EnergyClass), z.literal(UNKNOWN_ENERGY_CLASS)]),
   auctionVenue: z.string().optional(),
   currentPrice: z.number().positive().optional(),
   reservePrice: z.number().positive().optional(),

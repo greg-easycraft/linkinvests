@@ -1,5 +1,5 @@
 import { BaseOpportunity } from './base-opportunity.types.js';
-import { AuctionOccupationStatus, AuctionSource, EnergyClass, PropertyType } from '../constants/opportunity.js';
+import { AuctionOccupationStatus, AuctionSource, EnergyClassType, PropertyType } from '../constants/opportunity.js';
 
 export interface Auction extends BaseOpportunity {
   // Auction-specific fields
@@ -8,7 +8,7 @@ export interface Auction extends BaseOpportunity {
   description?: string;
   squareFootage?: number;
   rooms?: number;
-  energyClass?: EnergyClass;
+  energyClass: EnergyClassType;
   auctionVenue?: string;
   // Price fields (normalized from extraData)
   currentPrice?: number;

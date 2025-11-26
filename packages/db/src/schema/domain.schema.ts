@@ -14,7 +14,7 @@ import {
   boolean,
 } from 'drizzle-orm/pg-core';
 import { desc } from 'drizzle-orm';
-import { AuctionOccupationStatus } from '@linkinvests/shared';
+import { AuctionOccupationStatus, UNKNOWN_ENERGY_CLASS } from '@linkinvests/shared';
 
 // Auction Opportunities Table
 export const opportunityAuctions = pgTable('auction', {
@@ -35,7 +35,7 @@ export const opportunityAuctions = pgTable('auction', {
   description: text('description'),
   squareFootage: numeric('square_footage', { mode: 'number' }),
   rooms: integer('rooms'),
-  energyClass: varchar('energy_class'),
+  energyClass: varchar('energy_class').notNull().default(UNKNOWN_ENERGY_CLASS),
   auctionVenue: varchar('auction_venue'),
   occupationStatus: varchar('occupation_status').notNull().default(AuctionOccupationStatus.UNKNOWN),
   // Price fields
@@ -222,7 +222,7 @@ export const opportunityListings = pgTable('listing', {
   landArea: numeric('land_area', { mode: 'number' }),
   rooms: integer('rooms'),
   bedrooms: integer('bedrooms'),
-  energyClass: varchar('energy_class'),
+  energyClass: varchar('energy_class').notNull().default(UNKNOWN_ENERGY_CLASS),
   constructionYear: integer('construction_year'),
   floor: integer('floor'),
   totalFloors: integer('total_floors'),

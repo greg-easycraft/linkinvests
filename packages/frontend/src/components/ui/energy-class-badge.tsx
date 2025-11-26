@@ -1,9 +1,9 @@
-import { EnergyClass } from "@linkinvests/shared";
+import { EnergyClass, EnergyClassType, UNKNOWN_ENERGY_CLASS } from "@linkinvests/shared";
 import { ENERGY_CLASS_INFO } from "~/constants/energy-classes";
 
 
-export const EnergyClassBadge = ({ energyClass }: { energyClass?: EnergyClass }) => {
-    const energyClassInfo = ENERGY_CLASS_INFO[energyClass as EnergyClass];
+export const EnergyClassBadge = ({ energyClass }: { energyClass: EnergyClassType }) => {
+    const energyClassInfo = energyClass === UNKNOWN_ENERGY_CLASS ? null : ENERGY_CLASS_INFO[energyClass as EnergyClass];
     return (
         <div className={`
         inline-flex items-center rounded-full 
