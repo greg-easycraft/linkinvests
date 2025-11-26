@@ -45,8 +45,6 @@ export class AIAddressService {
           this.lastRequestTime = Date.now();
 
           const result = await refineAddressFlow(input);
-          this.logger.debug({ before: input.currentAddress }, 'AI refining address');
-          this.logger.debug({ result }, 'AI refined address');
 
           if (!result) {
             this.logger.warn({ input }, 'AI returned empty result');
@@ -62,15 +60,15 @@ export class AIAddressService {
             return null;
           }
 
-          this.logger.debug(
-            {
-              input: input.currentAddress,
-              refinedAddress: result.refinedAddress,
-              confidence: result.confidence,
-              extractedFromDescription: result.extractedFromDescription,
-            },
-            'Successfully standardized address with AI'
-          );
+          // this.logger.debug(
+          //   {
+          //     input: input.currentAddress,
+          //     refinedAddress: result.refinedAddress,
+          //     confidence: result.confidence,
+          //     extractedFromDescription: result.extractedFromDescription,
+          //   },
+          //   'Successfully standardized address with AI'
+          // );
 
           return result;
         } catch (error: unknown) {
