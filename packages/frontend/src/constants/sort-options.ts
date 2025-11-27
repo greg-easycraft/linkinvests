@@ -47,13 +47,13 @@ export const AUCTION_SORT_OPTIONS: SortOption[] = [
   },
   {
     value: "reservePrice_asc",
-    label: "Mise à prix (croissant)",
+    label: "Prix de réserve (croissant)",
     sortBy: "reservePrice",
     sortOrder: "asc",
   },
   {
     value: "reservePrice_desc",
-    label: "Mise à prix (décroissant)",
+    label: "Prix de réserve (décroissant)",
     sortBy: "reservePrice",
     sortOrder: "desc",
   },
