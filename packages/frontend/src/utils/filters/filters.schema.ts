@@ -17,6 +17,8 @@ export const baseFiltersSchema = z.object({
         z.array(z.string())
     ]).optional(),
     datePeriod: z.enum(DATE_PERIOD_OPTIONS.map(option => option.value) as [DatePeriod, ...DatePeriod[]]).optional(),
+    sortBy: z.enum(['opportunityDate']).optional(),
+    sortOrder: z.enum(['asc', 'desc']).optional(),
 });
 
 export const auctionFiltersSchema = baseFiltersSchema.extend({
@@ -84,6 +86,7 @@ export const listingFiltersSchema = baseFiltersSchema.extend({
         }).transform(val => val as 'individual' | 'professional'),
         z.enum(['individual', 'professional'])
     ]).optional(),
+    sortBy: z.enum(['opportunityDate', 'lastChangeDate']).optional(),
 });
 
 export const energyDiagnosticFiltersSchema = baseFiltersSchema.extend({

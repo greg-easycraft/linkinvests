@@ -4,7 +4,7 @@ import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { Checkbox } from "~/components/ui/checkbox";
-import { MapPin, Calendar, ExternalLink, Building2, Zap, Euro } from "lucide-react";
+import { MapPin, Calendar, ExternalLink, Building2, Zap, Euro, RefreshCcw } from "lucide-react";
 import { StaticStreetView } from "./StaticStreetView";
 import { TYPE_LABELS, TYPE_COLORS } from "~/constants/opportunity-types";
 import { EnergyClass, Opportunity, OpportunityType } from "@linkinvests/shared";
@@ -23,6 +23,11 @@ const hasPropertyDetails = (opportunity: Opportunity): opportunity is Extract<Op
 // Type guard to check if opportunity has price fields
 const hasPriceFields = (opportunity: Opportunity): opportunity is Extract<Opportunity, { price?: number; currentPrice?: number; reservePrice?: number }> => {
   return 'price' in opportunity || 'currentPrice' in opportunity || 'reservePrice' in opportunity;
+};
+
+// Type guard to check if opportunity is a listing with lastChangeDate
+const hasLastChangeDate = (opportunity: Opportunity): opportunity is Extract<Opportunity, { lastChangeDate?: string }> => {
+  return 'lastChangeDate' in opportunity;
 };
 
 // Price formatting utility
@@ -149,7 +154,9 @@ export function OpportunityCard({ opportunity, onSelect, selectedId, type, exter
                   <div className="flex items-start gap-2">
                     <Calendar className="h-4 w-4 mt-0.5 flex-shrink-0 text-[var(--primary)] opacity-70" />
                     <div>
-                      <div className="text-xs opacity-70 font-heading">Date</div>
+                      <div className="text-xs opacity-70 font-heading">
+                        {type === OpportunityType.REAL_ESTATE_LISTING ? "Publication" : "Date"}
+                      </div>
                       <div>
                         {format(new Date(opportunity.opportunityDate), "dd MMMM yyyy", {
                           locale: fr,
@@ -157,6 +164,21 @@ export function OpportunityCard({ opportunity, onSelect, selectedId, type, exter
                       </div>
                     </div>
                   </div>
+
+                  {/* Last Change Date (listings only) */}
+                  {hasLastChangeDate(opportunity) && opportunity.lastChangeDate && (
+                    <div className="flex items-start gap-2">
+                      <RefreshCcw className="h-4 w-4 mt-0.5 flex-shrink-0 text-[var(--primary)] opacity-70" />
+                      <div>
+                        <div className="text-xs opacity-70 font-heading">Modification</div>
+                        <div>
+                          {format(new Date(opportunity.lastChangeDate), "dd MMMM yyyy", {
+                            locale: fr,
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Price */}
                   {hasPriceFields(opportunity) && getPriceValue(opportunity) && (

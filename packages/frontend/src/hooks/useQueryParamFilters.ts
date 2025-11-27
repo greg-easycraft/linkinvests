@@ -69,12 +69,19 @@ export function useQueryParamFilters<T extends IOpportunityFilters = IOpportunit
   };
 }
 
+const DEFAULT_SORT_BY = 'opportunityDate';
+const DEFAULT_SORT_ORDER = 'desc' as const;
+
 function getRetainedFiltersFromParams<T extends IOpportunityFilters>(searchParams: URLSearchParams, schema: z.ZodSchema<T>): T {
   const queryParams = parseURLSearchParams(searchParams);
   const result = schema.safeParse(queryParams);
 
   if (result.success) {
-    return result.data;
+    return {
+      ...result.data,
+      sortBy: result.data.sortBy ?? DEFAULT_SORT_BY,
+      sortOrder: result.data.sortOrder ?? DEFAULT_SORT_ORDER,
+    };
   }
 
   // If parsing fails, try to salvage valid individual fields
@@ -97,7 +104,12 @@ function getRetainedFiltersFromParams<T extends IOpportunityFilters>(searchParam
 
   // Fall back to empty object if we can't salvage anything
   const finalResult = schema.safeParse(partialFilters);
-  return finalResult.success ? finalResult.data : ({} as T);
+  const data = finalResult.success ? finalResult.data : ({} as T);
+  return {
+    ...data,
+    sortBy: data.sortBy ?? DEFAULT_SORT_BY,
+    sortOrder: data.sortOrder ?? DEFAULT_SORT_ORDER,
+  };
 }
 
 function createURLSearchParams<T extends IOpportunityFilters = IOpportunityFilters>(

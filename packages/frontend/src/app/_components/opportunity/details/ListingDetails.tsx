@@ -19,7 +19,8 @@ import {
   Zap,
   Shield,
   Building2,
-  Contact
+  Contact,
+  RefreshCcw
 } from "lucide-react";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
@@ -349,14 +350,26 @@ export function ListingDetails({ opportunity, detailPageUrl }: ListingDetailsPro
           </div>
         )}
 
-        {/* Listing Date */}
+        {/* Listing Dates */}
         <div className="space-y-2">
-          <h4 className="font-medium text-sm">Date de publication</h4>
-          <div className="flex items-center gap-2 text-sm">
-            <Calendar className="h-4 w-4 " />
-            <span>
-              {format(new Date(opportunity.opportunityDate), "PPPP", { locale: fr })}
-            </span>
+          <h4 className="font-medium text-sm">Dates</h4>
+          <div className="grid grid-cols-1 gap-2 text-sm">
+            <div className="flex items-center gap-2">
+              <Calendar className="h-4 w-4" />
+              <span className="font-medium">Publication:</span>
+              <span>
+                {format(new Date(opportunity.opportunityDate), "PPPP", { locale: fr })}
+              </span>
+            </div>
+            {opportunity.lastChangeDate && (
+              <div className="flex items-center gap-2">
+                <RefreshCcw className="h-4 w-4" />
+                <span className="font-medium">Dernière modification:</span>
+                <span>
+                  {format(new Date(opportunity.lastChangeDate), "PPPP", { locale: fr })}
+                </span>
+              </div>
+            )}
           </div>
         </div>
       </CardContent>

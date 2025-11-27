@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { MapPin, Calendar } from "lucide-react";
+import { MapPin, Calendar, RefreshCcw } from "lucide-react";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { FullPageSpinner } from "~/components/ui/full-page-spinner";
@@ -151,11 +151,11 @@ export function ListingDetailContent({ listing }: ListingDetailContentProps) {
               </div>
             </div>
 
-            {/* Date */}
+            {/* Publication Date */}
             <div className="flex gap-3">
               <Calendar className="h-5 w-5 mt-0.5" />
               <div className="flex-1">
-                <div className="text-sm font-medium mb-1 font-heading text-[var(--primary)]">Date de l&apos;opportunité</div>
+                <div className="text-sm font-medium mb-1 font-heading text-[var(--primary)]">Date de publication</div>
                 <div className="text-sm !text-[var(--primary)]">
                   {format(new Date(listing.opportunityDate), "dd MMMM yyyy", {
                     locale: fr,
@@ -163,6 +163,21 @@ export function ListingDetailContent({ listing }: ListingDetailContentProps) {
                 </div>
               </div>
             </div>
+
+            {/* Last Change Date */}
+            {listing.lastChangeDate && (
+              <div className="flex gap-3">
+                <RefreshCcw className="h-5 w-5 mt-0.5" />
+                <div className="flex-1">
+                  <div className="text-sm font-medium mb-1 font-heading text-[var(--primary)]">Dernière modification</div>
+                  <div className="text-sm !text-[var(--primary)]">
+                    {format(new Date(listing.lastChangeDate), "dd MMMM yyyy", {
+                      locale: fr,
+                    })}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>

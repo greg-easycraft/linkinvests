@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "~/components/ui/button";
-import { Mail, X } from "lucide-react";
+import { X } from "lucide-react";
 
 interface SelectionActionBarProps {
   selectedCount: number;

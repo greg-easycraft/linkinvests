@@ -5,11 +5,13 @@ import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import { DepartmentsInput } from "~/components/ui/departments-input";
 import { ZipCodeInput } from "~/components/ui/zip-code-input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { OpportunityType } from "@linkinvests/shared";
 import type { IOpportunityFilters, DatePeriodOption } from "~/types/filters";
 import { OpportunityTypeFilter, DatePeriodFilter, OPPORTUNITY_TYPE_TO_PATH } from "~/components/filters";
 import { ViewToggle } from "../ViewToggle";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { DEFAULT_SORT_OPTIONS, type SortOption } from "~/constants/sort-options";
 
 type ViewType = "list" | "map";
 
@@ -19,6 +21,7 @@ interface OpportunityFiltersProps<T extends IOpportunityFilters> {
   currentType: OpportunityType;
   ExtraFilters?: React.ReactNode;
   datePeriodOptions?: DatePeriodOption[];
+  sortOptions?: SortOption[];
 }
 
 export function BaseFilters({
@@ -26,7 +29,8 @@ export function BaseFilters({
   currentType,
   onFiltersChange,
   ExtraFilters,
-  datePeriodOptions
+  datePeriodOptions,
+  sortOptions = DEFAULT_SORT_OPTIONS,
 }: OpportunityFiltersProps<IOpportunityFilters>): React.ReactElement {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -45,6 +49,24 @@ export function BaseFilters({
     return "list";
   }, [searchParams]);
 
+  const currentSortValue = useMemo(() => {
+    const sortBy = filters.sortBy ?? "opportunityDate";
+    const sortOrder = filters.sortOrder ?? "desc";
+    return `${sortBy}_${sortOrder}`;
+  }, [filters.sortBy, filters.sortOrder]);
+
+  const handleSortChange = useCallback((value: string): void => {
+    const selectedOption = sortOptions.find(opt => opt.value === value);
+    if (selectedOption) {
+      onFiltersChange({
+        ...filters,
+        sortBy: selectedOption.sortBy,
+        sortOrder: selectedOption.sortOrder,
+        page: 1,
+      });
+    }
+  }, [filters, onFiltersChange, sortOptions]);
+
   const handleViewTypeChange = useCallback((value: ViewType): void => {
     const newParams = new URLSearchParams(searchParams);
     newParams.set("view", value);
@@ -57,10 +79,27 @@ export function BaseFilters({
 
   return (
     <Card className="bg-[var(--secundary)] text-[var(--primary)] border-2 border-[var(--primary)] h-full flex flex-col shadow-lg">
-      <CardHeader className="flex-shrink-0">
+      <CardHeader className="flex-shrink-0 space-y-4">
         {/* View Toggle */}
         <div>
           <ViewToggle value={viewType} onValueChange={handleViewTypeChange} />
+        </div>
+
+        {/* Sort Select */}
+        <div>
+          <label className="text-sm font-medium mb-2 block font-heading">Trier par</label>
+          <Select value={currentSortValue} onValueChange={handleSortChange}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Trier par..." />
+            </SelectTrigger>
+            <SelectContent>
+              {sortOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </CardHeader>
       <CardContent className="flex-1 overflow-y-auto">

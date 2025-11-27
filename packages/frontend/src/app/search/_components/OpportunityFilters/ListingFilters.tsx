@@ -16,6 +16,7 @@ import {
   SourcesInput,
   SellerTypeFilter
 } from "~/components/filters";
+import { LISTING_SORT_OPTIONS } from "~/constants/sort-options";
 
 interface ListingFiltersProps {
   filters: IListingFilters;
@@ -104,6 +105,7 @@ export function ListingFilters({
       filters={filters}
       onFiltersChange={onFiltersChange}
       ExtraFilters={CustomFilters}
+      sortOptions={LISTING_SORT_OPTIONS}
     />
   );
 }
