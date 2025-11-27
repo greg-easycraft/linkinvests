@@ -38,7 +38,7 @@ export default function Home() {
             <div className="flex items-center gap-2 p-4 py-6">
               <Link href="/search/listings">
                 <div className="text-lg">
-                  Accéder à la plateforme
+                  Invest differently
                 </div>
               </Link>
             </div>
