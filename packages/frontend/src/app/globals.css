@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --header-height: 61px;
+}
+
 :root,
 :root.light {
   --primary: #3E3E3E;

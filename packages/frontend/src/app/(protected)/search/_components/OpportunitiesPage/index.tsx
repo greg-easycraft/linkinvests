@@ -122,7 +122,7 @@ export default function OpportunitiesPage({
   }, [isFiltersSidebarOpen]);
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-[calc(100vh-var(--header-height))] overflow-hidden">
       {/* Toggle Button for Filters */}
       <Button
         variant="outline"
