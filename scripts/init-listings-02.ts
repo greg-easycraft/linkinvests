@@ -17,7 +17,7 @@ type Env = z.infer<typeof envSchema>;
 
 const today = new Date();
 
-const MONTHS_PERIOD = [3, 6, 9, 12];
+const MONTHS_PERIOD = [3, 6, 9];
 const MONTHS_STEP = 3;
 
 
