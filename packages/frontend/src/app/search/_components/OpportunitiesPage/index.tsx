@@ -166,7 +166,7 @@ export default function OpportunitiesPage({
         <div className="flex-1 flex overflow-hidden bg-(--secundary)">
           {/* Collapsible Filters Sidebar */}
           <div
-            className={`transition-all duration-300 ease-in-out border-r border-neutral-700 ${isFiltersSidebarOpen ? "w-80" : "w-0"
+            className={`transition-all duration-300 ease-in-out border-r border-[var(--primary)] ${isFiltersSidebarOpen ? "w-80" : "w-0"
               }`}
           >
             {isFiltersSidebarOpen && (

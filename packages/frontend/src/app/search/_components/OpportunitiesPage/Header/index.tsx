@@ -160,7 +160,7 @@ function Pagination({
     </Button>
 
     <div className="text-sm px-6">
-      Page {currentPage} sur {totalPages}
+      Page <b>{currentPage}</b> sur <b>{totalPages}</b>
     </div>
 
     <Button
