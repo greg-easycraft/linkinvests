@@ -13,7 +13,7 @@ export function PageHeader(): React.ReactElement {
   const isDarkTheme = theme === "dark";
 
   return (
-    <div className={`h-[var(--header-height)] border-b border-[var(--primary)] px-6 py-3 shadow-lg sticky top-0 z-50 bg-${isDarkTheme ? '#1F1F1F' : 'var(--secundary)' }`}>
+    <div className={`h-[var(--header-height)] border-b border-[var(--primary)] px-6 py-3 shadow-lg sticky top-0 z-50 bg-[var(--background-color)]`}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-8">
           <a

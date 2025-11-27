@@ -2,25 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --header-height: 61px;
-}
 
 :root,
 :root.light {
   --primary: #3E3E3E;
   --secundary: #ededed;
-  body {
-    background: var(--secundary);
-  }
+  --background-color: #ededed;
 }
 
 :root.dark {
   --primary: #ededed;
   --secundary: #3E3E3E;
-  body {
-    background: #1F1F1F;
-  }
+  --background-color: #1F1F1F;
+}
+
+:root {
+  --header-height: 61px;
+  background: var(--background-color);
 }
 
 body {
