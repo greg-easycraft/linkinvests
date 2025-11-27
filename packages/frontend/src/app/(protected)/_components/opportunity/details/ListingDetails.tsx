@@ -65,8 +65,7 @@ export function ListingDetails({ opportunity, detailPageUrl }: ListingDetailsPro
   const hasPropertyInfo = opportunity.propertyType || opportunity.squareFootage ||
     opportunity.landArea || opportunity.rooms || opportunity.bedrooms ||
     opportunity.energyClass || opportunity.constructionYear || opportunity.floor;
-  const hasFeatures = opportunity.balcony || opportunity.terrace || opportunity.garden ||
-    opportunity.garage || opportunity.parking || opportunity.elevator;
+  const hasFeatures = opportunity.options && opportunity.options.length > 0;
   const hasContactInfo = opportunity.sellerContact && (
     opportunity.sellerContact.name ||
     opportunity.sellerContact.address ||
@@ -234,37 +233,37 @@ export function ListingDetails({ opportunity, detailPageUrl }: ListingDetailsPro
           <div className="space-y-3">
             <h4 className="font-medium text-sm">Équipements et services</h4>
             <div className="flex flex-wrap gap-2">
-              {opportunity.balcony && (
+              {opportunity.options?.includes('hasBalcony') && (
                 <Badge variant="secondary" className="text-xs">
                   <Home className="h-3 w-3 mr-1" />
                   Balcon
                 </Badge>
               )}
-              {opportunity.terrace && (
+              {opportunity.options?.includes('hasTerrace') && (
                 <Badge variant="secondary" className="text-xs">
                   <Square className="h-3 w-3 mr-1" />
                   Terrasse
                 </Badge>
               )}
-              {opportunity.garden && (
+              {opportunity.options?.includes('hasGarden') && (
                 <Badge variant="secondary" className="text-xs">
                   <TreePine className="h-3 w-3 mr-1" />
                   Jardin
                 </Badge>
               )}
-              {opportunity.garage && (
+              {opportunity.options?.includes('hasGarage') && (
                 <Badge variant="secondary" className="text-xs">
                   <ParkingCircle className="h-3 w-3 mr-1" />
                   Garage
                 </Badge>
               )}
-              {opportunity.parking && (
+              {opportunity.options?.includes('hasParking') && (
                 <Badge variant="secondary" className="text-xs">
                   <ParkingCircle className="h-3 w-3 mr-1" />
                   Parking
                 </Badge>
               )}
-              {opportunity.elevator && (
+              {opportunity.options?.includes('hasLift') && (
                 <Badge variant="secondary" className="text-xs">
                   <Zap className="h-3 w-3 mr-1" />
                   Ascenseur

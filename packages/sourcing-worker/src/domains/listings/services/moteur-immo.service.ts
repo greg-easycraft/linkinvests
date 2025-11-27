@@ -60,6 +60,7 @@ export interface MoteurImmoListing {
   floor?: number;
   buildingFloors?: number;
   options: string[];
+  keywords?: string[];
   energyValue?: number;
   energyGrade?: EnergyClass;
   gasValue?: number;
@@ -298,6 +299,12 @@ export class MoteurImmoService {
         mainPicture: apiListing.pictureUrl || apiListing.pictureUrls?.[0],
         externalId: `${apiListing.origin}-${apiListing.adId}`,
         isSoldRented: apiListing.options.includes('isSoldRented'),
+        landArea: apiListing.landSurface ?? undefined,
+        constructionYear: apiListing.constructionYear ?? undefined,
+        floor: apiListing.floor ?? undefined,
+        totalFloors: apiListing.buildingFloors ?? undefined,
+        options: apiListing.options,
+        keywords: apiListing.keywords ?? [],
       };
     } catch (error) {
       this.logger.warn(

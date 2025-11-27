@@ -111,28 +111,6 @@ export class DrizzleListingRepository implements IListingRepository {
       conditions.push(lte(opportunityListings.constructionYear, filters.maxConstructionYear));
     }
 
-    // Filter by features
-    if (filters.features) {
-      if (filters.features.balcony !== undefined) {
-        conditions.push(eq(opportunityListings.balcony, filters.features.balcony));
-      }
-      if (filters.features.terrace !== undefined) {
-        conditions.push(eq(opportunityListings.terrace, filters.features.terrace));
-      }
-      if (filters.features.garden !== undefined) {
-        conditions.push(eq(opportunityListings.garden, filters.features.garden));
-      }
-      if (filters.features.garage !== undefined) {
-        conditions.push(eq(opportunityListings.garage, filters.features.garage));
-      }
-      if (filters.features.parking !== undefined) {
-        conditions.push(eq(opportunityListings.parking, filters.features.parking));
-      }
-      if (filters.features.elevator !== undefined) {
-        conditions.push(eq(opportunityListings.elevator, filters.features.elevator));
-      }
-    }
-
     // Filter by rental status (isSoldRented)
     if (filters.isSoldRented !== undefined) {
       conditions.push(eq(opportunityListings.isSoldRented, filters.isSoldRented));
@@ -233,12 +211,8 @@ export class DrizzleListingRepository implements IListingRepository {
       constructionYear: listing.constructionYear ?? undefined,
       floor: listing.floor ?? undefined,
       totalFloors: listing.totalFloors ?? undefined,
-      balcony: listing.balcony ?? undefined,
-      terrace: listing.terrace ?? undefined,
-      garden: listing.garden ?? undefined,
-      garage: listing.garage ?? undefined,
-      parking: listing.parking ?? undefined,
-      elevator: listing.elevator ?? undefined,
+      options: listing.options ?? undefined,
+      keywords: listing.keywords ?? undefined,
       price: listing.price ?? undefined,
       priceType: listing.priceType ?? undefined,
       fees: listing.fees ?? undefined,

@@ -16,12 +16,8 @@ export interface Listing extends BaseOpportunity {
   constructionYear?: number;
   floor?: number;
   totalFloors?: number;
-  balcony?: boolean;
-  terrace?: boolean;
-  garden?: boolean;
-  garage?: boolean;
-  parking?: boolean;
-  elevator?: boolean;
+  options?: string[];
+  keywords?: string[];
   isSoldRented: boolean;
 
   // Price fields

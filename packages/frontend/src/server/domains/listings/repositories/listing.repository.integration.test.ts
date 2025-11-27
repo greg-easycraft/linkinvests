@@ -136,32 +136,6 @@ describe('DrizzleListingRepository Integration Tests', () => {
       });
     });
 
-    it('should filter by features - balcony', async () => {
-      const filters: IListingFilters = {
-        features: { balcony: true }
-      };
-      const listings = await listingRepository.findAll(filters);
-      listings.forEach(listing => {
-        expect(listing.balcony).toBe(true);
-      });
-    });
-
-    it('should filter by features - multiple features', async () => {
-      const filters: IListingFilters = {
-        features: {
-          garage: true,
-          elevator: false,
-          terrace: true
-        }
-      };
-      const listings = await listingRepository.findAll(filters);
-      listings.forEach(listing => {
-        expect(listing.garage).toBe(true);
-        expect(listing.elevator).toBe(false);
-        expect(listing.terrace).toBe(true);
-      });
-    });
-
     it('should filter by rental status (isSoldRented)', async () => {
       const filters: IListingFilters = {
         isSoldRented: true
@@ -278,7 +252,6 @@ describe('DrizzleListingRepository Integration Tests', () => {
         if (listing.squareFootage) {
           expect(listing.squareFootage).toBeGreaterThanOrEqual(50);
         }
-        expect(listing.elevator).toBe(true);
       });
     });
 

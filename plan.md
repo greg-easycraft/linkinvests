@@ -7,8 +7,6 @@
 - [ ] addresse mairie zipcode cedex
 - [ ] classe gaz sur DPEs (GES) pour affiner scoring
 
-
-
 https://linkinvests.easycraft.cloud/listings/62b24e4a-55b0-4513-bf46-c475b57f8928
 
 IMPROVEMENTS
