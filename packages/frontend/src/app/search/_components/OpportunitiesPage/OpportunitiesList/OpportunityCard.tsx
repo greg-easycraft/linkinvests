@@ -66,7 +66,7 @@ export function OpportunityCard({ opportunity, onSelect, selectedId, type, exter
           onClick={() => onSelect(opportunity)}
           className={`cursor-pointer transition-all hover:shadow-lg bg-[var(--secundary)] text-[var(--primary)] border-2 ${selectedId === opportunity.id
               ? "border-blue-500 shadow-lg"
-              : "border-transparent"
+              : "border-[var(--primary)] shadow-lg"
             }`}
         >
           <div className="flex gap-4 p-4">

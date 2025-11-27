@@ -143,7 +143,7 @@ export function AddressSearchForm({ onSubmit, isLoading = false }: AddressSearch
               accept="image/jpeg,image/jpg,image/png,image/webp"
               onChange={handlePhotoChange}
             />
-            <p className="text-xs text-gray-500">
+            <p className="text-xs ">
               Formats : JPEG, PNG, WebP (max 10MB)
             </p>
             {photoFile && (
@@ -169,7 +169,7 @@ export function AddressSearchForm({ onSubmit, isLoading = false }: AddressSearch
               placeholder="Entrez le nom de rue ou une adresse partielle (optionnel)"
               {...register('address')}
             />
-            <p className="text-xs text-gray-500">
+            <p className="text-xs ">
               Ajouter des informations d&apos;adresse partielle peut aider à améliorer la précision de correspondance.
             </p>
             {errors.address && (
@@ -195,7 +195,7 @@ export function AddressSearchForm({ onSubmit, isLoading = false }: AddressSearch
           </Button>
 
           {/* Form Requirements */}
-          <div className="text-xs text-gray-500 space-y-1">
+          <div className="text-xs  space-y-1">
             <p>* Champs requis</p>
             <p>
               Cette recherche utilise les données de diagnostic énergétique existantes pour trouver des correspondances d&apos;adresse potentielles.

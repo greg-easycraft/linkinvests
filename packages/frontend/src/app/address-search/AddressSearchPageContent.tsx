@@ -130,7 +130,7 @@ export default function AddressSearchPageContent(): React.ReactElement {
         <div className="max-w-2xl mx-auto text-center space-y-6 py-8">
           <div className="space-y-4">
             <h3 className="text-xl font-semibold text-gray-900">Aucune Adresse Trouvée</h3>
-            <div className="text-sm text-gray-600 space-y-2">
+            <div className="text-sm  space-y-2">
               <p className="font-medium">Essayez ces conseils pour améliorer votre recherche :</p>
               <ul className="list-disc list-inside space-y-1 text-left max-w-md mx-auto">
                 <li>Retirez le filtre de classe énergétique DPE pour inclure plus de propriétés</li>
@@ -158,7 +158,7 @@ export default function AddressSearchPageContent(): React.ReactElement {
       <div className="max-w-4xl mx-auto text-center py-8 border-t border-gray-200">
         <div className="space-y-3">
           <h4 className="font-medium text-gray-900">Comment ça fonctionne</h4>
-          <div className="text-sm text-gray-600 space-y-2">
+          <div className="text-sm  space-y-2">
             <p>
               Cet outil recherche dans les dossiers de diagnostics énergétiques (DPE) existants pour trouver les propriétés
               qui correspondent à vos critères. Les résultats sont classés par niveau de confiance en fonction de leur

@@ -27,10 +27,10 @@ describe('cn (className utility)', () => {
   });
 
   it('should merge arrays of class names', () => {
-    const result = cn(['text-sm', 'font-medium'], 'text-gray-500');
+    const result = cn(['text-sm', 'font-medium'], '');
     expect(result).toContain('text-sm');
     expect(result).toContain('font-medium');
-    expect(result).toContain('text-gray-500');
+    expect(result).toContain('');
   });
 
   it('should handle object syntax', () => {

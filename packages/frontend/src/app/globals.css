@@ -3,20 +3,19 @@
 @tailwind utilities;
 
 :root {
-  --primary: #ededed;
-  --secundary: #3E3E3E;
+  --primary: #3E3E3E;
+  --secundary: #ededed;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --primary: #3E3E3E;
-    --secundary: #ededed;
+    --primary: #ededed;
+    --secundary: #3E3E3E;
   }
 }
 
 body {
-  color: var(--secundary);
-  background: var(--primary) url('/background.png') no-repeat center center fixed;
-  background-size: cover;
+  color: var(--primary);
+  background: var(--secundary);
   font-family: Arial, Helvetica, sans-serif;
 }

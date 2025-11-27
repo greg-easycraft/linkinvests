@@ -133,27 +133,27 @@ export function AuctionDetails({ opportunity, detailPageUrl }: AuctionDetailsPro
             <div className="grid grid-cols-1 gap-2 text-sm">
               {opportunity.propertyType && (
                 <div className="flex items-center gap-2">
-                  <Home className="h-4 w-4 text-gray-600" />
+                  <Home className="h-4 w-4 " />
                   <span className="font-medium">Type:</span>
                   <span>{opportunity.propertyType}</span>
                 </div>
               )}
               {opportunity.squareFootage && (
                 <div className="flex items-center gap-2">
-                  <Ruler className="h-4 w-4 text-gray-600" />
+                  <Ruler className="h-4 w-4 " />
                   <span className="font-medium">Surface:</span>
                   <span>{formatSquareFootage(Number(opportunity.squareFootage))}</span>
                 </div>
               )}
               {opportunity.rooms && (
                 <div className="flex items-center gap-2">
-                  <Home className="h-4 w-4 text-gray-600" />
+                  <Home className="h-4 w-4 " />
                   <span className="font-medium">Nombre de pièces:</span>
                   <span>{opportunity.rooms}</span>
                 </div>
               )}
               <div className="flex items-center gap-2">
-                <FileText className="h-4 w-4 text-gray-600" />
+                <FileText className="h-4 w-4 " />
                 <span className="font-medium">DPE:</span>
                 <EnergyClassBadge energyClass={opportunity.energyClass} />
               </div>
@@ -165,7 +165,7 @@ export function AuctionDetails({ opportunity, detailPageUrl }: AuctionDetailsPro
         {opportunity.description && (
           <div className="space-y-2">
             <h4 className="font-medium text-sm">Description</h4>
-            <p className="text-sm text-gray-600 leading-relaxed">
+            <p className="text-sm leading-relaxed">
               {opportunity.description}
             </p>
           </div>
@@ -178,13 +178,13 @@ export function AuctionDetails({ opportunity, detailPageUrl }: AuctionDetailsPro
             <div className="space-y-2 text-sm">
               {(opportunity.auctionHouseContact?.name || opportunity.auctionHouseContact?.address) && (
                 <div className="flex items-start gap-2">
-                  <VenueIcon className="h-4 w-4 text-gray-600 mt-0.5" />
+                  <VenueIcon className="h-4 w-4  mt-0.5" />
                   <div>
                     {opportunity.auctionHouseContact.name && (
                       <div className="font-medium">{opportunity.auctionHouseContact.name}</div>
                     )}
                     {opportunity.auctionHouseContact.address && (
-                      <div className="text-gray-600">{opportunity.auctionHouseContact.address}</div>
+                      <div className="">{opportunity.auctionHouseContact.address}</div>
                     )}
                   </div>
                 </div>
@@ -192,21 +192,21 @@ export function AuctionDetails({ opportunity, detailPageUrl }: AuctionDetailsPro
 
               {opportunity.auctionHouseContact?.phone && (
                 <div className="flex items-center gap-2">
-                  <Phone className="h-4 w-4 text-gray-600" />
+                  <Phone className="h-4 w-4 " />
                   <span>{opportunity.auctionHouseContact.phone}</span>
                 </div>
               )}
 
               {opportunity.auctionHouseContact?.email && (
                 <div className="flex items-center gap-2">
-                  <Mail className="h-4 w-4 text-gray-600" />
+                  <Mail className="h-4 w-4 " />
                   <span>{opportunity.auctionHouseContact.email}</span>
                 </div>
               )}
 
               {opportunity.auctionHouseContact?.auctioneer && (
                 <div className="flex items-center gap-2">
-                  <UserCheck className="h-4 w-4 text-gray-600" />
+                  <UserCheck className="h-4 w-4 " />
                   <span className="font-medium">Commissaire-priseur:</span>
                   <span>{opportunity.auctionHouseContact.auctioneer}</span>
                 </div>
@@ -223,7 +223,7 @@ export function AuctionDetails({ opportunity, detailPageUrl }: AuctionDetailsPro
 
               {opportunity.auctionHouseContact?.depositAmount && (
                 <div className="flex items-center gap-2">
-                  <Banknote className="h-4 w-4 text-gray-600" />
+                  <Banknote className="h-4 w-4 " />
                   <span className="font-medium">Caution:</span>
                   <span>{formatPrice(Number(opportunity.auctionHouseContact.depositAmount))}</span>
                 </div>
@@ -236,7 +236,7 @@ export function AuctionDetails({ opportunity, detailPageUrl }: AuctionDetailsPro
         <div className="space-y-2">
           <h4 className="font-medium text-sm">Date de l&apos;enchère</h4>
           <div className="flex items-center gap-2 text-sm">
-            <Gavel className="h-4 w-4 text-gray-600" />
+            <Gavel className="h-4 w-4 " />
             <span>
               {format(new Date(opportunity.opportunityDate), "PPPP", { locale: fr })}
             </span>

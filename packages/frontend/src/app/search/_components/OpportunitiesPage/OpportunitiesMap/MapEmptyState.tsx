@@ -28,7 +28,7 @@ export function MapEmptyState(): React.ReactElement {
               <h3 className="text-lg font-semibold text-gray-900 font-heading">
                 Aucune opportunité sur la carte
               </h3>
-              <p className="text-sm text-gray-600 leading-relaxed">
+              <p className="text-sm  leading-relaxed">
                 Aucune opportunité ne correspond à vos critères de recherche dans cette zone géographique.
               </p>
             </div>
@@ -38,7 +38,7 @@ export function MapEmptyState(): React.ReactElement {
               <p className="text-xs font-medium text-gray-800 uppercase tracking-wide">
                 Suggestions :
               </p>
-              <ul className="space-y-2 text-sm text-gray-600">
+              <ul className="space-y-2 text-sm ">
                 <li className="flex items-start gap-2">
                   <div className="w-1 h-1 rounded-full bg-blue-500 mt-2 flex-shrink-0"></div>
                   <span>Élargissez votre zone de recherche</span>
@@ -60,7 +60,7 @@ export function MapEmptyState(): React.ReactElement {
 
             {/* Action hint */}
             <div className="pt-2">
-              <div className="flex items-center justify-center gap-2 text-xs text-gray-500">
+              <div className="flex items-center justify-center gap-2 text-xs ">
                 <div className="w-4 h-4 rounded border border-dashed border-gray-300 flex items-center justify-center">
                   <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
                 </div>

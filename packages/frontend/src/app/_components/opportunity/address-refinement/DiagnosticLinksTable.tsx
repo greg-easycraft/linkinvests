@@ -32,8 +32,8 @@ export function DiagnosticLinksTable({ links, isLoading = false }: DiagnosticLin
         </CardHeader>
         <CardContent>
           <div className="flex items-center justify-center py-8">
-            <Loader2 className="h-6 w-6 animate-spin text-neutral-500" />
-            <span className="ml-2 text-neutral-500">Recherche en cours...</span>
+            <Loader2 className="h-6 w-6 animate-spin" />
+            <span className="ml-2">Recherche en cours...</span>
           </div>
         </CardContent>
       </Card>
@@ -70,7 +70,7 @@ export function DiagnosticLinksTable({ links, isLoading = false }: DiagnosticLin
               <TableRow key={link.id} className="hover:!bg-transparent border-[var(--primary)]">
                 <TableCell>
                   <div className="flex items-start gap-2">
-                    <MapPin className="h-4 w-4 text-neutral-400 mt-0.5 flex-shrink-0" />
+                    <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0" />
                     <span className="text-sm">{link.energyDiagnostic.address}</span>
                   </div>
                 </TableCell>

@@ -51,7 +51,7 @@ export function MapSkeleton(): React.ReactElement {
       <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 rounded-lg">
         <div className="text-center">
           <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-500 rounded-full animate-spin mx-auto mb-2" />
-          <div className="text-sm text-gray-600 font-medium">Chargement de la carte...</div>
+          <div className="text-sm  font-medium">Chargement de la carte...</div>
         </div>
       </div>
     </div>

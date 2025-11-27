@@ -34,13 +34,13 @@ export function LiquidationDetailContent({ liquidation }: LiquidationDetailConte
           <div className="space-y-4">
             {/* Address */}
             <div className="flex gap-3">
-              <MapPin className="h-5 w-5 text-neutral-500 mt-0.5" />
+              <MapPin className="h-5 w-5 mt-0.5" />
               <div className="flex-1">
                 <div className="text-sm font-medium mb-1 font-heading text-[var(--primary)]">Adresse</div>
-                <div className="text-sm text-neutral-600">
+                <div className="text-sm !text-[var(--primary)]">
                   {liquidation.address ?? "Non disponible"}
                 </div>
-                <div className="text-xs text-neutral-500 mt-1">
+                <div className="text-xs mt-1 !text-[var(--primary)]">
                   {liquidation.zipCode} - Département {liquidation.department}
                 </div>
               </div>
@@ -48,10 +48,10 @@ export function LiquidationDetailContent({ liquidation }: LiquidationDetailConte
 
             {/* Date */}
             <div className="flex gap-3">
-              <Calendar className="h-5 w-5 text-neutral-500 mt-0.5" />
+              <Calendar className="h-5 w-5 mt-0.5" />
               <div className="flex-1">
                 <div className="text-sm font-medium mb-1 font-heading text-[var(--primary)]">Date de l&apos;opportunité</div>
-                <div className="text-sm text-neutral-600">
+                <div className="text-sm !text-[var(--primary)]">
                   {format(new Date(liquidation.opportunityDate), "dd MMMM yyyy", {
                     locale: fr,
                   })}
@@ -68,7 +68,7 @@ export function LiquidationDetailContent({ liquidation }: LiquidationDetailConte
       {/* Timestamps */}
       <Card>
         <CardContent className="pt-6 bg-[var(--secundary)]">
-          <div className="text-xs text-neutral-500 space-y-1">
+          <div className="text-xs space-y-1">
             <div>Créé le : {format(new Date(liquidation.createdAt), "dd/MM/yyyy à HH:mm")}</div>
             {liquidation.updatedAt && (
               <div>Mis à jour le : {format(new Date(liquidation.updatedAt), "dd/MM/yyyy à HH:mm")}</div>

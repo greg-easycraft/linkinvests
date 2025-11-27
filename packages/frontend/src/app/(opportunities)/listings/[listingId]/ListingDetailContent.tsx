@@ -128,7 +128,7 @@ export function ListingDetailContent({ listing }: ListingDetailContentProps) {
           <div className="space-y-4">
             {/* Address */}
             <div className="flex gap-3">
-              <MapPin className="h-5 w-5 text-neutral-500 mt-0.5" />
+              <MapPin className="h-5 w-5 mt-0.5" />
               <div className="flex-1">
                 <div className="flex items-center justify-between mb-1">
                   <div className="text-sm font-medium font-heading text-[var(--primary)]">Adresse</div>
@@ -142,10 +142,10 @@ export function ListingDetailContent({ listing }: ListingDetailContentProps) {
                     />
                   )}
                 </div>
-                <div className="text-sm text-neutral-600">
+                <div className="text-sm !text-[var(--primary)]">
                   {listing.address ?? "Non disponible"}
                 </div>
-                <div className="text-xs text-neutral-500 mt-1">
+                <div className="text-xs mt-1 !text-[var(--primary)]">
                   {listing.zipCode} - Département {listing.department}
                 </div>
               </div>
@@ -153,10 +153,10 @@ export function ListingDetailContent({ listing }: ListingDetailContentProps) {
 
             {/* Date */}
             <div className="flex gap-3">
-              <Calendar className="h-5 w-5 text-neutral-500 mt-0.5" />
+              <Calendar className="h-5 w-5 mt-0.5" />
               <div className="flex-1">
                 <div className="text-sm font-medium mb-1 font-heading text-[var(--primary)]">Date de l&apos;opportunité</div>
-                <div className="text-sm text-neutral-600">
+                <div className="text-sm !text-[var(--primary)]">
                   {format(new Date(listing.opportunityDate), "dd MMMM yyyy", {
                     locale: fr,
                   })}
@@ -180,7 +180,7 @@ export function ListingDetailContent({ listing }: ListingDetailContentProps) {
       {/* Timestamps */}
       <Card>
         <CardContent className="pt-6 bg-[var(--secundary)]">
-          <div className="text-xs text-neutral-500 space-y-1">
+          <div className="text-xs space-y-1">
             <div>Créé le : {format(new Date(listing.createdAt), "dd/MM/yyyy à HH:mm")}</div>
             {listing.updatedAt && (
               <div>Mis à jour le : {format(new Date(listing.updatedAt), "dd/MM/yyyy à HH:mm")}</div>

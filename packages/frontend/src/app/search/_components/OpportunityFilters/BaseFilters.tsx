@@ -56,7 +56,7 @@ export function BaseFilters({
   }, [router, pathname]);
 
   return (
-    <Card className="bg-[var(--secundary)] text-[var(--primary)] h-full flex flex-col">
+    <Card className="bg-[var(--secundary)] text-[var(--primary)] border-2 border-[var(--primary)] h-full flex flex-col shadow-lg">
       <CardHeader className="flex-shrink-0">
         {/* View Toggle */}
         <div>

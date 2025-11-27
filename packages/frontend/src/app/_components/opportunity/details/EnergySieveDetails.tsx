@@ -51,7 +51,7 @@ export function EnergySieveDetails({ opportunity, detailPageUrl }: EnergySieveDe
           <div className="grid grid-cols-1 gap-2 text-sm">
             {opportunity.energyClass && (
               <div className="flex items-center gap-2">
-                <TrendingDown className="h-4 w-4 text-gray-600" />
+                <TrendingDown className="h-4 w-4 " />
                 <span className="font-medium">Classe énergétique:</span>
                 <div className="flex items-center gap-2">
                   <Badge
@@ -61,7 +61,7 @@ export function EnergySieveDetails({ opportunity, detailPageUrl }: EnergySieveDe
                     {opportunity.energyClass}
                   </Badge>
                   {energyClassInfo && (
-                    <span className="text-gray-600 text-xs">
+                    <span className=" text-xs">
                       ({energyClassInfo.label})
                     </span>
                   )}
@@ -69,7 +69,7 @@ export function EnergySieveDetails({ opportunity, detailPageUrl }: EnergySieveDe
               </div>
             )}
             <div className="flex items-center gap-2">
-              <Hash className="h-4 w-4 text-gray-600" />
+              <Hash className="h-4 w-4 " />
               <span className="font-medium">Numéro DPE:</span>
               <Badge variant="outline" className="font-mono bg-[var(--primary)]">
                 {opportunity.externalId}
@@ -102,7 +102,7 @@ export function EnergySieveDetails({ opportunity, detailPageUrl }: EnergySieveDe
         <div className="space-y-2">
           <h4 className="font-medium text-sm">Date du diagnostic</h4>
           <div className="flex items-center gap-2 text-sm">
-            <FileText className="h-4 w-4 text-gray-600" />
+            <FileText className="h-4 w-4 " />
             <span>
               {format(new Date(opportunity.opportunityDate), "PPPP", { locale: fr })}
             </span>

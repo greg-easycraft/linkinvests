@@ -34,7 +34,7 @@ function ResetPasswordContent() {
             />
             <h1 className="text-4xl font-bold text-gray-900">linkinvests</h1>
           </div>
-          <p className="text-lg text-gray-600">
+          <p className="text-lg ">
             Plateforme d&apos;investissement immobilier
           </p>
         </div>

@@ -77,7 +77,7 @@ export function SuccessionDetails({ opportunity, detailPageUrl }: SuccessionDeta
             <div className="grid grid-cols-1 gap-2 text-sm">
               {(opportunity.firstName || opportunity.lastName) && (
                 <div className="flex items-center gap-2">
-                  <User className="h-4 w-4 text-gray-600" />
+                  <User className="h-4 w-4 " />
                   <span className="font-medium">Nom:</span>
                   <span>
                     {[opportunity.firstName, opportunity.lastName].filter(Boolean).join(' ')}
@@ -95,11 +95,11 @@ export function SuccessionDetails({ opportunity, detailPageUrl }: SuccessionDeta
             <div className="space-y-2 text-sm">
               {opportunity.mairieContact?.name && (
                 <div className="flex items-start gap-2">
-                  <VenueIcon className="h-4 w-4 text-gray-600 mt-0.5" />
+                  <VenueIcon className="h-4 w-4  mt-0.5" />
                   <div>
                     <div className="font-medium">{opportunity.mairieContact.name}</div>
                     {opportunity.mairieContact.address && (
-                      <div className="text-gray-600">{opportunity.mairieContact.address.complement1}
+                      <div className="">{opportunity.mairieContact.address.complement1}
                       <br/>{opportunity.mairieContact.address.complement2}
                       <br/>{opportunity.mairieContact.address.numero_voie}
                       <br/>{opportunity.mairieContact.address.service_distribution}
@@ -112,21 +112,21 @@ export function SuccessionDetails({ opportunity, detailPageUrl }: SuccessionDeta
 
               {opportunity.mairieContact?.phone && (
                 <div className="flex items-center gap-2">
-                  <Phone className="h-4 w-4 text-gray-600" />
+                  <Phone className="h-4 w-4 " />
                   <span>{opportunity.mairieContact.phone}</span>
                 </div>
               )}
 
               {opportunity.mairieContact?.email && (
                 <div className="flex items-center gap-2">
-                  <Mail className="h-4 w-4 text-gray-600" />
+                  <Mail className="h-4 w-4 " />
                   <span>{opportunity.mairieContact.email}</span>
                 </div>
               )}
 
               {opportunity.mairieContact?.website && (
                 <div className="flex items-center gap-2">
-                  <Globe className="h-4 w-4 text-gray-600" />
+                  <Globe className="h-4 w-4 " />
                   <a
                     href={opportunity.mairieContact.website}
                     target="_blank"
@@ -140,10 +140,10 @@ export function SuccessionDetails({ opportunity, detailPageUrl }: SuccessionDeta
 
               {opportunity.mairieContact?.openingHours && (
                 <div className="flex items-start gap-2">
-                  <Clock className="h-4 w-4 text-gray-600 mt-0.5" />
+                  <Clock className="h-4 w-4  mt-0.5" />
                   <div>
                     <div className="font-medium">Horaires d&apos;ouverture:</div>
-                    <div className="text-gray-600 whitespace-pre-line">
+                    <div className=" whitespace-pre-line">
                       {opportunity.mairieContact.openingHours}
                     </div>
                   </div>
@@ -172,7 +172,7 @@ export function SuccessionDetails({ opportunity, detailPageUrl }: SuccessionDeta
         <div className="space-y-2">
           <h4 className="font-medium text-sm">Date du décès</h4>
           <div className="flex items-center gap-2 text-sm">
-            <Calendar className="h-4 w-4 text-gray-600" />
+            <Calendar className="h-4 w-4 " />
             <span>
               {format(new Date(opportunity.opportunityDate), "PPPP", { locale: fr })}
             </span>

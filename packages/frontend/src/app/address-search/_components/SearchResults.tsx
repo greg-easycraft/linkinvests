@@ -17,7 +17,7 @@ export function SearchResults({ results, onViewDetails }: SearchResultsProps) {
       <Card className="w-full max-w-4xl mx-auto">
         <CardContent className="p-8 text-center">
           <div className="space-y-4">
-            <div className="text-gray-500">
+            <div className="">
               <MapPin className="mx-auto h-12 w-12 mb-4" />
               <p className="text-lg font-medium">Aucune adresse trouvée</p>
               <p className="text-sm">
@@ -93,10 +93,10 @@ function AddressResultCard({ result, onViewDetails }: AddressResultCardProps) {
           {/* Address and Location */}
           <div className="flex-1">
             <div className="flex items-start gap-2 mb-2">
-              <MapPin className="h-4 w-4 text-gray-500 mt-1 flex-shrink-0" />
+              <MapPin className="h-4 w-4  mt-1 flex-shrink-0" />
               <div>
                 <p className="font-medium text-lg text-gray-900">{result.address}</p>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm ">
                   {result.zipCode} • Department {result.department}
                 </p>
               </div>
@@ -119,7 +119,7 @@ function AddressResultCard({ result, onViewDetails }: AddressResultCardProps) {
         <div className="flex flex-wrap items-center gap-4 mb-3">
           {/* DPE Class */}
           <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">DPE:</span>
+            <span className="text-sm ">DPE:</span>
             <Badge className={`px-2 py-1 text-xs font-bold ${getDpeColor(result.energyClass)}`}>
               {result.energyClass}
             </Badge>
@@ -127,13 +127,13 @@ function AddressResultCard({ result, onViewDetails }: AddressResultCardProps) {
 
           {/* Square Footage */}
           <div className="flex items-center gap-1">
-            <span className="text-sm text-gray-600">Superficie :</span>
+            <span className="text-sm ">Superficie :</span>
             <span className="text-sm font-medium">{result.squareFootage} m²</span>
           </div>
 
           {/* DPE Number */}
           <div className="flex items-center gap-1">
-            <span className="text-sm text-gray-600">N° DPE :</span>
+            <span className="text-sm ">N° DPE :</span>
             <span className="text-sm font-mono text-gray-800">{result.energyDiagnosticId}</span>
           </div>
         </div>
@@ -141,7 +141,7 @@ function AddressResultCard({ result, onViewDetails }: AddressResultCardProps) {
         {/* Match Reasons */}
         {result.matchReasons && result.matchReasons.length > 0 && (
           <div className="mb-3">
-            <p className="text-xs text-gray-500 mb-1">Facteurs de correspondance :</p>
+            <p className="text-xs  mb-1">Facteurs de correspondance :</p>
             <div className="flex flex-wrap gap-1">
               {result.matchReasons.map((reason: string, index: number) => (
                 <Badge

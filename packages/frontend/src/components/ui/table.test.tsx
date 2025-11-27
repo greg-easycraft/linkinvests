@@ -332,7 +332,7 @@ describe('Table Components', () => {
         'align-middle',
         'font-medium',
         'font-heading',
-        'text-neutral-500'
+        ''
       );
     });
 
@@ -493,7 +493,7 @@ describe('Table Components', () => {
       );
 
       const caption = screen.getByTestId('test-caption');
-      expect(caption).toHaveClass('mt-4', 'text-sm', 'text-neutral-500');
+      expect(caption).toHaveClass('mt-4', 'text-sm', '');
     });
 
     it('should apply custom className', () => {

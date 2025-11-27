@@ -10,7 +10,7 @@ export default function ListingNotFound() {
           <CardTitle>Annonce non trouvée</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <p className="text-neutral-600">
+          <p className="">
             Cette annonce n&apos;existe pas ou a été supprimée.
           </p>
           <Link href="/search/listings">

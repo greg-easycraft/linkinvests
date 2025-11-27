@@ -99,10 +99,10 @@ export function OpportunityHeader({
                 onCheckedChange={handleSelectAllChange}
                 aria-label="Tout sélectionner"
               />
-              <span className="text-sm text-[var(--secundary)]">Tout</span>
+              <span className="text-sm">Tout</span>
             </div>
           )}
-          <div className="text-sm text-[var(--secundary)]">
+          <div className="text-sm">
             Affichage de <span className="font-bold">{startItem}-{endItem}</span> sur{' '}
             {isCountLoading ? (
               <CountSkeleton />
@@ -159,7 +159,7 @@ function Pagination({
       Précédent
     </Button>
 
-    <div className="text-sm text-[var(--secundary)] px-6">
+    <div className="text-sm px-6">
       Page {currentPage} sur {totalPages}
     </div>
 
@@ -186,7 +186,7 @@ function PageSizeSelector({
 }): React.ReactElement {
   return (
     <div className="flex items-center gap-2">
-    <span className="text-sm text-[var(--secundary)]">Éléments par page:</span>
+    <span className="text-sm">Éléments par page:</span>
     <Select value={pageSize.toString()} onValueChange={(value: string) => onPageSizeChange(parseInt(value, 10))}>
       <SelectTrigger className="w-20 h-8">
         <SelectValue />

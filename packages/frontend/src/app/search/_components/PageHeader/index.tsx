@@ -9,7 +9,7 @@ export function PageHeader(): React.ReactElement {
   const pathname = usePathname();
 
   return (
-    <div className="border-b border-[var(--secundary)] px-6 py-3">
+    <div className="border-b border-[var(--primary)] px-6 py-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-8">
           <a
@@ -32,8 +32,8 @@ export function PageHeader(): React.ReactElement {
               href="/search"
               className={`px-3 py-2 text-sm rounded-sm font-medium ${
                 pathname.startsWith('/search') && pathname !== '/address-search'
-                ? 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                  : 'text-[var(--secundary)]'
+                ? 'text-gray-400'
+                : ' hover:text-gray-900 hover:bg-gray-100'
               }`}
             >
               Recherche
@@ -42,8 +42,8 @@ export function PageHeader(): React.ReactElement {
               href="/address-search"
               className={`px-3 py-2 text-sm rounded-sm font-medium ${
                 pathname === '/address-search'
-                ? 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                : 'text-[var(--secundary)]'
+                ? 'text-gray-400'
+                : ' hover:text-gray-900 hover:bg-gray-100'
               }`}
             >
               Recherche d&apos;adresse

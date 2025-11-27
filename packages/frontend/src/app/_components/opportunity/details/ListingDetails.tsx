@@ -145,7 +145,7 @@ export function ListingDetails({ opportunity, detailPageUrl }: ListingDetailsPro
                     {formatPrice(Number(opportunity.price))}
                   </Badge>
                   {opportunity.priceType && (
-                    <span className="text-gray-500 text-xs">({opportunity.priceType})</span>
+                    <span className=" text-xs">({opportunity.priceType})</span>
                   )}
                 </div>
               )}
@@ -174,7 +174,7 @@ export function ListingDetails({ opportunity, detailPageUrl }: ListingDetailsPro
             <div className="grid grid-cols-1 gap-2 text-sm">
               {opportunity.squareFootage && (
                 <div className="flex items-center gap-2">
-                  <Square className="h-4 w-4 text-gray-600" />
+                  <Square className="h-4 w-4 " />
                   <span className="font-medium">Surface habitable:</span>
                   <span>{formatSquareFootage(Number(opportunity.squareFootage))}</span>
                 </div>
@@ -188,20 +188,20 @@ export function ListingDetails({ opportunity, detailPageUrl }: ListingDetailsPro
               )}
               {opportunity.rooms && (
                 <div className="flex items-center gap-2">
-                  <Home className="h-4 w-4 text-gray-600" />
+                  <Home className="h-4 w-4 " />
                   <span className="font-medium">Nombre de pièces:</span>
                   <span>{opportunity.rooms}</span>
                 </div>
               )}
               {opportunity.bedrooms && (
                 <div className="flex items-center gap-2">
-                  <Bed className="h-4 w-4 text-gray-600" />
+                  <Bed className="h-4 w-4 " />
                   <span className="font-medium">Chambres:</span>
                   <span>{opportunity.bedrooms}</span>
                 </div>
               )}
               <div className="flex items-center gap-2">
-                <Zap className="h-4 w-4 text-gray-600" />
+                <Zap className="h-4 w-4 " />
                 <span className="font-medium">DPE:</span>
                 <EnergyClassBadge
                   energyClass={opportunity.energyClass}
@@ -209,14 +209,14 @@ export function ListingDetails({ opportunity, detailPageUrl }: ListingDetailsPro
               </div>
               {opportunity.constructionYear && (
                 <div className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4 text-gray-600" />
+                  <Calendar className="h-4 w-4 " />
                   <span className="font-medium">Année de construction:</span>
                   <span>{opportunity.constructionYear}</span>
                 </div>
               )}
               {opportunity.floor !== undefined && (
                 <div className="flex items-center gap-2">
-                  <Building2 className="h-4 w-4 text-gray-600" />
+                  <Building2 className="h-4 w-4 " />
                   <span className="font-medium">Étage:</span>
                   <span>
                     {opportunity.floor}
@@ -277,7 +277,7 @@ export function ListingDetails({ opportunity, detailPageUrl }: ListingDetailsPro
         {opportunity.description && (
           <div className="space-y-2">
             <h4 className="font-medium text-sm">Description</h4>
-            <p className="text-sm text-gray-600 leading-relaxed">
+            <p className="text-sm leading-relaxed">
               {opportunity.description}
             </p>
           </div>
@@ -290,13 +290,13 @@ export function ListingDetails({ opportunity, detailPageUrl }: ListingDetailsPro
             <div className="space-y-2 text-sm">
               {(opportunity.sellerContact?.name || opportunity.sellerContact?.address) && (
                 <div className="flex items-start gap-2">
-                  <VenueIcon className="h-4 w-4 text-gray-600 mt-0.5" />
+                  <VenueIcon className="h-4 w-4  mt-0.5" />
                   <div>
                     {opportunity.sellerContact.name && (
                       <div className="font-medium">{opportunity.sellerContact.name}</div>
                     )}
                     {opportunity.sellerContact.address && (
-                      <div className="text-gray-600">{opportunity.sellerContact.address}</div>
+                      <div className="">{opportunity.sellerContact.address}</div>
                     )}
                   </div>
                 </div>
@@ -304,21 +304,21 @@ export function ListingDetails({ opportunity, detailPageUrl }: ListingDetailsPro
 
               {opportunity.sellerContact?.phone && (
                 <div className="flex items-center gap-2">
-                  <Phone className="h-4 w-4 text-gray-600" />
+                  <Phone className="h-4 w-4 " />
                   <span>{opportunity.sellerContact.phone}</span>
                 </div>
               )}
 
               {opportunity.sellerContact?.email && (
                 <div className="flex items-center gap-2">
-                  <Mail className="h-4 w-4 text-gray-600" />
+                  <Mail className="h-4 w-4 " />
                   <span>{opportunity.sellerContact.email}</span>
                 </div>
               )}
 
               {opportunity.sellerContact?.website && (
                 <div className="flex items-center gap-2">
-                  <Globe className="h-4 w-4 text-gray-600" />
+                  <Globe className="h-4 w-4 " />
                   <a
                     href={opportunity.sellerContact.website}
                     target="_blank"
@@ -332,7 +332,7 @@ export function ListingDetails({ opportunity, detailPageUrl }: ListingDetailsPro
 
               {opportunity.sellerContact?.contact && (
                 <div className="flex items-center gap-2">
-                  <Contact className="h-4 w-4 text-gray-600" />
+                  <Contact className="h-4 w-4 " />
                   <span className="font-medium">Contact:</span>
                   <span>{opportunity.sellerContact.contact}</span>
                 </div>
@@ -340,7 +340,7 @@ export function ListingDetails({ opportunity, detailPageUrl }: ListingDetailsPro
 
               {opportunity.sellerContact?.siret && (
                 <div className="flex items-center gap-2">
-                  <Shield className="h-4 w-4 text-gray-600" />
+                  <Shield className="h-4 w-4 " />
                   <span className="font-medium">SIRET:</span>
                   <span className="font-mono text-xs">{opportunity.sellerContact.siret}</span>
                 </div>
@@ -353,7 +353,7 @@ export function ListingDetails({ opportunity, detailPageUrl }: ListingDetailsPro
         <div className="space-y-2">
           <h4 className="font-medium text-sm">Date de publication</h4>
           <div className="flex items-center gap-2 text-sm">
-            <Calendar className="h-4 w-4 text-gray-600" />
+            <Calendar className="h-4 w-4 " />
             <span>
               {format(new Date(opportunity.opportunityDate), "PPPP", { locale: fr })}
             </span>
