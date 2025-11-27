@@ -1,11 +1,23 @@
+- [ ] color on description text
+- [ ] succession, email sur detail, pas action de masse
 
-## MARDI
-## MERCREDI
-- [ ] email mairie (multiple)
-- [ ] address search refined scoring (city name etc)
+- [ ] land area + options + mot clés + année construction
+- [ ] sort by (publication date; mast event date, price?)
+- [ ] annonces date publi vs modif
+
+- [ ] addresse mairie zipcode cedex
+- [ ] classe gaz sur DPEs (GES) pour affiner scoring
+
+
+
+https://linkinvests.easycraft.cloud/listings/62b24e4a-55b0-4513-bf46-c475b57f8928
+
+IMPROVEMENTS
 
 LATER
 - [ ] rename address fields into streetAddress & handle as such
+- [ ] auto scrape deceases
+- [ ] succession, mémorisation si email envoyé
 - map bounds on search
 - [ ] recherche dans un rayon autour de moi ou d'un code postal
 - [ ] historique des encheres avec filtre réalisées (judiciaires uniquement) vs non réalisées

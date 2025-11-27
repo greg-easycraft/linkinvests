@@ -4,9 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { UserInfo } from "./UserInfo";
+import { ThemeToggle } from "~/components/ui/theme-toggle";
+import { useTheme } from "~/components/providers/theme-provider";
 
 export function PageHeader(): React.ReactElement {
   const pathname = usePathname();
+  const { theme } = useTheme();
+  const isDarkTheme = theme === "dark";
 
   return (
     <div className="border-b border-[var(--primary)] px-6 py-3">
@@ -19,7 +23,7 @@ export function PageHeader(): React.ReactElement {
             className="flex items-center gap-3 hover:opacity-80 transition-opacity"
           >
             <Image
-              src="/logo.svg"
+              src={isDarkTheme ? "/logo.svg" : "/logo-dark.svg"}
               alt="LinkInvests Logo"
               width={20}
               height={20}
@@ -50,7 +54,10 @@ export function PageHeader(): React.ReactElement {
             </Link>
           </nav>
         </div>
-        <UserInfo />
+        <div className="flex items-center gap-4">
+          <ThemeToggle />
+          <UserInfo />
+        </div>
       </div>
     </div>
   );

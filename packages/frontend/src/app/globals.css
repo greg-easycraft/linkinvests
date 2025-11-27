@@ -2,16 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
+:root,
+:root.light {
   --primary: #3E3E3E;
   --secundary: #ededed;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --primary: #ededed;
-    --secundary: #3E3E3E;
-  }
+:root.dark {
+  --primary: #ededed;
+  --secundary: #3E3E3E;
 }
 
 body {
