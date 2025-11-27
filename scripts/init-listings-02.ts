@@ -17,7 +17,6 @@ type Env = z.infer<typeof envSchema>;
 
 const today = new Date();
 
-const ENERGY_CLASSES = ['G', 'F', 'E'];
 const MONTHS_PERIOD = [3, 6, 9, 12];
 const MONTHS_STEP = 3;
 
@@ -53,13 +52,11 @@ const MONTHS_STEP = 3;
     for (const monthsPeriod of MONTHS_PERIOD) {
         const beforeDate = subMonths(today, monthsPeriod);
         const afterDate = subMonths(beforeDate, MONTHS_STEP);
-        for (const energyClass of ENERGY_CLASSES) {
             for (const department of allDepartments) {
                 const success = await createMoteurImmoJob({
                     departmentId: department,
                     afterDate: afterDate.toISOString().split('T')[0],
                     beforeDate: beforeDate.toISOString().split('T')[0],
-                    energyClass,
                 });
 
                 if (success) {
@@ -71,11 +68,9 @@ const MONTHS_STEP = 3;
                 //console.log({ afterDate, beforeDate, energyClass, department });
                 await new Promise(resolve => setTimeout(resolve, 10));
             }
-            console.log(`✅ Completed energy class ${energyClass} for months period ${monthsPeriod}\n`);
-        }
         console.log(`✅ Completed months period ${monthsPeriod}\n`);
     }
-
+    
 
     // Summary
     console.log('🎉 Listings job creation completed!');
@@ -106,8 +101,7 @@ function buildCreateMoteurImmoJobBody(endpointUrl: string, headers: Record<strin
         departmentId,
         afterDate,
         beforeDate,
-        energyClass,
-    }: { departmentId: number, afterDate: string, beforeDate: string, energyClass: string }): Promise<boolean> {
+    }: { departmentId: number, afterDate: string, beforeDate: string }): Promise<boolean> {
         try {
             const response = await fetch(endpointUrl, {
                 method: 'POST',
@@ -116,15 +110,14 @@ function buildCreateMoteurImmoJobBody(endpointUrl: string, headers: Record<strin
                     departmentCode: departmentId.toString().padStart(2, '0'),
                     afterDate,
                     beforeDate,
-                    energyGradeMax: energyClass,
-                    energyGradeMin: energyClass,
+                    propertyTypes: ['land'],
                     usePublicationDate: true,
                 })
             });
 
             if (!response.ok) {
                 const errorText = await response.text();
-                console.error(`Failed to create job for department ${departmentId}, period ${afterDate}-${beforeDate}, energy class ${energyClass}: ${response.status} ${response.statusText} - ${errorText}`);
+                console.error(`Failed to create job for department ${departmentId}, period ${afterDate}-${beforeDate}: ${response.status} ${response.statusText} - ${errorText}`);
                 return false;
             }
 
@@ -133,7 +126,7 @@ function buildCreateMoteurImmoJobBody(endpointUrl: string, headers: Record<strin
             return true;
 
         } catch (error) {
-            console.error(`❌ Error creating job for department ${departmentId}, period ${afterDate}-${beforeDate}, energy class ${energyClass}:`, error);
+            console.error(`❌ Error creating job for department ${departmentId}, period ${afterDate}-${beforeDate}:`, error);
             return false;
         }
     };

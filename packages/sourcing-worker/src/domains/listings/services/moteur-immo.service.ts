@@ -345,12 +345,20 @@ export class MoteurImmoService {
     filters: ListingsJobFilters,
     page: number,
   ): Record<string, unknown> {
-    const requestBody: Record<string, unknown> = {
+    const requestBody: Record<string, unknown> & { categories: string[] } = {
       apiKey: this.apiKey,
       page,
       maxLength: this.apiPageSize,
       types: ['sale'],
-      categories: ['house', 'flat', 'office', 'premises', 'shop', 'block'],
+      categories: filters.propertyTypes ?? [
+        'house',
+        'flat',
+        'office',
+        'premises',
+        'shop',
+        'block',
+        'land',
+      ],
       options: ['isOld', 'isNotUnderCompromise'],
     };
 
@@ -379,27 +387,16 @@ export class MoteurImmoService {
 
     if (filters.energyGradeMax) {
       requestBody.energyGradeMax = filters.energyGradeMax;
+      requestBody.categories = requestBody.categories.filter(
+        (type) => type !== 'land',
+      );
     }
 
     if (filters.energyGradeMin) {
       requestBody.energyGradeMin = filters.energyGradeMin;
-    }
-
-    // Property type filtering - CONFIRMED: works with 'categories' parameter
-    if (filters.propertyTypes && filters.propertyTypes.length > 0) {
-      requestBody.categories = filters.propertyTypes.map((type) => {
-        // Map our PropertyType to API categories
-        switch (type.toLowerCase()) {
-          case 'apartment':
-            return 'flat';
-          case 'house':
-            return 'house';
-          case 'terrain':
-            return 'land';
-          default:
-            return type;
-        }
-      });
+      requestBody.categories = requestBody.categories.filter(
+        (type) => type !== 'land',
+      );
     }
 
     // Department filtering: parameter name needs to be discovered
