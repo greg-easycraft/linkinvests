@@ -17,8 +17,8 @@ type Env = z.infer<typeof envSchema>;
 
 const today = new Date();
 
-const ENERGY_CLASSES = ['G'];
-const MONTHS_PERIOD = [6];
+const ENERGY_CLASSES = ['G', 'F', 'E'];
+const MONTHS_PERIOD = [12, 9, 6, 3];
 const MONTHS_STEP = 3;
 
 
@@ -39,7 +39,8 @@ const MONTHS_STEP = 3;
         'Authorization': `Basic ${auth}`
     };
 
-    const allDepartments = [95]
+    const allDepartments = Array
+        .from({ length: 95 }, (_, i) => i + 1).reverse();
 
     // Process all departments and weeks sequentially
     let successCount = 0;
@@ -113,7 +114,7 @@ function buildCreateMoteurImmoJobBody(endpointUrl: string, headers: Record<strin
                 body: JSON.stringify({
                     departmentCode: departmentId.toString().padStart(2, '0'),
                     afterDate,
-                    //beforeDate,
+                    beforeDate,
                     energyGradeMax: energyClass,
                     energyGradeMin: energyClass,
                     usePublicationDate: true,

@@ -1,6 +1,6 @@
 
-- [ ] type change is not instant
 - [ ] espace bizarre sur tri si annonce
+- [ ] type change is not instant
 
 - [ ] land area + options + mot clés + année construction
 

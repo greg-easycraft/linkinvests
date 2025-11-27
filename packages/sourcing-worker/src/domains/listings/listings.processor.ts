@@ -25,24 +25,10 @@ export class ListingsProcessor extends WorkerHost {
     const { source = 'moteurimmo', ...filters } = job.data;
     const startTime = Date.now();
     const filtersToUse = filters ?? ({} as ListingsJobFilters);
-    const {
-      beforeDate,
-      afterDate,
-      energyGradeMax,
-      propertyTypes,
-      departmentCode,
-      usePublicationDate,
-    } = filtersToUse;
 
     this.logger.log(`Starting to process listings`, {
       jobId: job.id,
-      source,
-      afterDate,
-      beforeDate,
-      energyGradeMax,
-      propertyTypes,
-      departmentCode,
-      usePublicationDate,
+      ...filtersToUse,
     });
 
     const stats = {
