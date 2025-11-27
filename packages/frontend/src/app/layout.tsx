@@ -7,7 +7,7 @@ import { ThemeProvider } from '~/components/providers/theme-provider';
 import { Toaster } from '~/components/ui/sonner';
 
 export const metadata: Metadata = {
-  title: 'linkinvests',
+  title: 'Link Invests',
   description: 'Plateforme d\'investissement immobilier',
   icons: {
     icon: '/logo-dark.svg',

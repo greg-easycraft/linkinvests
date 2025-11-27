@@ -75,13 +75,6 @@ export default function AddressSearchPageContent(): React.ReactElement {
       <PageHeader />
 
       <div className="container mx-auto py-8 space-y-8 max-w-6xl">
-      {/* Page Header */}
-      <div className="text-center space-y-4">
-        <h1 className="text-3xl font-bold text-[var(--secundary)]">
-          Outil de Recherche d&apos;Adresses
-        </h1>
-      </div>
-
       {/* Search Form */}
       <AddressSearchForm onSubmit={handleSubmit} isLoading={isLoading} />
 
@@ -153,25 +146,6 @@ export default function AddressSearchPageContent(): React.ReactElement {
           onClose={handleCloseModal}
         />
       )}
-
-      {/* Information Footer */}
-      <div className="max-w-4xl mx-auto text-center py-8 border-t border-gray-200">
-        <div className="space-y-3">
-          <h4 className="font-medium text-gray-900">Comment ça fonctionne</h4>
-          <div className="text-sm  space-y-2">
-            <p>
-              Cet outil recherche dans les dossiers de diagnostics énergétiques (DPE) existants pour trouver les propriétés
-              qui correspondent à vos critères. Les résultats sont classés par niveau de confiance en fonction de leur
-              alignement avec vos paramètres de recherche.
-            </p>
-            <p>
-              <strong>Source de données :</strong> Certificats de diagnostic énergétique et évaluations de propriétés.
-              <strong> Notation de correspondance :</strong> Combine les correspondances exactes (code postal, classe DPE) avec
-              les correspondances partielles (mots-clés d&apos;adresse) pour classer les résultats.
-            </p>
-          </div>
-        </div>
-      </div>
     </div>
     </div>
   );

@@ -56,7 +56,7 @@ export function AddressSearchForm({ onSubmit, isLoading = false }: AddressSearch
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto bg-[var(--secundary)] border-[var(--secundary)]">
+    <Card className="w-full max-w-2xl mx-auto border-none">
       <CardHeader>
         <CardTitle>Recherche d&apos;Adresse par Diagnostic Énergétique</CardTitle>
         <CardDescription>
@@ -70,8 +70,8 @@ export function AddressSearchForm({ onSubmit, isLoading = false }: AddressSearch
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* DPE Energy Class */}
           <div className="space-y-2">
-            <label htmlFor="energyClass" className="text-sm font-medium text-gray-700">
-              Classe Énergétique DPE
+            <label htmlFor="energyClass" className="text-sm font-medium">
+              Classe Énergétique DPE <span className="text-red-500">*</span>
             </label>
             <Select
               value={watchEnergyClass || ""}
@@ -99,8 +99,8 @@ export function AddressSearchForm({ onSubmit, isLoading = false }: AddressSearch
 
           {/* Square Footage */}
           <div className="space-y-2">
-            <label htmlFor="squareFootage" className="text-sm font-medium text-gray-700">
-              Superficie (m²)
+            <label htmlFor="squareFootage" className="text-sm font-medium">
+              Superficie (m²) <span className="text-red-500">*</span>
             </label>
             <Input
               id="squareFootage"
@@ -117,7 +117,7 @@ export function AddressSearchForm({ onSubmit, isLoading = false }: AddressSearch
 
           {/* Zip Code (Required) */}
           <div className="space-y-2">
-            <label htmlFor="zipCode" className="text-sm font-medium text-gray-700">
+            <label htmlFor="zipCode" className="text-sm font-medium">
               Code Postal <span className="text-red-500">*</span>
             </label>
             <Input
@@ -134,7 +134,7 @@ export function AddressSearchForm({ onSubmit, isLoading = false }: AddressSearch
 
           {/* Optional Photo */}
           <div className="space-y-2">
-            <label htmlFor="photo" className="text-sm font-medium text-gray-700">
+            <label htmlFor="photo" className="text-sm font-medium">
               Photo de la Propriété
             </label>
             <Input
@@ -160,7 +160,7 @@ export function AddressSearchForm({ onSubmit, isLoading = false }: AddressSearch
           {/* Full Width Fields */}
           {/* Optional Address - Full Width */}
           <div className="space-y-2">
-            <label htmlFor="address" className="text-sm font-medium text-gray-700">
+            <label htmlFor="address" className="text-sm font-medium">
               Adresse Partielle
             </label>
             <Input
@@ -197,10 +197,6 @@ export function AddressSearchForm({ onSubmit, isLoading = false }: AddressSearch
           {/* Form Requirements */}
           <div className="text-xs  space-y-1">
             <p>* Champs requis</p>
-            <p>
-              Cette recherche utilise les données de diagnostic énergétique existantes pour trouver des correspondances d&apos;adresse potentielles.
-              Des critères plus spécifiques donneront des résultats plus précis.
-            </p>
           </div>
         </form>
       </CardContent>

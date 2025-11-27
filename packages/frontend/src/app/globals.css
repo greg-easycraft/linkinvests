@@ -6,15 +6,20 @@
 :root.light {
   --primary: #3E3E3E;
   --secundary: #ededed;
+  body {
+    background: var(--secundary);
+  }
 }
 
 :root.dark {
   --primary: #ededed;
   --secundary: #3E3E3E;
+  body {
+    background: #1F1F1F;
+  }
 }
 
 body {
   color: var(--primary);
-  background: var(--secundary);
   font-family: Arial, Helvetica, sans-serif;
 }
