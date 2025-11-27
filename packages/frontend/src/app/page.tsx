@@ -1,9 +1,18 @@
+"use client";
 // import { SignInForm } from "~/components/auth/SignInForm";
-import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
 
 export default function Home() {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsVisible(true);
+    }, 3500);
+  }, []);
+
   return (
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Video Background */}
@@ -12,41 +21,23 @@ export default function Home() {
         autoPlay
         muted
         playsInline
-        loop
-        src="https://linkinvests.com/wp-content/uploads/2025/06/0_Modern_House_3840x2160.webm"
+        src="logo-motion.mp4"
       />
       {/* Overlay for better text readability */}
-      <div className="absolute inset-0 bg-black/40" />
-
-      {/* Logo at top left */}
-      <div className="absolute top-6 left-6 z-10">
-        <Image
-          src="/logo-w-text.svg"
-          alt="LinkInvests Logo"
-          width={250}
-          height={30}
-        />
-      </div>
+      {/* <div className="absolute inset-0 bg-black/40" /> */}
 
       {/* Content */}
-      <div className="relative z-10 w-full px-4">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-300 text-white">
-            Plateforme d&apos;investissement immobilier
-          </h1>
-        </div>
+      <div
+        className={`absolute z-10 w-full px-4 bottom-[20vh] transition-opacity duration-700 ease-in-out ${
+          isVisible ? "opacity-100" : "opacity-0"
+        }`}
+      >
         {/* <SignInForm /> */}
         <div className="flex justify-center">
-          <Button variant="outline" className="bg-white/10 border-white text-white hover:bg-black/10 hover:text-white" asChild>
+          <Button variant="outline" className="bg-white/10 border-black text-black hover:bg-white/20 hover:text-black transition-transform duration-300 ease-out hover:-translate-y-1 hover:scale-105" asChild>
             <div className="flex items-center gap-2 p-4 py-6">
               <Link href="/search/listings">
-                <div className="flex items-center gap-2 text-lg">
-                  <Image
-                    src="/logo.svg"
-                    alt=""
-                    width={20}
-                    height={20}
-                  />
+                <div className="text-lg">
                   Accéder à la plateforme
                 </div>
               </Link>
