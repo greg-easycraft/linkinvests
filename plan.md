@@ -1,9 +1,8 @@
 
 - [ ] type change is not instant
+- [ ] espace bizarre sur tri si annonce
 
 - [ ] land area + options + mot clés + année construction
-- [ ] sort by (publication date; mast event date, price?)
-- [ ] annonces date publi vs modif
 
 - [ ] addresse mairie zipcode cedex
 - [ ] classe gaz sur DPEs (GES) pour affiner scoring

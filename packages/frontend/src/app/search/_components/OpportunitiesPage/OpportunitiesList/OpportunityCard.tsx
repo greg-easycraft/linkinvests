@@ -4,7 +4,7 @@ import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { Checkbox } from "~/components/ui/checkbox";
-import { MapPin, Calendar, ExternalLink, Building2, Zap, Euro, RefreshCcw } from "lucide-react";
+import { MapPin, Calendar, ExternalLink, Building2, Zap, Euro, RefreshCcw, Gavel } from "lucide-react";
 import { StaticStreetView } from "./StaticStreetView";
 import { TYPE_LABELS, TYPE_COLORS } from "~/constants/opportunity-types";
 import { EnergyClass, Opportunity, OpportunityType } from "@linkinvests/shared";
@@ -28,6 +28,11 @@ const hasPriceFields = (opportunity: Opportunity): opportunity is Extract<Opport
 // Type guard to check if opportunity is a listing with lastChangeDate
 const hasLastChangeDate = (opportunity: Opportunity): opportunity is Extract<Opportunity, { lastChangeDate?: string }> => {
   return 'lastChangeDate' in opportunity;
+};
+
+// Type guard to check if opportunity is an auction with currentPrice and reservePrice
+const isAuction = (opportunity: Opportunity): opportunity is Extract<Opportunity, { currentPrice?: number; reservePrice?: number }> => {
+  return 'currentPrice' in opportunity || 'reservePrice' in opportunity;
 };
 
 // Price formatting utility
@@ -69,7 +74,7 @@ export function OpportunityCard({ opportunity, onSelect, selectedId, type, exter
         <Card
           key={opportunity.id}
           onClick={() => onSelect(opportunity)}
-          className={`cursor-pointer transition-all hover:shadow-lg bg-[var(--secundary)] text-[var(--primary)] border-2 ${selectedId === opportunity.id
+          className={`cursor-pointer transition-all hover:shadow-lg bg-[var(--secundary)] text-[var(--primary)] border ${selectedId === opportunity.id
               ? "border-blue-500 shadow-lg"
               : "border-[var(--primary)] shadow-lg"
             }`}
@@ -180,8 +185,36 @@ export function OpportunityCard({ opportunity, onSelect, selectedId, type, exter
                     </div>
                   )}
 
-                  {/* Price */}
-                  {hasPriceFields(opportunity) && getPriceValue(opportunity) && (
+                  {/* Price - For auctions show both currentPrice and reservePrice */}
+                  {type === OpportunityType.AUCTION && isAuction(opportunity) && (
+                    <>
+                      {opportunity.currentPrice && (
+                        <div className="flex items-start gap-2">
+                          <Euro className="h-4 w-4 mt-0.5 flex-shrink-0 text-[var(--primary)] opacity-70" />
+                          <div>
+                            <div className="text-xs opacity-70 font-heading">Prix actuel</div>
+                            <div className="font-semibold text-green-600">
+                              {formatPrice(opportunity.currentPrice)}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                      {opportunity.reservePrice && (
+                        <div className="flex items-start gap-2">
+                          <Gavel className="h-4 w-4 mt-0.5 flex-shrink-0 text-[var(--primary)] opacity-70" />
+                          <div>
+                            <div className="text-xs opacity-70 font-heading">Mise à prix</div>
+                            <div className="font-semibold text-orange-600">
+                              {formatPrice(opportunity.reservePrice)}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  )}
+
+                  {/* Price - For non-auctions */}
+                  {type !== OpportunityType.AUCTION && hasPriceFields(opportunity) && getPriceValue(opportunity) && (
                     <div className="flex items-start gap-2">
                       <Euro className="h-4 w-4 mt-0.5 flex-shrink-0 text-[var(--primary)] opacity-70" />
                       <div>

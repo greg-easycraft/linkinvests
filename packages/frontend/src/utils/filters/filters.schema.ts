@@ -1,6 +1,7 @@
 import { AuctionOccupationStatus, EnergyClass, EnergyClassType, OpportunityType, PropertyType, UNKNOWN_ENERGY_CLASS } from "@linkinvests/shared";
 import { z } from "zod";
 import { DATE_PERIOD_OPTIONS } from "~/constants/date-periods";
+import { AUCTION_SORT_OPTIONS, DEFAULT_SORT_OPTIONS, LISTING_SORT_OPTIONS } from "~/constants/sort-options";
 import { DatePeriod } from "~/types/filters";
 
 
@@ -17,7 +18,7 @@ export const baseFiltersSchema = z.object({
         z.array(z.string())
     ]).optional(),
     datePeriod: z.enum(DATE_PERIOD_OPTIONS.map(option => option.value) as [DatePeriod, ...DatePeriod[]]).optional(),
-    sortBy: z.enum(['opportunityDate']).optional(),
+    sortBy: z.enum(DEFAULT_SORT_OPTIONS.map(option => option.sortBy)).optional(),
     sortOrder: z.enum(['asc', 'desc']).optional(),
 });
 
@@ -45,6 +46,7 @@ export const auctionFiltersSchema = baseFiltersSchema.extend({
         }),
         z.array(z.union([z.literal(UNKNOWN_ENERGY_CLASS), z.enum(EnergyClass)]))
     ]).optional(),
+    sortBy: z.enum(AUCTION_SORT_OPTIONS.map(option => option.sortBy)).optional(),
 });
 
 export const listingFiltersSchema = baseFiltersSchema.extend({
@@ -86,7 +88,7 @@ export const listingFiltersSchema = baseFiltersSchema.extend({
         }).transform(val => val as 'individual' | 'professional'),
         z.enum(['individual', 'professional'])
     ]).optional(),
-    sortBy: z.enum(['opportunityDate', 'lastChangeDate']).optional(),
+    sortBy: z.enum(LISTING_SORT_OPTIONS.map(option => option.sortBy)).optional(),
 });
 
 export const energyDiagnosticFiltersSchema = baseFiltersSchema.extend({

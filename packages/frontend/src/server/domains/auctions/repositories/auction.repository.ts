@@ -124,11 +124,17 @@ export class DrizzleAuctionRepository implements IAuctionRepository {
       query = query.where(and(...conditions));
     }
 
+    // Map sortBy field names to actual database columns
+    const sortFieldMap: Record<string, string> = {
+      price: 'currentPrice',
+    };
+
     // Apply sorting
-    if (filters?.sortBy && opportunityAuctions[filters.sortBy as keyof typeof opportunityAuctions]) {
-      const column = opportunityAuctions[filters.sortBy as keyof typeof opportunityAuctions];
+    const sortField = filters?.sortBy ? (sortFieldMap[filters.sortBy] ?? filters.sortBy) : undefined;
+    if (sortField && opportunityAuctions[sortField as keyof typeof opportunityAuctions]) {
+      const column = opportunityAuctions[sortField as keyof typeof opportunityAuctions];
       query = query.orderBy(
-        filters.sortOrder === "desc" ? sql`${column} DESC` : sql`${column} ASC`,
+        filters?.sortOrder === "desc" ? sql`${column} DESC` : sql`${column} ASC`,
       );
     } else {
       // Default sorting by creation date

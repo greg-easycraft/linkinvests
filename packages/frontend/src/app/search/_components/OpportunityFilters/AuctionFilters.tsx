@@ -12,6 +12,7 @@ import {
   OccupationStatusFilter,
   EnergyClassFilter,
 } from "~/components/filters";
+import { AUCTION_SORT_OPTIONS } from "~/constants/sort-options";
 
 interface AuctionFiltersProps {
   filters: IAuctionFilters;
@@ -76,6 +77,7 @@ export function AuctionFilters({
       filters={filters}
       onFiltersChange={onFiltersChange}
       ExtraFilters={CustomFilters}
+      sortOptions={AUCTION_SORT_OPTIONS}
     />
   );
 }

@@ -20,6 +20,45 @@ export const DEFAULT_SORT_OPTIONS: SortOption[] = [
   },
 ];
 
+export const AUCTION_SORT_OPTIONS: SortOption[] = [
+  {
+    value: "opportunityDate_desc",
+    label: "Date (plus récent)",
+    sortBy: "opportunityDate",
+    sortOrder: "desc",
+  },
+  {
+    value: "opportunityDate_asc",
+    label: "Date (plus ancien)",
+    sortBy: "opportunityDate",
+    sortOrder: "asc",
+  },
+  {
+    value: "price_asc",
+    label: "Prix (croissant)",
+    sortBy: "price",
+    sortOrder: "asc",
+  },
+  {
+    value: "price_desc",
+    label: "Prix (décroissant)",
+    sortBy: "price",
+    sortOrder: "desc",
+  },
+  {
+    value: "reservePrice_asc",
+    label: "Mise à prix (croissant)",
+    sortBy: "reservePrice",
+    sortOrder: "asc",
+  },
+  {
+    value: "reservePrice_desc",
+    label: "Mise à prix (décroissant)",
+    sortBy: "reservePrice",
+    sortOrder: "desc",
+  },
+];
+
 export const LISTING_SORT_OPTIONS: SortOption[] = [
   {
     value: "opportunityDate_desc",
@@ -44,6 +83,18 @@ export const LISTING_SORT_OPTIONS: SortOption[] = [
     label: "Dernière modification (plus ancien)",
     sortBy: "lastChangeDate",
     sortOrder: "asc",
+  },
+  {
+    value: "price_asc",
+    label: "Prix (croissant)",
+    sortBy: "price",
+    sortOrder: "asc",
+  },
+  {
+    value: "price_desc",
+    label: "Prix (décroissant)",
+    sortBy: "price",
+    sortOrder: "desc",
   },
 ];
 

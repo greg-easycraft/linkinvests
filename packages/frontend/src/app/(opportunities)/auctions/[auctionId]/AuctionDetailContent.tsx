@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { MapPin, Calendar } from "lucide-react";
+import { MapPin, Calendar, Euro, Gavel } from "lucide-react";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { FullPageSpinner } from "~/components/ui/full-page-spinner";
@@ -35,6 +35,15 @@ const hasPictureFields = (opportunity: Opportunity): opportunity is Extract<Oppo
 const hasAvailablePictures = (opportunity: Opportunity): boolean => {
   if (!hasPictureFields(opportunity)) return false;
   return !!(opportunity.mainPicture || (opportunity.pictures && opportunity.pictures.length > 0));
+};
+
+// Price formatting utility
+const formatPrice = (price: number): string => {
+  return new Intl.NumberFormat('fr-FR', {
+    style: 'currency',
+    currency: 'EUR',
+    minimumFractionDigits: 0,
+  }).format(price);
 };
 
 export function AuctionDetailContent({ auction }: AuctionDetailContentProps) {
@@ -155,7 +164,7 @@ export function AuctionDetailContent({ auction }: AuctionDetailContentProps) {
             <div className="flex gap-3">
               <Calendar className="h-5 w-5 mt-0.5" />
               <div className="flex-1">
-                <div className="text-sm font-medium mb-1 font-heading text-[var(--primary)]">Date de l&apos;opportunité</div>
+                <div className="text-sm font-medium mb-1 font-heading text-[var(--primary)]">Date de l&apos;enchère</div>
                 <div className="text-sm !text-[var(--primary)]">
                   {format(new Date(auction.opportunityDate), "dd MMMM yyyy", {
                     locale: fr,
@@ -163,6 +172,32 @@ export function AuctionDetailContent({ auction }: AuctionDetailContentProps) {
                 </div>
               </div>
             </div>
+
+            {/* Current Price */}
+            {auction.currentPrice && (
+              <div className="flex gap-3">
+                <Euro className="h-5 w-5 mt-0.5" />
+                <div className="flex-1">
+                  <div className="text-sm font-medium mb-1 font-heading text-[var(--primary)]">Prix actuel</div>
+                  <div className="text-sm font-semibold text-green-600">
+                    {formatPrice(auction.currentPrice)}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Reserve Price */}
+            {auction.reservePrice && (
+              <div className="flex gap-3">
+                <Gavel className="h-5 w-5 mt-0.5" />
+                <div className="flex-1">
+                  <div className="text-sm font-medium mb-1 font-heading text-[var(--primary)]">Mise à prix</div>
+                  <div className="text-sm font-semibold text-orange-600">
+                    {formatPrice(auction.reservePrice)}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>
