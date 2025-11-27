@@ -6,7 +6,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { OpportunitiesMap } from "./OpportunitiesMap";
 import { OpportunityDetailsModal } from "../OpportunityDetailsModal";
-import { Auction, BaseOpportunity, EnergyDiagnostic, getDocIdFromSuccessionExternalId, Liquidation, Listing, type Opportunity, OpportunityType, Succession } from "@linkinvests/shared";
+import { Auction, BaseOpportunity, EnergyDiagnostic, Liquidation, Listing, type Opportunity, OpportunityType, Succession } from "@linkinvests/shared";
 import { OpportunitiesDataQueryResult } from "~/types/query-result";
 import { OpportunityHeader } from "./Header";
 import { PageHeader } from "../PageHeader";
@@ -14,8 +14,6 @@ import { SelectionActionBar } from "./SelectionActionBar";
 import type { ExportFormat } from "~/server/services/export.service";
 import { useDelayedSkeleton } from "~/hooks/useDelayedSkeleton";
 import { OpportunitiesList } from "./OpportunitiesList";
-import { openMailto } from "~/utils/mailto";
-import { toast } from "sonner";
 
 type OpportunitiesPageProps<T extends BaseOpportunity> = {
   // Unified data structure
@@ -70,7 +68,7 @@ export default function OpportunitiesPage({
   const searchParams = useSearchParams();
 
   // Selection is only enabled for successions
-  const isSelectionEnabled = opportunityType === OpportunityType.SUCCESSION;
+  const isSelectionEnabled = false;
 
   // Clear selection when page/filters change
   useEffect(() => {
@@ -99,22 +97,6 @@ export default function OpportunitiesPage({
   const handleClearSelection = useCallback(() => {
     setSelectedOpportunities(new Map());
   }, []);
-
-  const handleEmailMairie = useCallback(() => {
-    selectedOpportunities.forEach((succession) => {
-      const email = succession.mairieContact?.email;
-      if (!email) {
-        toast.warning(`Aucun email de mairie trouvé pour la succession ${succession.firstName} ${succession.lastName}`);
-        return;
-      };
-      const docId = getDocIdFromSuccessionExternalId(succession.externalId);
-      openMailto({
-        to: email,
-        subject: "Demande d'acte de décès",
-        body: `Madame, Monsieur,\n\nJe souhaiterais obtenir l'acte de décès pour de ${succession.firstName} ${succession.lastName} (acte n° ${docId}).\n\nCordialement,`,
-      });
-    });
-  }, [selectedOpportunities]);
 
   const viewMode = useMemo(() => {
     const viewType = searchParams.get("view");
@@ -230,7 +212,6 @@ export default function OpportunitiesPage({
       {isSelectionEnabled && (
         <SelectionActionBar
           selectedCount={selectedOpportunities.size}
-          onEmailMairie={handleEmailMairie}
           onClearSelection={handleClearSelection}
         />
       )}

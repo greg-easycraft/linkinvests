@@ -15,7 +15,6 @@ import {
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import type { Succession } from "@linkinvests/shared";
-import { openMailto } from "~/utils/mailto";
 
 interface SuccessionDetailsProps {
   opportunity: Succession;
@@ -32,17 +31,6 @@ export function SuccessionDetails({ opportunity, detailPageUrl }: SuccessionDeta
     opportunity.mairieContact.website ||
     opportunity.mairieContact.openingHours
   );
-
-  const handleEmailMairie = () => {
-    const email = opportunity.mairieContact?.email;
-    if (!email) return;
-
-    openMailto({
-      to: email,
-      subject: "Demande d'acte de décès",
-      body: `Madame, Monsieur,\n\nJe souhaiterais obtenir un acte de décès pour la référence suivante :\n${opportunity.externalId}\n\nCordialement,`,
-    });
-  };
 
   if (!hasPersonInfo && !hasMairieInfo) {
     return null;
@@ -147,21 +135,6 @@ export function SuccessionDetails({ opportunity, detailPageUrl }: SuccessionDeta
                       {opportunity.mairieContact.openingHours}
                     </div>
                   </div>
-                </div>
-              )}
-
-              {/* Email Mairie Button */}
-              {opportunity.mairieContact?.email && (
-                <div className="pt-3">
-                  <Button
-                    variant="default"
-                    size="sm"
-                    onClick={handleEmailMairie}
-                    className="gap-2"
-                  >
-                    <Mail className="h-4 w-4" />
-                    Demander l&apos;acte de décès
-                  </Button>
                 </div>
               )}
             </div>

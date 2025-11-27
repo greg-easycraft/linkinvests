@@ -23,7 +23,7 @@ function getMatchScoreColor(score: number): string {
 export function DiagnosticLinksTable({ links, isLoading = false }: DiagnosticLinksTableProps) {
   if (isLoading) {
     return (
-      <Card className="bg-[var(--secundary)]">
+      <Card className="bg-[var(--secundary)] border-[var(--primary)]">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg">
             <Zap className="h-5 w-5" />
@@ -45,7 +45,7 @@ export function DiagnosticLinksTable({ links, isLoading = false }: DiagnosticLin
   }
 
   return (
-    <Card className="bg-[var(--secundary)] text-[var(--primary)]">
+    <Card className="bg-[var(--secundary)] text-[var(--primary)] border-[var(--primary)]">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-lg">
           <Zap className="h-5 w-5" />

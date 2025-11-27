@@ -5,13 +5,11 @@ import { Mail, X } from "lucide-react";
 
 interface SelectionActionBarProps {
   selectedCount: number;
-  onEmailMairie: () => void;
   onClearSelection: () => void;
 }
 
 export function SelectionActionBar({
   selectedCount,
-  onEmailMairie,
   onClearSelection,
 }: SelectionActionBarProps): React.ReactElement | null {
   if (selectedCount === 0) {
@@ -25,7 +23,7 @@ export function SelectionActionBar({
           {selectedCount} sélectionné{selectedCount > 1 ? "s" : ""}
         </span>
         <div className="h-4 w-px bg-current opacity-30" />
-        <Button
+        {/* <Button
           variant="ghost"
           size="sm"
           onClick={onEmailMairie}
@@ -33,7 +31,7 @@ export function SelectionActionBar({
         >
           <Mail className="h-4 w-4 mr-2" />
           Email Mairie
-        </Button>
+        </Button> */}
         <Button
           variant="ghost"
           size="sm"

@@ -1,5 +1,5 @@
-- [ ] color on description text
-- [ ] succession, email sur detail, pas action de masse
+
+- [ ] type change is not instant
 
 - [ ] land area + options + mot clés + année construction
 - [ ] sort by (publication date; mast event date, price?)

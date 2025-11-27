@@ -15,7 +15,7 @@ export function LiquidationDetailContent({ liquidation }: LiquidationDetailConte
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Title Card */}
-      <Card className="bg-[var(--secundary)]">
+      <Card className="bg-[var(--secundary)] border-[var(--primary)]">
         <CardHeader>
           <CardTitle className="text-2xl text-[var(--primary)]">
             {liquidation.label}
@@ -66,7 +66,7 @@ export function LiquidationDetailContent({ liquidation }: LiquidationDetailConte
       <LiquidationDetails opportunity={liquidation} />
 
       {/* Timestamps */}
-      <Card>
+      <Card className="border-[var(--primary)]">
         <CardContent className="pt-6 bg-[var(--secundary)]">
           <div className="text-xs space-y-1">
             <div>Créé le : {format(new Date(liquidation.createdAt), "dd/MM/yyyy à HH:mm")}</div>

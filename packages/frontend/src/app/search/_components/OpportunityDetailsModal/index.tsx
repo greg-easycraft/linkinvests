@@ -2,8 +2,14 @@
 
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { X, MapPin, Calendar } from "lucide-react";
+import { X, MapPin, Calendar, Mail } from "lucide-react";
 import { Button } from "~/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "~/components/ui/tooltip";
 import * as Dialog from "@radix-ui/react-dialog";
 import {
   type Opportunity,
@@ -23,6 +29,7 @@ import {
   EnergySieveDetails,
   ListingDetails,
 } from "~/app/_components/opportunity";
+import { openMailto } from "~/utils/mailto";
 
 interface OpportunityDetailsModalProps {
   opportunity: Opportunity | null;
@@ -63,11 +70,25 @@ export function OpportunityDetailsModal({
 }: OpportunityDetailsModalProps): React.ReactElement {
   if (!opportunity) return <></>;
 
+  const isSuccession = type === OpportunityType.SUCCESSION;
+  const successionData = isSuccession ? (opportunity as Succession) : null;
+  const hasEmail = isSuccession && !!successionData?.mairieContact?.email;
+
+  const handleEmailMairie = () => {
+    if (!successionData?.mairieContact?.email) return;
+
+    openMailto({
+      to: successionData.mairieContact.email,
+      subject: "Demande d'acte de décès",
+      body: `Madame, Monsieur,\n\nJe souhaiterais obtenir un acte de décès pour la référence suivante :\n${successionData.externalId}\n\nCordialement,`,
+    });
+  };
+
   return (
     <Dialog.Root open={isOpen} onOpenChange={onClose}>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm" />
-        <Dialog.Content className="fixed left-[50%] top-[50%] z-50 grid w-full max-w-2xl max-h-[90vh] translate-x-[-50%] translate-y-[-50%] gap-4 border bg-[var(--secundary)] p-6 shadow-lg duration-200 sm:rounded-lg overflow-y-auto">
+        <Dialog.Content className="fixed left-[50%] top-[50%] z-50 grid w-full max-w-2xl max-h-[90vh] translate-x-[-50%] translate-y-[-50%] gap-4 border border-[var(--primary)] bg-[var(--secundary)] p-6 shadow-lg duration-200 sm:rounded-lg overflow-y-auto">
           <div className="flex flex-row items-center justify-between space-y-0 pb-4">
             <Dialog.Title className="text-xl pr-8 text-[var(--primary)]">{opportunity.label}</Dialog.Title>
             <Dialog.Close asChild>
@@ -100,7 +121,35 @@ export function OpportunityDetailsModal({
             <div className="flex gap-3">
               <MapPin className="h-5 w-5 mt-0.5" />
               <div className="flex-1">
-                <div className="text-sm font-medium mb-1 font-heading text-[var(--primary)]">Adresse</div>
+                <div className="flex items-center justify-between mb-1">
+                  <div className="text-sm font-medium font-heading text-[var(--primary)]">Adresse</div>
+                  {/* Email Mairie Button for Successions */}
+                  {isSuccession && (
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={handleEmailMairie}
+                              disabled={!hasEmail}
+                              className="gap-2"
+                            >
+                              <Mail className="h-4 w-4" />
+                              Contacter la mairie
+                            </Button>
+                          </span>
+                        </TooltipTrigger>
+                        {!hasEmail && (
+                          <TooltipContent>
+                            <p>Email de la mairie non disponible</p>
+                          </TooltipContent>
+                        )}
+                      </Tooltip>
+                    </TooltipProvider>
+                  )}
+                </div>
                 <div className="text-sm !text-[var(--primary)]">
                   {opportunity.address ?? "Non disponible"}
                 </div>
