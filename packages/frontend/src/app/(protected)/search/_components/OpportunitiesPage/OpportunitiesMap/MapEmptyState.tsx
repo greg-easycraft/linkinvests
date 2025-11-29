@@ -9,7 +9,7 @@ export function MapEmptyState(): React.ReactElement {
   return (
     <div className="absolute inset-0 flex items-center justify-center p-4 pointer-events-none z-10">
       <div className="pointer-events-auto">
-        <Card className="w-full max-w-md bg-white shadow-lg border-0">
+        <Card className="w-full max-w-md bg-white shadow-sm border-0">
           <div className="p-6 text-center space-y-4">
             {/* Icon */}
             <div className="flex justify-center">

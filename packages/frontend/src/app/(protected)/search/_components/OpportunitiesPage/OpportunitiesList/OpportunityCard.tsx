@@ -69,15 +69,12 @@ interface OpportunityCardProps {
   onToggleSelection?: (opportunity: Opportunity) => void;
 }
 
-export function OpportunityCard({ opportunity, onSelect, selectedId, type, externalUrl, isSelectionEnabled, isSelected, onToggleSelection }: OpportunityCardProps): React.ReactElement {
+export function OpportunityCard({ opportunity, onSelect, type, externalUrl, isSelectionEnabled, isSelected, onToggleSelection }: OpportunityCardProps): React.ReactElement {
   return (
     <Card
       key={opportunity.id}
       onClick={() => onSelect(opportunity)}
-      className={`cursor-pointer transition-all hover:shadow-lg bg-[var(--secundary)] text-[var(--primary)] border ${selectedId === opportunity.id
-        ? "border-blue-500 shadow-lg"
-        : "border-[var(--primary)] shadow-lg"
-        }`}
+      className={`cursor-pointer transition-all shadow-sm hover:shadow-xl hover:border-blue-100 transition-all duration-500 cursor-pointer transform bg-[var(--secundary)] text-[var(--primary)]`}
     >
       <div className="flex gap-4 p-4">
         {/* Checkbox for selection */}

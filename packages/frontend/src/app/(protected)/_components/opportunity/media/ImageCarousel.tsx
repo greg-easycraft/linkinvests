@@ -91,7 +91,7 @@ export function ImageCarousel({ opportunity, className = '' }: ImageCarouselProp
               <img
                 src={imageUrl}
                 alt={`Property image ${index + 1}`}
-                className="max-w-full max-h-[300px] w-auto h-auto rounded-lg border border-black"
+                className="max-w-full max-h-[300px] w-auto h-auto rounded-lg shadow-sm"
               />
             </div>
           ))}

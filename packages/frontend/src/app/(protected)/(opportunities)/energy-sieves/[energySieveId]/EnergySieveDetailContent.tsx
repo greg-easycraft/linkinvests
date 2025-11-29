@@ -15,7 +15,7 @@ export function EnergySieveDetailContent({ energySieve }: EnergySieveDetailConte
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Title Card */}
-      <Card className="bg-[var(--secundary)] border-[var(--primary)]">
+      <Card className="bg-[var(--secundary)]">
         <CardHeader>
           <CardTitle className="text-2xl text-[var(--primary)]">
             {energySieve.label}
@@ -66,7 +66,7 @@ export function EnergySieveDetailContent({ energySieve }: EnergySieveDetailConte
       <EnergySieveDetails opportunity={energySieve} />
 
       {/* Timestamps */}
-      <Card className="border-[var(--primary)]">
+      <Card className="bg-[var(--secundary)]">
         <CardContent className="pt-6 bg-[var(--secundary)]">
           <div className="text-xs space-y-1">
             <div>Créé le : {format(new Date(energySieve.createdAt), "dd/MM/yyyy à HH:mm")}</div>

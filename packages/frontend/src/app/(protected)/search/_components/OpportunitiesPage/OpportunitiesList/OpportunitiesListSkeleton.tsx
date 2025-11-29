@@ -2,7 +2,7 @@
 
 function OpportunityCardSkeleton(): React.ReactElement {
   return (
-    <div className="cursor-pointer transition-all bg-[var(--secundary)] border-2 border-[var(--primary)] rounded-lg">
+    <div className="cursor-pointer transition-all bg-[var(--secundary)] rounded-lg">
       <div className="flex gap-4 p-4">
         {/* Street View Thumbnail Skeleton */}
         <div className="flex-shrink-0">

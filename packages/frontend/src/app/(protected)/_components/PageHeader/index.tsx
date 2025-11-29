@@ -6,16 +6,25 @@ import { usePathname } from "next/navigation";
 import { UserInfo } from "./UserInfo";
 import { ThemeToggle } from "~/components/ui/theme-toggle";
 import { useTheme } from "~/components/providers/theme-provider";
+import { useEffect, useState } from "react";
 
 export function PageHeader(): React.ReactElement {
   const pathname = usePathname();
+  const [scrolled, setScrolled] = useState(false);
   const { theme } = useTheme();
   const isDarkTheme = theme === "dark";
 
+  useEffect(() => {
+    const handleScroll = () => {
+        setScrolled(window.scrollY > 0);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+}, []);
+
   return (
-    <div className={`h-[var(--header-height)] border-b border-[var(--primary)] px-6 py-3 shadow-lg sticky top-0 z-50 bg-[var(--background-color)]`}>
+    <nav className={`h-[var(--header-height)] px-6 py-3 shadow-sm sticky top-0 z-50 ${scrolled ? 'bg-white' : 'bg-[var(--background-color)]'}`}>
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-8">
           <a
             href="https://linkinvests.com/"
             target="_blank"
@@ -29,15 +38,16 @@ export function PageHeader(): React.ReactElement {
               height={20}
             />
           </a>
+        <div className="flex items-center gap-8">
 
           {/* Navigation Links */}
           <nav className="flex items-center gap-6">
             <Link
               href="/search"
               className={`px-3 py-2 text-sm rounded-sm font-medium ${
-                pathname.startsWith('/search') && pathname !== '/address-search'
-                ? 'text-gray-400'
-                : ' hover:text-gray-900 hover:bg-gray-100'
+                pathname.startsWith('/search')
+                ? ' hover:text-gray-900 hover:bg-gray-100'
+                : 'text-gray-400'
               }`}
             >
               Recherche
@@ -46,11 +56,11 @@ export function PageHeader(): React.ReactElement {
               href="/address-search"
               className={`px-3 py-2 text-sm rounded-sm font-medium ${
                 pathname === '/address-search'
-                ? 'text-gray-400'
-                : ' hover:text-gray-900 hover:bg-gray-100'
+                ? ' hover:text-gray-900 hover:bg-gray-100'
+                : 'text-gray-400'
               }`}
             >
-              Recherche d&apos;adresse
+              Adresses
             </Link>
           </nav>
         </div>
@@ -59,6 +69,6 @@ export function PageHeader(): React.ReactElement {
           <UserInfo />
         </div>
       </div>
-    </div>
+    </nav>
   );
 }

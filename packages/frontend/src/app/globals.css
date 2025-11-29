@@ -6,8 +6,8 @@
 :root,
 :root.light {
   --primary: #3E3E3E;
-  --secundary: #ededed;
-  --background-color: #ededed;
+  --secundary: rgb(255,255,255);
+  --background-color: #f8fafc;
 }
 
 :root.dark {

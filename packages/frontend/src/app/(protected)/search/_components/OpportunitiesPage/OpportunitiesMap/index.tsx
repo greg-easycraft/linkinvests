@@ -161,7 +161,7 @@ export function OpportunitiesMap({
       <div ref={mapContainer} className="w-full h-full rounded-lg" />
 
       {/* Legend */}
-      <div className="absolute bottom-4 right-4 bg-[var(--secundary)] text-[var(--primary)] p-4 rounded-lg shadow-lg">
+      <div className="absolute bottom-4 right-4 bg-[var(--secundary)] text-[var(--primary)] p-4 rounded-lg shadow-sm">
         <div className="text-sm font-semibold mb-2 font-heading">Types d&apos;opportunités</div>
         <div className="space-y-1">
           {Object.entries(TYPE_COLORS).map(([type, color]) => (

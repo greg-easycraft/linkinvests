@@ -205,7 +205,7 @@ export function DepartmentsInput({
           ref={dropdownRef}
           className={cn(
             "absolute top-full left-0 right-0 z-50 mt-1",
-            "bg-[var(--primary)] border text-[var(--secundary)] border-border rounded-md shadow-lg",
+            "bg-[var(--primary)] border text-[var(--secundary)] border-border rounded-md shadow-sm",
             "max-h-60 overflow-y-auto"
           )}
         >

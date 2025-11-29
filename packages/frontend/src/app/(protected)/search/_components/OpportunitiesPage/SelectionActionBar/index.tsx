@@ -18,7 +18,7 @@ export function SelectionActionBar({
 
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
-      <div className="bg-[var(--primary)] text-[var(--secundary)] rounded-lg shadow-lg px-4 py-3 flex items-center gap-4">
+      <div className="bg-[var(--primary)] text-[var(--secundary)] rounded-lg shadow-sm px-4 py-3 flex items-center gap-4">
         <span className="text-sm font-medium">
           {selectedCount} sélectionné{selectedCount > 1 ? "s" : ""}
         </span>
