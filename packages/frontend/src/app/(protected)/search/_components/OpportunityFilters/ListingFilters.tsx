@@ -15,7 +15,8 @@ import {
   EnergyClassFilter,
   SourcesInput,
   SellerTypeFilter,
-  DivisibleFilter
+  DivisibleFilter,
+  WorksRequiredFilter
 } from "~/components/filters";
 import { LISTING_SORT_OPTIONS } from "~/constants/sort-options";
 
@@ -48,6 +49,11 @@ export function ListingFilters({
       <DivisibleFilter
         value={filters.isDivisible}
         onChange={(value) => onFiltersChange({ ...filters, isDivisible: value })}
+      />
+
+      <WorksRequiredFilter
+        value={filters.hasWorksRequired}
+        onChange={(value) => onFiltersChange({ ...filters, hasWorksRequired: value })}
       />
 
       <PropertyTypeFilter

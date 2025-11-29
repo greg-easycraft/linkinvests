@@ -34,6 +34,10 @@ export class DrizzleListingRepository implements IListingRepository {
       conditions.push(arrayContains(opportunityListings.options, ['isDivisible']));
     }
 
+    if(filters.hasWorksRequired !== undefined) {
+      conditions.push(arrayContains(opportunityListings.options, ['hasWorksRequired']));
+    }
+
     if (filters.datePeriod) {
       const dateThreshold = calculateStartDate(filters.datePeriod);
       conditions.push(

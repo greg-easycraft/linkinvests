@@ -82,6 +82,10 @@ export const listingFiltersSchema = baseFiltersSchema.extend({
         z.string().transform(val => val === 'true'),
         z.boolean()
     ]).optional(),
+    hasWorksRequired: z.union([
+        z.string().transform(val => val === 'true'),
+        z.boolean()
+    ]).optional(),
     sources: z.union([
         z.string().transform(val => val.split(',').filter(Boolean)),
         z.array(z.string())
