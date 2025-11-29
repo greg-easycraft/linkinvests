@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import { Card, CardContent, CardTitle } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { MapPin, Star, Award, ExternalLink } from "lucide-react";
@@ -31,25 +31,21 @@ export function SearchResults({ results, onViewDetails }: SearchResultsProps) {
   }
 
   return (
-    <Card className="w-full max-w-4xl mx-auto">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Award className="h-5 w-5" />
-          Résultats de Recherche ({results.length} correspondance{results.length === 1 ? '' : 's'} trouvée{results.length === 1 ? '' : 's'})
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          {results.map((result) => (
-            <AddressResultCard
-              key={result.id}
-              result={result}
-              onViewDetails={onViewDetails}
-            />
-          ))}
-        </div>
-      </CardContent>
-    </Card>
+    <div className="w-full max-w-4xl mx-auto border-none">
+      <CardTitle className="flex items-center gap-2 mb-4">
+        <Award className="h-5 w-5" />
+        Résultats de Recherche ({results.length} correspondance{results.length === 1 ? '' : 's'} trouvée{results.length === 1 ? '' : 's'})
+      </CardTitle>
+      <div className="space-y-4">
+        {results.map((result) => (
+          <AddressResultCard
+            key={result.id}
+            result={result}
+            onViewDetails={onViewDetails}
+          />
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -87,7 +83,7 @@ function AddressResultCard({ result, onViewDetails }: AddressResultCardProps) {
   };
 
   return (
-    <Card className="border border-gray-200 hover:shadow-md transition-shadow">
+    <Card className="bg-[var(--secundary)] shadow-sm hover:shadow-lg transition-shadow">
       <CardContent className="p-4">
         <div className="flex justify-between items-start mb-3">
           {/* Address and Location */}

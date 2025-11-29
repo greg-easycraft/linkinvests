@@ -75,7 +75,7 @@ export default function AddressSearchPageContent(): React.ReactElement {
 
       {/* Error Alert */}
       {error && (
-        <Alert variant="destructive" className="max-w-2xl mx-auto">
+        <Alert variant="destructive" className="max-w-4xl bg-[var(--secundary)] shadow-sm mx-auto">
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Erreur de Recherche</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
@@ -84,7 +84,7 @@ export default function AddressSearchPageContent(): React.ReactElement {
 
       {/* Success/Info Messages */}
       {hasSearched && results.length > 0 && (
-        <Alert className="max-w-2xl mx-auto border-green-200 bg-green-50">
+        <Alert className="max-w-4xl mx-auto border-green-200 bg-green-50">
           <CheckCircle className="h-4 w-4 text-green-600" />
           <AlertTitle className="text-green-800">Recherche Terminée</AlertTitle>
           <AlertDescription className="text-green-700">
@@ -115,7 +115,7 @@ export default function AddressSearchPageContent(): React.ReactElement {
 
       {/* No Results State with Tips */}
       {hasSearched && results.length === 0 && !error && !isLoading && (
-        <div className="max-w-2xl mx-auto text-center space-y-6 py-8">
+        <div className="max-w-4xl mx-auto text-center space-y-6 py-8">
           <div className="space-y-4">
             <h3 className="text-xl font-semibold text-gray-900">Aucune Adresse Trouvée</h3>
             <div className="text-sm  space-y-2">

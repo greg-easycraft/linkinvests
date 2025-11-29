@@ -56,7 +56,7 @@ export function AddressSearchForm({ onSubmit, isLoading = false }: AddressSearch
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto border-none">
+    <Card className="w-full max-w-4xl mx-auto border-none bg-[var(--secundary)] shadow-sm">
       <CardHeader>
         <CardTitle>Recherche d&apos;Adresse par Diagnostic Énergétique</CardTitle>
         <CardDescription>
