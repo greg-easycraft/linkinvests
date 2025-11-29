@@ -108,6 +108,7 @@ export interface IListingFilters extends IOpportunityFilters {
   maxBedrooms?: number;
   minConstructionYear?: number;
   maxConstructionYear?: number;
+  isDivisible?: boolean;
   energyClasses?: EnergyClassType[]; // Energy performance diagnosis (A-G)
   features?: ListingFeatures; // Boolean features like balcony, garage, etc.
   isSoldRented?: boolean; // Rental status: true for occupied, false for available

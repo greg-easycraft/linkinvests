@@ -14,7 +14,8 @@ import {
   RentalStatusFilter,
   EnergyClassFilter,
   SourcesInput,
-  SellerTypeFilter
+  SellerTypeFilter,
+  DivisibleFilter
 } from "~/components/filters";
 import { LISTING_SORT_OPTIONS } from "~/constants/sort-options";
 
@@ -42,6 +43,11 @@ export function ListingFilters({
       <RentalStatusFilter
         value={filters.isSoldRented}
         onChange={(value) => onFiltersChange({ ...filters, isSoldRented: value })}
+      />
+
+      <DivisibleFilter
+        value={filters.isDivisible}
+        onChange={(value) => onFiltersChange({ ...filters, isDivisible: value })}
       />
 
       <PropertyTypeFilter

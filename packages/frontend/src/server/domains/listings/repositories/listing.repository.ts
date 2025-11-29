@@ -1,4 +1,4 @@
-import { and, eq, gte, inArray, lte, sql, type SQL } from "drizzle-orm";
+import { and, arrayContains, eq, gte, inArray, lte, sql, type SQL } from "drizzle-orm";
 import type { DomainDbType } from "~/types/db";
 import { opportunityListings } from "@linkinvests/db";
 import type { IListingRepository } from "../lib.types";
@@ -28,6 +28,10 @@ export class DrizzleListingRepository implements IListingRepository {
     // Filter by zipCodes (support multiple zip codes)
     if (filters.zipCodes && filters.zipCodes.length > 0) {
       conditions.push(inArray(opportunityListings.zipCode, filters.zipCodes));
+    }
+
+    if(filters.isDivisible !== undefined) {
+      conditions.push(arrayContains(opportunityListings.options, ['isDivisible']));
     }
 
     if (filters.datePeriod) {

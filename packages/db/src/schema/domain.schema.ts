@@ -268,6 +268,7 @@ export const opportunityListings = pgTable('listing', {
   index('idx_listing_location').on(table.latitude, table.longitude),
   index('idx_listing_property_type').on(table.propertyType),
   index('idx_listing_price').on(table.price),
+  index('gin_idx_listing_options').using('gin', table.options),
 ]);
 
 // Sourcing Tables
