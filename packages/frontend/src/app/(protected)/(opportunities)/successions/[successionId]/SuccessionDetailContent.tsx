@@ -13,7 +13,7 @@ import {
 } from "~/components/ui/tooltip";
 import type { Succession } from "@linkinvests/shared";
 import { StreetView, SuccessionDetails } from "~/app/(protected)/_components/opportunity";
-import { openMailto } from "~/utils/mailto";
+import { contactMairie } from "~/utils/mailto";
 
 interface SuccessionDetailContentProps {
   succession: Succession;
@@ -26,11 +26,7 @@ export function SuccessionDetailContent({ succession }: SuccessionDetailContentP
     const email = succession.mairieContact?.email;
     if (!email) return;
 
-    openMailto({
-      to: email,
-      subject: "Demande d'acte de décès",
-      body: `Madame, Monsieur,\n\nJe souhaiterais obtenir un acte de décès pour la référence suivante :\n${succession.externalId}\n\nCordialement,`,
-    });
+    contactMairie(succession);
   };
 
   return (

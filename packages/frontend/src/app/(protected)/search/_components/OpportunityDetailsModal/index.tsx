@@ -29,7 +29,7 @@ import {
   EnergySieveDetails,
   ListingDetails,
 } from "~/app/(protected)/_components/opportunity";
-import { openMailto } from "~/utils/mailto";
+import { contactMairie } from "~/utils/mailto";
 
 interface OpportunityDetailsModalProps {
   opportunity: Opportunity | null;
@@ -77,11 +77,7 @@ export function OpportunityDetailsModal({
   const handleEmailMairie = () => {
     if (!successionData?.mairieContact?.email) return;
 
-    openMailto({
-      to: successionData.mairieContact.email,
-      subject: "Demande d'acte de décès",
-      body: `Madame, Monsieur,\n\nJe souhaiterais obtenir un acte de décès pour la référence suivante :\n${successionData.externalId}\n\nCordialement,`,
-    });
+    contactMairie(successionData);
   };
 
   return (
