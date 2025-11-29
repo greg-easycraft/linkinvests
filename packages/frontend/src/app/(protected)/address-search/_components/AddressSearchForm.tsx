@@ -196,7 +196,7 @@ export function AddressSearchForm({ onSubmit, isLoading = false }: AddressSearch
 
           {/* Form Requirements */}
           <div className="text-xs  space-y-1">
-            <p>* Champs requis</p>
+            <p><span className="text-red-500">*</span> Champs requis</p>
           </div>
         </form>
       </CardContent>
