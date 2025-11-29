@@ -109,7 +109,7 @@ export function ImageCarousel({ opportunity, className = '' }: ImageCarouselProp
             className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white"
             aria-label="Previous image"
           >
-            <ChevronLeft className="h-4 w-4" />
+            <ChevronLeft className="h-4 w-4 text-[#3E3E3E] hover:text-[#1F1F1F]" />
           </Button>
 
           <Button
@@ -120,7 +120,7 @@ export function ImageCarousel({ opportunity, className = '' }: ImageCarouselProp
             className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white"
             aria-label="Next image"
           >
-            <ChevronRight className="h-4 w-4" />
+            <ChevronRight className="h-4 w-4 text-[#3E3E3E] hover:text-[#1F1F1F]" />
           </Button>
         </>
       )}
