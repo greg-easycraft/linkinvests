@@ -38,6 +38,10 @@ export class EnergyDiagnosticsService {
     return await this.energyDiagnosticsRepository.findById(id);
   }
 
+  async getEnergyDiagnosticByExternalId(externalId: string): Promise<EnergyDiagnostic | null> {
+    return await this.energyDiagnosticsRepository.findByExternalId(externalId);
+  }
+
   async exportList(filters: IEnergyDiagnosticFilters, format: ExportFormat): Promise<Blob> {
     // Check if the total count exceeds the export limit
     const total = await this.energyDiagnosticsRepository.count(filters);

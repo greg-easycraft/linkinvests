@@ -112,6 +112,18 @@ export class DrizzleEnergyDiagnosticsRepository implements IEnergyDiagnosticsRep
     return result[0] ?? null;
   }
 
+  async findByExternalId(externalId: string): Promise<EnergyDiagnostic | null> {
+    const result = await this.db
+      .select()
+      .from(energyDiagnostics)
+      .where(and(
+        eq(energyDiagnostics.externalId, externalId)
+      ))
+      .limit(1);
+
+    return result[0] ?? null;
+  }
+
   async count(filters?: IEnergyDiagnosticFilters): Promise<number> {
     const conditions = this.buildWhereClause(filters);
 

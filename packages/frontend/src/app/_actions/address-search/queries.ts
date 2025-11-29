@@ -33,3 +33,16 @@ export async function getEnergyDiagnosticDetails(id: string): Promise<EnergyDiag
     return null;
   }
 }
+
+/**
+ * Get detailed information about a specific energy diagnostic by external id
+ */
+export async function getEnergyDiagnosticByExternalId(externalId: string): Promise<EnergyDiagnostic | null> {
+  try {
+    const energyDiagnosticsService = resolve('energyDiagnosticsService');
+    return await energyDiagnosticsService.getEnergyDiagnosticByExternalId(externalId);
+  } catch (error) {
+    console.error('Error fetching energy diagnostic details:', error);
+    return null;
+  }
+}

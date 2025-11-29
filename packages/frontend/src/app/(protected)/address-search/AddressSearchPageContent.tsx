@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { AddressSearchForm } from "./_components/AddressSearchForm";
 import { SearchResults } from "./_components/SearchResults";
-import { searchAddressByEnergyDiagnostics, getEnergyDiagnosticDetails } from "~/app/_actions/address-search/queries";
+import { searchAddressByEnergyDiagnostics, getEnergyDiagnosticByExternalId } from "~/app/_actions/address-search/queries";
 import type { AddressSearchInput, AddressSearchResult, EnergyDiagnostic } from "@linkinvests/shared";
 import { OpportunityType } from "@linkinvests/shared";
 import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
@@ -49,7 +49,7 @@ export default function AddressSearchPageContent(): React.ReactElement {
     }
 
     try {
-      const diagnostic = await getEnergyDiagnosticDetails(result.energyDiagnosticId);
+      const diagnostic = await getEnergyDiagnosticByExternalId(result.energyDiagnosticId);
       if (diagnostic) {
         setSelectedEnergyDiagnostic(diagnostic);
         setIsModalOpen(true);
