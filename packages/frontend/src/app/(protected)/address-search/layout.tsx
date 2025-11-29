@@ -2,6 +2,9 @@
 
 import { APIProvider as GoogleMapsAPIProvider } from '@vis.gl/react-google-maps';
 import { env } from '~/lib/env';
+// import { useSession } from '~/lib/auth-client';
+// import { useRouter } from 'next/navigation';
+// import { useEffect } from 'react';
 
 export default function OpportunitiesLayout({
   children,
