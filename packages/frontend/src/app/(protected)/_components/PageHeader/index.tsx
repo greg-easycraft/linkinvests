@@ -28,7 +28,7 @@ export function PageHeader(): React.ReactElement {
     <nav className={`h-[var(--header-height)] px-6 py-3 sticky top-0 z-50 ${isSearchPage ? 'shadow-sm dark:border-b dark:border-[var(--secundary)]' : ''} ${scrolled ? scrolledClass : 'bg-[var(--background-color)]'}`}>
       <div className="flex items-center justify-between">
           <a
-            href="https://linkinvests.com/"
+            href="https://linkinvests.easycraft.cloud/"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-3 hover:opacity-80 transition-opacity"
