@@ -13,6 +13,8 @@ export function PageHeader(): React.ReactElement {
   const [scrolled, setScrolled] = useState(false);
   const { theme } = useTheme();
   const isDarkTheme = theme === "dark";
+  const isSearchPage = pathname.startsWith('/search');
+  const scrolledClass = !isDarkTheme ? 'bg-white bg-opacity-90 shadow-sm' : 'bg-[var(--background-color)] border-b border-[var(--secundary)]';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -23,7 +25,7 @@ export function PageHeader(): React.ReactElement {
 }, []);
 
   return (
-    <nav className={`h-[var(--header-height)] px-6 py-3 shadow-sm sticky top-0 z-50 ${scrolled ? 'bg-white bg-opacity-90' : 'bg-[var(--background-color)]'}`}>
+    <nav className={`h-[var(--header-height)] px-6 py-3 sticky top-0 z-50 ${isSearchPage ? 'shadow-sm dark:border-b dark:border-[var(--secundary)]' : ''} ${scrolled ? scrolledClass : 'bg-[var(--background-color)]'}`}>
       <div className="flex items-center justify-between">
           <a
             href="https://linkinvests.com/"
