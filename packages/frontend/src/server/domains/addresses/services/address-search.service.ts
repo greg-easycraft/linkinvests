@@ -1,7 +1,7 @@
 import type { IAddressSearchRepository, DiagnosticLink, IAddressLinksRepository } from "../lib.types";
 import { MAX_DIAGNOSTIC_LINKS } from "../lib.types";
 import type { AddressSearchInput, AddressSearchResult, EnergyDiagnostic } from "@linkinvests/shared";
-import { extractStreetFromAddress, extractCityFromAddress, calculateStreetMatchScore, calculateCityMatchScore } from "../utils/string-utils";
+import { extractStreetFromAddress, extractCityFromAddress, calculateMatchScore } from "../utils/string-utils";
 
 export type OpportunityType = 'auction' | 'listing';
 
@@ -88,7 +88,7 @@ export class AddressSearchService {
     if (input.squareFootage && result.squareFootage) {
       const difference = Math.abs(result.squareFootage - input.squareFootage);
       const percentageDiff = difference / input.squareFootage;
-      score -= percentageDiff * 20; // Up to 20 points penalty
+      score -= percentageDiff * 30; // Up to 30 points penalty
     }
 
     // Extract street and city from addresses using zipCode
@@ -97,17 +97,17 @@ export class AddressSearchService {
     const inputCity = input.address ? extractCityFromAddress(input.address, input.zipCode) : null;
     const resultCity = result.address ? extractCityFromAddress(result.address, result.zipCode) : null;
 
-    // Street matching: up to 35 points penalty (high weight - most important)
-    if (inputStreet && resultStreet) {
-      const streetScore = calculateStreetMatchScore(inputStreet, resultStreet);
-      score -= (100 - streetScore) * 0.35; // 0-35 point penalty
+    // City matching: up to 40 points penalty (highest weight)
+    if (inputCity && resultCity) {
+      const cityScore = calculateMatchScore(inputCity, resultCity);
+      score -= cityScore * 40; // 0-40 point penalty
     }
 
-    // City matching: up to 30 points penalty (medium weight)
-    if (inputCity && resultCity) {
-      const cityScore = calculateCityMatchScore(inputCity, resultCity);
-      score -= (100 - cityScore) * 0.35; // 0-30 point penalty
-    }
+    // Street matching: up to 30 points penalty (high weight)
+    if (inputStreet && resultStreet) {
+      const streetScore = calculateMatchScore(inputStreet, resultStreet);
+      score -= streetScore * 30; // 0-30 point penalty
+    }  
 
     return Math.max(0, score);
   }

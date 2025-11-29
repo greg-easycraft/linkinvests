@@ -8,6 +8,8 @@ export type DiagnosticQueryInput = {
   energyClass: EnergyClass;
   squareFootageMin: number;
   squareFootageMax: number;
+  address?: string;
+  city?: string;
 }
 
 export type DiagnosticLinkInput = {

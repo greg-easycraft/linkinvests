@@ -1,4 +1,4 @@
-import { and, desc, eq, gte, inArray, lte } from "drizzle-orm";
+import { and, desc, eq, gte, ilike, inArray, lte, SQL } from "drizzle-orm";
 import type { DomainDbType } from "~/types/db";
 import { energyDiagnostics, auctionEnergyDiagnosticLinks, listingEnergyDiagnosticLinks } from "@linkinvests/db";
 import { MAX_NUMBER_OF_RESULTS, type IAddressSearchRepository, type DiagnosticLinkInput, type DiagnosticLink } from "../lib.types";
@@ -6,17 +6,31 @@ import type { DiagnosticQueryInput } from "../lib.types";
 import type { EnergyDiagnostic } from "@linkinvests/shared";
 
 export class DrizzleAddressSearchRepository implements IAddressSearchRepository {
-  constructor(private readonly db: DomainDbType) {}
+  constructor(private readonly db: DomainDbType) { }
+
+  private getWhereClauseForAddressSearch(input: DiagnosticQueryInput): SQL[] {
+    const conditions = [
+      eq(energyDiagnostics.zipCode, input.zipCode),
+      eq(energyDiagnostics.energyClass, input.energyClass),
+      gte(energyDiagnostics.squareFootage, input.squareFootageMin),
+      lte(energyDiagnostics.squareFootage, input.squareFootageMax),
+    ];
+    if (input.address) {
+      conditions.push(ilike(energyDiagnostics.address, `%${input.address}%`));
+      return conditions;
+    }
+    if (input.city) {
+      conditions.push(eq(energyDiagnostics.address, `%${input.city}%`));
+    }
+    return conditions;
+  }
 
   async findAllForAddressSearch(input: DiagnosticQueryInput): Promise<EnergyDiagnostic[]> {
     const query = this.db
       .select()
       .from(energyDiagnostics)
       .where(and(
-        eq(energyDiagnostics.zipCode, input.zipCode),
-        eq(energyDiagnostics.energyClass, input.energyClass),
-        gte(energyDiagnostics.squareFootage, input.squareFootageMin),
-        lte(energyDiagnostics.squareFootage, input.squareFootageMax),
+        ...this.getWhereClauseForAddressSearch(input)
       ))
       .limit(MAX_NUMBER_OF_RESULTS);
     const results = await query;

@@ -38,6 +38,7 @@
     "drizzle-orm": "^0.44.7",
     "embla-carousel": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
+    "fuse.js": "^7.1.0",
     "jest": "^30.2.0",
     "lucide-react": "^0.469.0",
     "mapbox-gl": "^3.16.0",
