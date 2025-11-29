@@ -2,8 +2,7 @@
 
 import { Card, CardContent, CardTitle } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
-import { Button } from "~/components/ui/button";
-import { MapPin, Star, Award, ExternalLink } from "lucide-react";
+import { MapPin, Star, Award } from "lucide-react";
 import type { AddressSearchResult } from "@linkinvests/shared";
 
 interface SearchResultsProps {
@@ -55,6 +54,7 @@ interface AddressResultCardProps {
 }
 
 function AddressResultCard({ result, onViewDetails }: AddressResultCardProps) {
+
   const getMatchScoreColor = (score: number) => {
     if (score >= 80) return "bg-green-100 text-green-800 border-green-200";
     if (score >= 60) return "bg-yellow-100 text-yellow-800 border-yellow-200";
@@ -83,7 +83,7 @@ function AddressResultCard({ result, onViewDetails }: AddressResultCardProps) {
   };
 
   return (
-    <Card className="bg-[var(--secundary)] shadow-sm hover:shadow-lg transition-shadow">
+    <Card onClick={() => onViewDetails?.(result)} className={`bg-[var(--secundary)] shadow-sm hover:shadow-lg transition-shadow border-none cursor-pointer transition-all duration-300`}>
       <CardContent className="p-4">
         <div className="flex justify-between items-start mb-3">
           {/* Address and Location */}
@@ -91,7 +91,7 @@ function AddressResultCard({ result, onViewDetails }: AddressResultCardProps) {
             <div className="flex items-start gap-2 mb-2">
               <MapPin className="h-4 w-4  mt-1 flex-shrink-0" />
               <div>
-                <p className="font-medium text-lg text-gray-900">{result.address}</p>
+                <p className="font-medium text-lg">{result.address}</p>
                 <p className="text-sm ">
                   {result.zipCode} • Department {result.department}
                 </p>
@@ -130,7 +130,7 @@ function AddressResultCard({ result, onViewDetails }: AddressResultCardProps) {
           {/* DPE Number */}
           <div className="flex items-center gap-1">
             <span className="text-sm ">N° DPE :</span>
-            <span className="text-sm font-mono text-gray-800">{result.energyDiagnosticId}</span>
+            <span className="text-sm font-mono font-bold">{result.energyDiagnosticId}</span>
           </div>
         </div>
 
@@ -149,21 +149,6 @@ function AddressResultCard({ result, onViewDetails }: AddressResultCardProps) {
                 </Badge>
               ))}
             </div>
-          </div>
-        )}
-
-        {/* Actions */}
-        {onViewDetails && (
-          <div className="flex justify-end pt-2 border-t border-gray-100">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => onViewDetails(result)}
-              className="flex items-center gap-2"
-            >
-              <ExternalLink className="h-3 w-3" />
-              Voir Détails
-            </Button>
           </div>
         )}
       </CardContent>

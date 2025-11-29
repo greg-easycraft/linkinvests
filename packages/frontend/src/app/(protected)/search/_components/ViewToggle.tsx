@@ -16,12 +16,12 @@ export function ViewToggle({
 }: ViewToggleProps): React.ReactElement {
   return (
     <Tabs value={value} onValueChange={(v) => onValueChange(v as ViewType)}>
-      <TabsList className="border-2 border-[var(--primary)]">
-        <TabsTrigger value="list" className="gap-2">
+      <TabsList className="border border-[var(--primary)] w-full">
+        <TabsTrigger value="list" className="gap-2 w-full">
           <List className="h-4 w-4" />
           Vue liste
         </TabsTrigger>
-        <TabsTrigger value="map" className="gap-2">
+        <TabsTrigger value="map" className="gap-2 w-full">
           <Map className="h-4 w-4" />
           Vue carte
         </TabsTrigger>

@@ -69,7 +69,7 @@ export function MultiSelect({
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="w-full justify-between text-left font-normal border-2 border-[var(--primary)] bg-[var(--secundary)] text-[var(--primary)] hover:bg-[var(--primary)] hover:text-[var(--secundary)]"
+            className="w-full justify-between text-left font-normal border border-[var(--primary)] bg-[var(--secundary)] text-[var(--primary)] hover:bg-[var(--primary)] hover:text-[var(--secundary)]"
             disabled={disabled}
           >
             <div className="flex gap-1 flex-wrap max-w-full">

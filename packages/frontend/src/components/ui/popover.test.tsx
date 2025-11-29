@@ -178,7 +178,7 @@ describe('Popover Components', () => {
           'z-50',
           'w-72',
           'rounded-md',
-          'border-2',
+          'border',
           'p-4',
           'shadow-md'
         );

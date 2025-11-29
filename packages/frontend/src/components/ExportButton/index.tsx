@@ -82,7 +82,7 @@ export function ExportButton({
               <ExportDropdown className={className} onExport={handleExport} disabled={isButtonDisabled} isExporting={isExporting} exportingFormat={exportingFormat} />
             </div>
           </TooltipTrigger>
-          <TooltipContent className="bg-[var(--primary)] text-[var(--secundary)] border-2 border-[var(--secundary)]">
+          <TooltipContent className="bg-[var(--primary)] text-[var(--secundary)] border border-[var(--secundary)]">
             <p className="text-base">
               Trop de résultats ({formatNumber(totalCount)}).
               Maximum {EXPORT_LIMIT} éléments autorisés.

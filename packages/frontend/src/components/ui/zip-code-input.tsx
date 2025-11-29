@@ -100,7 +100,7 @@ export function ZipCodeInput({
           disabled={disabled}
           className={cn(
             "w-full px-3 py-2 text-sm rounded-md",
-            "border-2 border-[var(--primary)] focus:border-[var(--primary)]",
+            "border border-[var(--primary)] focus:border-[var(--primary)]",
             "bg-[var(--secundary)] text-foreground",
             "focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20",
             "placeholder:text-muted-foreground",

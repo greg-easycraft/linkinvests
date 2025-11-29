@@ -45,7 +45,7 @@ describe('Select Components', () => {
         'items-center',
         'justify-between',
         'rounded-md',
-        'border-2',
+        'border',
         'px-3',
         'py-2',
         'text-sm'

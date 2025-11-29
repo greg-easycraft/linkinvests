@@ -70,7 +70,7 @@ describe('MultiSelect Component', () => {
         'justify-between',
         'text-left',
         'font-normal',
-        'border-2',
+        'border',
         'border-[var(--primary)]',
         'bg-[var(--secundary)]',
         'text-[var(--primary)]'

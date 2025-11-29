@@ -316,7 +316,7 @@ describe('ZipCodeInput Component', () => {
         'py-2',
         'text-sm',
         'rounded-md',
-        'border-2',
+        'border',
         'border-[var(--primary)]',
         'bg-[var(--secundary)]',
         'text-foreground'
