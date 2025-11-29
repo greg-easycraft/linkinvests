@@ -24,7 +24,7 @@ export function EnergySieveDetails({ opportunity, detailPageUrl }: EnergySieveDe
   const energyClassInfo = ENERGY_CLASS_INFO[opportunity.energyClass as EnergyClass];
 
   return (
-    <Card className="mt-6 text-[var(--primary)] bg-[var(--secundary)]">
+    <Card className="mt-6 text-[var(--primary)] border-none bg-[var(--secundary)]">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 mb-2">
           <Zap className="h-5 w-5" />
@@ -71,7 +71,7 @@ export function EnergySieveDetails({ opportunity, detailPageUrl }: EnergySieveDe
             <div className="flex items-center gap-2">
               <Hash className="h-4 w-4 " />
               <span className="font-medium">Numéro DPE:</span>
-              <Badge variant="outline" className="font-mono bg-[var(--primary)]">
+              <Badge variant="outline" className="font-mono text-[var(--secundary)] bg-[var(--primary)]">
                 {opportunity.externalId}
               </Badge>
             </div>

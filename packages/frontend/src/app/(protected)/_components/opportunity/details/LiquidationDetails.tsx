@@ -44,7 +44,7 @@ export function LiquidationDetails({ opportunity, detailPageUrl }: LiquidationDe
   }
 
   return (
-    <Card className="mt-6 text-[var(--primary)] bg-[var(--secundary)]">
+    <Card className="mt-6 text-[var(--primary)] border-none bg-[var(--secundary)]">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 mb-2">
           <Building2 className="h-5 w-5" />
@@ -73,7 +73,7 @@ export function LiquidationDetails({ opportunity, detailPageUrl }: LiquidationDe
               <div className="flex items-center gap-2">
                 <Hash className="h-4 w-4 " />
                 <span className="font-medium">SIRET:</span>
-                <Badge variant="outline" className="font-mono bg-[var(--primary)]">
+                <Badge variant="outline" className="font-mono text-[var(--secundary)] bg-[var(--primary)]">
                   {formatSiret(opportunity.siret)}
                 </Badge>
               </div>

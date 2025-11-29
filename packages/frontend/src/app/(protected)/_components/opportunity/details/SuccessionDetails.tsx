@@ -37,7 +37,7 @@ export function SuccessionDetails({ opportunity, detailPageUrl }: SuccessionDeta
   }
 
   return (
-      <Card className="mt-6 text-[var(--primary)] bg-[var(--secundary)]">
+      <Card className="mt-6 text-[var(--primary)] border-none bg-[var(--secundary)]">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 mb-2">
           <User className="h-5 w-5" />

@@ -114,7 +114,7 @@ export function AuctionDetailContent({ auction }: AuctionDetailContentProps) {
       {isSearching && <FullPageSpinner message="Recherche de diagnostics en cours..." />}
       <div className="max-w-4xl mx-auto space-y-6">
       {/* Title Card */}
-      <Card className="bg-[var(--secundary)]">
+      <Card className="bg-[var(--secundary)] border-none">
         <CardHeader>
           <CardTitle className="text-2xl text-[var(--primary)]">
             {auction.label}
