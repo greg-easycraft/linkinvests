@@ -78,7 +78,7 @@ export function BaseFilters({
   }, [router, pathname]);
 
   return (
-    <Card className="bg-[var(--secundary)] text-[var(--primary)] h-full flex flex-col shadow-sm">
+    <Card className="bg-[var(--secundary)] border-none text-[var(--primary)] h-full flex flex-col shadow-sm">
       <CardHeader className="flex-shrink-0 space-y-4">
         {/* View Toggle */}
         <div>

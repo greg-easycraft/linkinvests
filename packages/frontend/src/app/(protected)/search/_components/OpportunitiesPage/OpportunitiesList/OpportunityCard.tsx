@@ -74,7 +74,7 @@ export function OpportunityCard({ opportunity, onSelect, type, externalUrl, isSe
     <Card
       key={opportunity.id}
       onClick={() => onSelect(opportunity)}
-      className={`cursor-pointer transition-all shadow-sm hover:shadow-xl hover:border-blue-100 transition-all duration-500 cursor-pointer transform bg-[var(--secundary)] text-[var(--primary)]`}
+      className={`cursor-pointer transition-all border-none shadow-sm hover:shadow-xl hover:border-blue-100 transition-all duration-500 cursor-pointer transform bg-[var(--secundary)] text-[var(--primary)]`}
     >
       <div className="flex gap-4 p-4">
         {/* Checkbox for selection */}

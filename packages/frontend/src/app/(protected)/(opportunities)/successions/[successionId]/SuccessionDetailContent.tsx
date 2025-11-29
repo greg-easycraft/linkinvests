@@ -36,7 +36,7 @@ export function SuccessionDetailContent({ succession }: SuccessionDetailContentP
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Title Card */}
-      <Card className="bg-[var(--secundary)]">
+      <Card className="bg-[var(--secundary)] border-none">
         <CardHeader>
           <CardTitle className="text-2xl text-[var(--primary)]">
             {succession.label}
@@ -113,7 +113,7 @@ export function SuccessionDetailContent({ succession }: SuccessionDetailContentP
       <SuccessionDetails opportunity={succession} />
 
       {/* Timestamps */}
-      <Card className="bg-[var(--secundary)]">
+      <Card className="bg-[var(--secundary)] border-none">
         <CardContent className="pt-6 bg-[var(--secundary)]">
           <div className="text-xs space-y-1">
             <div>Créé le : {format(new Date(succession.createdAt), "dd/MM/yyyy à HH:mm")}</div>
