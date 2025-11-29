@@ -105,9 +105,7 @@ export class DrizzleEnergyDiagnosticsRepository implements IEnergyDiagnosticsRep
       .select()
       .from(energyDiagnostics)
       .where(and(
-        eq(energyDiagnostics.id, id),
-        // Even when fetching by ID, maintain F/G filter as per requirement
-        inArray(energyDiagnostics.energyClass, ['F', 'G'])
+        eq(energyDiagnostics.id, id)
       ))
       .limit(1);
 
