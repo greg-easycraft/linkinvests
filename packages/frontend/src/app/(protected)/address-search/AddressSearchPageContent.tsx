@@ -96,7 +96,7 @@ export default function AddressSearchPageContent(): React.ReactElement {
 
       {/* Loading State */}
       {isLoading && (
-        <Alert className="max-w-2xl mx-auto border-blue-200 bg-blue-50">
+        <Alert className="max-w-4xl mx-auto border-blue-200 bg-blue-50">
           <Info className="h-4 w-4 text-blue-600" />
           <AlertTitle className="text-blue-800">Recherche en cours...</AlertTitle>
           <AlertDescription className="text-blue-700">

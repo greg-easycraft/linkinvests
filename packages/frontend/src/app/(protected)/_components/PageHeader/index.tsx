@@ -23,7 +23,7 @@ export function PageHeader(): React.ReactElement {
 }, []);
 
   return (
-    <nav className={`h-[var(--header-height)] px-6 py-3 shadow-sm sticky top-0 z-50 ${scrolled ? 'bg-white' : 'bg-[var(--background-color)]'}`}>
+    <nav className={`h-[var(--header-height)] px-6 py-3 shadow-sm sticky top-0 z-50 ${scrolled ? 'bg-white bg-opacity-90' : 'bg-[var(--background-color)]'}`}>
       <div className="flex items-center justify-between">
           <a
             href="https://linkinvests.com/"
