@@ -1,8 +1,6 @@
 "use client";
 // import { SignInForm } from "~/components/auth/SignInForm";
-import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Button } from "~/components/ui/button";
 
 export default function Home() {
   const [isVisible, setIsVisible] = useState(false);
@@ -32,18 +30,7 @@ export default function Home() {
           isVisible ? "opacity-100" : "opacity-0"
         }`}
       >
-        {/* <SignInForm /> */}
-        <div className="flex justify-center">
-          <Button variant="outline" className="bg-white/10 border-black text-black hover:bg-white/20 hover:text-black transition-transform duration-300 ease-out hover:-translate-y-1 hover:scale-105" asChild>
-            <div className="flex items-center gap-2 p-4 py-6">
-              <Link href="/search/listings">
-                <div className="text-lg">
-                  Invest differently
-                </div>
-              </Link>
-            </div>
-          </Button>
-        </div>
+        <div className="text-center text-3xl text-[#3E3E3E]">Merci à tous pour un superbe évènement, l'application sera de retour début 2026 !</div>
       </div>
     </div>
   );
