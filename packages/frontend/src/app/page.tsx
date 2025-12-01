@@ -30,7 +30,7 @@ export default function Home() {
           isVisible ? "opacity-100" : "opacity-0"
         }`}
       >
-        <div className="text-center text-3xl text-[#3E3E3E]">Merci à tous pour un superbe évènement, l'application sera de retour début 2026 !</div>
+        <div className="text-center text-3xl text-[#3E3E3E]">Merci à tous pour un superbe évènement, l&apos;application sera de retour début 2026 !</div>
       </div>
     </div>
   );
