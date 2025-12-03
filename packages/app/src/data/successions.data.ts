@@ -1,4 +1,3 @@
-import type { ISuccessionFilters, Succession } from '@/types'
 import {
   FRENCH_FIRST_NAMES,
   FRENCH_LAST_NAMES,
@@ -9,6 +8,7 @@ import {
   randomElement,
   randomInt,
 } from './common'
+import type { ISuccessionFilters, Succession } from '@/types'
 
 function generateSuccession(index: number): Succession {
   const addr = randomAddress()
@@ -54,9 +54,9 @@ function generateSuccession(index: number): Succession {
 }
 
 // Generate and cache dummy successions
-let cachedSuccessions: Succession[] | null = null
+let cachedSuccessions: Array<Succession> | null = null
 
-export function generateDummySuccessions(count = 50): Succession[] {
+export function generateDummySuccessions(count = 50): Array<Succession> {
   if (cachedSuccessions && cachedSuccessions.length === count) {
     return cachedSuccessions
   }
@@ -68,9 +68,9 @@ export function generateDummySuccessions(count = 50): Succession[] {
 
 // Filter function for successions
 export function filterSuccessions(
-  successions: Succession[],
+  successions: Array<Succession>,
   filters: ISuccessionFilters,
-): Succession[] {
+): Array<Succession> {
   return successions.filter((succession) => {
     // Department filter
     if (

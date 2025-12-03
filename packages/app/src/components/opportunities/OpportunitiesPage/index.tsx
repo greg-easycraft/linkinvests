@@ -1,16 +1,16 @@
-import { useState, useCallback } from 'react'
+import { useCallback, useState } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { OpportunityHeader } from './Header'
 import { OpportunitiesList } from './OpportunitiesList'
 import { OpportunitiesMap } from './OpportunitiesMap'
-import { useDelayedSkeleton } from '@/hooks'
 import type {
   BaseOpportunity,
-  Opportunity,
   OpportunitiesDataQueryResult,
+  Opportunity,
   OpportunityType,
 } from '@/types'
+import { useDelayedSkeleton } from '@/hooks'
+import { Button } from '@/components/ui/button'
 
 interface OpportunitiesPageProps<T extends BaseOpportunity> {
   data?: OpportunitiesDataQueryResult<T>
@@ -100,7 +100,7 @@ export function OpportunitiesPage<T extends BaseOpportunity>({
           <div className="flex-1 overflow-hidden">
             {viewMode === 'list' ? (
               <OpportunitiesList
-                opportunities={opportunities as unknown as Opportunity[]}
+                opportunities={opportunities as unknown as Array<Opportunity>}
                 type={opportunityType}
                 isLoading={showSkeleton}
                 selectedId={selectedOpportunity?.id}
@@ -108,7 +108,7 @@ export function OpportunitiesPage<T extends BaseOpportunity>({
               />
             ) : (
               <OpportunitiesMap
-                opportunities={opportunities as unknown as Opportunity[]}
+                opportunities={opportunities as unknown as Array<Opportunity>}
                 type={opportunityType}
                 isLoading={showSkeleton}
                 selectedId={selectedOpportunity?.id}

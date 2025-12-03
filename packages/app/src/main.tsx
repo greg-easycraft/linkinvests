@@ -17,12 +17,6 @@ import './styles.css'
 import reportWebVitals from './reportWebVitals.ts'
 
 // Import schemas
-import {
-  auctionFiltersSchema,
-  listingFiltersSchema,
-  energyDiagnosticFiltersSchema,
-  baseFiltersSchema,
-} from '@/schemas/filters.schema'
 
 // Import page components
 import { AuctionsPage } from './pages/search/AuctionsPage'
@@ -30,6 +24,12 @@ import { ListingsPage } from './pages/search/ListingsPage'
 import { SuccessionsPage } from './pages/search/SuccessionsPage'
 import { LiquidationsPage } from './pages/search/LiquidationsPage'
 import { EnergySievesPage } from './pages/search/EnergySievesPage'
+import {
+  auctionFiltersSchema,
+  baseFiltersSchema,
+  energyDiagnosticFiltersSchema,
+  listingFiltersSchema,
+} from '@/schemas/filters.schema'
 
 // Import auth components
 import { SignInForm } from '@/components/auth/SignInForm'
@@ -58,33 +58,11 @@ function AppHeader() {
         <nav className="flex items-center gap-6">
           <Link
             to="/search/auctions"
+            search={{}}
             className="text-sm hover:text-primary [&.active]:text-primary [&.active]:font-medium"
+            activeOptions={{ includeSearch: false }}
           >
-            Enchères
-          </Link>
-          <Link
-            to="/search/listings"
-            className="text-sm hover:text-primary [&.active]:text-primary [&.active]:font-medium"
-          >
-            Annonces
-          </Link>
-          <Link
-            to="/search/successions"
-            className="text-sm hover:text-primary [&.active]:text-primary [&.active]:font-medium"
-          >
-            Successions
-          </Link>
-          <Link
-            to="/search/liquidations"
-            className="text-sm hover:text-primary [&.active]:text-primary [&.active]:font-medium"
-          >
-            Liquidations
-          </Link>
-          <Link
-            to="/search/energy-sieves"
-            className="text-sm hover:text-primary [&.active]:text-primary [&.active]:font-medium"
-          >
-            Passoires énergétiques
+            Opportunités
           </Link>
           <Link to="/auth/sign-in" className="text-sm hover:text-primary">
             Connexion

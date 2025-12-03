@@ -1,11 +1,14 @@
+import { useLocation } from '@tanstack/react-router'
+import type { BaseFilters as BaseFiltersType } from '@/schemas/filters.schema'
 import { Card } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import {
-  ViewToggle,
-  DepartmentsFilter,
   DatePeriodFilter,
+  DepartmentsFilter,
+  OpportunityTypeFilter,
+  ViewToggle,
+  ZipCodeInput,
 } from '@/components/filters'
-import type { BaseFilters as BaseFiltersType } from '@/schemas/filters.schema'
 
 interface BaseFiltersProps {
   filters: BaseFiltersType
@@ -22,15 +25,22 @@ export function BaseFilters({
   onFiltersChange,
   title,
 }: BaseFiltersProps): React.ReactElement {
-  const handleChange = <K extends keyof BaseFiltersType>(
-    key: K,
-    value: BaseFiltersType[K],
+  const location = useLocation()
+
+  const handleChange = <TKey extends keyof BaseFiltersType>(
+    key: TKey,
+    value: BaseFiltersType[TKey],
   ) => {
     onFiltersChange({ ...filters, [key]: value })
   }
 
   return (
     <Card className="p-4 space-y-4 h-full overflow-y-auto">
+      {/* Type Selector */}
+      <OpportunityTypeFilter currentPath={location.pathname} />
+
+      <Separator />
+
       {title && (
         <>
           <h2 className="font-semibold">{title}</h2>
@@ -50,6 +60,11 @@ export function BaseFilters({
       <DepartmentsFilter
         value={filters.departments}
         onValueChange={(v) => handleChange('departments', v)}
+      />
+
+      <ZipCodeInput
+        value={filters.zipCodes}
+        onValueChange={(v) => handleChange('zipCodes', v)}
       />
 
       <DatePeriodFilter

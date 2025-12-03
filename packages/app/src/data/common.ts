@@ -248,7 +248,7 @@ export function randomFloat(min: number, max: number): number {
   return Math.random() * (max - min) + min
 }
 
-export function randomElement<T>(array: T[]): T {
+export function randomElement<T>(array: Array<T>): T {
   return array[Math.floor(Math.random() * array.length)]
 }
 

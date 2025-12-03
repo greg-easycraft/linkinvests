@@ -1,4 +1,3 @@
-import type { ILiquidationFilters, Liquidation } from '@/types'
 import {
   COMPANY_NAMES,
   COMPANY_PREFIXES,
@@ -9,6 +8,7 @@ import {
   randomElement,
   randomInt,
 } from './common'
+import type { ILiquidationFilters, Liquidation } from '@/types'
 
 function generateSiret(): string {
   // Generate a realistic-looking SIRET (14 digits)
@@ -56,9 +56,9 @@ function generateLiquidation(index: number): Liquidation {
 }
 
 // Generate and cache dummy liquidations
-let cachedLiquidations: Liquidation[] | null = null
+let cachedLiquidations: Array<Liquidation> | null = null
 
-export function generateDummyLiquidations(count = 50): Liquidation[] {
+export function generateDummyLiquidations(count = 50): Array<Liquidation> {
   if (cachedLiquidations && cachedLiquidations.length === count) {
     return cachedLiquidations
   }
@@ -70,9 +70,9 @@ export function generateDummyLiquidations(count = 50): Liquidation[] {
 
 // Filter function for liquidations
 export function filterLiquidations(
-  liquidations: Liquidation[],
+  liquidations: Array<Liquidation>,
   filters: ILiquidationFilters,
-): Liquidation[] {
+): Array<Liquidation> {
   return liquidations.filter((liquidation) => {
     // Department filter
     if (

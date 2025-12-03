@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import { Link } from '@tanstack/react-router'
 import { ArrowLeft, Loader2, Mail } from 'lucide-react'
+import type { ForgotPasswordInput } from '@/schemas/auth.schema'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { forgotPasswordSchema } from '@/schemas/auth.schema'
-import type { ForgotPasswordInput } from '@/schemas/auth.schema'
 
 export function ForgotPasswordForm(): React.ReactElement {
   const [isLoading, setIsLoading] = useState(false)

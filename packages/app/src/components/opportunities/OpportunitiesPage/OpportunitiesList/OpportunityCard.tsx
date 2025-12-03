@@ -1,21 +1,21 @@
 import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'
+import {
+  Building2,
+  Calendar,
+  Euro,
+  ExternalLink,
+  Gavel,
+  MapPin,
+  RefreshCcw,
+  Zap,
+} from 'lucide-react'
+import type { EnergyClass, Opportunity, OpportunityType } from '@/types'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { EnergyClassBadge } from '@/components/ui/energy-class-badge'
-import {
-  MapPin,
-  Calendar,
-  ExternalLink,
-  Building2,
-  Zap,
-  Euro,
-  RefreshCcw,
-  Gavel,
-} from 'lucide-react'
-import { TYPE_LABELS, TYPE_COLORS } from '@/constants'
-import type { EnergyClass, Opportunity, OpportunityType } from '@/types'
+import { TYPE_COLORS, TYPE_LABELS } from '@/constants'
 import { formatPrice } from '@/lib/format'
 
 // Type guard to check if opportunity has pictures
@@ -23,7 +23,7 @@ const hasPictureFields = (
   opportunity: Opportunity,
 ): opportunity is Extract<
   Opportunity,
-  { mainPicture?: string; pictures?: string[] }
+  { mainPicture?: string; pictures?: Array<string> }
 > => {
   return 'mainPicture' in opportunity
 }

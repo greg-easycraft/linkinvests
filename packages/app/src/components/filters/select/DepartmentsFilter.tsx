@@ -1,5 +1,5 @@
-import { useState, useMemo } from 'react'
-import { X, Search } from 'lucide-react'
+import { useMemo, useState } from 'react'
+import { Search, X } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -12,8 +12,8 @@ import {
 import { getDepartmentsByIds, searchDepartments } from '@/constants'
 
 interface DepartmentsFilterProps {
-  value?: string[]
-  onValueChange: (value: string[] | undefined) => void
+  value?: Array<string>
+  onValueChange: (value: Array<string> | undefined) => void
 }
 
 export function DepartmentsFilter({

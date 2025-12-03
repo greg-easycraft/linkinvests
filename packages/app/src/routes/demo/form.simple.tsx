@@ -1,9 +1,9 @@
 import { createRoute } from '@tanstack/react-router'
 import { z } from 'zod'
 
+import type { RootRoute } from '@tanstack/react-router'
 import { useAppForm } from '@/hooks/demo.form'
 
-import type { RootRoute } from '@tanstack/react-router'
 
 const schema = z.object({
   title: z.string().min(1, 'Title is required'),

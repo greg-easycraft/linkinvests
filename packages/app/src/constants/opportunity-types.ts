@@ -3,13 +3,13 @@ import { OpportunityType } from '@/types'
 /**
  * Display labels for opportunity types (French)
  */
-export const TYPE_LABELS: Record<string, string> = {
-  succession: 'Succession',
-  liquidation: 'Liquidation',
-  energy_sieve: 'Passoire énergétique',
-  real_estate_listing: 'Annonce immobilière',
-  auction: 'Vente aux enchères',
-  divorce: 'Divorce',
+export const TYPE_LABELS: Record<OpportunityType, string> = {
+  [OpportunityType.SUCCESSION]: 'Succession',
+  [OpportunityType.LIQUIDATION]: 'Liquidation',
+  [OpportunityType.ENERGY_SIEVE]: 'Passoire énergétique',
+  [OpportunityType.REAL_ESTATE_LISTING]: 'Annonce immobilière',
+  [OpportunityType.AUCTION]: 'Vente aux enchères',
+  [OpportunityType.DIVORCE]: 'Divorce',
 }
 
 /**

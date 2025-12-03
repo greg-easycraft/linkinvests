@@ -71,7 +71,7 @@ export interface Auction extends BaseOpportunity {
   lowerEstimate?: number;
   upperEstimate?: number;
   mainPicture?: string;
-  pictures?: string[];
+  pictures?: Array<string>;
   auctionHouseContact?: {
     name?: string;
     address?: string;
@@ -100,15 +100,15 @@ export interface Listing extends BaseOpportunity {
   constructionYear?: number;
   floor?: number;
   totalFloors?: number;
-  options?: string[];
-  keywords?: string[];
+  options?: Array<string>;
+  keywords?: Array<string>;
   isSoldRented: boolean;
   price?: number;
   priceType?: string;
   fees?: number;
   charges?: number;
   mainPicture?: string;
-  pictures?: string[];
+  pictures?: Array<string>;
   sellerType: 'individual' | 'professional';
   sellerContact?: {
     name?: string;

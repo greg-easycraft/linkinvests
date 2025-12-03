@@ -1,5 +1,5 @@
-import { getEnergyClassColor, getEnergyClassBgColor } from '@/constants'
 import type { EnergyClassType } from '@/types'
+import { getEnergyClassBgColor, getEnergyClassColor } from '@/constants'
 
 interface EnergyClassBadgeProps {
   energyClass?: EnergyClassType | string

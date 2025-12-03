@@ -1,12 +1,16 @@
+import { useLocation } from '@tanstack/react-router'
+import type { EnergyDiagnosticFilters as EnergyDiagnosticFiltersType } from '@/schemas/filters.schema'
+import type { EnergyClassType } from '@/types'
 import { Card } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import {
-  ViewToggle,
-  DepartmentsFilter,
   DatePeriodFilter,
+  DepartmentsFilter,
   EnergyClassFilter,
+  OpportunityTypeFilter,
+  ViewToggle,
+  ZipCodeInput,
 } from '@/components/filters'
-import type { EnergyDiagnosticFilters as EnergyDiagnosticFiltersType } from '@/schemas/filters.schema'
 
 interface EnergyDiagnosticFiltersProps {
   filters: EnergyDiagnosticFiltersType
@@ -17,15 +21,22 @@ export function EnergyDiagnosticFilters({
   filters,
   onFiltersChange,
 }: EnergyDiagnosticFiltersProps): React.ReactElement {
-  const handleChange = <K extends keyof EnergyDiagnosticFiltersType>(
-    key: K,
-    value: EnergyDiagnosticFiltersType[K],
+  const location = useLocation()
+
+  const handleChange = <TKey extends keyof EnergyDiagnosticFiltersType>(
+    key: TKey,
+    value: EnergyDiagnosticFiltersType[TKey],
   ) => {
     onFiltersChange({ ...filters, [key]: value })
   }
 
   return (
     <Card className="p-4 space-y-4 h-full overflow-y-auto">
+      {/* Type Selector */}
+      <OpportunityTypeFilter currentPath={location.pathname} />
+
+      <Separator />
+
       {/* View Toggle */}
       <ViewToggle
         value={filters.view ?? 'list'}
@@ -40,6 +51,11 @@ export function EnergyDiagnosticFilters({
         onValueChange={(v) => handleChange('departments', v)}
       />
 
+      <ZipCodeInput
+        value={filters.zipCodes}
+        onValueChange={(v) => handleChange('zipCodes', v)}
+      />
+
       <DatePeriodFilter
         value={filters.datePeriod}
         onValueChange={(v) => handleChange('datePeriod', v)}
@@ -49,11 +65,7 @@ export function EnergyDiagnosticFilters({
 
       {/* Energy class filter - only E, F, G for energy sieves */}
       <EnergyClassFilter
-        value={
-          filters.energyClasses as
-            | import('@/types').EnergyClassType[]
-            | undefined
-        }
+        value={filters.energyClasses as Array<EnergyClassType> | undefined}
         onValueChange={(v) =>
           handleChange('energyClasses', v as typeof filters.energyClasses)
         }

@@ -1,9 +1,9 @@
 import { Map as MapIcon } from 'lucide-react'
-import { Skeleton } from '@/components/ui/skeleton'
 import type { BaseOpportunity, OpportunityType } from '@/types'
+import { Skeleton } from '@/components/ui/skeleton'
 
 interface OpportunitiesMapProps<T extends BaseOpportunity> {
-  opportunities: T[]
+  opportunities: Array<T>
   type: OpportunityType
   isLoading: boolean
   selectedId?: string

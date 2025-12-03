@@ -8,7 +8,7 @@ export interface PropertyTypeOption {
   label: string
 }
 
-export const PROPERTY_TYPE_OPTIONS: PropertyTypeOption[] = [
+export const PROPERTY_TYPE_OPTIONS: Array<PropertyTypeOption> = [
   { value: PropertyType.FLAT, label: 'Appartement' },
   { value: PropertyType.HOUSE, label: 'Maison' },
   { value: PropertyType.COMMERCIAL, label: 'Local commercial' },

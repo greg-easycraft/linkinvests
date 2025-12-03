@@ -3,7 +3,7 @@ import type { DatePeriod, DatePeriodOption } from '@/types'
 /**
  * Predefined date period options for opportunity filtering
  */
-export const DATE_PERIOD_OPTIONS: DatePeriodOption[] = [
+export const DATE_PERIOD_OPTIONS: Array<DatePeriodOption> = [
   {
     value: 'last_month',
     label: 'Depuis 1 mois',

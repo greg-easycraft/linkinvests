@@ -4,7 +4,7 @@ import type { DepartmentOption } from '@/types'
  * List of French departments with their codes and names.
  * Sorted alphabetically by name for better user experience
  */
-export const FRENCH_DEPARTMENTS: DepartmentOption[] = [
+export const FRENCH_DEPARTMENTS: Array<DepartmentOption> = [
   { id: '01', name: 'Ain', label: '01 - Ain' },
   { id: '02', name: 'Aisne', label: '02 - Aisne' },
   { id: '03', name: 'Allier', label: '03 - Allier' },
@@ -123,7 +123,7 @@ export const FRENCH_DEPARTMENTS: DepartmentOption[] = [
 /**
  * Search departments by ID or name (case insensitive)
  */
-export function searchDepartments(query: string): DepartmentOption[] {
+export function searchDepartments(query: string): Array<DepartmentOption> {
   if (!query.trim()) {
     return FRENCH_DEPARTMENTS
   }
@@ -145,6 +145,6 @@ export function getDepartmentById(id: string): DepartmentOption | undefined {
 /**
  * Get multiple departments by their IDs
  */
-export function getDepartmentsByIds(ids: string[]): DepartmentOption[] {
+export function getDepartmentsByIds(ids: Array<string>): Array<DepartmentOption> {
   return FRENCH_DEPARTMENTS.filter((dept) => ids.includes(dept.id))
 }

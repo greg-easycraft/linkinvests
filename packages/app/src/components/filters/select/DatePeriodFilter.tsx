@@ -1,3 +1,4 @@
+import type { DatePeriod } from '@/types'
 import {
   Select,
   SelectContent,
@@ -6,7 +7,6 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { DATE_PERIOD_OPTIONS } from '@/constants'
-import type { DatePeriod } from '@/types'
 
 interface DatePeriodFilterProps {
   value?: DatePeriod

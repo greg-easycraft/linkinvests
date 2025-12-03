@@ -1,5 +1,3 @@
-import { EnergyClass } from '@/types'
-import type { EnergyDiagnostic, IEnergyDiagnosticFilters } from '@/types'
 import {
   generateId,
   randomAddress,
@@ -7,6 +5,8 @@ import {
   randomElement,
   randomInt,
 } from './common'
+import type { EnergyDiagnostic, IEnergyDiagnosticFilters } from '@/types'
+import { EnergyClass } from '@/types'
 
 // Energy sieves are only E, F, or G class properties
 const ENERGY_SIEVE_CLASSES = [EnergyClass.E, EnergyClass.F, EnergyClass.G]
@@ -34,9 +34,9 @@ function generateEnergySieve(index: number): EnergyDiagnostic {
 }
 
 // Generate and cache dummy energy sieves
-let cachedEnergySieves: EnergyDiagnostic[] | null = null
+let cachedEnergySieves: Array<EnergyDiagnostic> | null = null
 
-export function generateDummyEnergySieves(count = 50): EnergyDiagnostic[] {
+export function generateDummyEnergySieves(count = 50): Array<EnergyDiagnostic> {
   if (cachedEnergySieves && cachedEnergySieves.length === count) {
     return cachedEnergySieves
   }
@@ -48,9 +48,9 @@ export function generateDummyEnergySieves(count = 50): EnergyDiagnostic[] {
 
 // Filter function for energy sieves
 export function filterEnergySieves(
-  energySieves: EnergyDiagnostic[],
+  energySieves: Array<EnergyDiagnostic>,
   filters: IEnergyDiagnosticFilters,
-): EnergyDiagnostic[] {
+): Array<EnergyDiagnostic> {
   return energySieves.filter((energySieve) => {
     // Department filter
     if (

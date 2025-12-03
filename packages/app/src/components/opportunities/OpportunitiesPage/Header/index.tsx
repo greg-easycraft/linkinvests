@@ -1,3 +1,5 @@
+import { ChevronDown, Download } from 'lucide-react'
+import type { OpportunityType } from '@/types'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
 import {
@@ -6,9 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Download, ChevronDown } from 'lucide-react'
 import { TYPE_LABELS } from '@/constants'
-import type { OpportunityType } from '@/types'
 import { formatNumber } from '@/lib/format'
 
 interface OpportunityHeaderProps {

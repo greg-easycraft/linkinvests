@@ -9,8 +9,8 @@ import type {
 interface UseOpportunityDataOptions<T extends BaseOpportunity> {
   opportunityType: OpportunityType
   filters: IOpportunityFilters
-  getDummyData: () => T[]
-  filterFn: (data: T[], filters: IOpportunityFilters) => T[]
+  getDummyData: () => Array<T>
+  filterFn: (data: Array<T>, filters: IOpportunityFilters) => Array<T>
   pageSize?: number
 }
 
@@ -102,10 +102,10 @@ export function useOpportunityData<T extends BaseOpportunity>({
  * Sort data based on sort options
  */
 function sortData<T extends BaseOpportunity>(
-  data: T[],
+  data: Array<T>,
   sortBy?: string,
   sortOrder?: 'asc' | 'desc',
-): T[] {
+): Array<T> {
   if (!sortBy) return data
 
   const sorted = [...data].sort((a, b) => {

@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { Loader2 } from 'lucide-react'
+import type { SignUpInput } from '@/schemas/auth.schema'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { signUpSchema } from '@/schemas/auth.schema'
-import type { SignUpInput } from '@/schemas/auth.schema'
 
 export function SignUpForm(): React.ReactElement {
   const navigate = useNavigate()

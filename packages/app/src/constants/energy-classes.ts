@@ -10,7 +10,7 @@ export interface EnergyClassOption {
   bgColor: string
 }
 
-export const ENERGY_CLASS_OPTIONS: EnergyClassOption[] = [
+export const ENERGY_CLASS_OPTIONS: Array<EnergyClassOption> = [
   { value: EnergyClass.A, label: 'A', color: '#1d8a3e', bgColor: '#dcfce7' },
   { value: EnergyClass.B, label: 'B', color: '#3b9e47', bgColor: '#dcfce7' },
   { value: EnergyClass.C, label: 'C', color: '#8cc63f', bgColor: '#ecfccb' },

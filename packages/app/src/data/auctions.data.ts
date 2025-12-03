@@ -1,21 +1,21 @@
 import {
-  AuctionOccupationStatus,
-  AuctionSource,
-  EnergyClass,
-  PropertyType,
-} from '@/types'
-import type { Auction, EnergyClassType, IAuctionFilters } from '@/types'
-import {
-  generateId,
   PROPERTY_LABELS,
+  generateId,
   randomAddress,
   randomBoolean,
   randomDate,
   randomElement,
   randomInt,
 } from './common'
+import type { Auction, EnergyClassType, IAuctionFilters } from '@/types'
+import {
+  AuctionOccupationStatus,
+  AuctionSource,
+  EnergyClass,
+  PropertyType,
+} from '@/types'
 
-const ENERGY_CLASSES: EnergyClassType[] = [
+const ENERGY_CLASSES: Array<EnergyClassType> = [
   EnergyClass.A,
   EnergyClass.B,
   EnergyClass.C,
@@ -26,7 +26,7 @@ const ENERGY_CLASSES: EnergyClassType[] = [
   'UNKNOWN',
 ]
 
-const OCCUPATION_STATUSES: AuctionOccupationStatus[] = [
+const OCCUPATION_STATUSES: Array<AuctionOccupationStatus> = [
   AuctionOccupationStatus.FREE,
   AuctionOccupationStatus.OCCUPIED_BY_OWNER,
   AuctionOccupationStatus.RENTED,
@@ -105,9 +105,9 @@ function generateAuction(index: number): Auction {
 }
 
 // Generate and cache dummy auctions
-let cachedAuctions: Auction[] | null = null
+let cachedAuctions: Array<Auction> | null = null
 
-export function generateDummyAuctions(count = 50): Auction[] {
+export function generateDummyAuctions(count = 50): Array<Auction> {
   if (cachedAuctions && cachedAuctions.length === count) {
     return cachedAuctions
   }
@@ -117,9 +117,9 @@ export function generateDummyAuctions(count = 50): Auction[] {
 
 // Filter function for auctions
 export function filterAuctions(
-  auctions: Auction[],
+  auctions: Array<Auction>,
   filters: IAuctionFilters,
-): Auction[] {
+): Array<Auction> {
   return auctions.filter((auction) => {
     // Department filter
     if (

@@ -1,11 +1,12 @@
 import { useNavigate, useSearch } from '@tanstack/react-router'
 import { useCallback } from 'react'
+import type { BaseFilters as BaseFiltersType } from '@/schemas/filters.schema'
+import type {Liquidation} from '@/types';
 import { OpportunitiesPage } from '@/components/opportunities/OpportunitiesPage'
 import { BaseFilters } from '@/components/opportunities/OpportunityFilters'
 import { useOpportunityData } from '@/hooks'
-import { generateDummyLiquidations, filterLiquidations } from '@/data'
-import { OpportunityType, type Liquidation } from '@/types'
-import type { BaseFilters as BaseFiltersType } from '@/schemas/filters.schema'
+import { filterLiquidations, generateDummyLiquidations } from '@/data'
+import {  OpportunityType } from '@/types'
 
 export function LiquidationsPage(): React.ReactElement {
   const filters = useSearch({ from: '/search/liquidations' })

@@ -1,11 +1,11 @@
-import { ScrollArea } from '@/components/ui/scroll-area'
-import type { BaseOpportunity, Opportunity, OpportunityType } from '@/types'
 import { OpportunityCard } from './OpportunityCard'
 import { OpportunitiesListSkeleton } from './OpportunitiesListSkeleton'
 import { OpportunitiesListEmptyState } from './OpportunitiesListEmptyState'
+import type { BaseOpportunity, Opportunity, OpportunityType } from '@/types'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 interface OpportunitiesListProps<T extends BaseOpportunity> {
-  opportunities: T[]
+  opportunities: Array<T>
   type: OpportunityType
   isLoading: boolean
   selectedId?: string

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { DatePeriod } from '@/types';
 import {
   AuctionOccupationStatus,
   EnergyClass,
@@ -12,7 +13,6 @@ import {
   DEFAULT_SORT_OPTIONS,
   LISTING_SORT_OPTIONS,
 } from '@/constants/sort-options';
-import type { DatePeriod } from '@/types';
 
 // Helper to transform comma-separated string to array
 const commaSeparatedToArray = z
@@ -42,12 +42,12 @@ export const baseFiltersSchema = z.object({
     .enum(
       DATE_PERIOD_OPTIONS.map((option) => option.value) as [
         DatePeriod,
-        ...DatePeriod[],
+        ...Array<DatePeriod>,
       ]
     )
     .optional(),
   sortBy: z
-    .enum(DEFAULT_SORT_OPTIONS.map((option) => option.sortBy) as [string, ...string[]])
+    .enum(DEFAULT_SORT_OPTIONS.map((option) => option.sortBy) as [string, ...Array<string>])
     .optional(),
   sortOrder: z.enum(['asc', 'desc']).optional(),
 });
@@ -57,7 +57,7 @@ const propertyTypesSchema = z
   .union([
     z
       .string()
-      .transform((val) => val.split(',').filter(Boolean) as PropertyType[]),
+      .transform((val) => val.split(',').filter(Boolean) as Array<PropertyType>),
     z.array(z.nativeEnum(PropertyType)),
   ])
   .optional();
@@ -101,14 +101,14 @@ export const auctionFiltersSchema = baseFiltersSchema.extend({
         .string()
         .transform(
           (val) =>
-            val.split(',').filter(Boolean) as AuctionOccupationStatus[]
+            val.split(',').filter(Boolean) as Array<AuctionOccupationStatus>
         ),
       z.array(z.nativeEnum(AuctionOccupationStatus)),
     ])
     .optional(),
   energyClasses: energyClassesSchema,
   sortBy: z
-    .enum(AUCTION_SORT_OPTIONS.map((option) => option.sortBy) as [string, ...string[]])
+    .enum(AUCTION_SORT_OPTIONS.map((option) => option.sortBy) as [string, ...Array<string>])
     .optional(),
 });
 
@@ -142,7 +142,7 @@ export const listingFiltersSchema = baseFiltersSchema.extend({
     ])
     .optional(),
   sortBy: z
-    .enum(LISTING_SORT_OPTIONS.map((option) => option.sortBy) as [string, ...string[]])
+    .enum(LISTING_SORT_OPTIONS.map((option) => option.sortBy) as [string, ...Array<string>])
     .optional(),
 });
 
@@ -156,12 +156,12 @@ export const energyDiagnosticFiltersSchema = baseFiltersSchema.extend({
           [EnergyClass.E, EnergyClass.F, EnergyClass.G].includes(
             cls as EnergyClass
           )
-        ) as EnergyClass[];
+        ) as Array<EnergyClass>;
       }),
       z.array(
         z.enum([EnergyClass.E, EnergyClass.F, EnergyClass.G] as [
           EnergyClass,
-          ...EnergyClass[],
+          ...Array<EnergyClass>,
         ])
       ),
     ])

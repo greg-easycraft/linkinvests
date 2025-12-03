@@ -1,16 +1,16 @@
-import { EnergyClass, PropertyType } from '@/types'
-import type { EnergyClassType, IListingFilters, Listing } from '@/types'
 import {
-  generateId,
   PROPERTY_LABELS,
+  generateId,
   randomAddress,
   randomBoolean,
   randomDate,
   randomElement,
   randomInt,
 } from './common'
+import type { EnergyClassType, IListingFilters, Listing } from '@/types'
+import { EnergyClass, PropertyType } from '@/types'
 
-const ENERGY_CLASSES: EnergyClassType[] = [
+const ENERGY_CLASSES: Array<EnergyClassType> = [
   EnergyClass.A,
   EnergyClass.B,
   EnergyClass.C,
@@ -134,9 +134,9 @@ function generateListing(index: number): Listing {
 }
 
 // Generate and cache dummy listings
-let cachedListings: Listing[] | null = null
+let cachedListings: Array<Listing> | null = null
 
-export function generateDummyListings(count = 50): Listing[] {
+export function generateDummyListings(count = 50): Array<Listing> {
   if (cachedListings && cachedListings.length === count) {
     return cachedListings
   }
@@ -146,9 +146,9 @@ export function generateDummyListings(count = 50): Listing[] {
 
 // Filter function for listings
 export function filterListings(
-  listings: Listing[],
+  listings: Array<Listing>,
   filters: IListingFilters,
-): Listing[] {
+): Array<Listing> {
   return listings.filter((listing) => {
     // Department filter
     if (

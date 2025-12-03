@@ -1,10 +1,10 @@
+import type { AuctionOccupationStatus } from '@/types'
 import { Checkbox } from '@/components/ui/checkbox'
 import { OCCUPATION_STATUS_OPTIONS } from '@/constants'
-import type { AuctionOccupationStatus } from '@/types'
 
 interface OccupationStatusFilterProps {
-  value?: AuctionOccupationStatus[]
-  onValueChange: (value: AuctionOccupationStatus[] | undefined) => void
+  value?: Array<AuctionOccupationStatus>
+  onValueChange: (value: Array<AuctionOccupationStatus> | undefined) => void
 }
 
 export function OccupationStatusFilter({

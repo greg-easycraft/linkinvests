@@ -8,7 +8,7 @@ export interface OccupationStatusOption {
   label: string
 }
 
-export const OCCUPATION_STATUS_OPTIONS: OccupationStatusOption[] = [
+export const OCCUPATION_STATUS_OPTIONS: Array<OccupationStatusOption> = [
   { value: AuctionOccupationStatus.FREE, label: 'Libre' },
   {
     value: AuctionOccupationStatus.OCCUPIED_BY_OWNER,

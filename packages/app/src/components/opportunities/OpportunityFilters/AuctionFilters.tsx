@@ -1,17 +1,21 @@
+import { useLocation } from '@tanstack/react-router'
+import type { AuctionFilters as AuctionFiltersType } from '@/schemas/filters.schema'
+import type { EnergyClassType } from '@/types'
 import { Card } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import {
-  ViewToggle,
-  DepartmentsFilter,
   DatePeriodFilter,
-  PropertyTypeFilter,
-  PriceRangeFilter,
-  SquareFootageRangeFilter,
-  RoomsRangeFilter,
-  OccupationStatusFilter,
+  DepartmentsFilter,
   EnergyClassFilter,
+  OccupationStatusFilter,
+  OpportunityTypeFilter,
+  PriceRangeFilter,
+  PropertyTypeFilter,
+  RoomsRangeFilter,
+  SquareFootageRangeFilter,
+  ViewToggle,
+  ZipCodeInput,
 } from '@/components/filters'
-import type { AuctionFilters as AuctionFiltersType } from '@/schemas/filters.schema'
 
 interface AuctionFiltersProps {
   filters: AuctionFiltersType
@@ -22,15 +26,22 @@ export function AuctionFilters({
   filters,
   onFiltersChange,
 }: AuctionFiltersProps): React.ReactElement {
-  const handleChange = <K extends keyof AuctionFiltersType>(
-    key: K,
-    value: AuctionFiltersType[K],
+  const location = useLocation()
+
+  const handleChange = <TKey extends keyof AuctionFiltersType>(
+    key: TKey,
+    value: AuctionFiltersType[TKey],
   ) => {
     onFiltersChange({ ...filters, [key]: value })
   }
 
   return (
     <Card className="p-4 space-y-4 h-full overflow-y-auto">
+      {/* Type Selector */}
+      <OpportunityTypeFilter currentPath={location.pathname} />
+
+      <Separator />
+
       {/* View Toggle */}
       <ViewToggle
         value={filters.view ?? 'list'}
@@ -43,6 +54,11 @@ export function AuctionFilters({
       <DepartmentsFilter
         value={filters.departments}
         onValueChange={(v) => handleChange('departments', v)}
+      />
+
+      <ZipCodeInput
+        value={filters.zipCodes}
+        onValueChange={(v) => handleChange('zipCodes', v)}
       />
 
       <DatePeriodFilter
@@ -97,11 +113,7 @@ export function AuctionFilters({
       />
 
       <EnergyClassFilter
-        value={
-          filters.energyClasses as
-            | import('@/types').EnergyClassType[]
-            | undefined
-        }
+        value={filters.energyClasses as Array<EnergyClassType> | undefined}
         onValueChange={(v) => handleChange('energyClasses', v)}
       />
     </Card>

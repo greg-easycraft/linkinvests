@@ -5,7 +5,7 @@ export interface SortOption {
   sortOrder: 'asc' | 'desc'
 }
 
-export const DEFAULT_SORT_OPTIONS: SortOption[] = [
+export const DEFAULT_SORT_OPTIONS: Array<SortOption> = [
   {
     value: 'opportunityDate_desc',
     label: 'Date (plus récent)',
@@ -20,7 +20,7 @@ export const DEFAULT_SORT_OPTIONS: SortOption[] = [
   },
 ]
 
-export const AUCTION_SORT_OPTIONS: SortOption[] = [
+export const AUCTION_SORT_OPTIONS: Array<SortOption> = [
   {
     value: 'opportunityDate_desc',
     label: 'Date (plus récent)',
@@ -59,7 +59,7 @@ export const AUCTION_SORT_OPTIONS: SortOption[] = [
   },
 ]
 
-export const LISTING_SORT_OPTIONS: SortOption[] = [
+export const LISTING_SORT_OPTIONS: Array<SortOption> = [
   {
     value: 'opportunityDate_desc',
     label: 'Date de publication (plus récent)',

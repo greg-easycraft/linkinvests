@@ -1,10 +1,10 @@
+import type { PropertyType } from '@/types'
 import { Checkbox } from '@/components/ui/checkbox'
 import { PROPERTY_TYPE_OPTIONS } from '@/constants'
-import type { PropertyType } from '@/types'
 
 interface PropertyTypeFilterProps {
-  value?: PropertyType[]
-  onValueChange: (value: PropertyType[] | undefined) => void
+  value?: Array<PropertyType>
+  onValueChange: (value: Array<PropertyType> | undefined) => void
 }
 
 export function PropertyTypeFilter({

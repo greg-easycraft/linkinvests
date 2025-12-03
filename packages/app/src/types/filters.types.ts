@@ -1,9 +1,9 @@
 import type {
-  OpportunityType,
-  PropertyType,
   AuctionOccupationStatus,
   EnergyClass,
   EnergyClassType,
+  OpportunityType,
+  PropertyType,
 } from './opportunity.types';
 
 export interface MapBounds {
@@ -41,9 +41,9 @@ export interface DepartmentOption {
 
 export interface IOpportunityFilters {
   view?: 'list' | 'map';
-  types?: OpportunityType[];
-  departments?: string[];
-  zipCodes?: string[];
+  types?: Array<OpportunityType>;
+  departments?: Array<string>;
+  zipCodes?: Array<string>;
   dateRange?: DateRange; // Legacy support
   datePeriod?: DatePeriod;
   bounds?: MapBounds;
@@ -59,7 +59,7 @@ export interface PaginationFilters {
 }
 
 export interface IEnergyDiagnosticFilters extends IOpportunityFilters {
-  energyClasses?: EnergyClass[];
+  energyClasses?: Array<EnergyClass>;
 }
 
 export interface PriceRange {
@@ -68,7 +68,7 @@ export interface PriceRange {
 }
 
 export interface IAuctionFilters extends IOpportunityFilters {
-  propertyTypes?: PropertyType[];
+  propertyTypes?: Array<PropertyType>;
   minPrice?: number;
   maxPrice?: number;
   minReservePrice?: number;
@@ -77,9 +77,9 @@ export interface IAuctionFilters extends IOpportunityFilters {
   maxSquareFootage?: number;
   minRooms?: number;
   maxRooms?: number;
-  auctionVenues?: string[];
-  energyClasses?: EnergyClassType[];
-  occupationStatuses?: AuctionOccupationStatus[];
+  auctionVenues?: Array<string>;
+  energyClasses?: Array<EnergyClassType>;
+  occupationStatuses?: Array<AuctionOccupationStatus>;
 }
 
 export interface ISuccessionFilters extends IOpportunityFilters {
@@ -100,7 +100,7 @@ export interface ListingFeatures {
 }
 
 export interface IListingFilters extends IOpportunityFilters {
-  propertyTypes?: PropertyType[];
+  propertyTypes?: Array<PropertyType>;
   minPrice?: number;
   maxPrice?: number;
   minSquareFootage?: number;
@@ -115,15 +115,15 @@ export interface IListingFilters extends IOpportunityFilters {
   maxConstructionYear?: number;
   isDivisible?: boolean;
   hasWorksRequired?: boolean;
-  energyClasses?: EnergyClassType[];
+  energyClasses?: Array<EnergyClassType>;
   features?: ListingFeatures;
   isSoldRented?: boolean;
-  sources?: string[];
+  sources?: Array<string>;
   sellerType?: 'individual' | 'professional';
 }
 
 // Query result types
 export interface OpportunitiesDataQueryResult<T> {
-  opportunities: T[];
+  opportunities: Array<T>;
   total?: number;
 }
