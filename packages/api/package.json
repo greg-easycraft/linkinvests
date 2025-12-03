@@ -29,6 +29,7 @@
     "@thallesp/nestjs-better-auth": "^2.2.0",
     "drizzle-orm": "^0.44.7",
     "fuse.js": "^7.1.0",
+    "nestjs-zod": "^5.0.1",
     "postgres": "^3.4.7",
     "reflect-metadata": "^0.2.2",
     "resend": "^6.5.2",
@@ -72,6 +73,9 @@
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "moduleNameMapper": {
+      "~/(.*)$": "<rootDir>/$1"
     },
     "collectCoverageFrom": [
       "**/*.(t|j)s"
