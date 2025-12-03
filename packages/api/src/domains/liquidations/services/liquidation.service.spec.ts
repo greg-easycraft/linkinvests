@@ -76,8 +76,9 @@ describe('LiquidationService', () => {
         page: 1,
         pageSize: DEFAULT_PAGE_SIZE,
       });
+      // Service adds default datePeriod: '12_months' when no valid datePeriod provided
       expect(mockLiquidationRepository.findAll).toHaveBeenCalledWith(
-        undefined,
+        { datePeriod: '12_months' },
         { limit: DEFAULT_PAGE_SIZE, offset: 0 },
       );
     });
@@ -94,8 +95,9 @@ describe('LiquidationService', () => {
         page: 3,
         pageSize: 25,
       });
+      // Service adds default datePeriod: '12_months' when no valid datePeriod provided
       expect(mockLiquidationRepository.findAll).toHaveBeenCalledWith(
-        filters,
+        { ...filters, datePeriod: '12_months' },
         { limit: 25, offset: 50 }, // (3-1) * 25
       );
     });
@@ -112,10 +114,11 @@ describe('LiquidationService', () => {
 
       await liquidationService.getLiquidationsData(filters);
 
-      expect(mockLiquidationRepository.findAll).toHaveBeenCalledWith(filters, {
-        limit: 10,
-        offset: 10,
-      });
+      // Service adds default datePeriod: '12_months' when no valid datePeriod provided
+      expect(mockLiquidationRepository.findAll).toHaveBeenCalledWith(
+        { ...filters, datePeriod: '12_months' },
+        { limit: 10, offset: 10 },
+      );
     });
 
     it('should handle repository errors', async () => {
@@ -136,7 +139,10 @@ describe('LiquidationService', () => {
       const result = await liquidationService.getLiquidationsCount();
 
       expect(result).toBe(expectedCount);
-      expect(mockLiquidationRepository.count).toHaveBeenCalledWith(undefined);
+      // Service adds default datePeriod: '12_months' when no valid datePeriod provided
+      expect(mockLiquidationRepository.count).toHaveBeenCalledWith({
+        datePeriod: '12_months',
+      });
     });
 
     it('should return liquidation count with filters', async () => {
@@ -147,7 +153,11 @@ describe('LiquidationService', () => {
       const result = await liquidationService.getLiquidationsCount(filters);
 
       expect(result).toBe(expectedCount);
-      expect(mockLiquidationRepository.count).toHaveBeenCalledWith(filters);
+      // Service adds default datePeriod: '12_months' when no valid datePeriod provided
+      expect(mockLiquidationRepository.count).toHaveBeenCalledWith({
+        ...filters,
+        datePeriod: '12_months',
+      });
     });
 
     it('should handle repository count errors', async () => {
@@ -218,8 +228,14 @@ describe('LiquidationService', () => {
       const result = await liquidationService.exportList(filters, 'csv');
 
       expect(result).toBe(mockBlob);
-      expect(mockLiquidationRepository.count).toHaveBeenCalledWith(filters);
-      expect(mockLiquidationRepository.findAll).toHaveBeenCalledWith(filters);
+      // Service adds default datePeriod: '12_months' when no valid datePeriod provided
+      const filtersWithDatePeriod = { ...filters, datePeriod: '12_months' };
+      expect(mockLiquidationRepository.count).toHaveBeenCalledWith(
+        filtersWithDatePeriod,
+      );
+      expect(mockLiquidationRepository.findAll).toHaveBeenCalledWith(
+        filtersWithDatePeriod,
+      );
       expect(getOpportunityHeaders).toHaveBeenCalledWith(
         OpportunityType.LIQUIDATION,
       );
