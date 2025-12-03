@@ -169,7 +169,7 @@ export class DeceasesScrapingService {
 
       this.logger.log(
         { fileName, csvFileName, s3Key },
-        'Successfully processed file and uploaded to S3. CSV processing will be handled by sourcing-worker.'
+        'Successfully processed file and uploaded to S3.'
       );
     } catch (error: unknown) {
       this.logger.error({ error, fileName, url }, 'Failed to process file');

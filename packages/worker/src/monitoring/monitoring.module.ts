@@ -14,7 +14,7 @@ import {
 } from '@linkinvests/shared';
 import { ScrapingController } from './scraping/scraping.controller';
 import { SourcingController } from './sourcing/sourcing.controller';
-import { config } from './config';
+import { config } from '~/config';
 
 const connection = {
   url: config.REDIS_URL,
@@ -29,7 +29,7 @@ const connection = {
 
     // Setup BullBoard dashboard with authentication
     BullBoardModule.forRoot({
-      route: '/',
+      route: '/monitoring',
       adapter: ExpressAdapter,
       middleware: basicAuth({
         users: {
@@ -97,4 +97,4 @@ const connection = {
   ],
   controllers: [ScrapingController, SourcingController],
 })
-export class AppModule {}
+export class MonitoringModule {}
