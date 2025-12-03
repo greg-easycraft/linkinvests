@@ -1,18 +1,18 @@
 import {
+  Building,
+  DoorOpen,
   Euro,
   Home,
-  Ruler,
-  DoorOpen,
-  Zap,
-  User,
-  Phone,
   Mail,
-  Building,
+  Phone,
+  Ruler,
+  User,
+  Zap,
 } from 'lucide-react'
+import type { Auction } from '@/types'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { formatPrice } from '@/lib/format'
-import type { Auction } from '@/types'
 
 interface AuctionDetailsProps {
   opportunity: Auction
@@ -95,7 +95,7 @@ export function AuctionDetails({
             <span>{opportunity.rooms} pièces</span>
           </div>
         )}
-        {opportunity.energyClass && opportunity.energyClass !== 'UNKNOWN' && (
+        {opportunity.energyClass !== 'UNKNOWN' && (
           <div className="flex items-center gap-2 text-sm">
             <Zap className="h-4 w-4 text-muted-foreground" />
             <Badge variant="outline">DPE {opportunity.energyClass}</Badge>
@@ -104,12 +104,10 @@ export function AuctionDetails({
       </div>
 
       {/* Occupation Status */}
-      {opportunity.occupationStatus && (
-        <div className="text-sm">
-          <span className="text-muted-foreground">Statut d'occupation: </span>
-          <span>{OCCUPATION_STATUS_LABELS[opportunity.occupationStatus] ?? opportunity.occupationStatus}</span>
-        </div>
-      )}
+      <div className="text-sm">
+        <span className="text-muted-foreground">Statut d'occupation: </span>
+        <span>{OCCUPATION_STATUS_LABELS[opportunity.occupationStatus] ?? opportunity.occupationStatus}</span>
+      </div>
 
       {/* Description */}
       {opportunity.description && (

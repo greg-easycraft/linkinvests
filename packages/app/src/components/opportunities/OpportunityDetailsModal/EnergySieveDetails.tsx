@@ -1,7 +1,7 @@
-import { Zap, FileText, AlertTriangle, Ruler } from 'lucide-react'
+import { AlertTriangle, FileText, Ruler, Zap } from 'lucide-react'
+import type { EnergyDiagnostic } from '@/types'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import type { EnergyDiagnostic } from '@/types'
 
 interface EnergySieveDetailsProps {
   opportunity: EnergyDiagnostic
@@ -43,15 +43,13 @@ export function EnergySieveDetails({
 
       {/* Property Info */}
       <div className="grid grid-cols-2 gap-4">
-        {opportunity.squareFootage !== undefined && (
-          <Card className="p-3">
-            <div className="text-sm text-muted-foreground">Surface</div>
-            <div className="text-lg font-semibold flex items-center gap-2">
-              <Ruler className="h-4 w-4" />
-              {opportunity.squareFootage} m²
-            </div>
-          </Card>
-        )}
+        <Card className="p-3">
+          <div className="text-sm text-muted-foreground">Surface</div>
+          <div className="text-lg font-semibold flex items-center gap-2">
+            <Ruler className="h-4 w-4" />
+            {opportunity.squareFootage} m²
+          </div>
+        </Card>
         {opportunity.externalId && (
           <Card className="p-3">
             <div className="text-sm text-muted-foreground">Numéro DPE</div>

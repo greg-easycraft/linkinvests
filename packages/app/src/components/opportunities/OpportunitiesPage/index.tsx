@@ -1,9 +1,9 @@
 import { useCallback, useState } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { OpportunityDetailsModal } from '../OpportunityDetailsModal'
 import { OpportunityHeader } from './Header'
 import { OpportunitiesList } from './OpportunitiesList'
 import { OpportunitiesMap } from './OpportunitiesMap'
-import { OpportunityDetailsModal } from '../OpportunityDetailsModal'
 import type {
   BaseOpportunity,
   OpportunitiesDataQueryResult,

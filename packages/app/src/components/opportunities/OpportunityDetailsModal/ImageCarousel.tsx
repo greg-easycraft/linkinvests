@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { ChevronLeft, ChevronRight, ImageOff } from 'lucide-react'
+import type { Auction, Listing, Opportunity } from '@/types'
 import { Button } from '@/components/ui/button'
-import type { Opportunity, Auction, Listing } from '@/types'
 
 interface ImageCarouselProps {
   opportunity: Opportunity
@@ -13,10 +13,10 @@ function hasPictures(
   return 'pictures' in opportunity || 'mainPicture' in opportunity
 }
 
-function getImages(opportunity: Opportunity): string[] {
+function getImages(opportunity: Opportunity): Array<string> {
   if (!hasPictures(opportunity)) return []
 
-  const images: string[] = []
+  const images: Array<string> = []
   if (opportunity.mainPicture) {
     images.push(opportunity.mainPicture)
   }

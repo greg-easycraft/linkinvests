@@ -1,6 +1,6 @@
-import { Building2, Phone, Mail, User, Briefcase, FileText } from 'lucide-react'
-import { Card } from '@/components/ui/card'
+import { Briefcase, Building2, FileText, Mail, Phone, User } from 'lucide-react'
 import type { Liquidation } from '@/types'
+import { Card } from '@/components/ui/card'
 
 interface LiquidationDetailsProps {
   opportunity: Liquidation

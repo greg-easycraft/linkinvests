@@ -1,7 +1,14 @@
-import { ExternalLink, MapPin, Calendar, Clock } from 'lucide-react'
+import { Calendar, Clock, ExternalLink, MapPin } from 'lucide-react'
 import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import { Link } from '@tanstack/react-router'
+import { AuctionDetails } from './AuctionDetails'
+import { ListingDetails } from './ListingDetails'
+import { SuccessionDetails } from './SuccessionDetails'
+import { LiquidationDetails } from './LiquidationDetails'
+import { EnergySieveDetails } from './EnergySieveDetails'
+import { ImageCarousel } from './ImageCarousel'
+import type {Auction, EnergyDiagnostic, Liquidation, Listing, Opportunity, Succession} from '@/types';
 import {
   Dialog,
   DialogContent,
@@ -12,21 +19,15 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import {
-  OpportunityType,
-  type Opportunity,
-  type Auction,
-  type Listing,
-  type Succession,
-  type Liquidation,
-  type EnergyDiagnostic,
+  
+  
+  
+  
+  
+  OpportunityType
+  
 } from '@/types'
 import { TYPE_LABELS } from '@/constants/opportunity-types'
-import { AuctionDetails } from './AuctionDetails'
-import { ListingDetails } from './ListingDetails'
-import { SuccessionDetails } from './SuccessionDetails'
-import { LiquidationDetails } from './LiquidationDetails'
-import { EnergySieveDetails } from './EnergySieveDetails'
-import { ImageCarousel } from './ImageCarousel'
 
 interface OpportunityDetailsModalProps {
   opportunity: Opportunity | null

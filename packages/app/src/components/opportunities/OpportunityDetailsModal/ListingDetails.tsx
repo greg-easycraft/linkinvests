@@ -1,24 +1,24 @@
 import {
-  Euro,
-  Home,
-  Ruler,
-  DoorOpen,
   Bed,
-  Zap,
-  Calendar,
-  User,
-  Phone,
-  Mail,
-  Globe,
   Building,
+  Calendar,
+  DoorOpen,
+  Euro,
+  Globe,
+  Home,
+  Mail,
+  Phone,
+  Ruler,
   TreeDeciduous,
+  User,
+  Zap,
 } from 'lucide-react'
 import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'
+import type { Listing } from '@/types'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { formatPrice } from '@/lib/format'
-import type { Listing } from '@/types'
 
 interface ListingDetailsProps {
   opportunity: Listing
@@ -73,12 +73,10 @@ export function ListingDetails({
 
       {/* Property Details */}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-        {opportunity.propertyType && (
-          <div className="flex items-center gap-2 text-sm">
-            <Home className="h-4 w-4 text-muted-foreground" />
-            <span>{PROPERTY_TYPE_LABELS[opportunity.propertyType] ?? opportunity.propertyType}</span>
-          </div>
-        )}
+        <div className="flex items-center gap-2 text-sm">
+          <Home className="h-4 w-4 text-muted-foreground" />
+          <span>{PROPERTY_TYPE_LABELS[opportunity.propertyType] ?? opportunity.propertyType}</span>
+        </div>
         {opportunity.squareFootage !== undefined && (
           <div className="flex items-center gap-2 text-sm">
             <Ruler className="h-4 w-4 text-muted-foreground" />
@@ -109,7 +107,7 @@ export function ListingDetails({
             <span>Construit en {opportunity.constructionYear}</span>
           </div>
         )}
-        {opportunity.energyClass && opportunity.energyClass !== 'UNKNOWN' && (
+        {opportunity.energyClass !== 'UNKNOWN' && (
           <div className="flex items-center gap-2 text-sm">
             <Zap className="h-4 w-4 text-muted-foreground" />
             <Badge variant="outline">DPE {opportunity.energyClass}</Badge>

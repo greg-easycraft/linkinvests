@@ -24,6 +24,15 @@ import { ListingsPage } from './pages/search/ListingsPage'
 import { SuccessionsPage } from './pages/search/SuccessionsPage'
 import { LiquidationsPage } from './pages/search/LiquidationsPage'
 import { EnergySievesPage } from './pages/search/EnergySievesPage'
+
+// Import detail page components
+import {
+  AuctionDetailPage,
+  EnergySieveDetailPage,
+  LiquidationDetailPage,
+  ListingDetailPage,
+  SuccessionDetailPage,
+} from './pages/opportunities'
 import {
   auctionFiltersSchema,
   baseFiltersSchema,
@@ -160,6 +169,37 @@ const searchEnergySievesRoute = createRoute({
   component: EnergySievesPage,
 })
 
+// Detail page routes
+const auctionDetailRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/auctions/$auctionId',
+  component: AuctionDetailPage,
+})
+
+const listingDetailRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/listings/$listingId',
+  component: ListingDetailPage,
+})
+
+const successionDetailRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/successions/$successionId',
+  component: SuccessionDetailPage,
+})
+
+const liquidationDetailRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/liquidations/$liquidationId',
+  component: LiquidationDetailPage,
+})
+
+const energySieveDetailRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/energy-sieves/$energySieveId',
+  component: EnergySieveDetailPage,
+})
+
 // Auth routes
 const authLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -199,6 +239,11 @@ const routeTree = rootRoute.addChildren([
   searchSuccessionsRoute,
   searchLiquidationsRoute,
   searchEnergySievesRoute,
+  auctionDetailRoute,
+  listingDetailRoute,
+  successionDetailRoute,
+  liquidationDetailRoute,
+  energySieveDetailRoute,
   authLayoutRoute.addChildren([
     signInRoute,
     signUpRoute,
