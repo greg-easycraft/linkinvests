@@ -12,20 +12,31 @@ import { DEFAULT_PAGE_SIZE } from '~/constants/filters';
 @Injectable()
 export class LiquidationService {
   private readonly EXPORT_LIMIT = 500;
-  private allowedDatePeriodsSet = new Set<DatePeriod>(['last_month', 'last_3_months', '6_months', '9_months', '12_months']);
+  private allowedDatePeriodsSet = new Set<DatePeriod>([
+    'last_month',
+    'last_3_months',
+    '6_months',
+    '9_months',
+    '12_months',
+  ]);
 
   constructor(
     private readonly liquidationRepository: LiquidationRepository,
     private readonly exportService: ExportService,
   ) {}
 
-  async getLiquidationsData(filters?: ILiquidationFilters): Promise<OpportunitiesDataQueryResult<Liquidation>> {
+  async getLiquidationsData(
+    filters?: ILiquidationFilters,
+  ): Promise<OpportunitiesDataQueryResult<Liquidation>> {
     const pageSize = filters?.pageSize ?? DEFAULT_PAGE_SIZE;
     const page = filters?.page ?? 1;
     const offset = (page - 1) * pageSize;
     const filtersToUse = this.ensureDatePeriodFilter(filters ?? {});
 
-    const opportunities = await this.liquidationRepository.findAll(filtersToUse, { limit: pageSize, offset });
+    const opportunities = await this.liquidationRepository.findAll(
+      filtersToUse,
+      { limit: pageSize, offset },
+    );
 
     return {
       opportunities,
@@ -43,38 +54,50 @@ export class LiquidationService {
     return this.liquidationRepository.findById(id);
   }
 
-  async exportList(filters: ILiquidationFilters, format: ExportFormat): Promise<Blob> {
+  async exportList(
+    filters: ILiquidationFilters,
+    format: ExportFormat,
+  ): Promise<Blob> {
     const filtersToUse = this.ensureDatePeriodFilter(filters ?? {});
     // Check if the total count exceeds the export limit
     const total = await this.liquidationRepository.count(filtersToUse);
 
     if (total > this.EXPORT_LIMIT) {
-      throw new Error(`Export limit exceeded. Found ${total} items, maximum allowed is ${this.EXPORT_LIMIT}. Please refine your filters.`);
+      throw new Error(
+        `Export limit exceeded. Found ${total} items, maximum allowed is ${this.EXPORT_LIMIT}. Please refine your filters.`,
+      );
     }
 
     // Fetch all matching liquidations
-    const liquidations = (await this.liquidationRepository.findAll(filtersToUse)) as unknown as Record<string, unknown>[];
+    const liquidations = (await this.liquidationRepository.findAll(
+      filtersToUse,
+    )) as unknown as Record<string, unknown>[];
 
     // Get French headers for liquidations
     const customHeaders = getOpportunityHeaders(OpportunityType.LIQUIDATION);
 
     // Export data based on format
-    if (format === "csv") {
+    if (format === 'csv') {
       return this.exportService.exportToCSV(liquidations, customHeaders);
     }
-    if (format === "xlsx") {
+    if (format === 'xlsx') {
       return this.exportService.exportToXLSX(liquidations, customHeaders);
     }
     throw new Error(`Unsupported export format: ${format}`);
   }
 
-  private ensureDatePeriodFilter(filters: ILiquidationFilters): ILiquidationFilters {
+  private ensureDatePeriodFilter(
+    filters: ILiquidationFilters,
+  ): ILiquidationFilters {
     const filtersToUse = { ...filters };
-    if (filtersToUse.datePeriod && this.allowedDatePeriodsSet.has(filtersToUse.datePeriod)) return filtersToUse;
+    if (
+      filtersToUse.datePeriod &&
+      this.allowedDatePeriodsSet.has(filtersToUse.datePeriod)
+    )
+      return filtersToUse;
     return {
       ...filtersToUse,
-      datePeriod: '12_months'
-    }
-
+      datePeriod: '12_months',
+    };
   }
 }

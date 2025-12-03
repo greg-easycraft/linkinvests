@@ -3,7 +3,10 @@ import { and, eq, gte, inArray, lte, sql, type SQL } from 'drizzle-orm';
 import type { DomainDbType } from '~/types/db';
 import { energyDiagnostics } from '@linkinvests/db';
 import { EnergyDiagnosticsRepository } from '../lib.types';
-import type { IEnergyDiagnosticFilters, PaginationFilters } from '~/types/filters';
+import type {
+  IEnergyDiagnosticFilters,
+  PaginationFilters,
+} from '~/types/filters';
 import { calculateStartDate } from '~/constants/date-periods';
 import type { EnergyDiagnostic } from '@linkinvests/shared';
 import { DEFAULT_PAGE_SIZE } from '~/constants/filters';
@@ -29,7 +32,9 @@ export class DrizzleEnergyDiagnosticsRepository extends EnergyDiagnosticsReposit
 
     // Filter by departments (support multiple departments)
     if (filters.departments && filters.departments.length > 0) {
-      conditions.push(inArray(energyDiagnostics.department, filters.departments));
+      conditions.push(
+        inArray(energyDiagnostics.department, filters.departments),
+      );
     }
 
     // Filter by zipCodes (support multiple zip codes)
@@ -42,7 +47,7 @@ export class DrizzleEnergyDiagnosticsRepository extends EnergyDiagnosticsReposit
       conditions.push(
         gte(
           energyDiagnostics.opportunityDate,
-          dateThreshold.toISOString().split("T")[0] ?? "",
+          dateThreshold.toISOString().split('T')[0] ?? '',
         ),
       );
     }
@@ -63,7 +68,9 @@ export class DrizzleEnergyDiagnosticsRepository extends EnergyDiagnosticsReposit
     // Note: This will intersect with the mandatory F/G filter above
     if (filters.energyClasses && filters.energyClasses.length > 0) {
       // Intersect with E, F and G classes only
-      const allowedClasses = filters.energyClasses.filter(cls => ['E', 'F', 'G'].includes(cls));
+      const allowedClasses = filters.energyClasses.filter((cls) =>
+        ['E', 'F', 'G'].includes(cls),
+      );
       if (allowedClasses.length > 0) {
         conditions.push(inArray(energyDiagnostics.energyClass, allowedClasses));
       }
@@ -74,16 +81,21 @@ export class DrizzleEnergyDiagnosticsRepository extends EnergyDiagnosticsReposit
     return conditions;
   }
 
-  async findAll(filters?: IEnergyDiagnosticFilters, paginationFilters: PaginationFilters = { limit: DEFAULT_PAGE_SIZE, offset: 0 }): Promise<EnergyDiagnostic[]> {
+  async findAll(
+    filters?: IEnergyDiagnosticFilters,
+    paginationFilters: PaginationFilters = {
+      limit: DEFAULT_PAGE_SIZE,
+      offset: 0,
+    },
+  ): Promise<EnergyDiagnostic[]> {
     const conditions = this.buildWhereClause(filters);
 
-    let query = this.db
-      .select()
-      .from(energyDiagnostics)
-      .$dynamic();
+    let query = this.db.select().from(energyDiagnostics).$dynamic();
 
     if (paginationFilters) {
-      query = query.limit(paginationFilters.limit).offset(paginationFilters.offset);
+      query = query
+        .limit(paginationFilters.limit)
+        .offset(paginationFilters.offset);
     }
 
     if (conditions.length > 0) {
@@ -91,10 +103,14 @@ export class DrizzleEnergyDiagnosticsRepository extends EnergyDiagnosticsReposit
     }
 
     // Apply sorting
-    if (filters?.sortBy && energyDiagnostics[filters.sortBy as keyof typeof energyDiagnostics]) {
-      const column = energyDiagnostics[filters.sortBy as keyof typeof energyDiagnostics];
+    if (
+      filters?.sortBy &&
+      energyDiagnostics[filters.sortBy as keyof typeof energyDiagnostics]
+    ) {
+      const column =
+        energyDiagnostics[filters.sortBy as keyof typeof energyDiagnostics];
       query = query.orderBy(
-        filters.sortOrder === "desc" ? sql`${column} DESC` : sql`${column} ASC`,
+        filters.sortOrder === 'desc' ? sql`${column} DESC` : sql`${column} ASC`,
       );
     } else {
       // Default sorting by creation date
@@ -109,9 +125,7 @@ export class DrizzleEnergyDiagnosticsRepository extends EnergyDiagnosticsReposit
     const result = await this.db
       .select()
       .from(energyDiagnostics)
-      .where(and(
-        eq(energyDiagnostics.id, id)
-      ))
+      .where(and(eq(energyDiagnostics.id, id)))
       .limit(1);
 
     return result[0] ?? null;
@@ -121,9 +135,7 @@ export class DrizzleEnergyDiagnosticsRepository extends EnergyDiagnosticsReposit
     const result = await this.db
       .select()
       .from(energyDiagnostics)
-      .where(and(
-        eq(energyDiagnostics.externalId, externalId)
-      ))
+      .where(and(eq(energyDiagnostics.externalId, externalId)))
       .limit(1);
 
     return result[0] ?? null;

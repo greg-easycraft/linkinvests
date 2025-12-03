@@ -5,7 +5,13 @@ import { opportunityAuctions } from '@linkinvests/db';
 import { AuctionRepository } from '../lib.types';
 import type { IAuctionFilters, PaginationFilters } from '~/types/filters';
 import { calculateStartDate } from '~/constants/date-periods';
-import { AuctionOccupationStatus, AuctionSource, PropertyType, EnergyClass, type Auction } from '@linkinvests/shared';
+import {
+  AuctionOccupationStatus,
+  AuctionSource,
+  PropertyType,
+  EnergyClass,
+  type Auction,
+} from '@linkinvests/shared';
 import { DATABASE_TOKEN } from '~/common/database';
 
 @Injectable()
@@ -27,7 +33,9 @@ export class DrizzleAuctionRepository extends AuctionRepository {
     // Base IOpportunityFilters
     // Filter by departments (support multiple departments)
     if (filters.departments && filters.departments.length > 0) {
-      conditions.push(inArray(opportunityAuctions.department, filters.departments));
+      conditions.push(
+        inArray(opportunityAuctions.department, filters.departments),
+      );
     }
 
     // Filter by zipCodes (support multiple zip codes)
@@ -40,7 +48,7 @@ export class DrizzleAuctionRepository extends AuctionRepository {
       conditions.push(
         gte(
           opportunityAuctions.opportunityDate,
-          dateThreshold.toISOString().split("T")[0] ?? "",
+          dateThreshold.toISOString().split('T')[0] ?? '',
         ),
       );
     }
@@ -60,17 +68,23 @@ export class DrizzleAuctionRepository extends AuctionRepository {
     // Auction-specific filters
     // Filter by property types
     if (filters.propertyTypes && filters.propertyTypes.length > 0) {
-      conditions.push(inArray(opportunityAuctions.propertyType, filters.propertyTypes));
+      conditions.push(
+        inArray(opportunityAuctions.propertyType, filters.propertyTypes),
+      );
     }
 
     // Filter by auction venues
     if (filters.auctionVenues && filters.auctionVenues.length > 0) {
-      conditions.push(inArray(opportunityAuctions.auctionVenue, filters.auctionVenues));
+      conditions.push(
+        inArray(opportunityAuctions.auctionVenue, filters.auctionVenues),
+      );
     }
 
     // Filter by energy classes (DPE)
     if (filters.energyClasses && filters.energyClasses.length > 0) {
-      conditions.push(inArray(opportunityAuctions.energyClass, filters.energyClasses));
+      conditions.push(
+        inArray(opportunityAuctions.energyClass, filters.energyClasses),
+      );
     }
 
     // Filter by price range (current price)
@@ -83,18 +97,26 @@ export class DrizzleAuctionRepository extends AuctionRepository {
 
     // Filter by reserve price range
     if (filters.minReservePrice !== undefined) {
-      conditions.push(gte(opportunityAuctions.reservePrice, filters.minReservePrice));
+      conditions.push(
+        gte(opportunityAuctions.reservePrice, filters.minReservePrice),
+      );
     }
     if (filters.maxReservePrice !== undefined) {
-      conditions.push(lte(opportunityAuctions.reservePrice, filters.maxReservePrice));
+      conditions.push(
+        lte(opportunityAuctions.reservePrice, filters.maxReservePrice),
+      );
     }
 
     // Filter by square footage range
     if (filters.minSquareFootage !== undefined) {
-      conditions.push(gte(opportunityAuctions.squareFootage, filters.minSquareFootage));
+      conditions.push(
+        gte(opportunityAuctions.squareFootage, filters.minSquareFootage),
+      );
     }
     if (filters.maxSquareFootage !== undefined) {
-      conditions.push(lte(opportunityAuctions.squareFootage, filters.maxSquareFootage));
+      conditions.push(
+        lte(opportunityAuctions.squareFootage, filters.maxSquareFootage),
+      );
     }
 
     // Filter by rooms range
@@ -107,22 +129,29 @@ export class DrizzleAuctionRepository extends AuctionRepository {
 
     // Filter by occupation status
     if (filters.occupationStatuses && filters.occupationStatuses.length > 0) {
-      conditions.push(inArray(opportunityAuctions.occupationStatus, filters.occupationStatuses));
+      conditions.push(
+        inArray(
+          opportunityAuctions.occupationStatus,
+          filters.occupationStatuses,
+        ),
+      );
     }
 
     return conditions;
   }
 
-  async findAll(filters?: IAuctionFilters, paginationFilters?: PaginationFilters): Promise<Auction[]> {
+  async findAll(
+    filters?: IAuctionFilters,
+    paginationFilters?: PaginationFilters,
+  ): Promise<Auction[]> {
     const conditions = this.buildWhereClause(filters);
 
-    let query = this.db
-      .select()
-      .from(opportunityAuctions)
-      .$dynamic();
+    let query = this.db.select().from(opportunityAuctions).$dynamic();
 
     if (paginationFilters) {
-      query = query.limit(paginationFilters.limit).offset(paginationFilters.offset);
+      query = query
+        .limit(paginationFilters.limit)
+        .offset(paginationFilters.offset);
     }
 
     if (conditions.length > 0) {
@@ -135,11 +164,19 @@ export class DrizzleAuctionRepository extends AuctionRepository {
     };
 
     // Apply sorting
-    const sortField = filters?.sortBy ? (sortFieldMap[filters.sortBy] ?? filters.sortBy) : undefined;
-    if (sortField && opportunityAuctions[sortField as keyof typeof opportunityAuctions]) {
-      const column = opportunityAuctions[sortField as keyof typeof opportunityAuctions];
+    const sortField = filters?.sortBy
+      ? (sortFieldMap[filters.sortBy] ?? filters.sortBy)
+      : undefined;
+    if (
+      sortField &&
+      opportunityAuctions[sortField as keyof typeof opportunityAuctions]
+    ) {
+      const column =
+        opportunityAuctions[sortField as keyof typeof opportunityAuctions];
       query = query.orderBy(
-        filters?.sortOrder === "desc" ? sql`${column} DESC` : sql`${column} ASC`,
+        filters?.sortOrder === 'desc'
+          ? sql`${column} DESC`
+          : sql`${column} ASC`,
       );
     } else {
       // Default sorting by creation date
@@ -176,16 +213,20 @@ export class DrizzleAuctionRepository extends AuctionRepository {
     return result[0]?.count ?? 0;
   }
 
-  private mapAuction(auction: typeof opportunityAuctions.$inferSelect): Auction {
+  private mapAuction(
+    auction: typeof opportunityAuctions.$inferSelect,
+  ): Auction {
     return {
       ...auction,
       address: auction.address ?? undefined,
       source: auction.source as AuctionSource,
-      propertyType: (auction.propertyType ?? undefined) as PropertyType | undefined,
+      propertyType: (auction.propertyType ?? undefined) as
+        | PropertyType
+        | undefined,
       description: auction.description ?? undefined,
       squareFootage: auction.squareFootage ?? undefined,
       rooms: auction.rooms ?? undefined,
-      energyClass: auction.energyClass as EnergyClass ?? undefined,
+      energyClass: (auction.energyClass as EnergyClass) ?? undefined,
       auctionVenue: auction.auctionVenue ?? undefined,
       currentPrice: auction.currentPrice ?? undefined,
       reservePrice: auction.reservePrice ?? undefined,
@@ -194,7 +235,8 @@ export class DrizzleAuctionRepository extends AuctionRepository {
       mainPicture: auction.mainPicture ?? undefined,
       pictures: auction.pictures ?? undefined,
       auctionHouseContact: auction.auctionHouseContact ?? undefined,
-      occupationStatus: (auction.occupationStatus ?? AuctionOccupationStatus.UNKNOWN) as AuctionOccupationStatus,
+      occupationStatus: (auction.occupationStatus ??
+        AuctionOccupationStatus.UNKNOWN) as AuctionOccupationStatus,
     };
   }
 }

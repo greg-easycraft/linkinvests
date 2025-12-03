@@ -18,12 +18,17 @@ export class SuccessionService {
     private readonly exportService: ExportService,
   ) {}
 
-  async getSuccessionsData(filters?: ISuccessionFilters): Promise<OpportunitiesDataQueryResult<Succession>> {
+  async getSuccessionsData(
+    filters?: ISuccessionFilters,
+  ): Promise<OpportunitiesDataQueryResult<Succession>> {
     const pageSize = filters?.pageSize ?? DEFAULT_PAGE_SIZE;
     const page = filters?.page ?? 1;
     const offset = (page - 1) * pageSize;
 
-    const opportunities = await this.successionRepository.findAll(filters, { limit: pageSize, offset });
+    const opportunities = await this.successionRepository.findAll(filters, {
+      limit: pageSize,
+      offset,
+    });
 
     return {
       opportunities,
@@ -40,27 +45,34 @@ export class SuccessionService {
     return await this.successionRepository.findById(id);
   }
 
-  async exportList(filters: ISuccessionFilters, format: ExportFormat): Promise<Blob> {
+  async exportList(
+    filters: ISuccessionFilters,
+    format: ExportFormat,
+  ): Promise<Blob> {
     // Check if the total count exceeds the export limit
     const total = await this.successionRepository.count(filters);
 
     if (total > this.EXPORT_LIMIT) {
-      throw new Error(`Export limit exceeded. Found ${total} items, maximum allowed is ${this.EXPORT_LIMIT}. Please refine your filters.`);
+      throw new Error(
+        `Export limit exceeded. Found ${total} items, maximum allowed is ${this.EXPORT_LIMIT}. Please refine your filters.`,
+      );
     }
 
     // Fetch all matching successions
-    const successions = (await this.successionRepository.findAll(filters)) as unknown as Record<string, unknown>[];
+    const successions = (await this.successionRepository.findAll(
+      filters,
+    )) as unknown as Record<string, unknown>[];
 
     // Get French headers for successions
     const customHeaders = getOpportunityHeaders(OpportunityType.SUCCESSION);
 
     // Export data based on format
-    if (format === "csv") {
+    if (format === 'csv') {
       return this.exportService.exportToCSV(successions, customHeaders);
     }
-    if (format === "xlsx") {
+    if (format === 'xlsx') {
       return this.exportService.exportToXLSX(successions, customHeaders);
     }
-      throw new Error(`Unsupported export format: ${format}`);
+    throw new Error(`Unsupported export format: ${format}`);
   }
 }

@@ -18,13 +18,18 @@ export class EnergyDiagnosticsService {
     private readonly exportService: ExportService,
   ) {}
 
-  async getEnergyDiagnosticsData(filters?: IEnergyDiagnosticFilters): Promise<OpportunitiesDataQueryResult<EnergyDiagnostic>> {
+  async getEnergyDiagnosticsData(
+    filters?: IEnergyDiagnosticFilters,
+  ): Promise<OpportunitiesDataQueryResult<EnergyDiagnostic>> {
     const pageSize = filters?.pageSize ?? DEFAULT_PAGE_SIZE;
     const page = filters?.page ?? 1;
 
     const offset = (page - 1) * pageSize;
 
-    const opportunities = await this.energyDiagnosticsRepository.findAll(filters, { limit: pageSize, offset });
+    const opportunities = await this.energyDiagnosticsRepository.findAll(
+      filters,
+      { limit: pageSize, offset },
+    );
 
     return {
       opportunities,
@@ -33,7 +38,9 @@ export class EnergyDiagnosticsService {
     };
   }
 
-  async getEnergyDiagnosticsCount(filters?: IEnergyDiagnosticFilters): Promise<number> {
+  async getEnergyDiagnosticsCount(
+    filters?: IEnergyDiagnosticFilters,
+  ): Promise<number> {
     return await this.energyDiagnosticsRepository.count(filters);
   }
 
@@ -41,31 +48,40 @@ export class EnergyDiagnosticsService {
     return await this.energyDiagnosticsRepository.findById(id);
   }
 
-  async getEnergyDiagnosticByExternalId(externalId: string): Promise<EnergyDiagnostic | null> {
+  async getEnergyDiagnosticByExternalId(
+    externalId: string,
+  ): Promise<EnergyDiagnostic | null> {
     return await this.energyDiagnosticsRepository.findByExternalId(externalId);
   }
 
-  async exportList(filters: IEnergyDiagnosticFilters, format: ExportFormat): Promise<Blob> {
+  async exportList(
+    filters: IEnergyDiagnosticFilters,
+    format: ExportFormat,
+  ): Promise<Blob> {
     // Check if the total count exceeds the export limit
     const total = await this.energyDiagnosticsRepository.count(filters);
 
     if (total > this.EXPORT_LIMIT) {
-      throw new Error(`Export limit exceeded. Found ${total} items, maximum allowed is ${this.EXPORT_LIMIT}. Please refine your filters.`);
+      throw new Error(
+        `Export limit exceeded. Found ${total} items, maximum allowed is ${this.EXPORT_LIMIT}. Please refine your filters.`,
+      );
     }
 
     // Fetch all matching energy diagnostics
-    const energyDiagnostics = (await this.energyDiagnosticsRepository.findAll(filters)) as unknown as Record<string, unknown>[];
+    const energyDiagnostics = (await this.energyDiagnosticsRepository.findAll(
+      filters,
+    )) as unknown as Record<string, unknown>[];
 
     // Get French headers for energy diagnostics
     const customHeaders = getOpportunityHeaders(OpportunityType.ENERGY_SIEVE);
 
     // Export data based on format
-    if (format === "csv") {
+    if (format === 'csv') {
       return this.exportService.exportToCSV(energyDiagnostics, customHeaders);
     }
-    if (format === "xlsx") {
+    if (format === 'xlsx') {
       return this.exportService.exportToXLSX(energyDiagnostics, customHeaders);
     }
-      throw new Error(`Unsupported export format: ${format}`);
+    throw new Error(`Unsupported export format: ${format}`);
   }
 }

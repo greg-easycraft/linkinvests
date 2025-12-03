@@ -26,12 +26,16 @@ export class DrizzleSuccessionRepository extends SuccessionRepository {
 
     // Filter by departments (support multiple departments)
     if (filters.departments && filters.departments.length > 0) {
-      conditions.push(inArray(opportunitySuccessions.department, filters.departments));
+      conditions.push(
+        inArray(opportunitySuccessions.department, filters.departments),
+      );
     }
 
     // Filter by zipCodes (support multiple zip codes)
     if (filters.zipCodes && filters.zipCodes.length > 0) {
-      conditions.push(inArray(opportunitySuccessions.zipCode, filters.zipCodes));
+      conditions.push(
+        inArray(opportunitySuccessions.zipCode, filters.zipCodes),
+      );
     }
 
     if (filters.datePeriod) {
@@ -39,7 +43,7 @@ export class DrizzleSuccessionRepository extends SuccessionRepository {
       conditions.push(
         gte(
           opportunitySuccessions.opportunityDate,
-          dateThreshold.toISOString().split("T")[0] ?? "",
+          dateThreshold.toISOString().split('T')[0] ?? '',
         ),
       );
     }
@@ -59,16 +63,18 @@ export class DrizzleSuccessionRepository extends SuccessionRepository {
     return conditions;
   }
 
-  async findAll(filters?: ISuccessionFilters, paginationFilters?: PaginationFilters): Promise<Succession[]> {
+  async findAll(
+    filters?: ISuccessionFilters,
+    paginationFilters?: PaginationFilters,
+  ): Promise<Succession[]> {
     const conditions = this.buildWhereClause(filters);
 
-    let query = this.db
-      .select()
-      .from(opportunitySuccessions)
-      .$dynamic();
+    let query = this.db.select().from(opportunitySuccessions).$dynamic();
 
     if (paginationFilters) {
-      query = query.limit(paginationFilters.limit).offset(paginationFilters.offset);
+      query = query
+        .limit(paginationFilters.limit)
+        .offset(paginationFilters.offset);
     }
 
     if (conditions.length > 0) {
@@ -76,10 +82,18 @@ export class DrizzleSuccessionRepository extends SuccessionRepository {
     }
 
     // Apply sorting
-    if (filters?.sortBy && opportunitySuccessions[filters.sortBy as keyof typeof opportunitySuccessions]) {
-      const column = opportunitySuccessions[filters.sortBy as keyof typeof opportunitySuccessions];
+    if (
+      filters?.sortBy &&
+      opportunitySuccessions[
+        filters.sortBy as keyof typeof opportunitySuccessions
+      ]
+    ) {
+      const column =
+        opportunitySuccessions[
+          filters.sortBy as keyof typeof opportunitySuccessions
+        ];
       query = query.orderBy(
-        filters.sortOrder === "desc" ? sql`${column} DESC` : sql`${column} ASC`,
+        filters.sortOrder === 'desc' ? sql`${column} DESC` : sql`${column} ASC`,
       );
     } else {
       // Default sorting by creation date

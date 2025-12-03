@@ -1,6 +1,9 @@
 import { AuctionService } from './auction.service';
 import type { IAuctionRepository } from '../lib.types';
-import type { IExportService, ExportFormat } from '~/server/services/export.service';
+import type {
+  IExportService,
+  ExportFormat,
+} from '~/server/services/export.service';
 import type { IOpportunityFilters } from '~/types/filters';
 import { OpportunityType, type Auction } from '@linkinvests/shared';
 import { DEFAULT_PAGE_SIZE } from '~/constants/filters';
@@ -53,7 +56,10 @@ describe('AuctionService', () => {
     };
 
     // Initialize service with mocked dependencies
-    auctionService = new AuctionService(mockAuctionRepository, mockExportService);
+    auctionService = new AuctionService(
+      mockAuctionRepository,
+      mockExportService,
+    );
 
     // Mock export headers service
     jest.mocked(getOpportunityHeaders).mockReturnValue({
@@ -75,10 +81,10 @@ describe('AuctionService', () => {
         page: 1,
         pageSize: DEFAULT_PAGE_SIZE,
       });
-      expect(mockAuctionRepository.findAll).toHaveBeenCalledWith(
-        undefined,
-        { limit: DEFAULT_PAGE_SIZE, offset: 0 }
-      );
+      expect(mockAuctionRepository.findAll).toHaveBeenCalledWith(undefined, {
+        limit: DEFAULT_PAGE_SIZE,
+        offset: 0,
+      });
     });
 
     it('should return paginated auction data with custom pagination', async () => {
@@ -95,7 +101,7 @@ describe('AuctionService', () => {
       });
       expect(mockAuctionRepository.findAll).toHaveBeenCalledWith(
         filters,
-        { limit: 25, offset: 50 } // (3-1) * 25
+        { limit: 25, offset: 50 }, // (3-1) * 25
       );
     });
 
@@ -111,17 +117,19 @@ describe('AuctionService', () => {
 
       await auctionService.getAuctionsData(filters);
 
-      expect(mockAuctionRepository.findAll).toHaveBeenCalledWith(
-        filters,
-        { limit: 10, offset: 10 }
-      );
+      expect(mockAuctionRepository.findAll).toHaveBeenCalledWith(filters, {
+        limit: 10,
+        offset: 10,
+      });
     });
 
     it('should handle repository errors', async () => {
       const error = new Error('Repository error');
       mockAuctionRepository.findAll.mockRejectedValue(error);
 
-      await expect(auctionService.getAuctionsData()).rejects.toThrow('Repository error');
+      await expect(auctionService.getAuctionsData()).rejects.toThrow(
+        'Repository error',
+      );
     });
   });
 
@@ -151,7 +159,9 @@ describe('AuctionService', () => {
       const error = new Error('Count error');
       mockAuctionRepository.count.mockRejectedValue(error);
 
-      await expect(auctionService.getAuctionsCount()).rejects.toThrow('Count error');
+      await expect(auctionService.getAuctionsCount()).rejects.toThrow(
+        'Count error',
+      );
     });
   });
 
@@ -181,13 +191,18 @@ describe('AuctionService', () => {
       const auctionId = 'auction-123';
       mockAuctionRepository.findById.mockRejectedValue(error);
 
-      await expect(auctionService.getAuctionById(auctionId)).rejects.toThrow('Find error');
+      await expect(auctionService.getAuctionById(auctionId)).rejects.toThrow(
+        'Find error',
+      );
     });
   });
 
   describe('exportList', () => {
     const filters: IOpportunityFilters = { departments: ['75'] };
-    const mockAuctionsForExport = [mockAuction, { ...mockAuction, id: 'auction-2' }];
+    const mockAuctionsForExport = [
+      mockAuction,
+      { ...mockAuction, id: 'auction-2' },
+    ];
     const mockBlob = new Blob(['test data']);
 
     beforeEach(() => {
@@ -204,10 +219,12 @@ describe('AuctionService', () => {
       expect(result).toBe(mockBlob);
       expect(mockAuctionRepository.count).toHaveBeenCalledWith(filters);
       expect(mockAuctionRepository.findAll).toHaveBeenCalledWith(filters);
-      expect(getOpportunityHeaders).toHaveBeenCalledWith(OpportunityType.AUCTION);
+      expect(getOpportunityHeaders).toHaveBeenCalledWith(
+        OpportunityType.AUCTION,
+      );
       expect(mockExportService.exportToCSV).toHaveBeenCalledWith(
         mockAuctionsForExport,
-        { title: 'Titre', address: 'Adresse', price: 'Prix' }
+        { title: 'Titre', address: 'Adresse', price: 'Prix' },
       );
     });
 
@@ -219,7 +236,7 @@ describe('AuctionService', () => {
       expect(result).toBe(mockBlob);
       expect(mockExportService.exportToXLSX).toHaveBeenCalledWith(
         mockAuctionsForExport,
-        { title: 'Titre', address: 'Adresse', price: 'Prix' }
+        { title: 'Titre', address: 'Adresse', price: 'Prix' },
       );
     });
 
@@ -227,7 +244,7 @@ describe('AuctionService', () => {
       mockAuctionRepository.count.mockResolvedValue(600); // Over 500 limit
 
       await expect(auctionService.exportList(filters, 'csv')).rejects.toThrow(
-        'Export limit exceeded. Found 600 items, maximum allowed is 500. Please refine your filters.'
+        'Export limit exceeded. Found 600 items, maximum allowed is 500. Please refine your filters.',
       );
 
       expect(mockAuctionRepository.findAll).not.toHaveBeenCalled();
@@ -238,7 +255,7 @@ describe('AuctionService', () => {
       mockAuctionRepository.count.mockResolvedValue(100);
 
       await expect(
-        auctionService.exportList(filters, 'pdf' as ExportFormat)
+        auctionService.exportList(filters, 'pdf' as ExportFormat),
       ).rejects.toThrow('Unsupported export format: pdf');
     });
 
@@ -247,7 +264,9 @@ describe('AuctionService', () => {
       const exportError = new Error('Export failed');
       mockExportService.exportToCSV.mockRejectedValue(exportError);
 
-      await expect(auctionService.exportList(filters, 'csv')).rejects.toThrow('Export failed');
+      await expect(auctionService.exportList(filters, 'csv')).rejects.toThrow(
+        'Export failed',
+      );
     });
 
     it('should handle repository errors during export', async () => {
@@ -255,7 +274,9 @@ describe('AuctionService', () => {
       const repositoryError = new Error('Repository export error');
       mockAuctionRepository.findAll.mockRejectedValue(repositoryError);
 
-      await expect(auctionService.exportList(filters, 'csv')).rejects.toThrow('Repository export error');
+      await expect(auctionService.exportList(filters, 'csv')).rejects.toThrow(
+        'Repository export error',
+      );
     });
 
     it('should validate export limit is exactly 500', async () => {
@@ -271,7 +292,7 @@ describe('AuctionService', () => {
       mockAuctionRepository.count.mockResolvedValue(501); // Just over limit
 
       await expect(auctionService.exportList(filters, 'csv')).rejects.toThrow(
-        'Export limit exceeded. Found 501 items, maximum allowed is 500. Please refine your filters.'
+        'Export limit exceeded. Found 501 items, maximum allowed is 500. Please refine your filters.',
       );
     });
   });

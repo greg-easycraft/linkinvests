@@ -5,7 +5,10 @@ import Fuse from 'fuse';
  * Address format: "STREET ZIPCODE CITY" (e.g., "123 Rue de la Paix 75001 Paris")
  * Returns "123 Rue de la Paix"
  */
-export function extractStreetFromAddress(address: string, zipCode: string): string | null {
+export function extractStreetFromAddress(
+  address: string,
+  zipCode: string,
+): string | null {
   if (!address || !zipCode) return null;
 
   const zipCodeIndex = address.indexOf(zipCode);
@@ -20,7 +23,10 @@ export function extractStreetFromAddress(address: string, zipCode: string): stri
  * Address format: "... ZIPCODE CITY" (e.g., "123 Rue de la Paix 75001 Paris")
  * Returns the text after the zipcode, or null if not found.
  */
-export function extractCityFromAddress(address: string, zipCode: string): string | null {
+export function extractCityFromAddress(
+  address: string,
+  zipCode: string,
+): string | null {
   if (!address || !zipCode) return null;
 
   const zipCodeIndex = address.indexOf(zipCode);
@@ -56,12 +62,15 @@ export function standardizeString(str: string): string {
  * @param strToMatch - The string to match against the original string.
  * @returns The match score between the two strings. 0 for perfect match, 1 for no match.
  */
-export function calculateMatchScore(originalStr: string, strToMatch: string): number {
-  if(originalStr === strToMatch) {
+export function calculateMatchScore(
+  originalStr: string,
+  strToMatch: string,
+): number {
+  if (originalStr === strToMatch) {
     return 0;
   }
 
-  if(originalStr.includes(strToMatch) || strToMatch.includes(originalStr)) {
+  if (originalStr.includes(strToMatch) || strToMatch.includes(originalStr)) {
     return 0.1;
   }
 
@@ -72,7 +81,7 @@ export function calculateMatchScore(originalStr: string, strToMatch: string): nu
     ignoreDiacritics: true,
     isCaseSensitive: false,
   };
-  
+
   const fuse = new Fuse(list, options);
 
   const result = fuse.search(strToMatch);

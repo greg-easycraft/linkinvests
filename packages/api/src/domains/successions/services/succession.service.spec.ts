@@ -1,6 +1,9 @@
 import { SuccessionService } from './succession.service';
 import type { ISuccessionRepository } from '../lib.types';
-import type { IExportService, ExportFormat } from '~/server/services/export.service';
+import type {
+  IExportService,
+  ExportFormat,
+} from '~/server/services/export.service';
 import type { IOpportunityFilters } from '~/types/filters';
 import { OpportunityType, type Succession } from '@linkinvests/shared';
 import { DEFAULT_PAGE_SIZE } from '~/constants/filters';
@@ -53,7 +56,10 @@ describe('SuccessionService', () => {
     };
 
     // Initialize service with mocked dependencies
-    successionService = new SuccessionService(mockSuccessionRepository, mockExportService);
+    successionService = new SuccessionService(
+      mockSuccessionRepository,
+      mockExportService,
+    );
 
     // Mock export headers service
     jest.mocked(getOpportunityHeaders).mockReturnValue({
@@ -75,10 +81,10 @@ describe('SuccessionService', () => {
         page: 1,
         pageSize: DEFAULT_PAGE_SIZE,
       });
-      expect(mockSuccessionRepository.findAll).toHaveBeenCalledWith(
-        undefined,
-        { limit: DEFAULT_PAGE_SIZE, offset: 0 }
-      );
+      expect(mockSuccessionRepository.findAll).toHaveBeenCalledWith(undefined, {
+        limit: DEFAULT_PAGE_SIZE,
+        offset: 0,
+      });
     });
 
     it('should return paginated succession data with custom pagination', async () => {
@@ -95,7 +101,7 @@ describe('SuccessionService', () => {
       });
       expect(mockSuccessionRepository.findAll).toHaveBeenCalledWith(
         filters,
-        { limit: 25, offset: 50 } // (3-1) * 25
+        { limit: 25, offset: 50 }, // (3-1) * 25
       );
     });
 
@@ -111,17 +117,19 @@ describe('SuccessionService', () => {
 
       await successionService.getSuccessionsData(filters);
 
-      expect(mockSuccessionRepository.findAll).toHaveBeenCalledWith(
-        filters,
-        { limit: 10, offset: 10 }
-      );
+      expect(mockSuccessionRepository.findAll).toHaveBeenCalledWith(filters, {
+        limit: 10,
+        offset: 10,
+      });
     });
 
     it('should handle repository errors', async () => {
       const error = new Error('Repository error');
       mockSuccessionRepository.findAll.mockRejectedValue(error);
 
-      await expect(successionService.getSuccessionsData()).rejects.toThrow('Repository error');
+      await expect(successionService.getSuccessionsData()).rejects.toThrow(
+        'Repository error',
+      );
     });
   });
 
@@ -151,7 +159,9 @@ describe('SuccessionService', () => {
       const error = new Error('Count error');
       mockSuccessionRepository.count.mockRejectedValue(error);
 
-      await expect(successionService.getSuccessionsCount()).rejects.toThrow('Count error');
+      await expect(successionService.getSuccessionsCount()).rejects.toThrow(
+        'Count error',
+      );
     });
   });
 
@@ -163,7 +173,9 @@ describe('SuccessionService', () => {
       const result = await successionService.getSuccessionById(successionId);
 
       expect(result).toBe(mockSuccession);
-      expect(mockSuccessionRepository.findById).toHaveBeenCalledWith(successionId);
+      expect(mockSuccessionRepository.findById).toHaveBeenCalledWith(
+        successionId,
+      );
     });
 
     it('should return null when succession not found', async () => {
@@ -173,7 +185,9 @@ describe('SuccessionService', () => {
       const result = await successionService.getSuccessionById(successionId);
 
       expect(result).toBeNull();
-      expect(mockSuccessionRepository.findById).toHaveBeenCalledWith(successionId);
+      expect(mockSuccessionRepository.findById).toHaveBeenCalledWith(
+        successionId,
+      );
     });
 
     it('should handle repository findById errors', async () => {
@@ -181,17 +195,24 @@ describe('SuccessionService', () => {
       const successionId = 'succession-123';
       mockSuccessionRepository.findById.mockRejectedValue(error);
 
-      await expect(successionService.getSuccessionById(successionId)).rejects.toThrow('Find error');
+      await expect(
+        successionService.getSuccessionById(successionId),
+      ).rejects.toThrow('Find error');
     });
   });
 
   describe('exportList', () => {
     const filters: IOpportunityFilters = { departments: ['75'] };
-    const mockSuccessionsForExport = [mockSuccession, { ...mockSuccession, id: 'succession-2' }];
+    const mockSuccessionsForExport = [
+      mockSuccession,
+      { ...mockSuccession, id: 'succession-2' },
+    ];
     const mockBlob = new Blob(['test data']);
 
     beforeEach(() => {
-      mockSuccessionRepository.findAll.mockResolvedValue(mockSuccessionsForExport);
+      mockSuccessionRepository.findAll.mockResolvedValue(
+        mockSuccessionsForExport,
+      );
       mockExportService.exportToCSV.mockResolvedValue(mockBlob);
       mockExportService.exportToXLSX.mockResolvedValue(mockBlob);
     });
@@ -204,10 +225,12 @@ describe('SuccessionService', () => {
       expect(result).toBe(mockBlob);
       expect(mockSuccessionRepository.count).toHaveBeenCalledWith(filters);
       expect(mockSuccessionRepository.findAll).toHaveBeenCalledWith(filters);
-      expect(getOpportunityHeaders).toHaveBeenCalledWith(OpportunityType.SUCCESSION);
+      expect(getOpportunityHeaders).toHaveBeenCalledWith(
+        OpportunityType.SUCCESSION,
+      );
       expect(mockExportService.exportToCSV).toHaveBeenCalledWith(
         mockSuccessionsForExport,
-        { title: 'Titre', address: 'Adresse', price: 'Prix' }
+        { title: 'Titre', address: 'Adresse', price: 'Prix' },
       );
     });
 
@@ -219,15 +242,17 @@ describe('SuccessionService', () => {
       expect(result).toBe(mockBlob);
       expect(mockExportService.exportToXLSX).toHaveBeenCalledWith(
         mockSuccessionsForExport,
-        { title: 'Titre', address: 'Adresse', price: 'Prix' }
+        { title: 'Titre', address: 'Adresse', price: 'Prix' },
       );
     });
 
     it('should throw error when export limit exceeded', async () => {
       mockSuccessionRepository.count.mockResolvedValue(800); // Over 500 limit
 
-      await expect(successionService.exportList(filters, 'csv')).rejects.toThrow(
-        'Export limit exceeded. Found 800 items, maximum allowed is 500. Please refine your filters.'
+      await expect(
+        successionService.exportList(filters, 'csv'),
+      ).rejects.toThrow(
+        'Export limit exceeded. Found 800 items, maximum allowed is 500. Please refine your filters.',
       );
 
       expect(mockSuccessionRepository.findAll).not.toHaveBeenCalled();
@@ -238,7 +263,7 @@ describe('SuccessionService', () => {
       mockSuccessionRepository.count.mockResolvedValue(100);
 
       await expect(
-        successionService.exportList(filters, 'pdf' as ExportFormat)
+        successionService.exportList(filters, 'pdf' as ExportFormat),
       ).rejects.toThrow('Unsupported export format: pdf');
     });
 
@@ -247,7 +272,9 @@ describe('SuccessionService', () => {
       const exportError = new Error('Export failed');
       mockExportService.exportToCSV.mockRejectedValue(exportError);
 
-      await expect(successionService.exportList(filters, 'csv')).rejects.toThrow('Export failed');
+      await expect(
+        successionService.exportList(filters, 'csv'),
+      ).rejects.toThrow('Export failed');
     });
 
     it('should handle repository errors during export', async () => {
@@ -255,7 +282,9 @@ describe('SuccessionService', () => {
       const repositoryError = new Error('Repository export error');
       mockSuccessionRepository.findAll.mockRejectedValue(repositoryError);
 
-      await expect(successionService.exportList(filters, 'csv')).rejects.toThrow('Repository export error');
+      await expect(
+        successionService.exportList(filters, 'csv'),
+      ).rejects.toThrow('Repository export error');
     });
 
     it('should validate export limit is exactly 500', async () => {
@@ -270,8 +299,10 @@ describe('SuccessionService', () => {
     it('should reject when count is 501 (just over limit)', async () => {
       mockSuccessionRepository.count.mockResolvedValue(501); // Just over limit
 
-      await expect(successionService.exportList(filters, 'csv')).rejects.toThrow(
-        'Export limit exceeded. Found 501 items, maximum allowed is 500. Please refine your filters.'
+      await expect(
+        successionService.exportList(filters, 'csv'),
+      ).rejects.toThrow(
+        'Export limit exceeded. Found 501 items, maximum allowed is 500. Please refine your filters.',
       );
     });
   });

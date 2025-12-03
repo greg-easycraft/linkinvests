@@ -1,16 +1,18 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { AddressSearchService } from './address-search.service';
-import type { IAddressLinksRepository, IAddressSearchRepository } from '../lib.types';
+import type {
+  IAddressLinksRepository,
+  IAddressSearchRepository,
+} from '../lib.types';
 import type { AddressSearchInput, EnergyDiagnostic } from '@linkinvests/shared';
 import { EnergyClass, OpportunityType } from '@linkinvests/shared';
 
 describe('AddressSearchService', () => {
   let addressSearchService: AddressSearchService;
-  const mockAddressSearchRepository ={
+  const mockAddressSearchRepository = {
     findAllForAddressSearch: jest.fn(),
     findById: jest.fn(),
   } as jest.Mocked<IAddressSearchRepository>;
-  const mockAddressLinksRepository ={
+  const mockAddressLinksRepository = {
     saveAuctionDiagnosticLinks: jest.fn(),
     saveListingDiagnosticLinks: jest.fn(),
     getAuctionDiagnosticLinks: jest.fn(),
@@ -42,7 +44,10 @@ describe('AddressSearchService', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     // Initialize service with mocked dependencies
-    addressSearchService = new AddressSearchService(mockAddressSearchRepository, mockAddressLinksRepository);
+    addressSearchService = new AddressSearchService(
+      mockAddressSearchRepository,
+      mockAddressLinksRepository,
+    );
   });
 
   describe('getPlausibleAddresses', () => {
@@ -59,7 +64,8 @@ describe('AddressSearchService', () => {
 
       expect(result).toEqual([]);
       // @ts-expect-error - Test mock calls are guaranteed to exist in test context
-      const call = mockAddressSearchRepository.findAllForAddressSearch.mock.calls[0][0];
+      const call =
+        mockAddressSearchRepository.findAllForAddressSearch.mock.calls[0][0];
       expect(call.zipCode).toBe('75001');
       expect(call.energyClass).toBe('F');
       expect(call.squareFootageMin).toBeCloseTo(45, 1); // 50 * 0.9
@@ -74,7 +80,9 @@ describe('AddressSearchService', () => {
       };
 
       const mockResults = [mockEnergyDiagnostic];
-      mockAddressSearchRepository.findAllForAddressSearch.mockResolvedValue(mockResults);
+      mockAddressSearchRepository.findAllForAddressSearch.mockResolvedValue(
+        mockResults,
+      );
 
       const result = await addressSearchService.getPlausibleAddresses(input);
 
@@ -98,7 +106,8 @@ describe('AddressSearchService', () => {
 
       await addressSearchService.getPlausibleAddresses(input);
 
-      const call = mockAddressSearchRepository.findAllForAddressSearch.mock.calls[0]?.[0];
+      const call =
+        mockAddressSearchRepository.findAllForAddressSearch.mock.calls[0]?.[0];
       expect(call?.zipCode).toBe('75001');
       expect(call?.energyClass).toBe('F');
       expect(call?.squareFootageMin).toBeCloseTo(45, 1); // 50 * 0.9 (default 50)
@@ -117,7 +126,9 @@ describe('AddressSearchService', () => {
 
       await addressSearchService.getPlausibleAddresses(input);
 
-      expect(mockAddressSearchRepository.findAllForAddressSearch).toHaveBeenCalledWith({
+      expect(
+        mockAddressSearchRepository.findAllForAddressSearch,
+      ).toHaveBeenCalledWith({
         zipCode: '75001',
         energyClass: 'F', // Default
         squareFootageMin: 54, // 60 * 0.9
@@ -136,7 +147,8 @@ describe('AddressSearchService', () => {
 
       await addressSearchService.getPlausibleAddresses(input);
 
-      const call = mockAddressSearchRepository.findAllForAddressSearch.mock.calls[0]?.[0];
+      const call =
+        mockAddressSearchRepository.findAllForAddressSearch.mock.calls[0]?.[0];
       expect(call?.zipCode).toBe('75001');
       expect(call?.energyClass).toBe('G');
       expect(call?.squareFootageMin).toBeCloseTo(90, 1); // 100 * 0.9
@@ -150,12 +162,29 @@ describe('AddressSearchService', () => {
         squareFootage: 50,
       };
 
-      const energyDiagnostic1 = { ...mockEnergyDiagnostic, id: 'diag-1', energyClass: 'F', squareFootage: 50 }; // Perfect match - score 100
-      const energyDiagnostic2 = { ...mockEnergyDiagnostic, id: 'diag-2', energyClass: 'G', squareFootage: 50 }; // Energy class mismatch - score 90
-      const energyDiagnostic3 = { ...mockEnergyDiagnostic, id: 'diag-3', energyClass: 'F', squareFootage: 60 }; // Size difference - score ~96
+      const energyDiagnostic1 = {
+        ...mockEnergyDiagnostic,
+        id: 'diag-1',
+        energyClass: 'F',
+        squareFootage: 50,
+      }; // Perfect match - score 100
+      const energyDiagnostic2 = {
+        ...mockEnergyDiagnostic,
+        id: 'diag-2',
+        energyClass: 'G',
+        squareFootage: 50,
+      }; // Energy class mismatch - score 90
+      const energyDiagnostic3 = {
+        ...mockEnergyDiagnostic,
+        id: 'diag-3',
+        energyClass: 'F',
+        squareFootage: 60,
+      }; // Size difference - score ~96
 
       mockAddressSearchRepository.findAllForAddressSearch.mockResolvedValue([
-        energyDiagnostic2, energyDiagnostic3, energyDiagnostic1
+        energyDiagnostic2,
+        energyDiagnostic3,
+        energyDiagnostic1,
       ]);
 
       const result = await addressSearchService.getPlausibleAddresses(input);
@@ -177,9 +206,13 @@ describe('AddressSearchService', () => {
       };
 
       const error = new Error('Repository error');
-      mockAddressSearchRepository.findAllForAddressSearch.mockRejectedValue(error);
+      mockAddressSearchRepository.findAllForAddressSearch.mockRejectedValue(
+        error,
+      );
 
-      await expect(addressSearchService.getPlausibleAddresses(input)).rejects.toThrow('Repository error');
+      await expect(
+        addressSearchService.getPlausibleAddresses(input),
+      ).rejects.toThrow('Repository error');
     });
 
     it('should include energyDiagnosticId from externalId', async () => {
@@ -191,9 +224,11 @@ describe('AddressSearchService', () => {
 
       const diagnosticWithExternalId = {
         ...mockEnergyDiagnostic,
-        externalId: 'external-abc-123'
+        externalId: 'external-abc-123',
       };
-      mockAddressSearchRepository.findAllForAddressSearch.mockResolvedValue([diagnosticWithExternalId]);
+      mockAddressSearchRepository.findAllForAddressSearch.mockResolvedValue([
+        diagnosticWithExternalId,
+      ]);
 
       const result = await addressSearchService.getPlausibleAddresses(input);
 
@@ -209,8 +244,14 @@ describe('AddressSearchService', () => {
         squareFootage: 50,
       };
 
-      const perfectMatch = { ...mockEnergyDiagnostic, energyClass: 'F', squareFootage: 50 };
-      mockAddressSearchRepository.findAllForAddressSearch.mockResolvedValue([perfectMatch]);
+      const perfectMatch = {
+        ...mockEnergyDiagnostic,
+        energyClass: 'F',
+        squareFootage: 50,
+      };
+      mockAddressSearchRepository.findAllForAddressSearch.mockResolvedValue([
+        perfectMatch,
+      ]);
 
       const result = await addressSearchService.getPlausibleAddresses(input);
 
@@ -224,8 +265,14 @@ describe('AddressSearchService', () => {
         squareFootage: 50,
       };
 
-      const energyMismatch = { ...mockEnergyDiagnostic, energyClass: 'G', squareFootage: 50 };
-      mockAddressSearchRepository.findAllForAddressSearch.mockResolvedValue([energyMismatch]);
+      const energyMismatch = {
+        ...mockEnergyDiagnostic,
+        energyClass: 'G',
+        squareFootage: 50,
+      };
+      mockAddressSearchRepository.findAllForAddressSearch.mockResolvedValue([
+        energyMismatch,
+      ]);
 
       const result = await addressSearchService.getPlausibleAddresses(input);
 
@@ -239,8 +286,14 @@ describe('AddressSearchService', () => {
         squareFootage: 100,
       };
 
-      const sizeMismatch = { ...mockEnergyDiagnostic, energyClass: 'F', squareFootage: 120 }; // 20% difference
-      mockAddressSearchRepository.findAllForAddressSearch.mockResolvedValue([sizeMismatch]);
+      const sizeMismatch = {
+        ...mockEnergyDiagnostic,
+        energyClass: 'F',
+        squareFootage: 120,
+      }; // 20% difference
+      mockAddressSearchRepository.findAllForAddressSearch.mockResolvedValue([
+        sizeMismatch,
+      ]);
 
       const result = await addressSearchService.getPlausibleAddresses(input);
 
@@ -254,8 +307,14 @@ describe('AddressSearchService', () => {
         squareFootage: 50,
       };
 
-      const noSquareFootage = { ...mockEnergyDiagnostic, energyClass: 'F', squareFootage: undefined as any };
-      mockAddressSearchRepository.findAllForAddressSearch.mockResolvedValue([noSquareFootage] as any);
+      const noSquareFootage = {
+        ...mockEnergyDiagnostic,
+        energyClass: 'F',
+        squareFootage: undefined as any,
+      };
+      mockAddressSearchRepository.findAllForAddressSearch.mockResolvedValue([
+        noSquareFootage,
+      ] as any);
 
       const result = await addressSearchService.getPlausibleAddresses(input);
 
@@ -270,8 +329,14 @@ describe('AddressSearchService', () => {
       };
 
       // Very large size difference that would result in negative score
-      const hugeSizeMismatch = { ...mockEnergyDiagnostic, energyClass: 'G', squareFootage: 1000 };
-      mockAddressSearchRepository.findAllForAddressSearch.mockResolvedValue([hugeSizeMismatch]);
+      const hugeSizeMismatch = {
+        ...mockEnergyDiagnostic,
+        energyClass: 'G',
+        squareFootage: 1000,
+      };
+      mockAddressSearchRepository.findAllForAddressSearch.mockResolvedValue([
+        hugeSizeMismatch,
+      ]);
 
       const result = await addressSearchService.getPlausibleAddresses(input);
 

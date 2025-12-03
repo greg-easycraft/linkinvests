@@ -1,6 +1,9 @@
 import { LiquidationService } from './liquidation.service';
 import type { ILiquidationRepository } from '../lib.types';
-import type { IExportService, ExportFormat } from '~/server/services/export.service';
+import type {
+  IExportService,
+  ExportFormat,
+} from '~/server/services/export.service';
 import type { IOpportunityFilters } from '~/types/filters';
 import { OpportunityType, type Liquidation } from '@linkinvests/shared';
 import { DEFAULT_PAGE_SIZE } from '~/constants/filters';
@@ -53,7 +56,10 @@ describe('LiquidationService', () => {
     };
 
     // Initialize service with mocked dependencies
-    liquidationService = new LiquidationService(mockLiquidationRepository, mockExportService);
+    liquidationService = new LiquidationService(
+      mockLiquidationRepository,
+      mockExportService,
+    );
 
     // Mock export headers service
     jest.mocked(getOpportunityHeaders).mockReturnValue({
@@ -77,7 +83,7 @@ describe('LiquidationService', () => {
       });
       expect(mockLiquidationRepository.findAll).toHaveBeenCalledWith(
         undefined,
-        { limit: DEFAULT_PAGE_SIZE, offset: 0 }
+        { limit: DEFAULT_PAGE_SIZE, offset: 0 },
       );
     });
 
@@ -95,7 +101,7 @@ describe('LiquidationService', () => {
       });
       expect(mockLiquidationRepository.findAll).toHaveBeenCalledWith(
         filters,
-        { limit: 25, offset: 50 } // (3-1) * 25
+        { limit: 25, offset: 50 }, // (3-1) * 25
       );
     });
 
@@ -111,17 +117,19 @@ describe('LiquidationService', () => {
 
       await liquidationService.getLiquidationsData(filters);
 
-      expect(mockLiquidationRepository.findAll).toHaveBeenCalledWith(
-        filters,
-        { limit: 10, offset: 10 }
-      );
+      expect(mockLiquidationRepository.findAll).toHaveBeenCalledWith(filters, {
+        limit: 10,
+        offset: 10,
+      });
     });
 
     it('should handle repository errors', async () => {
       const error = new Error('Repository error');
       mockLiquidationRepository.findAll.mockRejectedValue(error);
 
-      await expect(liquidationService.getLiquidationsData()).rejects.toThrow('Repository error');
+      await expect(liquidationService.getLiquidationsData()).rejects.toThrow(
+        'Repository error',
+      );
     });
   });
 
@@ -151,7 +159,9 @@ describe('LiquidationService', () => {
       const error = new Error('Count error');
       mockLiquidationRepository.count.mockRejectedValue(error);
 
-      await expect(liquidationService.getLiquidationsCount()).rejects.toThrow('Count error');
+      await expect(liquidationService.getLiquidationsCount()).rejects.toThrow(
+        'Count error',
+      );
     });
   });
 
@@ -163,7 +173,9 @@ describe('LiquidationService', () => {
       const result = await liquidationService.getLiquidationById(liquidationId);
 
       expect(result).toBe(mockLiquidation);
-      expect(mockLiquidationRepository.findById).toHaveBeenCalledWith(liquidationId);
+      expect(mockLiquidationRepository.findById).toHaveBeenCalledWith(
+        liquidationId,
+      );
     });
 
     it('should return null when liquidation not found', async () => {
@@ -173,7 +185,9 @@ describe('LiquidationService', () => {
       const result = await liquidationService.getLiquidationById(liquidationId);
 
       expect(result).toBeNull();
-      expect(mockLiquidationRepository.findById).toHaveBeenCalledWith(liquidationId);
+      expect(mockLiquidationRepository.findById).toHaveBeenCalledWith(
+        liquidationId,
+      );
     });
 
     it('should handle repository findById errors', async () => {
@@ -181,17 +195,24 @@ describe('LiquidationService', () => {
       const liquidationId = 'liquidation-123';
       mockLiquidationRepository.findById.mockRejectedValue(error);
 
-      await expect(liquidationService.getLiquidationById(liquidationId)).rejects.toThrow('Find error');
+      await expect(
+        liquidationService.getLiquidationById(liquidationId),
+      ).rejects.toThrow('Find error');
     });
   });
 
   describe('exportList', () => {
     const filters: IOpportunityFilters = { departments: ['75'] };
-    const mockLiquidationsForExport = [mockLiquidation, { ...mockLiquidation, id: 'liquidation-2' }];
+    const mockLiquidationsForExport = [
+      mockLiquidation,
+      { ...mockLiquidation, id: 'liquidation-2' },
+    ];
     const mockBlob = new Blob(['test data']);
 
     beforeEach(() => {
-      mockLiquidationRepository.findAll.mockResolvedValue(mockLiquidationsForExport);
+      mockLiquidationRepository.findAll.mockResolvedValue(
+        mockLiquidationsForExport,
+      );
       mockExportService.exportToCSV.mockResolvedValue(mockBlob);
       mockExportService.exportToXLSX.mockResolvedValue(mockBlob);
     });
@@ -204,10 +225,12 @@ describe('LiquidationService', () => {
       expect(result).toBe(mockBlob);
       expect(mockLiquidationRepository.count).toHaveBeenCalledWith(filters);
       expect(mockLiquidationRepository.findAll).toHaveBeenCalledWith(filters);
-      expect(getOpportunityHeaders).toHaveBeenCalledWith(OpportunityType.LIQUIDATION);
+      expect(getOpportunityHeaders).toHaveBeenCalledWith(
+        OpportunityType.LIQUIDATION,
+      );
       expect(mockExportService.exportToCSV).toHaveBeenCalledWith(
         mockLiquidationsForExport,
-        { title: 'Titre', address: 'Adresse', price: 'Prix' }
+        { title: 'Titre', address: 'Adresse', price: 'Prix' },
       );
     });
 
@@ -219,15 +242,17 @@ describe('LiquidationService', () => {
       expect(result).toBe(mockBlob);
       expect(mockExportService.exportToXLSX).toHaveBeenCalledWith(
         mockLiquidationsForExport,
-        { title: 'Titre', address: 'Adresse', price: 'Prix' }
+        { title: 'Titre', address: 'Adresse', price: 'Prix' },
       );
     });
 
     it('should throw error when export limit exceeded', async () => {
       mockLiquidationRepository.count.mockResolvedValue(650); // Over 500 limit
 
-      await expect(liquidationService.exportList(filters, 'csv')).rejects.toThrow(
-        'Export limit exceeded. Found 650 items, maximum allowed is 500. Please refine your filters.'
+      await expect(
+        liquidationService.exportList(filters, 'csv'),
+      ).rejects.toThrow(
+        'Export limit exceeded. Found 650 items, maximum allowed is 500. Please refine your filters.',
       );
 
       expect(mockLiquidationRepository.findAll).not.toHaveBeenCalled();
@@ -238,7 +263,7 @@ describe('LiquidationService', () => {
       mockLiquidationRepository.count.mockResolvedValue(100);
 
       await expect(
-        liquidationService.exportList(filters, 'pdf' as ExportFormat)
+        liquidationService.exportList(filters, 'pdf' as ExportFormat),
       ).rejects.toThrow('Unsupported export format: pdf');
     });
 
@@ -247,7 +272,9 @@ describe('LiquidationService', () => {
       const exportError = new Error('Export failed');
       mockExportService.exportToCSV.mockRejectedValue(exportError);
 
-      await expect(liquidationService.exportList(filters, 'csv')).rejects.toThrow('Export failed');
+      await expect(
+        liquidationService.exportList(filters, 'csv'),
+      ).rejects.toThrow('Export failed');
     });
 
     it('should handle repository errors during export', async () => {
@@ -255,7 +282,9 @@ describe('LiquidationService', () => {
       const repositoryError = new Error('Repository export error');
       mockLiquidationRepository.findAll.mockRejectedValue(repositoryError);
 
-      await expect(liquidationService.exportList(filters, 'csv')).rejects.toThrow('Repository export error');
+      await expect(
+        liquidationService.exportList(filters, 'csv'),
+      ).rejects.toThrow('Repository export error');
     });
 
     it('should validate export limit is exactly 500', async () => {
@@ -270,8 +299,10 @@ describe('LiquidationService', () => {
     it('should reject when count is 501 (just over limit)', async () => {
       mockLiquidationRepository.count.mockResolvedValue(501); // Just over limit
 
-      await expect(liquidationService.exportList(filters, 'csv')).rejects.toThrow(
-        'Export limit exceeded. Found 501 items, maximum allowed is 500. Please refine your filters.'
+      await expect(
+        liquidationService.exportList(filters, 'csv'),
+      ).rejects.toThrow(
+        'Export limit exceeded. Found 501 items, maximum allowed is 500. Please refine your filters.',
       );
     });
   });

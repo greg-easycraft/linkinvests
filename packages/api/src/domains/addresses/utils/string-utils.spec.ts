@@ -14,17 +14,26 @@ describe('string-utils', () => {
 
   describe('extractStreetFromAddress', () => {
     it('should extract street before zipcode', () => {
-      const result = extractStreetFromAddress('123 Rue de la Paix 75001 Paris', '75001');
+      const result = extractStreetFromAddress(
+        '123 Rue de la Paix 75001 Paris',
+        '75001',
+      );
       expect(result).toEqual('123 Rue de la Paix');
     });
 
     it('should extract street with multiple words', () => {
-      const result = extractStreetFromAddress('10 Avenue du Général de Gaulle 69100 Villeurbanne', '69100');
+      const result = extractStreetFromAddress(
+        '10 Avenue du Général de Gaulle 69100 Villeurbanne',
+        '69100',
+      );
       expect(result).toEqual('10 Avenue du Général de Gaulle');
     });
 
     it('should handle street with hyphens', () => {
-      const result = extractStreetFromAddress('5-7 Rue Jean-Paul Sartre 67000 Strasbourg', '67000');
+      const result = extractStreetFromAddress(
+        '5-7 Rue Jean-Paul Sartre 67000 Strasbourg',
+        '67000',
+      );
       expect(result).toEqual('5-7 Rue Jean-Paul Sartre');
     });
 
@@ -34,12 +43,18 @@ describe('string-utils', () => {
     });
 
     it('should return null when zipcode is empty', () => {
-      const result = extractStreetFromAddress('123 Rue de la Paix 75001 Paris', '');
+      const result = extractStreetFromAddress(
+        '123 Rue de la Paix 75001 Paris',
+        '',
+      );
       expect(result).toBeNull();
     });
 
     it('should return null when zipcode not found in address', () => {
-      const result = extractStreetFromAddress('123 Rue de la Paix Paris', '75001');
+      const result = extractStreetFromAddress(
+        '123 Rue de la Paix Paris',
+        '75001',
+      );
       expect(result).toBeNull();
     });
 
@@ -51,17 +66,26 @@ describe('string-utils', () => {
 
   describe('extractCityFromAddress', () => {
     it('should extract city after zipcode', () => {
-      const result = extractCityFromAddress('123 Rue de la Paix 75001 Paris', '75001');
+      const result = extractCityFromAddress(
+        '123 Rue de la Paix 75001 Paris',
+        '75001',
+      );
       expect(result).toEqual('Paris');
     });
 
     it('should extract city with multiple words', () => {
-      const result = extractCityFromAddress('10 Avenue du Général 69100 Villeurbanne Cedex', '69100');
+      const result = extractCityFromAddress(
+        '10 Avenue du Général 69100 Villeurbanne Cedex',
+        '69100',
+      );
       expect(result).toEqual('Villeurbanne Cedex');
     });
 
     it('should handle city with hyphens', () => {
-      const result = extractCityFromAddress('5 Rue Principale 67000 Strasbourg-Neudorf', '67000');
+      const result = extractCityFromAddress(
+        '5 Rue Principale 67000 Strasbourg-Neudorf',
+        '67000',
+      );
       expect(result).toEqual('Strasbourg-Neudorf');
     });
 
@@ -71,17 +95,26 @@ describe('string-utils', () => {
     });
 
     it('should return null when zipcode is empty', () => {
-      const result = extractCityFromAddress('123 Rue de la Paix 75001 Paris', '');
+      const result = extractCityFromAddress(
+        '123 Rue de la Paix 75001 Paris',
+        '',
+      );
       expect(result).toBeNull();
     });
 
     it('should return null when zipcode not found in address', () => {
-      const result = extractCityFromAddress('123 Rue de la Paix Paris', '75001');
+      const result = extractCityFromAddress(
+        '123 Rue de la Paix Paris',
+        '75001',
+      );
       expect(result).toBeNull();
     });
 
     it('should return null when nothing after zipcode', () => {
-      const result = extractCityFromAddress('123 Rue de la Paix 75001', '75001');
+      const result = extractCityFromAddress(
+        '123 Rue de la Paix 75001',
+        '75001',
+      );
       expect(result).toBeNull();
     });
   });
@@ -203,7 +236,10 @@ describe('string-utils', () => {
     });
 
     it('should return moderate-high score for prefix match', () => {
-      const result = calculateCityMatchScore('Saint-Pierre', 'Saint-Pierre-le-Vieux');
+      const result = calculateCityMatchScore(
+        'Saint-Pierre',
+        'Saint-Pierre-le-Vieux',
+      );
       expect(result).toBeGreaterThanOrEqual(50);
       expect(result).toBeLessThanOrEqual(85);
     });
@@ -225,47 +261,71 @@ describe('string-utils', () => {
     });
 
     it('should handle apostrophes in city names', () => {
-      const result = calculateCityMatchScore("L'Haÿ-les-Roses", 'L Hay les Roses');
+      const result = calculateCityMatchScore(
+        "L'Haÿ-les-Roses",
+        'L Hay les Roses',
+      );
       expect(result).toEqual(100);
     });
   });
 
   describe('calculateStreetMatchScore', () => {
     it('should return 100 for exact match', () => {
-      const result = calculateStreetMatchScore('9 rue de la paix', '9 rue de la paix');
+      const result = calculateStreetMatchScore(
+        '9 rue de la paix',
+        '9 rue de la paix',
+      );
       expect(result).toEqual(100);
     });
 
     it('should return 100 for case-insensitive match', () => {
-      const result = calculateStreetMatchScore('9 RUE DE LA PAIX', '9 rue de la paix');
+      const result = calculateStreetMatchScore(
+        '9 RUE DE LA PAIX',
+        '9 rue de la paix',
+      );
       expect(result).toEqual(100);
     });
 
     it('should return 100 for match with different accents', () => {
-      const result = calculateStreetMatchScore('10 Rue des Écoles', '10 Rue des Ecoles');
+      const result = calculateStreetMatchScore(
+        '10 Rue des Écoles',
+        '10 Rue des Ecoles',
+      );
       expect(result).toEqual(100);
     });
 
     it('should return high score for suffix match (missing street number)', () => {
-      const result = calculateStreetMatchScore('9 rue de la paix', 'rue de la paix');
+      const result = calculateStreetMatchScore(
+        '9 rue de la paix',
+        'rue de la paix',
+      );
       expect(result).toBeGreaterThanOrEqual(50);
       expect(result).toBeLessThanOrEqual(85);
     });
 
     it('should return high score for suffix match (different street number)', () => {
-      const result = calculateStreetMatchScore('rue de la paix', '15 rue de la paix');
+      const result = calculateStreetMatchScore(
+        'rue de la paix',
+        '15 rue de la paix',
+      );
       expect(result).toBeGreaterThanOrEqual(50);
       expect(result).toBeLessThanOrEqual(85);
     });
 
     it('should return high score for minor typo (distance <= 3)', () => {
-      const result = calculateStreetMatchScore('9 rue de la paxi', '9 rue de la paix');
+      const result = calculateStreetMatchScore(
+        '9 rue de la paxi',
+        '9 rue de la paix',
+      );
       expect(result).toBeGreaterThanOrEqual(55);
       expect(result).toBeLessThan(100);
     });
 
     it('should return low score for completely different streets', () => {
-      const result = calculateStreetMatchScore('rue de la paix', 'avenue des champs');
+      const result = calculateStreetMatchScore(
+        'rue de la paix',
+        'avenue des champs',
+      );
       expect(result).toBeLessThan(50);
     });
 
@@ -276,12 +336,18 @@ describe('string-utils', () => {
     });
 
     it('should handle French street names with accents', () => {
-      const result = calculateStreetMatchScore('5 Allée François Mitterrand', '5 Allee Francois Mitterrand');
+      const result = calculateStreetMatchScore(
+        '5 Allée François Mitterrand',
+        '5 Allee Francois Mitterrand',
+      );
       expect(result).toEqual(100);
     });
 
     it('should handle apostrophes in street names', () => {
-      const result = calculateStreetMatchScore("12 Place de l'Église", '12 Place de l Eglise');
+      const result = calculateStreetMatchScore(
+        "12 Place de l'Église",
+        '12 Place de l Eglise',
+      );
       expect(result).toEqual(100);
     });
   });

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { EmailService } from './email.service';
 import { Resend } from 'resend';
 
@@ -49,9 +48,16 @@ describe('EmailService', () => {
 
     it('should send reset password email successfully with user name', async () => {
       // Mock successful response
-      mockEmailSend.mockResolvedValue({ data: { id: 'email-id-123' }, error: null });
+      mockEmailSend.mockResolvedValue({
+        data: { id: 'email-id-123' },
+        error: null,
+      });
 
-      await emailService.sendResetPasswordEmail(testEmail, testUrl, testUserName);
+      await emailService.sendResetPasswordEmail(
+        testEmail,
+        testUrl,
+        testUserName,
+      );
 
       // Verify resend.emails.send was called correctly
       expect(mockEmailSend).toHaveBeenCalledTimes(1);
@@ -71,7 +77,10 @@ describe('EmailService', () => {
 
     it('should send reset password email successfully without user name', async () => {
       // Mock successful response
-      mockEmailSend.mockResolvedValue({ data: { id: 'email-id-123' }, error: null });
+      mockEmailSend.mockResolvedValue({
+        data: { id: 'email-id-123' },
+        error: null,
+      });
 
       await emailService.sendResetPasswordEmail(testEmail, testUrl);
 
@@ -90,13 +99,13 @@ describe('EmailService', () => {
         data: null,
         error: {
           name: 'validation_error',
-          message: 'Invalid email address'
-        }
+          message: 'Invalid email address',
+        },
       });
 
-      await expect(emailService.sendResetPasswordEmail(testEmail, testUrl, testUserName))
-        .rejects
-        .toThrow('Failed to send reset password email');
+      await expect(
+        emailService.sendResetPasswordEmail(testEmail, testUrl, testUserName),
+      ).rejects.toThrow('Failed to send reset password email');
 
       expect(mockEmailSend).toHaveBeenCalledTimes(1);
     });
@@ -105,22 +114,33 @@ describe('EmailService', () => {
       // Mock resend throwing an error
       mockEmailSend.mockRejectedValue(new Error('Network error'));
 
-      await expect(emailService.sendResetPasswordEmail(testEmail, testUrl, testUserName))
-        .rejects
-        .toThrow('Network error');
+      await expect(
+        emailService.sendResetPasswordEmail(testEmail, testUrl, testUserName),
+      ).rejects.toThrow('Network error');
 
       expect(mockEmailSend).toHaveBeenCalledTimes(1);
     });
 
     it('should include security warnings in email content', async () => {
       // Mock successful response
-      mockEmailSend.mockResolvedValue({ data: { id: 'email-id-123' }, error: null });
+      mockEmailSend.mockResolvedValue({
+        data: { id: 'email-id-123' },
+        error: null,
+      });
 
-      await emailService.sendResetPasswordEmail(testEmail, testUrl, testUserName);
+      await emailService.sendResetPasswordEmail(
+        testEmail,
+        testUrl,
+        testUserName,
+      );
 
       const htmlContent = mockEmailSend.mock.calls[0][0].html;
-      expect(htmlContent).toContain('Ce lien de réinitialisation expirera dans 1 heure');
-      expect(htmlContent).toContain('ne partagez jamais ce lien avec d\'autres personnes');
+      expect(htmlContent).toContain(
+        'Ce lien de réinitialisation expirera dans 1 heure',
+      );
+      expect(htmlContent).toContain(
+        "ne partagez jamais ce lien avec d'autres personnes",
+      );
     });
   });
 
@@ -131,9 +151,16 @@ describe('EmailService', () => {
 
     it('should send verification email successfully with user name', async () => {
       // Mock successful response
-      mockEmailSend.mockResolvedValue({ data: { id: 'email-id-456' }, error: null });
+      mockEmailSend.mockResolvedValue({
+        data: { id: 'email-id-456' },
+        error: null,
+      });
 
-      await emailService.sendVerificationEmail(testEmail, testUrl, testUserName);
+      await emailService.sendVerificationEmail(
+        testEmail,
+        testUrl,
+        testUserName,
+      );
 
       // Verify resend.emails.send was called correctly
       expect(mockEmailSend).toHaveBeenCalledTimes(1);
@@ -147,13 +174,16 @@ describe('EmailService', () => {
       // Verify the email contains the verification URL
       const htmlContent = mockEmailSend.mock.calls[0][0].html;
       expect(htmlContent).toContain(testUrl);
-      expect(htmlContent).toContain('Vérifier l\'adresse email');
+      expect(htmlContent).toContain("Vérifier l'adresse email");
       expect(htmlContent).toContain(testUserName);
     });
 
     it('should send verification email successfully without user name', async () => {
       // Mock successful response
-      mockEmailSend.mockResolvedValue({ data: { id: 'email-id-456' }, error: null });
+      mockEmailSend.mockResolvedValue({
+        data: { id: 'email-id-456' },
+        error: null,
+      });
 
       await emailService.sendVerificationEmail(testEmail, testUrl);
 
@@ -172,13 +202,13 @@ describe('EmailService', () => {
         data: null,
         error: {
           name: 'validation_error',
-          message: 'Invalid email format'
-        }
+          message: 'Invalid email format',
+        },
       });
 
-      await expect(emailService.sendVerificationEmail(testEmail, testUrl, testUserName))
-        .rejects
-        .toThrow('Failed to send verification email');
+      await expect(
+        emailService.sendVerificationEmail(testEmail, testUrl, testUserName),
+      ).rejects.toThrow('Failed to send verification email');
 
       expect(mockEmailSend).toHaveBeenCalledTimes(1);
     });
@@ -187,24 +217,33 @@ describe('EmailService', () => {
       // Mock resend throwing an error
       mockEmailSend.mockRejectedValue(new Error('API rate limit exceeded'));
 
-      await expect(emailService.sendVerificationEmail(testEmail, testUrl, testUserName))
-        .rejects
-        .toThrow('API rate limit exceeded');
+      await expect(
+        emailService.sendVerificationEmail(testEmail, testUrl, testUserName),
+      ).rejects.toThrow('API rate limit exceeded');
 
       expect(mockEmailSend).toHaveBeenCalledTimes(1);
     });
 
     it('should include welcome message and instructions in email content', async () => {
       // Mock successful response
-      mockEmailSend.mockResolvedValue({ data: { id: 'email-id-456' }, error: null });
+      mockEmailSend.mockResolvedValue({
+        data: { id: 'email-id-456' },
+        error: null,
+      });
 
-      await emailService.sendVerificationEmail(testEmail, testUrl, testUserName);
+      await emailService.sendVerificationEmail(
+        testEmail,
+        testUrl,
+        testUserName,
+      );
 
       const htmlContent = mockEmailSend.mock.calls[0][0].html;
       expect(htmlContent).toContain('Bienvenue sur LinkInvests');
       expect(htmlContent).toContain('Merci de vous être inscrit');
       expect(htmlContent).toContain('vérifier votre adresse email');
-      expect(htmlContent).toContain('Ce lien de vérification expirera dans 24 heures');
+      expect(htmlContent).toContain(
+        'Ce lien de vérification expirera dans 24 heures',
+      );
     });
   });
 
@@ -213,19 +252,26 @@ describe('EmailService', () => {
       const emails = [
         'simple@example.com',
         'user.name+tag@example.co.uk',
-        'test.email-with+symbol@domain.com'
+        'test.email-with+symbol@domain.com',
       ];
 
-      mockEmailSend.mockResolvedValue({ data: { id: 'email-id' }, error: null });
+      mockEmailSend.mockResolvedValue({
+        data: { id: 'email-id' },
+        error: null,
+      });
 
       for (const email of emails) {
-        await emailService.sendResetPasswordEmail(email, 'https://test.com/reset', 'Test User');
+        await emailService.sendResetPasswordEmail(
+          email,
+          'https://test.com/reset',
+          'Test User',
+        );
 
         expect(mockEmailSend).toHaveBeenCalledWith(
           expect.objectContaining({
             to: email,
             from: 'LinkInvests <noreply@easycraft.cloud>',
-          })
+          }),
         );
       }
 
@@ -233,12 +279,15 @@ describe('EmailService', () => {
     });
 
     it('should handle HTML content correctly', async () => {
-      mockEmailSend.mockResolvedValue({ data: { id: 'email-id' }, error: null });
+      mockEmailSend.mockResolvedValue({
+        data: { id: 'email-id' },
+        error: null,
+      });
 
       await emailService.sendResetPasswordEmail(
         'test@example.com',
         'https://test.com/reset',
-        'Test User'
+        'Test User',
       );
 
       const htmlContent = mockEmailSend.mock.calls[0][0].html;
@@ -257,15 +306,19 @@ describe('EmailService', () => {
     });
 
     it('should handle special characters in email content', async () => {
-      const specialUrl = 'https://test.com/reset?token=abc123&redirect=%2Fdashboard%3Futm_source%3Demail';
-      const specialUserName = 'José María O\'Connell';
+      const specialUrl =
+        'https://test.com/reset?token=abc123&redirect=%2Fdashboard%3Futm_source%3Demail';
+      const specialUserName = "José María O'Connell";
 
-      mockEmailSend.mockResolvedValue({ data: { id: 'email-id' }, error: null });
+      mockEmailSend.mockResolvedValue({
+        data: { id: 'email-id' },
+        error: null,
+      });
 
       await emailService.sendResetPasswordEmail(
         'test@example.com',
         specialUrl,
-        specialUserName
+        specialUserName,
       );
 
       const htmlContent = mockEmailSend.mock.calls[0][0].html;
@@ -292,47 +345,62 @@ describe('EmailService', () => {
     it('should handle undefined response from Resend', async () => {
       mockEmailSend.mockResolvedValue(undefined);
 
-      await expect(emailService.sendResetPasswordEmail('test@example.com', 'https://test.com'))
-        .rejects
-        .toThrow('Cannot read properties of undefined');
+      await expect(
+        emailService.sendResetPasswordEmail(
+          'test@example.com',
+          'https://test.com',
+        ),
+      ).rejects.toThrow('Cannot read properties of undefined');
     });
 
     it('should handle null response from Resend', async () => {
       mockEmailSend.mockResolvedValue(null);
 
-      await expect(emailService.sendVerificationEmail('test@example.com', 'https://test.com'))
-        .rejects
-        .toThrow('Cannot read properties of null');
+      await expect(
+        emailService.sendVerificationEmail(
+          'test@example.com',
+          'https://test.com',
+        ),
+      ).rejects.toThrow('Cannot read properties of null');
     });
 
     it('should handle response without data or error properties', async () => {
       mockEmailSend.mockResolvedValue({});
 
       // Since response.error is undefined (falsy), the method succeeds
-      await expect(emailService.sendResetPasswordEmail('test@example.com', 'https://test.com'))
-        .resolves
-        .not.toThrow();
+      await expect(
+        emailService.sendResetPasswordEmail(
+          'test@example.com',
+          'https://test.com',
+        ),
+      ).resolves.not.toThrow();
     });
 
     it('should handle network timeouts and connection errors', async () => {
       mockEmailSend.mockRejectedValue(new Error('ECONNREFUSED'));
 
-      await expect(emailService.sendVerificationEmail('test@example.com', 'https://test.com'))
-        .rejects
-        .toThrow('ECONNREFUSED');
+      await expect(
+        emailService.sendVerificationEmail(
+          'test@example.com',
+          'https://test.com',
+        ),
+      ).rejects.toThrow('ECONNREFUSED');
     });
   });
 
   describe('email content validation', () => {
     beforeEach(() => {
-      mockEmailSend.mockResolvedValue({ data: { id: 'email-id' }, error: null });
+      mockEmailSend.mockResolvedValue({
+        data: { id: 'email-id' },
+        error: null,
+      });
     });
 
     it('should generate valid HTML for reset password email', async () => {
       await emailService.sendResetPasswordEmail(
         'test@example.com',
         'https://test.com/reset',
-        'Test User'
+        'Test User',
       );
 
       const htmlContent = mockEmailSend.mock.calls[0][0].html;
@@ -353,7 +421,7 @@ describe('EmailService', () => {
       await emailService.sendVerificationEmail(
         'test@example.com',
         'https://test.com/verify',
-        'Test User'
+        'Test User',
       );
 
       const htmlContent = mockEmailSend.mock.calls[0][0].html;
@@ -376,7 +444,7 @@ describe('EmailService', () => {
       await emailService.sendResetPasswordEmail(
         'test@example.com',
         'https://test.com/reset',
-        maliciousUserName
+        maliciousUserName,
       );
 
       const htmlContent = mockEmailSend.mock.calls[0][0].html;

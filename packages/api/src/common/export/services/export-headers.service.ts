@@ -16,7 +16,7 @@ const AUCTION_HEADERS: Record<string, string> = {
   propertyType: 'Type de bien',
   energyClass: 'DPE',
   auctionVenue: 'Lieu de vente',
-  occupationStatus: 'Statut d\'occupation',
+  occupationStatus: "Statut d'occupation",
   url: 'URL',
   source: 'Source',
   createdAt: 'Date de création',
@@ -76,7 +76,9 @@ const ENERGY_DIAGNOSTIC_HEADERS: Record<string, string> = {
   createdAt: 'Date de création',
 };
 
-export function getOpportunityHeaders(type: OpportunityType): Record<string, string> {
+export function getOpportunityHeaders(
+  type: OpportunityType,
+): Record<string, string> {
   switch (type) {
     case OpportunityType.AUCTION:
       return AUCTION_HEADERS;

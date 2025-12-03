@@ -22,7 +22,8 @@ export class ExportService implements IExportService {
         .map((h) => {
           const value = row[h];
           if (value === null || value === undefined) return '""';
-          if (typeof value === 'object') return `"${JSON.stringify(value).replace(/"/g, '""')}"`;
+          if (typeof value === 'object')
+            return `"${JSON.stringify(value).replace(/"/g, '""')}"`;
           return `"${String(value).replace(/"/g, '""')}"`;
         })
         .join(','),

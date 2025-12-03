@@ -1,5 +1,14 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { and, arrayContains, eq, gte, inArray, lte, sql, type SQL } from 'drizzle-orm';
+import {
+  and,
+  arrayContains,
+  eq,
+  gte,
+  inArray,
+  lte,
+  sql,
+  type SQL,
+} from 'drizzle-orm';
 import type { DomainDbType } from '~/types/db';
 import { opportunityListings } from '@linkinvests/db';
 import { ListingRepository } from '../lib.types';
@@ -27,7 +36,9 @@ export class DrizzleListingRepository extends ListingRepository {
     // Base IOpportunityFilters
     // Filter by departments (support multiple departments)
     if (filters.departments && filters.departments.length > 0) {
-      conditions.push(inArray(opportunityListings.department, filters.departments));
+      conditions.push(
+        inArray(opportunityListings.department, filters.departments),
+      );
     }
 
     // Filter by zipCodes (support multiple zip codes)
@@ -35,12 +46,16 @@ export class DrizzleListingRepository extends ListingRepository {
       conditions.push(inArray(opportunityListings.zipCode, filters.zipCodes));
     }
 
-    if(filters.isDivisible !== undefined) {
-      conditions.push(arrayContains(opportunityListings.options, ['isDivisible']));
+    if (filters.isDivisible !== undefined) {
+      conditions.push(
+        arrayContains(opportunityListings.options, ['isDivisible']),
+      );
     }
 
-    if(filters.hasWorksRequired !== undefined) {
-      conditions.push(arrayContains(opportunityListings.options, ['hasWorksRequired']));
+    if (filters.hasWorksRequired !== undefined) {
+      conditions.push(
+        arrayContains(opportunityListings.options, ['hasWorksRequired']),
+      );
     }
 
     if (filters.datePeriod) {
@@ -48,7 +63,7 @@ export class DrizzleListingRepository extends ListingRepository {
       conditions.push(
         gte(
           opportunityListings.opportunityDate,
-          dateThreshold.toISOString().split("T")[0] ?? "",
+          dateThreshold.toISOString().split('T')[0] ?? '',
         ),
       );
     }
@@ -68,12 +83,16 @@ export class DrizzleListingRepository extends ListingRepository {
     // Listing-specific filters
     // Filter by property types
     if (filters.propertyTypes && filters.propertyTypes.length > 0) {
-      conditions.push(inArray(opportunityListings.propertyType, filters.propertyTypes));
+      conditions.push(
+        inArray(opportunityListings.propertyType, filters.propertyTypes),
+      );
     }
 
     // Filter by energy classes (DPE)
     if (filters.energyClasses && filters.energyClasses.length > 0) {
-      conditions.push(inArray(opportunityListings.energyClass, filters.energyClasses));
+      conditions.push(
+        inArray(opportunityListings.energyClass, filters.energyClasses),
+      );
     }
 
     // Filter by price range
@@ -86,10 +105,14 @@ export class DrizzleListingRepository extends ListingRepository {
 
     // Filter by square footage range
     if (filters.minSquareFootage !== undefined) {
-      conditions.push(gte(opportunityListings.squareFootage, filters.minSquareFootage));
+      conditions.push(
+        gte(opportunityListings.squareFootage, filters.minSquareFootage),
+      );
     }
     if (filters.maxSquareFootage !== undefined) {
-      conditions.push(lte(opportunityListings.squareFootage, filters.maxSquareFootage));
+      conditions.push(
+        lte(opportunityListings.squareFootage, filters.maxSquareFootage),
+      );
     }
 
     // Filter by land area range
@@ -118,15 +141,21 @@ export class DrizzleListingRepository extends ListingRepository {
 
     // Filter by construction year range
     if (filters.minConstructionYear !== undefined) {
-      conditions.push(gte(opportunityListings.constructionYear, filters.minConstructionYear));
+      conditions.push(
+        gte(opportunityListings.constructionYear, filters.minConstructionYear),
+      );
     }
     if (filters.maxConstructionYear !== undefined) {
-      conditions.push(lte(opportunityListings.constructionYear, filters.maxConstructionYear));
+      conditions.push(
+        lte(opportunityListings.constructionYear, filters.maxConstructionYear),
+      );
     }
 
     // Filter by rental status (isSoldRented)
     if (filters.isSoldRented !== undefined) {
-      conditions.push(eq(opportunityListings.isSoldRented, filters.isSoldRented));
+      conditions.push(
+        eq(opportunityListings.isSoldRented, filters.isSoldRented),
+      );
     }
 
     // Filter by sources
@@ -142,16 +171,18 @@ export class DrizzleListingRepository extends ListingRepository {
     return conditions;
   }
 
-  async findAll(filters?: IListingFilters, paginationFilters?: PaginationFilters): Promise<Listing[]> {
+  async findAll(
+    filters?: IListingFilters,
+    paginationFilters?: PaginationFilters,
+  ): Promise<Listing[]> {
     const conditions = this.buildWhereClause(filters);
 
-    let query = this.db
-      .select()
-      .from(opportunityListings)
-      .$dynamic();
+    let query = this.db.select().from(opportunityListings).$dynamic();
 
     if (paginationFilters) {
-      query = query.limit(paginationFilters.limit).offset(paginationFilters.offset);
+      query = query
+        .limit(paginationFilters.limit)
+        .offset(paginationFilters.offset);
     }
 
     if (conditions.length > 0) {
@@ -159,10 +190,14 @@ export class DrizzleListingRepository extends ListingRepository {
     }
 
     // Apply sorting
-    if (filters?.sortBy && opportunityListings[filters.sortBy as keyof typeof opportunityListings]) {
-      const column = opportunityListings[filters.sortBy as keyof typeof opportunityListings];
+    if (
+      filters?.sortBy &&
+      opportunityListings[filters.sortBy as keyof typeof opportunityListings]
+    ) {
+      const column =
+        opportunityListings[filters.sortBy as keyof typeof opportunityListings];
       query = query.orderBy(
-        filters.sortOrder === "desc" ? sql`${column} DESC` : sql`${column} ASC`,
+        filters.sortOrder === 'desc' ? sql`${column} DESC` : sql`${column} ASC`,
       );
     } else {
       // Default sorting by creation date
@@ -203,13 +238,16 @@ export class DrizzleListingRepository extends ListingRepository {
     const results = await this.db
       .selectDistinct({ source: opportunityListings.source })
       .from(opportunityListings);
-    return results.map(r => r.source).filter(Boolean);
+    return results.map((r) => r.source).filter(Boolean);
   }
 
-  private mapListing(listing: typeof opportunityListings.$inferSelect): Listing {
+  private mapListing(
+    listing: typeof opportunityListings.$inferSelect,
+  ): Listing {
     return {
       ...listing,
-      lastChangeDate: listing.lastChangeDate ?? (new Date()).toISOString().split('T')[0] as string,
+      lastChangeDate:
+        listing.lastChangeDate ?? new Date().toISOString().split('T')[0],
       address: listing.address ?? undefined,
       mainPicture: listing.mainPicture ?? undefined,
       pictures: listing.pictures ?? undefined,

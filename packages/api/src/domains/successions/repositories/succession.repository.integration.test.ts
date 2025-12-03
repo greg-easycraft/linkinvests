@@ -47,7 +47,7 @@ describe('DrizzleSuccessionRepository Integration Tests', () => {
         }
 
         const filters: ISuccessionFilters = {
-          departments: [existingDepartment]
+          departments: [existingDepartment],
         };
 
         const successions = await successionRepository.findAll(filters);
@@ -55,22 +55,26 @@ describe('DrizzleSuccessionRepository Integration Tests', () => {
 
         expect(successions.length).toBeGreaterThan(0);
         expect(successions.length).toBe(count);
-        successions.forEach(succession => {
+        successions.forEach((succession) => {
           expect(succession.department).toBe(existingDepartment);
         });
       });
 
       it('should filter by multiple departments', async () => {
         const allSuccessions = await successionRepository.findAll();
-        const departments = [...new Set(allSuccessions.map(s => s.department))].filter(Boolean);
+        const departments = [
+          ...new Set(allSuccessions.map((s) => s.department)),
+        ].filter(Boolean);
 
         if (departments.length < 2) {
-          console.warn('Not enough different departments found in fixtures for multiple department test');
+          console.warn(
+            'Not enough different departments found in fixtures for multiple department test',
+          );
           return;
         }
 
         const filters: ISuccessionFilters = {
-          departments: departments.slice(0, 2)
+          departments: departments.slice(0, 2),
         };
 
         const successions = await successionRepository.findAll(filters);
@@ -78,14 +82,14 @@ describe('DrizzleSuccessionRepository Integration Tests', () => {
 
         expect(successions.length).toBeGreaterThan(0);
         expect(successions.length).toBe(count);
-        successions.forEach(succession => {
+        successions.forEach((succession) => {
           expect(departments.slice(0, 2)).toContain(succession.department);
         });
       });
 
       it('should return empty array for non-existent department', async () => {
         const filters: ISuccessionFilters = {
-          departments: ['99']
+          departments: ['99'],
         };
 
         const successions = await successionRepository.findAll(filters);
@@ -107,7 +111,7 @@ describe('DrizzleSuccessionRepository Integration Tests', () => {
         }
 
         const filters: ISuccessionFilters = {
-          zipCodes: [existingZipCode]
+          zipCodes: [existingZipCode],
         };
 
         const successions = await successionRepository.findAll(filters);
@@ -115,22 +119,26 @@ describe('DrizzleSuccessionRepository Integration Tests', () => {
 
         expect(successions.length).toBeGreaterThan(0);
         expect(successions.length).toBe(count);
-        successions.forEach(succession => {
+        successions.forEach((succession) => {
           expect(succession.zipCode).toBe(existingZipCode);
         });
       });
 
       it('should filter by multiple zip codes', async () => {
         const allSuccessions = await successionRepository.findAll();
-        const zipCodes = [...new Set(allSuccessions.map(s => s.zipCode))].filter(Boolean);
+        const zipCodes = [
+          ...new Set(allSuccessions.map((s) => s.zipCode)),
+        ].filter(Boolean);
 
         if (zipCodes.length < 2) {
-          console.warn('Not enough different zip codes found in fixtures for multiple zip code test');
+          console.warn(
+            'Not enough different zip codes found in fixtures for multiple zip code test',
+          );
           return;
         }
 
         const filters: ISuccessionFilters = {
-          zipCodes: zipCodes.slice(0, 2)
+          zipCodes: zipCodes.slice(0, 2),
         };
 
         const successions = await successionRepository.findAll(filters);
@@ -138,14 +146,14 @@ describe('DrizzleSuccessionRepository Integration Tests', () => {
 
         expect(successions.length).toBeGreaterThan(0);
         expect(successions.length).toBe(count);
-        successions.forEach(succession => {
+        successions.forEach((succession) => {
           expect(zipCodes.slice(0, 2)).toContain(succession.zipCode);
         });
       });
 
       it('should return empty array for non-existent zip code', async () => {
         const filters: ISuccessionFilters = {
-          zipCodes: ['00000']
+          zipCodes: ['00000'],
         };
 
         const successions = await successionRepository.findAll(filters);
@@ -159,7 +167,7 @@ describe('DrizzleSuccessionRepository Integration Tests', () => {
     describe('datePeriod filter', () => {
       it('should filter by last month', async () => {
         const filters: ISuccessionFilters = {
-          datePeriod: 'last_month'
+          datePeriod: 'last_month',
         };
 
         const successions = await successionRepository.findAll(filters);
@@ -172,7 +180,7 @@ describe('DrizzleSuccessionRepository Integration Tests', () => {
 
       it('should filter by last 3 months', async () => {
         const filters: ISuccessionFilters = {
-          datePeriod: 'last_3_months'
+          datePeriod: 'last_3_months',
         };
 
         const successions = await successionRepository.findAll(filters);
@@ -184,7 +192,7 @@ describe('DrizzleSuccessionRepository Integration Tests', () => {
 
       it('should filter by last 12 months', async () => {
         const filters: ISuccessionFilters = {
-          datePeriod: '12_months'
+          datePeriod: '12_months',
         };
 
         const successions = await successionRepository.findAll(filters);
@@ -199,8 +207,8 @@ describe('DrizzleSuccessionRepository Integration Tests', () => {
       it('should filter by map bounds', async () => {
         // First get the coordinate ranges from existing successions
         const allSuccessions = await successionRepository.findAll();
-        const successionsWithCoords = allSuccessions.filter(s =>
-          s.latitude != null && s.longitude != null
+        const successionsWithCoords = allSuccessions.filter(
+          (s) => s.latitude != null && s.longitude != null,
         );
 
         if (successionsWithCoords.length === 0) {
@@ -208,16 +216,16 @@ describe('DrizzleSuccessionRepository Integration Tests', () => {
           return;
         }
 
-        const latitudes = successionsWithCoords.map(s => s.latitude!);
-        const longitudes = successionsWithCoords.map(s => s.longitude!);
+        const latitudes = successionsWithCoords.map((s) => s.latitude);
+        const longitudes = successionsWithCoords.map((s) => s.longitude);
 
         const filters: ISuccessionFilters = {
           bounds: {
             north: Math.max(...latitudes) + 0.1,
             south: Math.min(...latitudes) - 0.1,
             east: Math.max(...longitudes) + 0.1,
-            west: Math.min(...longitudes) - 0.1
-          }
+            west: Math.min(...longitudes) - 0.1,
+          },
         };
 
         const successions = await successionRepository.findAll(filters);
@@ -225,12 +233,20 @@ describe('DrizzleSuccessionRepository Integration Tests', () => {
 
         expect(successions.length).toBeGreaterThan(0);
         expect(successions.length).toBe(count);
-        successions.forEach(succession => {
+        successions.forEach((succession) => {
           if (succession.latitude != null && succession.longitude != null) {
-            expect(succession.latitude).toBeGreaterThanOrEqual(filters.bounds!.south);
-            expect(succession.latitude).toBeLessThanOrEqual(filters.bounds!.north);
-            expect(succession.longitude).toBeGreaterThanOrEqual(filters.bounds!.west);
-            expect(succession.longitude).toBeLessThanOrEqual(filters.bounds!.east);
+            expect(succession.latitude).toBeGreaterThanOrEqual(
+              filters.bounds!.south,
+            );
+            expect(succession.latitude).toBeLessThanOrEqual(
+              filters.bounds!.north,
+            );
+            expect(succession.longitude).toBeGreaterThanOrEqual(
+              filters.bounds!.west,
+            );
+            expect(succession.longitude).toBeLessThanOrEqual(
+              filters.bounds!.east,
+            );
           }
         });
       });
@@ -241,8 +257,8 @@ describe('DrizzleSuccessionRepository Integration Tests', () => {
             north: 90.0,
             south: 89.0,
             east: 180.0,
-            west: 179.0
-          }
+            west: 179.0,
+          },
         };
 
         const successions = await successionRepository.findAll(filters);
@@ -266,14 +282,14 @@ describe('DrizzleSuccessionRepository Integration Tests', () => {
 
         const filters: ISuccessionFilters = {
           departments: [existingDepartment],
-          zipCodes: [existingZipCode]
+          zipCodes: [existingZipCode],
         };
 
         const successions = await successionRepository.findAll(filters);
         const count = await successionRepository.count(filters);
 
         expect(successions.length).toBe(count);
-        successions.forEach(succession => {
+        successions.forEach((succession) => {
           expect(succession.department).toBe(existingDepartment);
           expect(succession.zipCode).toBe(existingZipCode);
         });
@@ -290,14 +306,14 @@ describe('DrizzleSuccessionRepository Integration Tests', () => {
 
         const filters: ISuccessionFilters = {
           departments: [existingDepartment],
-          datePeriod: '12_months'
+          datePeriod: '12_months',
         };
 
         const successions = await successionRepository.findAll(filters);
         const count = await successionRepository.count(filters);
 
         expect(successions.length).toBe(count);
-        successions.forEach(succession => {
+        successions.forEach((succession) => {
           expect(succession.department).toBe(existingDepartment);
         });
       });
@@ -307,10 +323,13 @@ describe('DrizzleSuccessionRepository Integration Tests', () => {
       it('should apply pagination without filters', async () => {
         const paginationFilters: PaginationFilters = {
           limit: 2,
-          offset: 1
+          offset: 1,
         };
 
-        const successions = await successionRepository.findAll(undefined, paginationFilters);
+        const successions = await successionRepository.findAll(
+          undefined,
+          paginationFilters,
+        );
 
         expect(successions).toHaveLength(2);
       });
@@ -325,14 +344,17 @@ describe('DrizzleSuccessionRepository Integration Tests', () => {
         }
 
         const filters: ISuccessionFilters = {
-          departments: [existingDepartment]
+          departments: [existingDepartment],
         };
         const paginationFilters: PaginationFilters = {
           limit: 1,
-          offset: 0
+          offset: 0,
         };
 
-        const successions = await successionRepository.findAll(filters, paginationFilters);
+        const successions = await successionRepository.findAll(
+          filters,
+          paginationFilters,
+        );
 
         expect(successions).toHaveLength(1);
         expect(successions[0]?.department).toBe(existingDepartment);
@@ -347,8 +369,8 @@ describe('DrizzleSuccessionRepository Integration Tests', () => {
         expect(successions).toBeInstanceOf(Array);
         if (successions.length > 1) {
           for (let i = 1; i < successions.length; i++) {
-            const current = new Date(successions[i]!.createdAt);
-            const previous = new Date(successions[i-1]!.createdAt);
+            const current = new Date(successions[i].createdAt);
+            const previous = new Date(successions[i - 1].createdAt);
             expect(current.getTime()).toBeLessThanOrEqual(previous.getTime());
           }
         }
@@ -357,7 +379,7 @@ describe('DrizzleSuccessionRepository Integration Tests', () => {
       it('should sort by specified field ascending', async () => {
         const filters: ISuccessionFilters = {
           sortBy: 'label',
-          sortOrder: 'asc'
+          sortOrder: 'asc',
         };
 
         const successions = await successionRepository.findAll(filters);
@@ -367,7 +389,7 @@ describe('DrizzleSuccessionRepository Integration Tests', () => {
         if (successions.length > 1) {
           for (let i = 1; i < successions.length; i++) {
             const current = successions[i]?.label || '';
-            const previous = successions[i-1]?.label || '';
+            const previous = successions[i - 1]?.label || '';
             expect(current.localeCompare(previous)).toBeGreaterThanOrEqual(0);
           }
         }
@@ -376,7 +398,7 @@ describe('DrizzleSuccessionRepository Integration Tests', () => {
       it('should sort by specified field descending', async () => {
         const filters: ISuccessionFilters = {
           sortBy: 'label',
-          sortOrder: 'desc'
+          sortOrder: 'desc',
         };
 
         const successions = await successionRepository.findAll(filters);
@@ -386,7 +408,7 @@ describe('DrizzleSuccessionRepository Integration Tests', () => {
         if (successions.length > 1) {
           for (let i = 1; i < successions.length; i++) {
             const current = successions[i]?.label || '';
-            const previous = successions[i-1]?.label || '';
+            const previous = successions[i - 1]?.label || '';
             expect(current.localeCompare(previous)).toBeLessThanOrEqual(0);
           }
         }

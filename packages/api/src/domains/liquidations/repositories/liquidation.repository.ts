@@ -26,12 +26,16 @@ export class DrizzleLiquidationRepository extends LiquidationRepository {
 
     // Filter by departments (support multiple departments)
     if (filters.departments && filters.departments.length > 0) {
-      conditions.push(inArray(opportunityLiquidations.department, filters.departments));
+      conditions.push(
+        inArray(opportunityLiquidations.department, filters.departments),
+      );
     }
 
     // Filter by zipCodes (support multiple zip codes)
     if (filters.zipCodes && filters.zipCodes.length > 0) {
-      conditions.push(inArray(opportunityLiquidations.zipCode, filters.zipCodes));
+      conditions.push(
+        inArray(opportunityLiquidations.zipCode, filters.zipCodes),
+      );
     }
 
     if (filters.datePeriod) {
@@ -39,7 +43,7 @@ export class DrizzleLiquidationRepository extends LiquidationRepository {
       conditions.push(
         gte(
           opportunityLiquidations.opportunityDate,
-          dateThreshold.toISOString().split("T")[0] ?? "",
+          dateThreshold.toISOString().split('T')[0] ?? '',
         ),
       );
     }
@@ -59,16 +63,18 @@ export class DrizzleLiquidationRepository extends LiquidationRepository {
     return conditions;
   }
 
-  async findAll(filters?: ILiquidationFilters, paginationFilters?: PaginationFilters): Promise<Liquidation[]> {
+  async findAll(
+    filters?: ILiquidationFilters,
+    paginationFilters?: PaginationFilters,
+  ): Promise<Liquidation[]> {
     const conditions = this.buildWhereClause(filters);
 
-    let query = this.db
-      .select()
-      .from(opportunityLiquidations)
-      .$dynamic();
+    let query = this.db.select().from(opportunityLiquidations).$dynamic();
 
     if (paginationFilters) {
-      query = query.limit(paginationFilters.limit).offset(paginationFilters.offset);
+      query = query
+        .limit(paginationFilters.limit)
+        .offset(paginationFilters.offset);
     }
 
     if (conditions.length > 0) {
@@ -76,10 +82,18 @@ export class DrizzleLiquidationRepository extends LiquidationRepository {
     }
 
     // Apply sorting
-    if (filters?.sortBy && opportunityLiquidations[filters.sortBy as keyof typeof opportunityLiquidations]) {
-      const column = opportunityLiquidations[filters.sortBy as keyof typeof opportunityLiquidations];
+    if (
+      filters?.sortBy &&
+      opportunityLiquidations[
+        filters.sortBy as keyof typeof opportunityLiquidations
+      ]
+    ) {
+      const column =
+        opportunityLiquidations[
+          filters.sortBy as keyof typeof opportunityLiquidations
+        ];
       query = query.orderBy(
-        filters.sortOrder === "desc" ? sql`${column} DESC` : sql`${column} ASC`,
+        filters.sortOrder === 'desc' ? sql`${column} DESC` : sql`${column} ASC`,
       );
     } else {
       // Default sorting by creation date
@@ -100,7 +114,9 @@ export class DrizzleLiquidationRepository extends LiquidationRepository {
     return result[0] ? this.mapLiquidation(result[0]) : null;
   }
 
-  private mapLiquidation(liquidation: typeof opportunityLiquidations.$inferSelect): Liquidation {
+  private mapLiquidation(
+    liquidation: typeof opportunityLiquidations.$inferSelect,
+  ): Liquidation {
     return {
       ...liquidation,
       companyContact: liquidation.companyContact ?? undefined,

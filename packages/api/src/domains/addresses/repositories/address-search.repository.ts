@@ -1,8 +1,17 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { and, desc, eq, gte, ilike, inArray, lte, SQL } from 'drizzle-orm';
 import type { DomainDbType } from '~/types/db';
-import { energyDiagnostics, auctionEnergyDiagnosticLinks, listingEnergyDiagnosticLinks } from '@linkinvests/db';
-import { MAX_NUMBER_OF_RESULTS, AddressSearchRepository, type DiagnosticLinkInput, type DiagnosticLink } from '../lib.types';
+import {
+  energyDiagnostics,
+  auctionEnergyDiagnosticLinks,
+  listingEnergyDiagnosticLinks,
+} from '@linkinvests/db';
+import {
+  MAX_NUMBER_OF_RESULTS,
+  AddressSearchRepository,
+  type DiagnosticLinkInput,
+  type DiagnosticLink,
+} from '../lib.types';
 import type { DiagnosticQueryInput } from '../lib.types';
 import type { EnergyDiagnostic } from '@linkinvests/shared';
 import { DATABASE_TOKEN } from '~/common/database';
@@ -30,13 +39,13 @@ export class DrizzleAddressSearchRepository extends AddressSearchRepository {
     return conditions;
   }
 
-  async findAllForAddressSearch(input: DiagnosticQueryInput): Promise<EnergyDiagnostic[]> {
+  async findAllForAddressSearch(
+    input: DiagnosticQueryInput,
+  ): Promise<EnergyDiagnostic[]> {
     const query = this.db
       .select()
       .from(energyDiagnostics)
-      .where(and(
-        ...this.getWhereClauseForAddressSearch(input)
-      ))
+      .where(and(...this.getWhereClauseForAddressSearch(input)))
       .limit(MAX_NUMBER_OF_RESULTS);
     const results = await query;
     return results;
@@ -46,43 +55,55 @@ export class DrizzleAddressSearchRepository extends AddressSearchRepository {
     const result = await this.db
       .select()
       .from(energyDiagnostics)
-      .where(and(
-        eq(energyDiagnostics.id, id),
-        // Even when fetching by ID, maintain F/G filter as per requirement
-        inArray(energyDiagnostics.energyClass, ['F', 'G'])
-      ))
+      .where(
+        and(
+          eq(energyDiagnostics.id, id),
+          // Even when fetching by ID, maintain F/G filter as per requirement
+          inArray(energyDiagnostics.energyClass, ['F', 'G']),
+        ),
+      )
       .limit(1);
 
     return result[0] ?? null;
   }
 
-  async saveAuctionDiagnosticLinks(links: DiagnosticLinkInput[]): Promise<void> {
+  async saveAuctionDiagnosticLinks(
+    links: DiagnosticLinkInput[],
+  ): Promise<void> {
     if (links.length === 0) return;
 
     await this.db
       .insert(auctionEnergyDiagnosticLinks)
-      .values(links.map(link => ({
-        auctionId: link.opportunityId,
-        energyDiagnosticId: link.energyDiagnosticId,
-        matchScore: link.matchScore,
-      })))
+      .values(
+        links.map((link) => ({
+          auctionId: link.opportunityId,
+          energyDiagnosticId: link.energyDiagnosticId,
+          matchScore: link.matchScore,
+        })),
+      )
       .onConflictDoNothing();
   }
 
-  async saveListingDiagnosticLinks(links: DiagnosticLinkInput[]): Promise<void> {
+  async saveListingDiagnosticLinks(
+    links: DiagnosticLinkInput[],
+  ): Promise<void> {
     if (links.length === 0) return;
 
     await this.db
       .insert(listingEnergyDiagnosticLinks)
-      .values(links.map(link => ({
-        listingId: link.opportunityId,
-        energyDiagnosticId: link.energyDiagnosticId,
-        matchScore: link.matchScore,
-      })))
+      .values(
+        links.map((link) => ({
+          listingId: link.opportunityId,
+          energyDiagnosticId: link.energyDiagnosticId,
+          matchScore: link.matchScore,
+        })),
+      )
       .onConflictDoNothing();
   }
 
-  async getAuctionDiagnosticLinks(auctionId: string): Promise<DiagnosticLink[]> {
+  async getAuctionDiagnosticLinks(
+    auctionId: string,
+  ): Promise<DiagnosticLink[]> {
     const results = await this.db
       .select({
         id: auctionEnergyDiagnosticLinks.id,
@@ -99,14 +120,22 @@ export class DrizzleAddressSearchRepository extends AddressSearchRepository {
         },
       })
       .from(auctionEnergyDiagnosticLinks)
-      .innerJoin(energyDiagnostics, eq(auctionEnergyDiagnosticLinks.energyDiagnosticId, energyDiagnostics.id))
+      .innerJoin(
+        energyDiagnostics,
+        eq(
+          auctionEnergyDiagnosticLinks.energyDiagnosticId,
+          energyDiagnostics.id,
+        ),
+      )
       .where(eq(auctionEnergyDiagnosticLinks.auctionId, auctionId))
       .orderBy(desc(auctionEnergyDiagnosticLinks.matchScore));
 
     return results;
   }
 
-  async getListingDiagnosticLinks(listingId: string): Promise<DiagnosticLink[]> {
+  async getListingDiagnosticLinks(
+    listingId: string,
+  ): Promise<DiagnosticLink[]> {
     const results = await this.db
       .select({
         id: listingEnergyDiagnosticLinks.id,
@@ -123,7 +152,13 @@ export class DrizzleAddressSearchRepository extends AddressSearchRepository {
         },
       })
       .from(listingEnergyDiagnosticLinks)
-      .innerJoin(energyDiagnostics, eq(listingEnergyDiagnosticLinks.energyDiagnosticId, energyDiagnostics.id))
+      .innerJoin(
+        energyDiagnostics,
+        eq(
+          listingEnergyDiagnosticLinks.energyDiagnosticId,
+          energyDiagnostics.id,
+        ),
+      )
       .where(eq(listingEnergyDiagnosticLinks.listingId, listingId))
       .orderBy(desc(listingEnergyDiagnosticLinks.matchScore));
 

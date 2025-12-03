@@ -34,13 +34,23 @@ export type DiagnosticLink = {
 };
 
 export abstract class AddressSearchRepository {
-  abstract findAllForAddressSearch(input: DiagnosticQueryInput): Promise<EnergyDiagnostic[]>;
+  abstract findAllForAddressSearch(
+    input: DiagnosticQueryInput,
+  ): Promise<EnergyDiagnostic[]>;
   abstract findById(id: string): Promise<EnergyDiagnostic | null>;
 }
 
 export abstract class AddressLinksRepository {
-  abstract saveAuctionDiagnosticLinks(links: DiagnosticLinkInput[]): Promise<void>;
-  abstract saveListingDiagnosticLinks(links: DiagnosticLinkInput[]): Promise<void>;
-  abstract getAuctionDiagnosticLinks(auctionId: string): Promise<DiagnosticLink[]>;
-  abstract getListingDiagnosticLinks(listingId: string): Promise<DiagnosticLink[]>;
+  abstract saveAuctionDiagnosticLinks(
+    links: DiagnosticLinkInput[],
+  ): Promise<void>;
+  abstract saveListingDiagnosticLinks(
+    links: DiagnosticLinkInput[],
+  ): Promise<void>;
+  abstract getAuctionDiagnosticLinks(
+    auctionId: string,
+  ): Promise<DiagnosticLink[]>;
+  abstract getListingDiagnosticLinks(
+    listingId: string,
+  ): Promise<DiagnosticLink[]>;
 }

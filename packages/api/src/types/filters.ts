@@ -1,6 +1,21 @@
-import type { EnergyClass, PropertyType, AuctionOccupationStatus } from '@linkinvests/shared';
+import type {
+  EnergyClass,
+  PropertyType,
+  AuctionOccupationStatus,
+} from '@linkinvests/shared';
 
-export type DatePeriod = '7d' | '30d' | '90d' | '6m' | '1y' | 'all' | 'last_month' | 'last_3_months' | '6_months' | '9_months' | '12_months';
+export type DatePeriod =
+  | '7d'
+  | '30d'
+  | '90d'
+  | '6m'
+  | '1y'
+  | 'all'
+  | 'last_month'
+  | 'last_3_months'
+  | '6_months'
+  | '9_months'
+  | '12_months';
 
 export interface MapBounds {
   north: number;

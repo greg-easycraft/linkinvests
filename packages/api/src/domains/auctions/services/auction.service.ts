@@ -18,14 +18,18 @@ export class AuctionService {
     private readonly exportService: ExportService,
   ) {}
 
-
-  async getAuctionsData(filters?: IAuctionFilters): Promise<OpportunitiesDataQueryResult<Auction>> {
+  async getAuctionsData(
+    filters?: IAuctionFilters,
+  ): Promise<OpportunitiesDataQueryResult<Auction>> {
     const pageSize = filters?.pageSize ?? DEFAULT_PAGE_SIZE;
     const page = filters?.page ?? 1;
 
     const offset = (page - 1) * pageSize;
 
-    const opportunities = await this.auctionRepository.findAll(filters, { limit: pageSize, offset });
+    const opportunities = await this.auctionRepository.findAll(filters, {
+      limit: pageSize,
+      offset,
+    });
 
     return {
       opportunities,
@@ -38,33 +42,38 @@ export class AuctionService {
     return await this.auctionRepository.count(filters);
   }
 
-
   async getAuctionById(id: string): Promise<Auction | null> {
     return await this.auctionRepository.findById(id);
   }
 
-
-  async exportList(filters: IAuctionFilters, format: ExportFormat): Promise<Blob> {
+  async exportList(
+    filters: IAuctionFilters,
+    format: ExportFormat,
+  ): Promise<Blob> {
     // Check if the total count exceeds the export limit
     const total = await this.auctionRepository.count(filters);
 
     if (total > this.EXPORT_LIMIT) {
-      throw new Error(`Export limit exceeded. Found ${total} items, maximum allowed is ${this.EXPORT_LIMIT}. Please refine your filters.`);
+      throw new Error(
+        `Export limit exceeded. Found ${total} items, maximum allowed is ${this.EXPORT_LIMIT}. Please refine your filters.`,
+      );
     }
 
     // Fetch all matching auctions
-    const auctions = (await this.auctionRepository.findAll(filters)) as unknown as Record<string, unknown>[];
+    const auctions = (await this.auctionRepository.findAll(
+      filters,
+    )) as unknown as Record<string, unknown>[];
 
     // Get French headers for auctions
     const customHeaders = getOpportunityHeaders(OpportunityType.AUCTION);
 
     // Export data based on format
-    if (format === "csv") {
+    if (format === 'csv') {
       return this.exportService.exportToCSV(auctions, customHeaders);
     }
-    if (format === "xlsx") {
+    if (format === 'xlsx') {
       return this.exportService.exportToXLSX(auctions, customHeaders);
     }
-      throw new Error(`Unsupported export format: ${format}`);
+    throw new Error(`Unsupported export format: ${format}`);
   }
 }

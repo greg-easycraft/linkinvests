@@ -14,11 +14,11 @@ describe('DrizzleAddressSearchRepository Integration Tests', () => {
       zipCode: '75001',
       energyClass: EnergyClass.F,
       squareFootageMin: 45,
-      squareFootageMax: 55
+      squareFootageMax: 55,
     });
 
     expect(results).toBeInstanceOf(Array);
-    results.forEach(result => {
+    results.forEach((result) => {
       expect(result).toHaveProperty('energyClass', 'F');
       expect(result).toHaveProperty('zipCode', '75001');
     });
@@ -29,10 +29,10 @@ describe('DrizzleAddressSearchRepository Integration Tests', () => {
       zipCode: '75001',
       energyClass: EnergyClass.G,
       squareFootageMin: 40,
-      squareFootageMax: 60
+      squareFootageMax: 60,
     });
 
-    results.forEach(result => {
+    results.forEach((result) => {
       expect(result.energyClass).toBe('G');
     });
   });
@@ -42,10 +42,10 @@ describe('DrizzleAddressSearchRepository Integration Tests', () => {
       zipCode: '75001',
       energyClass: EnergyClass.F,
       squareFootageMin: 45,
-      squareFootageMax: 50
+      squareFootageMax: 50,
     });
 
-    results.forEach(result => {
+    results.forEach((result) => {
       if (result.squareFootage) {
         expect(result.squareFootage).toBeGreaterThanOrEqual(45);
         expect(result.squareFootage).toBeLessThanOrEqual(50);

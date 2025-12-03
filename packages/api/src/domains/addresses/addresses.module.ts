@@ -16,6 +16,10 @@ import { AddressSearchService } from './services/address-search.service';
     },
     AddressSearchService,
   ],
-  exports: [AddressSearchService, AddressSearchRepository, AddressLinksRepository],
+  exports: [
+    AddressSearchService,
+    AddressSearchRepository,
+    AddressLinksRepository,
+  ],
 })
 export class AddressesModule {}
