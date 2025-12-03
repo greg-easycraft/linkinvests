@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { OpportunityHeader } from './Header'
 import { OpportunitiesList } from './OpportunitiesList'
 import { OpportunitiesMap } from './OpportunitiesMap'
+import { OpportunityDetailsModal } from '../OpportunityDetailsModal'
 import type {
   BaseOpportunity,
   OpportunitiesDataQueryResult,
@@ -37,15 +38,21 @@ export function OpportunitiesPage<T extends BaseOpportunity>({
   const showSkeleton = useDelayedSkeleton(isLoading)
   const [selectedOpportunity, setSelectedOpportunity] =
     useState<Opportunity | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const [isFiltersSidebarOpen, setIsFiltersSidebarOpen] = useState(true)
 
   const handleSelectOpportunity = useCallback(
     (opportunity: Opportunity): void => {
       setSelectedOpportunity(opportunity)
-      // Could open a modal here
+      setIsModalOpen(true)
     },
     [],
   )
+
+  const handleCloseModal = useCallback((): void => {
+    setIsModalOpen(false)
+    setSelectedOpportunity(null)
+  }, [])
 
   const handleToggleSidebar = useCallback((): void => {
     setIsFiltersSidebarOpen((prev) => !prev)
@@ -118,6 +125,14 @@ export function OpportunitiesPage<T extends BaseOpportunity>({
           </div>
         </div>
       </div>
+
+      {/* Details Modal */}
+      <OpportunityDetailsModal
+        opportunity={selectedOpportunity}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        type={opportunityType}
+      />
     </div>
   )
 }
