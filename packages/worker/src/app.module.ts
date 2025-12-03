@@ -12,12 +12,14 @@ import { ListingsModule } from './domains/listings';
 import { config, ConfigModule } from './config';
 import { SCRAPING_QUEUE } from '@linkinvests/shared';
 import { ScrapingProcessor } from './scraping.processor';
+import { S3Module } from './storage';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     ScheduleModule.forRoot(),
     DatabaseModule.forRoot(config.DATABASE_URL),
+    S3Module,
     BullModule.forRoot({
       connection: {
         url: config.REDIS_URL,
