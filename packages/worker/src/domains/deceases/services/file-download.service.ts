@@ -91,7 +91,7 @@ export class FileDownloadService {
           method: 'GET',
           headers: {
             'User-Agent':
-              'Mozilla/5.0 (compatible; LinkinvestBot/1.0; +https://linkinvest.fr)',
+              'Mozilla/5.0 (compatible; LinkInvestsBot/1.0; +https://linkinvests.com)',
             Accept: 'application/zip, application/octet-stream, */*',
           },
           signal: AbortSignal.timeout(this.downloadTimeout),
@@ -280,7 +280,7 @@ export class FileDownloadService {
   private generateTempPath(extension: string): string {
     const timestamp = Date.now();
     const random = Math.random().toString(36).substring(2);
-    const fileName = `linkinvest-${timestamp}-${random}.${extension}`;
+    const fileName = `linkinvests-${timestamp}-${random}.${extension}`;
     return join(tmpdir(), fileName);
   }
 

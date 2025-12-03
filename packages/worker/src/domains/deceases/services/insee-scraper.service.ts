@@ -226,7 +226,7 @@ export class InseeScraperService {
           method: 'GET',
           headers: {
             'User-Agent':
-              'Mozilla/5.0 (compatible; LinkinvestBot/1.0; +https://linkinvest.fr)',
+              'Mozilla/5.0 (compatible; LinkInvestsBot/1.0; +https://linkinvests.com)',
             Accept:
               'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
             'Accept-Language': 'fr,en;q=0.9',

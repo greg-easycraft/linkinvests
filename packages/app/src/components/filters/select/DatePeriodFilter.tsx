@@ -21,16 +21,16 @@ export function DatePeriodFilter({
     <div>
       <label className="text-sm font-medium mb-2 block">Période</label>
       <Select
-        value={value ?? ''}
+        value={value ?? 'undefined'}
         onValueChange={(v) =>
-          onValueChange(v === '' ? undefined : (v as DatePeriod))
+          onValueChange(v === 'undefined' ? undefined : (v as DatePeriod))
         }
       >
         <SelectTrigger>
-          <SelectValue placeholder="Toutes les périodes" />
+          <SelectValue placeholder="Toutes les périodes" defaultValue={value ?? 'undefined'} />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="">Toutes les périodes</SelectItem>
+          <SelectItem value="undefined">Toutes les périodes</SelectItem>
           {DATE_PERIOD_OPTIONS.map((option) => (
             <SelectItem key={option.value} value={option.value}>
               {option.label}

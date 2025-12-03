@@ -53,7 +53,7 @@ function AppHeader() {
     <header className="border-b bg-background">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <Link to="/" className="font-bold text-xl">
-          Linkinvest
+          LinkInvests
         </Link>
         <nav className="flex items-center gap-6">
           <Link
@@ -99,7 +99,7 @@ function AppHeader() {
 function HomePage() {
   return (
     <div className="container mx-auto px-4 py-16 text-center">
-      <h1 className="text-4xl font-bold mb-4">Bienvenue sur Linkinvest</h1>
+      <h1 className="text-4xl font-bold mb-4">Bienvenue sur LinkInvests</h1>
       <p className="text-xl text-muted-foreground mb-8">
         Découvrez les meilleures opportunités immobilières
       </p>
