@@ -4,10 +4,7 @@
 import { DrizzleEnergyDiagnosticsRepository } from './energy-diagnostics.repository';
 import { useTestDb } from '~/test-utils/use-test-db';
 import { EnergyClass, OpportunityType } from '@linkinvests/shared';
-import type {
-  IEnergyDiagnosticFilters,
-  PaginationFilters,
-} from '~/types';
+import type { IEnergyDiagnosticFilters, PaginationFilters } from '~/types';
 
 describe('DrizzleEnergyDiagnosticsRepository Integration Tests', () => {
   const db = useTestDb();

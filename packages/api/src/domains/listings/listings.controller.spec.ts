@@ -2,9 +2,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { mockClass } from '~/test-utils/mock-class';
-import { ListingService } from './services/listing.service';
+import {
+  ListingService,
+  ListingServiceErrorReason,
+} from './services/listing.service';
 import { ListingsController } from './listings.controller';
 import { type Listing, EnergyClass, PropertyType } from '@linkinvests/shared';
+import { succeed, refuse } from '~/common/utils/operation-result';
 
 describe('ListingsController', () => {
   let app: INestApplication;
@@ -57,7 +61,7 @@ describe('ListingsController', () => {
   describe('POST /listings/search', () => {
     it('should return 200 with paginated data when service succeeds', async () => {
       mockListingService.getListingsData.mockResolvedValue(
-        mockPaginatedResponse,
+        succeed(mockPaginatedResponse),
       );
 
       const response = await request(app.getHttpServer())
@@ -80,7 +84,7 @@ describe('ListingsController', () => {
 
     it('should pass filters to service correctly', async () => {
       mockListingService.getListingsData.mockResolvedValue(
-        mockPaginatedResponse,
+        succeed(mockPaginatedResponse),
       );
 
       const filters = {
@@ -96,11 +100,22 @@ describe('ListingsController', () => {
 
       expect(mockListingService.getListingsData).toHaveBeenCalledWith(filters);
     });
+
+    it('should return 500 when service returns error', async () => {
+      mockListingService.getListingsData.mockResolvedValue(
+        refuse(ListingServiceErrorReason.UNKNOWN_ERROR),
+      );
+
+      await request(app.getHttpServer())
+        .post('/listings/search')
+        .send({})
+        .expect(500);
+    });
   });
 
   describe('POST /listings/count', () => {
     it('should return 200 with count object', async () => {
-      mockListingService.getListingsCount.mockResolvedValue(42);
+      mockListingService.getListingsCount.mockResolvedValue(succeed(42));
 
       const response = await request(app.getHttpServer())
         .post('/listings/count')
@@ -112,7 +127,7 @@ describe('ListingsController', () => {
     });
 
     it('should pass filters to service correctly', async () => {
-      mockListingService.getListingsCount.mockResolvedValue(10);
+      mockListingService.getListingsCount.mockResolvedValue(succeed(10));
 
       const filters = {
         departments: ['75'],
@@ -125,11 +140,22 @@ describe('ListingsController', () => {
 
       expect(mockListingService.getListingsCount).toHaveBeenCalledWith(filters);
     });
+
+    it('should return 500 when service returns error', async () => {
+      mockListingService.getListingsCount.mockResolvedValue(
+        refuse(ListingServiceErrorReason.UNKNOWN_ERROR),
+      );
+
+      await request(app.getHttpServer())
+        .post('/listings/count')
+        .send({})
+        .expect(500);
+    });
   });
 
   describe('GET /listings/:id', () => {
     it('should return 200 with listing when found', async () => {
-      mockListingService.getListingById.mockResolvedValue(mockListing);
+      mockListingService.getListingById.mockResolvedValue(succeed(mockListing));
 
       const response = await request(app.getHttpServer())
         .get('/listings/listing-123')
@@ -146,7 +172,9 @@ describe('ListingsController', () => {
     });
 
     it('should return 404 when listing not found', async () => {
-      mockListingService.getListingById.mockResolvedValue(null);
+      mockListingService.getListingById.mockResolvedValue(
+        refuse(ListingServiceErrorReason.NOT_FOUND),
+      );
 
       await request(app.getHttpServer())
         .get('/listings/non-existent')
@@ -161,7 +189,9 @@ describe('ListingsController', () => {
   describe('GET /listings/sources', () => {
     it('should return 200 with sources array', async () => {
       const mockSources = ['leboncoin', 'seloger', 'bienici'];
-      mockListingService.getAvailableSources.mockResolvedValue(mockSources);
+      mockListingService.getAvailableSources.mockResolvedValue(
+        succeed(mockSources),
+      );
 
       const response = await request(app.getHttpServer())
         .get('/listings/sources')
@@ -170,12 +200,20 @@ describe('ListingsController', () => {
       expect(response.body).toEqual({ sources: mockSources });
       expect(mockListingService.getAvailableSources).toHaveBeenCalled();
     });
+
+    it('should return 500 when service returns error', async () => {
+      mockListingService.getAvailableSources.mockResolvedValue(
+        refuse(ListingServiceErrorReason.UNKNOWN_ERROR),
+      );
+
+      await request(app.getHttpServer()).get('/listings/sources').expect(500);
+    });
   });
 
   describe('POST /listings/export', () => {
     it('should return CSV file with correct headers', async () => {
       const mockBlob = new Blob(['id,label\n1,Test'], { type: 'text/csv' });
-      mockListingService.exportList.mockResolvedValue(mockBlob);
+      mockListingService.exportList.mockResolvedValue(succeed(mockBlob));
 
       const response = await request(app.getHttpServer())
         .post('/listings/export')
@@ -193,7 +231,7 @@ describe('ListingsController', () => {
       const mockBlob = new Blob(['xlsx data'], {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       });
-      mockListingService.exportList.mockResolvedValue(mockBlob);
+      mockListingService.exportList.mockResolvedValue(succeed(mockBlob));
 
       const response = await request(app.getHttpServer())
         .post('/listings/export')
@@ -211,7 +249,7 @@ describe('ListingsController', () => {
 
     it('should pass filters to service when provided', async () => {
       const mockBlob = new Blob(['data']);
-      mockListingService.exportList.mockResolvedValue(mockBlob);
+      mockListingService.exportList.mockResolvedValue(succeed(mockBlob));
 
       const filters = { departments: ['75'] };
 
@@ -230,6 +268,28 @@ describe('ListingsController', () => {
       await request(app.getHttpServer())
         .post('/listings/export')
         .send({ format: 'pdf' })
+        .expect(400);
+    });
+
+    it('should return 400 when export limit exceeded', async () => {
+      mockListingService.exportList.mockResolvedValue(
+        refuse(ListingServiceErrorReason.EXPORT_LIMIT_EXCEEDED),
+      );
+
+      await request(app.getHttpServer())
+        .post('/listings/export')
+        .send({ format: 'csv' })
+        .expect(400);
+    });
+
+    it('should return 400 for unsupported format from service', async () => {
+      mockListingService.exportList.mockResolvedValue(
+        refuse(ListingServiceErrorReason.UNSUPPORTED_FORMAT),
+      );
+
+      await request(app.getHttpServer())
+        .post('/listings/export')
+        .send({ format: 'csv' })
         .expect(400);
     });
   });

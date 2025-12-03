@@ -5,19 +5,24 @@ import {
   Body,
   Param,
   Res,
-  HttpStatus,
-  HttpException,
   StreamableFile,
+  NotFoundException,
+  BadRequestException,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { Response } from 'express';
-import { EnergyDiagnosticsService } from './services/energy-diagnostics.service';
+import {
+  EnergyDiagnosticsService,
+  EnergyDiagnosticsServiceErrorReason,
+} from './services/energy-diagnostics.service';
 import {
   energyDiagnosticFiltersSchema,
   energyDiagnosticExportRequestSchema,
   type EnergyDiagnosticFilters,
   type EnergyDiagnosticExportRequest,
 } from '@linkinvests/shared';
+import { isRefusal } from '~/common/utils/operation-result';
 
 @Controller('energy-diagnostics')
 export class EnergyDiagnosticsController {
@@ -30,7 +35,12 @@ export class EnergyDiagnosticsController {
     @Body(new ZodValidationPipe(energyDiagnosticFiltersSchema))
     filters: EnergyDiagnosticFilters,
   ) {
-    return this.energyDiagnosticsService.getEnergyDiagnosticsData(filters);
+    const result =
+      await this.energyDiagnosticsService.getEnergyDiagnosticsData(filters);
+    if (isRefusal(result)) {
+      throw new InternalServerErrorException();
+    }
+    return result.data;
   }
 
   @Post('count')
@@ -38,37 +48,44 @@ export class EnergyDiagnosticsController {
     @Body(new ZodValidationPipe(energyDiagnosticFiltersSchema))
     filters: EnergyDiagnosticFilters,
   ) {
-    const count =
+    const result =
       await this.energyDiagnosticsService.getEnergyDiagnosticsCount(filters);
-    return { count };
+    if (isRefusal(result)) {
+      throw new InternalServerErrorException();
+    }
+    return { count: result.data };
   }
 
   @Get(':id')
   async getById(@Param('id') id: string) {
-    const diagnostic =
+    const result =
       await this.energyDiagnosticsService.getEnergyDiagnosticById(id);
-    if (!diagnostic) {
-      throw new HttpException(
-        'Energy diagnostic not found',
-        HttpStatus.NOT_FOUND,
-      );
+    if (isRefusal(result)) {
+      switch (result.reason) {
+        case EnergyDiagnosticsServiceErrorReason.NOT_FOUND:
+          throw new NotFoundException('Energy diagnostic not found');
+        default:
+          throw new InternalServerErrorException();
+      }
     }
-    return diagnostic;
+    return result.data;
   }
 
   @Get('external/:externalId')
   async getByExternalId(@Param('externalId') externalId: string) {
-    const diagnostic =
+    const result =
       await this.energyDiagnosticsService.getEnergyDiagnosticByExternalId(
         externalId,
       );
-    if (!diagnostic) {
-      throw new HttpException(
-        'Energy diagnostic not found',
-        HttpStatus.NOT_FOUND,
-      );
+    if (isRefusal(result)) {
+      switch (result.reason) {
+        case EnergyDiagnosticsServiceErrorReason.NOT_FOUND:
+          throw new NotFoundException('Energy diagnostic not found');
+        default:
+          throw new InternalServerErrorException();
+      }
     }
-    return diagnostic;
+    return result.data;
   }
 
   @Post('export')
@@ -77,10 +94,23 @@ export class EnergyDiagnosticsController {
     body: EnergyDiagnosticExportRequest,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const blob = await this.energyDiagnosticsService.exportList(
+    const result = await this.energyDiagnosticsService.exportList(
       body.filters ?? {},
       body.format,
     );
+
+    if (isRefusal(result)) {
+      switch (result.reason) {
+        case EnergyDiagnosticsServiceErrorReason.EXPORT_LIMIT_EXCEEDED:
+          throw new BadRequestException(
+            'Export limit exceeded. Please refine your filters.',
+          );
+        case EnergyDiagnosticsServiceErrorReason.UNSUPPORTED_FORMAT:
+          throw new BadRequestException('Unsupported export format');
+        default:
+          throw new InternalServerErrorException();
+      }
+    }
 
     const contentType =
       body.format === 'csv'
@@ -94,7 +124,7 @@ export class EnergyDiagnosticsController {
       'Content-Disposition': `attachment; filename="energy-diagnostics.${extension}"`,
     });
 
-    const buffer = Buffer.from(await blob.arrayBuffer());
+    const buffer = Buffer.from(await result.data.arrayBuffer());
     return new StreamableFile(buffer);
   }
 }

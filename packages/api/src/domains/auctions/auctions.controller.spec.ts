@@ -2,7 +2,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { mockClass } from '~/test-utils/mock-class';
-import { AuctionService } from './services/auction.service';
+import {
+  AuctionService,
+  AuctionServiceErrorReason,
+} from './services/auction.service';
 import { AuctionsController } from './auctions.controller';
 import {
   type Auction,
@@ -10,6 +13,7 @@ import {
   AuctionSource,
   AuctionOccupationStatus,
 } from '@linkinvests/shared';
+import { succeed, refuse } from '~/common/utils/operation-result';
 
 describe('AuctionsController', () => {
   let app: INestApplication;
@@ -58,7 +62,7 @@ describe('AuctionsController', () => {
   describe('POST /auctions/search', () => {
     it('should return 200 with paginated data when service succeeds', async () => {
       mockAuctionService.getAuctionsData.mockResolvedValue(
-        mockPaginatedResponse,
+        succeed(mockPaginatedResponse),
       );
 
       const response = await request(app.getHttpServer())
@@ -81,7 +85,7 @@ describe('AuctionsController', () => {
 
     it('should pass filters to service correctly', async () => {
       mockAuctionService.getAuctionsData.mockResolvedValue(
-        mockPaginatedResponse,
+        succeed(mockPaginatedResponse),
       );
 
       const filters = {
@@ -97,11 +101,22 @@ describe('AuctionsController', () => {
 
       expect(mockAuctionService.getAuctionsData).toHaveBeenCalledWith(filters);
     });
+
+    it('should return 500 when service returns error', async () => {
+      mockAuctionService.getAuctionsData.mockResolvedValue(
+        refuse(AuctionServiceErrorReason.UNKNOWN_ERROR),
+      );
+
+      await request(app.getHttpServer())
+        .post('/auctions/search')
+        .send({})
+        .expect(500);
+    });
   });
 
   describe('POST /auctions/count', () => {
     it('should return 200 with count object', async () => {
-      mockAuctionService.getAuctionsCount.mockResolvedValue(42);
+      mockAuctionService.getAuctionsCount.mockResolvedValue(succeed(42));
 
       const response = await request(app.getHttpServer())
         .post('/auctions/count')
@@ -113,7 +128,7 @@ describe('AuctionsController', () => {
     });
 
     it('should pass filters to service correctly', async () => {
-      mockAuctionService.getAuctionsCount.mockResolvedValue(10);
+      mockAuctionService.getAuctionsCount.mockResolvedValue(succeed(10));
 
       const filters = {
         departments: ['75'],
@@ -126,11 +141,22 @@ describe('AuctionsController', () => {
 
       expect(mockAuctionService.getAuctionsCount).toHaveBeenCalledWith(filters);
     });
+
+    it('should return 500 when service returns error', async () => {
+      mockAuctionService.getAuctionsCount.mockResolvedValue(
+        refuse(AuctionServiceErrorReason.UNKNOWN_ERROR),
+      );
+
+      await request(app.getHttpServer())
+        .post('/auctions/count')
+        .send({})
+        .expect(500);
+    });
   });
 
   describe('GET /auctions/:id', () => {
     it('should return 200 with auction when found', async () => {
-      mockAuctionService.getAuctionById.mockResolvedValue(mockAuction);
+      mockAuctionService.getAuctionById.mockResolvedValue(succeed(mockAuction));
 
       const response = await request(app.getHttpServer())
         .get('/auctions/auction-123')
@@ -147,7 +173,9 @@ describe('AuctionsController', () => {
     });
 
     it('should return 404 when auction not found', async () => {
-      mockAuctionService.getAuctionById.mockResolvedValue(null);
+      mockAuctionService.getAuctionById.mockResolvedValue(
+        refuse(AuctionServiceErrorReason.NOT_FOUND),
+      );
 
       await request(app.getHttpServer())
         .get('/auctions/non-existent')
@@ -162,7 +190,7 @@ describe('AuctionsController', () => {
   describe('POST /auctions/export', () => {
     it('should return CSV file with correct headers', async () => {
       const mockBlob = new Blob(['id,label\n1,Test'], { type: 'text/csv' });
-      mockAuctionService.exportList.mockResolvedValue(mockBlob);
+      mockAuctionService.exportList.mockResolvedValue(succeed(mockBlob));
 
       const response = await request(app.getHttpServer())
         .post('/auctions/export')
@@ -180,7 +208,7 @@ describe('AuctionsController', () => {
       const mockBlob = new Blob(['xlsx data'], {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       });
-      mockAuctionService.exportList.mockResolvedValue(mockBlob);
+      mockAuctionService.exportList.mockResolvedValue(succeed(mockBlob));
 
       const response = await request(app.getHttpServer())
         .post('/auctions/export')
@@ -198,7 +226,7 @@ describe('AuctionsController', () => {
 
     it('should pass filters to service when provided', async () => {
       const mockBlob = new Blob(['data']);
-      mockAuctionService.exportList.mockResolvedValue(mockBlob);
+      mockAuctionService.exportList.mockResolvedValue(succeed(mockBlob));
 
       const filters = { departments: ['75'] };
 
@@ -217,6 +245,28 @@ describe('AuctionsController', () => {
       await request(app.getHttpServer())
         .post('/auctions/export')
         .send({ format: 'pdf' })
+        .expect(400);
+    });
+
+    it('should return 400 when export limit exceeded', async () => {
+      mockAuctionService.exportList.mockResolvedValue(
+        refuse(AuctionServiceErrorReason.EXPORT_LIMIT_EXCEEDED),
+      );
+
+      await request(app.getHttpServer())
+        .post('/auctions/export')
+        .send({ format: 'csv' })
+        .expect(400);
+    });
+
+    it('should return 400 for unsupported format from service', async () => {
+      mockAuctionService.exportList.mockResolvedValue(
+        refuse(AuctionServiceErrorReason.UNSUPPORTED_FORMAT),
+      );
+
+      await request(app.getHttpServer())
+        .post('/auctions/export')
+        .send({ format: 'csv' })
         .expect(400);
     });
   });

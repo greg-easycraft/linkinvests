@@ -30,7 +30,9 @@ describe('export-headers.service', () => {
     });
 
     it('should return listing headers for REAL_ESTATE_LISTING type', () => {
-      const headers = getOpportunityHeaders(OpportunityType.REAL_ESTATE_LISTING);
+      const headers = getOpportunityHeaders(
+        OpportunityType.REAL_ESTATE_LISTING,
+      );
 
       expect(headers).toEqual({
         id: 'ID',
@@ -135,7 +137,9 @@ describe('export-headers.service', () => {
 
       it('should have consistent common headers across types', () => {
         const auction = getOpportunityHeaders(OpportunityType.AUCTION);
-        const listing = getOpportunityHeaders(OpportunityType.REAL_ESTATE_LISTING);
+        const listing = getOpportunityHeaders(
+          OpportunityType.REAL_ESTATE_LISTING,
+        );
         const succession = getOpportunityHeaders(OpportunityType.SUCCESSION);
         const liquidation = getOpportunityHeaders(OpportunityType.LIQUIDATION);
         const energySieve = getOpportunityHeaders(OpportunityType.ENERGY_SIEVE);
@@ -168,7 +172,9 @@ describe('export-headers.service', () => {
       });
 
       it('should include property details for listings', () => {
-        const headers = getOpportunityHeaders(OpportunityType.REAL_ESTATE_LISTING);
+        const headers = getOpportunityHeaders(
+          OpportunityType.REAL_ESTATE_LISTING,
+        );
 
         expect(headers.price).toBeDefined();
         expect(headers.rooms).toBeDefined();

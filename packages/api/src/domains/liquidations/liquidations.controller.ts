@@ -5,19 +5,24 @@ import {
   Body,
   Param,
   Res,
-  HttpStatus,
-  HttpException,
   StreamableFile,
+  NotFoundException,
+  BadRequestException,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { Response } from 'express';
-import { LiquidationService } from './services/liquidation.service';
+import {
+  LiquidationService,
+  LiquidationServiceErrorReason,
+} from './services/liquidation.service';
 import {
   liquidationFiltersSchema,
   liquidationExportRequestSchema,
   type LiquidationFilters,
   type LiquidationExportRequest,
 } from '@linkinvests/shared';
+import { isRefusal } from '~/common/utils/operation-result';
 
 @Controller('liquidations')
 export class LiquidationsController {
@@ -28,7 +33,11 @@ export class LiquidationsController {
     @Body(new ZodValidationPipe(liquidationFiltersSchema))
     filters: LiquidationFilters,
   ) {
-    return this.liquidationService.getLiquidationsData(filters);
+    const result = await this.liquidationService.getLiquidationsData(filters);
+    if (isRefusal(result)) {
+      throw new InternalServerErrorException();
+    }
+    return result.data;
   }
 
   @Post('count')
@@ -36,17 +45,25 @@ export class LiquidationsController {
     @Body(new ZodValidationPipe(liquidationFiltersSchema))
     filters: LiquidationFilters,
   ) {
-    const count = await this.liquidationService.getLiquidationsCount(filters);
-    return { count };
+    const result = await this.liquidationService.getLiquidationsCount(filters);
+    if (isRefusal(result)) {
+      throw new InternalServerErrorException();
+    }
+    return { count: result.data };
   }
 
   @Get(':id')
   async getById(@Param('id') id: string) {
-    const liquidation = await this.liquidationService.getLiquidationById(id);
-    if (!liquidation) {
-      throw new HttpException('Liquidation not found', HttpStatus.NOT_FOUND);
+    const result = await this.liquidationService.getLiquidationById(id);
+    if (isRefusal(result)) {
+      switch (result.reason) {
+        case LiquidationServiceErrorReason.NOT_FOUND:
+          throw new NotFoundException('Liquidation not found');
+        default:
+          throw new InternalServerErrorException();
+      }
     }
-    return liquidation;
+    return result.data;
   }
 
   @Post('export')
@@ -55,10 +72,23 @@ export class LiquidationsController {
     body: LiquidationExportRequest,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const blob = await this.liquidationService.exportList(
+    const result = await this.liquidationService.exportList(
       body.filters ?? {},
       body.format,
     );
+
+    if (isRefusal(result)) {
+      switch (result.reason) {
+        case LiquidationServiceErrorReason.EXPORT_LIMIT_EXCEEDED:
+          throw new BadRequestException(
+            'Export limit exceeded. Please refine your filters.',
+          );
+        case LiquidationServiceErrorReason.UNSUPPORTED_FORMAT:
+          throw new BadRequestException('Unsupported export format');
+        default:
+          throw new InternalServerErrorException();
+      }
+    }
 
     const contentType =
       body.format === 'csv'
@@ -72,7 +102,7 @@ export class LiquidationsController {
       'Content-Disposition': `attachment; filename="liquidations.${extension}"`,
     });
 
-    const buffer = Buffer.from(await blob.arrayBuffer());
+    const buffer = Buffer.from(await result.data.arrayBuffer());
     return new StreamableFile(buffer);
   }
 }

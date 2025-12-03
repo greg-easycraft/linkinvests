@@ -2,9 +2,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { mockClass } from '~/test-utils/mock-class';
-import { SuccessionService } from './services/succession.service';
+import {
+  SuccessionService,
+  SuccessionServiceErrorReason,
+} from './services/succession.service';
 import { SuccessionsController } from './successions.controller';
 import type { Succession } from '@linkinvests/shared';
+import { succeed, refuse } from '~/common/utils/operation-result';
 
 describe('SuccessionsController', () => {
   let app: INestApplication;
@@ -65,7 +69,7 @@ describe('SuccessionsController', () => {
   describe('POST /successions/search', () => {
     it('should return 200 with paginated data when service succeeds', async () => {
       mockSuccessionService.getSuccessionsData.mockResolvedValue(
-        mockPaginatedResponse,
+        succeed(mockPaginatedResponse),
       );
 
       const response = await request(app.getHttpServer())
@@ -88,7 +92,7 @@ describe('SuccessionsController', () => {
 
     it('should pass filters to service correctly', async () => {
       mockSuccessionService.getSuccessionsData.mockResolvedValue(
-        mockPaginatedResponse,
+        succeed(mockPaginatedResponse),
       );
 
       const filters = {
@@ -106,11 +110,22 @@ describe('SuccessionsController', () => {
         filters,
       );
     });
+
+    it('should return 500 when service returns error', async () => {
+      mockSuccessionService.getSuccessionsData.mockResolvedValue(
+        refuse(SuccessionServiceErrorReason.UNKNOWN_ERROR),
+      );
+
+      await request(app.getHttpServer())
+        .post('/successions/search')
+        .send({})
+        .expect(500);
+    });
   });
 
   describe('POST /successions/count', () => {
     it('should return 200 with count object', async () => {
-      mockSuccessionService.getSuccessionsCount.mockResolvedValue(42);
+      mockSuccessionService.getSuccessionsCount.mockResolvedValue(succeed(42));
 
       const response = await request(app.getHttpServer())
         .post('/successions/count')
@@ -122,7 +137,7 @@ describe('SuccessionsController', () => {
     });
 
     it('should pass filters to service correctly', async () => {
-      mockSuccessionService.getSuccessionsCount.mockResolvedValue(10);
+      mockSuccessionService.getSuccessionsCount.mockResolvedValue(succeed(10));
 
       const filters = {
         departments: ['75'],
@@ -137,11 +152,24 @@ describe('SuccessionsController', () => {
         filters,
       );
     });
+
+    it('should return 500 when service returns error', async () => {
+      mockSuccessionService.getSuccessionsCount.mockResolvedValue(
+        refuse(SuccessionServiceErrorReason.UNKNOWN_ERROR),
+      );
+
+      await request(app.getHttpServer())
+        .post('/successions/count')
+        .send({})
+        .expect(500);
+    });
   });
 
   describe('GET /successions/:id', () => {
     it('should return 200 with succession when found', async () => {
-      mockSuccessionService.getSuccessionById.mockResolvedValue(mockSuccession);
+      mockSuccessionService.getSuccessionById.mockResolvedValue(
+        succeed(mockSuccession),
+      );
 
       const response = await request(app.getHttpServer())
         .get('/successions/succession-123')
@@ -158,7 +186,9 @@ describe('SuccessionsController', () => {
     });
 
     it('should return 404 when succession not found', async () => {
-      mockSuccessionService.getSuccessionById.mockResolvedValue(null);
+      mockSuccessionService.getSuccessionById.mockResolvedValue(
+        refuse(SuccessionServiceErrorReason.NOT_FOUND),
+      );
 
       await request(app.getHttpServer())
         .get('/successions/non-existent')
@@ -173,7 +203,7 @@ describe('SuccessionsController', () => {
   describe('POST /successions/export', () => {
     it('should return CSV file with correct headers', async () => {
       const mockBlob = new Blob(['id,label\n1,Test'], { type: 'text/csv' });
-      mockSuccessionService.exportList.mockResolvedValue(mockBlob);
+      mockSuccessionService.exportList.mockResolvedValue(succeed(mockBlob));
 
       const response = await request(app.getHttpServer())
         .post('/successions/export')
@@ -191,7 +221,7 @@ describe('SuccessionsController', () => {
       const mockBlob = new Blob(['xlsx data'], {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       });
-      mockSuccessionService.exportList.mockResolvedValue(mockBlob);
+      mockSuccessionService.exportList.mockResolvedValue(succeed(mockBlob));
 
       const response = await request(app.getHttpServer())
         .post('/successions/export')
@@ -209,7 +239,7 @@ describe('SuccessionsController', () => {
 
     it('should pass filters to service when provided', async () => {
       const mockBlob = new Blob(['data']);
-      mockSuccessionService.exportList.mockResolvedValue(mockBlob);
+      mockSuccessionService.exportList.mockResolvedValue(succeed(mockBlob));
 
       const filters = { departments: ['75'] };
 
@@ -228,6 +258,28 @@ describe('SuccessionsController', () => {
       await request(app.getHttpServer())
         .post('/successions/export')
         .send({ format: 'pdf' })
+        .expect(400);
+    });
+
+    it('should return 400 when export limit exceeded', async () => {
+      mockSuccessionService.exportList.mockResolvedValue(
+        refuse(SuccessionServiceErrorReason.EXPORT_LIMIT_EXCEEDED),
+      );
+
+      await request(app.getHttpServer())
+        .post('/successions/export')
+        .send({ format: 'csv' })
+        .expect(400);
+    });
+
+    it('should return 400 for unsupported format from service', async () => {
+      mockSuccessionService.exportList.mockResolvedValue(
+        refuse(SuccessionServiceErrorReason.UNSUPPORTED_FORMAT),
+      );
+
+      await request(app.getHttpServer())
+        .post('/successions/export')
+        .send({ format: 'csv' })
         .expect(400);
     });
   });

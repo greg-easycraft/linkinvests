@@ -1,7 +1,4 @@
-import type {
-  IEnergyDiagnosticFilters,
-  PaginationFilters,
-} from '~/types';
+import type { IEnergyDiagnosticFilters, PaginationFilters } from '~/types';
 import type { EnergyDiagnostic } from '@linkinvests/shared';
 
 export abstract class EnergyDiagnosticsRepository {

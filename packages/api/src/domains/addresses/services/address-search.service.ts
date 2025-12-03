@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import {
   AddressSearchRepository,
   AddressLinksRepository,
@@ -15,11 +15,21 @@ import {
   extractCityFromAddress,
   calculateMatchScore,
 } from '../utils/string-utils';
+import {
+  type OperationResult,
+  succeed,
+  refuse,
+} from '~/common/utils/operation-result';
 
 export type OpportunityType = 'auction' | 'listing';
 
+export enum AddressSearchServiceErrorReason {
+  UNKNOWN_ERROR = 'UNKNOWN_ERROR',
+}
+
 @Injectable()
 export class AddressSearchService {
+  private readonly logger = new Logger(AddressSearchService.name);
   private MAX_SQUARE_FOOTAGE_DIFFERENCE_PERCENTAGE = 10;
 
   constructor(
@@ -29,80 +39,123 @@ export class AddressSearchService {
 
   async getPlausibleAddresses(
     input: AddressSearchInput,
-  ): Promise<AddressSearchResult[]> {
-    const { energyClass, squareFootage, zipCode } = input;
+  ): Promise<
+    OperationResult<Array<AddressSearchResult>, AddressSearchServiceErrorReason>
+  > {
+    try {
+      const { energyClass, squareFootage, zipCode } = input;
 
-    // Default to reasonable square footage range if not specified
-    const minSquareFootage =
-      squareFootage * (1 - this.MAX_SQUARE_FOOTAGE_DIFFERENCE_PERCENTAGE / 100);
-    const maxSquareFootage =
-      squareFootage * (1 + this.MAX_SQUARE_FOOTAGE_DIFFERENCE_PERCENTAGE / 100);
-    const results =
-      await this.energyDiagnosticsRepository.findAllForAddressSearch({
-        zipCode,
-        energyClass,
-        squareFootageMin: minSquareFootage,
-        squareFootageMax: maxSquareFootage,
-      });
+      // Default to reasonable square footage range if not specified
+      const minSquareFootage =
+        squareFootage *
+        (1 - this.MAX_SQUARE_FOOTAGE_DIFFERENCE_PERCENTAGE / 100);
+      const maxSquareFootage =
+        squareFootage *
+        (1 + this.MAX_SQUARE_FOOTAGE_DIFFERENCE_PERCENTAGE / 100);
+      const results =
+        await this.energyDiagnosticsRepository.findAllForAddressSearch({
+          zipCode,
+          energyClass,
+          squareFootageMin: minSquareFootage,
+          squareFootageMax: maxSquareFootage,
+        });
 
-    if (!results.length) {
-      return [];
+      if (!results.length) {
+        return succeed([]);
+      }
+
+      const resultsWithMatchScore: Array<AddressSearchResult> = results
+        .map((result) => ({
+          ...result,
+          matchScore: this.calculateMatchScore(result, input),
+          energyDiagnosticId: result.externalId,
+        }))
+        .sort((a, b) => b.matchScore - a.matchScore);
+
+      return succeed(resultsWithMatchScore);
+    } catch (error) {
+      this.logger.error('Failed to get plausible addresses', error);
+      return refuse(AddressSearchServiceErrorReason.UNKNOWN_ERROR);
     }
-
-    const resultsWithMatchScore: AddressSearchResult[] = results
-      .map((result) => ({
-        ...result,
-        matchScore: this.calculateMatchScore(result, input),
-        energyDiagnosticId: result.externalId,
-      }))
-      .sort((a, b) => b.matchScore - a.matchScore);
-
-    return resultsWithMatchScore;
   }
 
   async searchAndLinkForOpportunity(
     input: AddressSearchInput,
     opportunityId: string,
     opportunityType: OpportunityType,
-  ): Promise<DiagnosticLink[]> {
-    // Search for plausible addresses
-    const searchResults = await this.getPlausibleAddresses(input);
+  ): Promise<
+    OperationResult<Array<DiagnosticLink>, AddressSearchServiceErrorReason>
+  > {
+    try {
+      // Search for plausible addresses
+      const searchResult = await this.getPlausibleAddresses(input);
 
-    if (searchResults.length === 0) {
-      return [];
-    }
+      if (!searchResult.success) {
+        return refuse(searchResult.reason);
+      }
 
-    // Take top N results
-    const topResults = searchResults.slice(0, MAX_DIAGNOSTIC_LINKS);
+      const searchResults = searchResult.data;
 
-    // Prepare links for saving
-    const linksToSave = topResults.map((result) => ({
-      opportunityId,
-      energyDiagnosticId: result.id,
-      matchScore: Math.round(result.matchScore),
-    }));
+      if (searchResults.length === 0) {
+        return succeed([]);
+      }
 
-    // Save to appropriate junction table
-    if (opportunityType === 'auction') {
-      await this.addressLinksRepository.saveAuctionDiagnosticLinks(linksToSave);
-      return this.addressLinksRepository.getAuctionDiagnosticLinks(
+      // Take top N results
+      const topResults = searchResults.slice(0, MAX_DIAGNOSTIC_LINKS);
+
+      // Prepare links for saving
+      const linksToSave = topResults.map((result) => ({
         opportunityId,
-      );
+        energyDiagnosticId: result.id,
+        matchScore: Math.round(result.matchScore),
+      }));
+
+      // Save to appropriate junction table
+      if (opportunityType === 'auction') {
+        await this.addressLinksRepository.saveAuctionDiagnosticLinks(
+          linksToSave,
+        );
+        const links =
+          await this.addressLinksRepository.getAuctionDiagnosticLinks(
+            opportunityId,
+          );
+        return succeed(links);
+      }
+      await this.addressLinksRepository.saveListingDiagnosticLinks(linksToSave);
+      const links =
+        await this.addressLinksRepository.getListingDiagnosticLinks(
+          opportunityId,
+        );
+      return succeed(links);
+    } catch (error) {
+      this.logger.error('Failed to search and link for opportunity', error);
+      return refuse(AddressSearchServiceErrorReason.UNKNOWN_ERROR);
     }
-    await this.addressLinksRepository.saveListingDiagnosticLinks(linksToSave);
-    return this.addressLinksRepository.getListingDiagnosticLinks(opportunityId);
   }
 
   async getDiagnosticLinks(
     opportunityId: string,
     opportunityType: OpportunityType,
-  ): Promise<DiagnosticLink[]> {
-    if (opportunityType === 'auction') {
-      return this.addressLinksRepository.getAuctionDiagnosticLinks(
-        opportunityId,
-      );
+  ): Promise<
+    OperationResult<Array<DiagnosticLink>, AddressSearchServiceErrorReason>
+  > {
+    try {
+      if (opportunityType === 'auction') {
+        const links =
+          await this.addressLinksRepository.getAuctionDiagnosticLinks(
+            opportunityId,
+          );
+        return succeed(links);
+      }
+      const links =
+        await this.addressLinksRepository.getListingDiagnosticLinks(
+          opportunityId,
+        );
+      return succeed(links);
+    } catch (error) {
+      this.logger.error('Failed to get diagnostic links', error);
+      return refuse(AddressSearchServiceErrorReason.UNKNOWN_ERROR);
     }
-    return this.addressLinksRepository.getListingDiagnosticLinks(opportunityId);
   }
 
   private calculateMatchScore(

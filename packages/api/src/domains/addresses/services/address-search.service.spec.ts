@@ -56,7 +56,10 @@ describe('AddressSearchService', () => {
 
       const result = await addressSearchService.getPlausibleAddresses(input);
 
-      expect(result).toEqual([]);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toEqual([]);
+      }
       const call =
         mockAddressSearchRepository.findAllForAddressSearch.mock.calls[0][0];
       expect(call.zipCode).toBe('75001');
@@ -79,12 +82,15 @@ describe('AddressSearchService', () => {
 
       const result = await addressSearchService.getPlausibleAddresses(input);
 
-      expect(result).toHaveLength(1);
-      expect(result[0]).toEqual({
-        ...mockEnergyDiagnostic,
-        matchScore: 100, // Perfect match
-        energyDiagnosticId: 'external-123',
-      });
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toHaveLength(1);
+        expect(result.data[0]).toEqual({
+          ...mockEnergyDiagnostic,
+          matchScore: 100, // Perfect match
+          energyDiagnosticId: 'external-123',
+        });
+      }
     });
 
     it('should handle undefined square footage by computing NaN ranges', async () => {
@@ -183,16 +189,19 @@ describe('AddressSearchService', () => {
 
       const result = await addressSearchService.getPlausibleAddresses(input);
 
-      expect(result).toHaveLength(3);
-      // diag-1 and diag-2 both have score 100, diag-3 has lower score
-      // Order between equal scores depends on original array order
-      expect(result[0]?.matchScore).toBe(100);
-      expect(result[1]?.matchScore).toBe(100);
-      expect(result[2]?.id).toBe('diag-3'); // Lowest score due to size difference
-      expect(result[2]?.matchScore).toBeCloseTo(94, 0); // 100 - (0.2 * 30)
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toHaveLength(3);
+        // diag-1 and diag-2 both have score 100, diag-3 has lower score
+        // Order between equal scores depends on original array order
+        expect(result.data[0]?.matchScore).toBe(100);
+        expect(result.data[1]?.matchScore).toBe(100);
+        expect(result.data[2]?.id).toBe('diag-3'); // Lowest score due to size difference
+        expect(result.data[2]?.matchScore).toBeCloseTo(94, 0); // 100 - (0.2 * 30)
+      }
     });
 
-    it('should handle repository errors', async () => {
+    it('should handle repository errors and return refusal', async () => {
       const input: AddressSearchInput = {
         zipCode: '75001',
         energyClass: EnergyClass.F,
@@ -204,9 +213,12 @@ describe('AddressSearchService', () => {
         error,
       );
 
-      await expect(
-        addressSearchService.getPlausibleAddresses(input),
-      ).rejects.toThrow('Repository error');
+      const result = await addressSearchService.getPlausibleAddresses(input);
+
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.reason).toBe('UNKNOWN_ERROR');
+      }
     });
 
     it('should include energyDiagnosticId from externalId', async () => {
@@ -226,7 +238,10 @@ describe('AddressSearchService', () => {
 
       const result = await addressSearchService.getPlausibleAddresses(input);
 
-      expect(result[0]?.energyDiagnosticId).toBe('external-abc-123');
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data[0]?.energyDiagnosticId).toBe('external-abc-123');
+      }
     });
   });
 
@@ -249,7 +264,10 @@ describe('AddressSearchService', () => {
 
       const result = await addressSearchService.getPlausibleAddresses(input);
 
-      expect(result[0]?.matchScore).toBe(100);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data[0]?.matchScore).toBe(100);
+      }
     });
 
     it('should not reduce score for energy class mismatch (scoring only considers square footage)', async () => {
@@ -270,8 +288,11 @@ describe('AddressSearchService', () => {
 
       const result = await addressSearchService.getPlausibleAddresses(input);
 
-      // Energy class mismatch does not affect score - only square footage does
-      expect(result[0]?.matchScore).toBe(100);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        // Energy class mismatch does not affect score - only square footage does
+        expect(result.data[0]?.matchScore).toBe(100);
+      }
     });
 
     it('should reduce score based on square footage difference', async () => {
@@ -292,8 +313,11 @@ describe('AddressSearchService', () => {
 
       const result = await addressSearchService.getPlausibleAddresses(input);
 
-      // Score = 100 - (0.2 * 30) = 94 (30 is the penalty multiplier for square footage)
-      expect(result[0]?.matchScore).toBe(94);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        // Score = 100 - (0.2 * 30) = 94 (30 is the penalty multiplier for square footage)
+        expect(result.data[0]?.matchScore).toBe(94);
+      }
     });
 
     it('should handle cases where square footage is missing', async () => {
@@ -314,7 +338,10 @@ describe('AddressSearchService', () => {
 
       const result = await addressSearchService.getPlausibleAddresses(input);
 
-      expect(result[0]?.matchScore).toBe(100); // No penalty if squareFootage is missing
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data[0]?.matchScore).toBe(100); // No penalty if squareFootage is missing
+      }
     });
 
     it('should ensure minimum score is 0', async () => {
@@ -336,7 +363,10 @@ describe('AddressSearchService', () => {
 
       const result = await addressSearchService.getPlausibleAddresses(input);
 
-      expect(result[0]?.matchScore).toBeGreaterThanOrEqual(0);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data[0]?.matchScore).toBeGreaterThanOrEqual(0);
+      }
     });
   });
 
@@ -371,7 +401,10 @@ describe('AddressSearchService', () => {
         'auction',
       );
 
-      expect(result).toEqual([]);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toEqual([]);
+      }
       expect(
         mockAddressLinksRepository.saveAuctionDiagnosticLinks,
       ).not.toHaveBeenCalled();
@@ -409,7 +442,10 @@ describe('AddressSearchService', () => {
       expect(
         mockAddressLinksRepository.getAuctionDiagnosticLinks,
       ).toHaveBeenCalledWith('opportunity-123');
-      expect(result).toEqual([mockDiagnosticLink]);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toEqual([mockDiagnosticLink]);
+      }
     });
 
     it('should save and return listing diagnostic links', async () => {
@@ -444,7 +480,10 @@ describe('AddressSearchService', () => {
       expect(
         mockAddressLinksRepository.getListingDiagnosticLinks,
       ).toHaveBeenCalledWith('listing-123');
-      expect(result).toEqual([mockDiagnosticLink]);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toEqual([mockDiagnosticLink]);
+      }
     });
 
     it('should limit results to MAX_DIAGNOSTIC_LINKS', async () => {
@@ -464,7 +503,9 @@ describe('AddressSearchService', () => {
       mockAddressSearchRepository.findAllForAddressSearch.mockResolvedValue(
         manyResults,
       );
-      mockAddressLinksRepository.getAuctionDiagnosticLinks.mockResolvedValue([]);
+      mockAddressLinksRepository.getAuctionDiagnosticLinks.mockResolvedValue(
+        [],
+      );
 
       await addressSearchService.searchAndLinkForOpportunity(
         input,
@@ -493,7 +534,9 @@ describe('AddressSearchService', () => {
       mockAddressSearchRepository.findAllForAddressSearch.mockResolvedValue([
         resultWithDecimalScore,
       ]);
-      mockAddressLinksRepository.getAuctionDiagnosticLinks.mockResolvedValue([]);
+      mockAddressLinksRepository.getAuctionDiagnosticLinks.mockResolvedValue(
+        [],
+      );
 
       await addressSearchService.searchAndLinkForOpportunity(
         input,
@@ -538,7 +581,10 @@ describe('AddressSearchService', () => {
       expect(
         mockAddressLinksRepository.getAuctionDiagnosticLinks,
       ).toHaveBeenCalledWith('auction-123');
-      expect(result).toEqual(mockDiagnosticLinks);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toEqual(mockDiagnosticLinks);
+      }
     });
 
     it('should return listing diagnostic links', async () => {
@@ -554,18 +600,26 @@ describe('AddressSearchService', () => {
       expect(
         mockAddressLinksRepository.getListingDiagnosticLinks,
       ).toHaveBeenCalledWith('listing-123');
-      expect(result).toEqual(mockDiagnosticLinks);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toEqual(mockDiagnosticLinks);
+      }
     });
 
     it('should return empty array when no links exist', async () => {
-      mockAddressLinksRepository.getAuctionDiagnosticLinks.mockResolvedValue([]);
+      mockAddressLinksRepository.getAuctionDiagnosticLinks.mockResolvedValue(
+        [],
+      );
 
       const result = await addressSearchService.getDiagnosticLinks(
         'auction-456',
         'auction',
       );
 
-      expect(result).toEqual([]);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toEqual([]);
+      }
     });
   });
 
@@ -590,8 +644,11 @@ describe('AddressSearchService', () => {
 
       const result = await addressSearchService.getPlausibleAddresses(input);
 
-      // Score should be reduced due to city mismatch
-      expect(result[0]?.matchScore).toBeLessThan(100);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        // Score should be reduced due to city mismatch
+        expect(result.data[0]?.matchScore).toBeLessThan(100);
+      }
     });
 
     it('should reduce score based on street mismatch', async () => {
@@ -614,8 +671,11 @@ describe('AddressSearchService', () => {
 
       const result = await addressSearchService.getPlausibleAddresses(input);
 
-      // Score should be reduced due to street mismatch
-      expect(result[0]?.matchScore).toBeLessThan(100);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        // Score should be reduced due to street mismatch
+        expect(result.data[0]?.matchScore).toBeLessThan(100);
+      }
     });
 
     it('should not penalize when addresses are similar', async () => {
@@ -638,8 +698,11 @@ describe('AddressSearchService', () => {
 
       const result = await addressSearchService.getPlausibleAddresses(input);
 
-      // Score should be high for matching addresses
-      expect(result[0]?.matchScore).toBe(100);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        // Score should be high for matching addresses
+        expect(result.data[0]?.matchScore).toBe(100);
+      }
     });
 
     it('should handle input without address', async () => {
@@ -656,8 +719,11 @@ describe('AddressSearchService', () => {
 
       const result = await addressSearchService.getPlausibleAddresses(input);
 
-      // Should not fail, score based only on square footage
-      expect(result[0]?.matchScore).toBe(100);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        // Should not fail, score based only on square footage
+        expect(result.data[0]?.matchScore).toBe(100);
+      }
     });
 
     it('should handle result without address', async () => {
@@ -680,8 +746,11 @@ describe('AddressSearchService', () => {
 
       const result = await addressSearchService.getPlausibleAddresses(input);
 
-      // Should not fail, skip address matching
-      expect(result[0]?.matchScore).toBe(100);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        // Should not fail, skip address matching
+        expect(result.data[0]?.matchScore).toBe(100);
+      }
     });
   });
 });

@@ -1,9 +1,7 @@
-import { ListingService } from './listing.service';
+import { ListingService, ListingServiceErrorReason } from './listing.service';
 import type { ListingRepository } from '../lib.types';
-import type {
-  IExportService,
-  ExportFormat,
-} from '~/common/export/export.types';
+import type { IExportService } from '~/common/export/export.types';
+import type { ExportService } from '~/common/export/services/export.service';
 import type { IOpportunityFilters } from '~/types';
 import {
   OpportunityType,
@@ -12,6 +10,7 @@ import {
 } from '@linkinvests/shared';
 import { DEFAULT_PAGE_SIZE } from '~/constants';
 import { getOpportunityHeaders } from '~/common/export/services/export-headers.service';
+import { succeed } from '~/common/utils/operation-result';
 
 // Mock the export-headers service
 jest.mock('~/common/export/services/export-headers.service', () => ({
@@ -48,6 +47,8 @@ describe('ListingService', () => {
     updatedAt: new Date('2024-01-01'),
   };
 
+  const mockBlob = new Blob(['test data']);
+
   beforeEach(() => {
     jest.clearAllMocks();
 
@@ -68,7 +69,7 @@ describe('ListingService', () => {
     // Initialize service with mocked dependencies
     listingService = new ListingService(
       mockListingRepository,
-      mockExportService,
+      mockExportService as unknown as ExportService,
     );
 
     // Mock export headers service
@@ -86,11 +87,14 @@ describe('ListingService', () => {
 
       const result = await listingService.getListingsData();
 
-      expect(result).toEqual({
-        opportunities: mockListings,
-        page: 1,
-        pageSize: DEFAULT_PAGE_SIZE,
-      });
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toEqual({
+          opportunities: mockListings,
+          page: 1,
+          pageSize: DEFAULT_PAGE_SIZE,
+        });
+      }
       expect(mockListingRepository.findAll).toHaveBeenCalledWith(undefined, {
         limit: DEFAULT_PAGE_SIZE,
         offset: 0,
@@ -104,11 +108,14 @@ describe('ListingService', () => {
 
       const result = await listingService.getListingsData(filters);
 
-      expect(result).toEqual({
-        opportunities: mockListings,
-        page: 3,
-        pageSize: 25,
-      });
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toEqual({
+          opportunities: mockListings,
+          page: 3,
+          pageSize: 25,
+        });
+      }
       expect(mockListingRepository.findAll).toHaveBeenCalledWith(
         filters,
         { limit: 25, offset: 50 }, // (3-1) * 25
@@ -133,13 +140,16 @@ describe('ListingService', () => {
       });
     });
 
-    it('should handle repository errors', async () => {
+    it('should return error on repository failure', async () => {
       const error = new Error('Repository error');
       mockListingRepository.findAll.mockRejectedValue(error);
 
-      await expect(listingService.getListingsData()).rejects.toThrow(
-        'Repository error',
-      );
+      const result = await listingService.getListingsData();
+
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.reason).toBe(ListingServiceErrorReason.UNKNOWN_ERROR);
+      }
     });
   });
 
@@ -150,7 +160,10 @@ describe('ListingService', () => {
 
       const result = await listingService.getListingsCount();
 
-      expect(result).toBe(expectedCount);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toBe(expectedCount);
+      }
       expect(mockListingRepository.count).toHaveBeenCalledWith(undefined);
     });
 
@@ -161,17 +174,23 @@ describe('ListingService', () => {
 
       const result = await listingService.getListingsCount(filters);
 
-      expect(result).toBe(expectedCount);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toBe(expectedCount);
+      }
       expect(mockListingRepository.count).toHaveBeenCalledWith(filters);
     });
 
-    it('should handle repository count errors', async () => {
+    it('should return error on repository count failure', async () => {
       const error = new Error('Count error');
       mockListingRepository.count.mockRejectedValue(error);
 
-      await expect(listingService.getListingsCount()).rejects.toThrow(
-        'Count error',
-      );
+      const result = await listingService.getListingsCount();
+
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.reason).toBe(ListingServiceErrorReason.UNKNOWN_ERROR);
+      }
     });
   });
 
@@ -182,28 +201,37 @@ describe('ListingService', () => {
 
       const result = await listingService.getListingById(listingId);
 
-      expect(result).toBe(mockListing);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toBe(mockListing);
+      }
       expect(mockListingRepository.findById).toHaveBeenCalledWith(listingId);
     });
 
-    it('should return null when listing not found', async () => {
+    it('should return NOT_FOUND when listing not found', async () => {
       const listingId = 'non-existent-listing';
       mockListingRepository.findById.mockResolvedValue(null);
 
       const result = await listingService.getListingById(listingId);
 
-      expect(result).toBeNull();
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.reason).toBe(ListingServiceErrorReason.NOT_FOUND);
+      }
       expect(mockListingRepository.findById).toHaveBeenCalledWith(listingId);
     });
 
-    it('should handle repository findById errors', async () => {
+    it('should return error on repository findById failure', async () => {
       const error = new Error('Find error');
       const listingId = 'listing-123';
       mockListingRepository.findById.mockRejectedValue(error);
 
-      await expect(listingService.getListingById(listingId)).rejects.toThrow(
-        'Find error',
-      );
+      const result = await listingService.getListingById(listingId);
+
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.reason).toBe(ListingServiceErrorReason.UNKNOWN_ERROR);
+      }
     });
   });
 
@@ -213,12 +241,11 @@ describe('ListingService', () => {
       mockListing,
       { ...mockListing, id: 'listing-2' },
     ];
-    const mockBlob = new Blob(['test data']);
 
     beforeEach(() => {
       mockListingRepository.findAll.mockResolvedValue(mockListingsForExport);
-      mockExportService.exportToCSV.mockResolvedValue(mockBlob);
-      mockExportService.exportToXLSX.mockResolvedValue(mockBlob);
+      mockExportService.exportToCSV.mockResolvedValue(succeed(mockBlob));
+      mockExportService.exportToXLSX.mockResolvedValue(succeed(mockBlob));
     });
 
     it('should export to CSV successfully when under limit', async () => {
@@ -226,7 +253,10 @@ describe('ListingService', () => {
 
       const result = await listingService.exportList(filters, 'csv');
 
-      expect(result).toBe(mockBlob);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toBe(mockBlob);
+      }
       expect(mockListingRepository.count).toHaveBeenCalledWith(filters);
       expect(mockListingRepository.findAll).toHaveBeenCalledWith(filters);
       expect(getOpportunityHeaders).toHaveBeenCalledWith(
@@ -243,67 +273,97 @@ describe('ListingService', () => {
 
       const result = await listingService.exportList(filters, 'xlsx');
 
-      expect(result).toBe(mockBlob);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toBe(mockBlob);
+      }
       expect(mockExportService.exportToXLSX).toHaveBeenCalledWith(
         mockListingsForExport,
         { title: 'Titre', address: 'Adresse', price: 'Prix' },
       );
     });
 
-    it('should throw error when export limit exceeded', async () => {
+    it('should return error when export limit exceeded', async () => {
       mockListingRepository.count.mockResolvedValue(750); // Over 500 limit
 
-      await expect(listingService.exportList(filters, 'csv')).rejects.toThrow(
-        'Export limit exceeded. Found 750 items, maximum allowed is 500. Please refine your filters.',
-      );
+      const result = await listingService.exportList(filters, 'csv');
+
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.reason).toBe(
+          ListingServiceErrorReason.EXPORT_LIMIT_EXCEEDED,
+        );
+      }
 
       expect(mockListingRepository.findAll).not.toHaveBeenCalled();
       expect(mockExportService.exportToCSV).not.toHaveBeenCalled();
     });
 
-    it('should throw error for unsupported export format', async () => {
+    it('should return error for unsupported export format', async () => {
       mockListingRepository.count.mockResolvedValue(100);
 
-      await expect(
-        listingService.exportList(filters, 'pdf' as ExportFormat),
-      ).rejects.toThrow('Unsupported export format: pdf');
+      const result = await listingService.exportList(
+        filters,
+        'pdf' as 'csv' | 'xlsx',
+      );
+
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.reason).toBe(
+          ListingServiceErrorReason.UNSUPPORTED_FORMAT,
+        );
+      }
     });
 
-    it('should handle export service errors', async () => {
+    it('should return error on export service failure', async () => {
       mockListingRepository.count.mockResolvedValue(100);
       const exportError = new Error('Export failed');
       mockExportService.exportToCSV.mockRejectedValue(exportError);
 
-      await expect(listingService.exportList(filters, 'csv')).rejects.toThrow(
-        'Export failed',
-      );
+      const result = await listingService.exportList(filters, 'csv');
+
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.reason).toBe(ListingServiceErrorReason.UNKNOWN_ERROR);
+      }
     });
 
-    it('should handle repository errors during export', async () => {
+    it('should return error on repository failure during export', async () => {
       mockListingRepository.count.mockResolvedValue(100);
       const repositoryError = new Error('Repository export error');
       mockListingRepository.findAll.mockRejectedValue(repositoryError);
 
-      await expect(listingService.exportList(filters, 'csv')).rejects.toThrow(
-        'Repository export error',
-      );
+      const result = await listingService.exportList(filters, 'csv');
+
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.reason).toBe(ListingServiceErrorReason.UNKNOWN_ERROR);
+      }
     });
 
-    it('should validate export limit is exactly 500', async () => {
+    it('should export successfully when count is exactly 500', async () => {
       mockListingRepository.count.mockResolvedValue(500); // Exactly at limit
 
       const result = await listingService.exportList(filters, 'csv');
 
-      expect(result).toBe(mockBlob);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toBe(mockBlob);
+      }
       expect(mockExportService.exportToCSV).toHaveBeenCalled();
     });
 
-    it('should reject when count is 501 (just over limit)', async () => {
+    it('should return error when count is 501 (just over limit)', async () => {
       mockListingRepository.count.mockResolvedValue(501); // Just over limit
 
-      await expect(listingService.exportList(filters, 'csv')).rejects.toThrow(
-        'Export limit exceeded. Found 501 items, maximum allowed is 500. Please refine your filters.',
-      );
+      const result = await listingService.exportList(filters, 'csv');
+
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.reason).toBe(
+          ListingServiceErrorReason.EXPORT_LIMIT_EXCEEDED,
+        );
+      }
     });
   });
 });

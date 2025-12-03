@@ -1,13 +1,15 @@
-import { EnergyDiagnosticsService } from './energy-diagnostics.service';
+import {
+  EnergyDiagnosticsService,
+  EnergyDiagnosticsServiceErrorReason,
+} from './energy-diagnostics.service';
 import type { EnergyDiagnosticsRepository } from '../lib.types';
-import type {
-  IExportService,
-  ExportFormat,
-} from '~/common/export/export.types';
+import type { IExportService } from '~/common/export/export.types';
+import type { ExportService } from '~/common/export/services/export.service';
 import type { IOpportunityFilters } from '~/types';
 import { OpportunityType, type EnergyDiagnostic } from '@linkinvests/shared';
 import { DEFAULT_PAGE_SIZE } from '~/constants';
 import { getOpportunityHeaders } from '~/common/export/services/export-headers.service';
+import { succeed } from '~/common/utils/operation-result';
 
 // Mock the export-headers service
 jest.mock('~/common/export/services/export-headers.service', () => ({
@@ -35,6 +37,8 @@ describe('EnergyDiagnosticsService', () => {
     updatedAt: new Date('2024-01-01'),
   };
 
+  const mockBlob = new Blob(['test data']);
+
   beforeEach(() => {
     jest.clearAllMocks();
 
@@ -55,7 +59,7 @@ describe('EnergyDiagnosticsService', () => {
     // Initialize service with mocked dependencies
     energyDiagnosticsService = new EnergyDiagnosticsService(
       mockEnergyDiagnosticsRepository,
-      mockExportService,
+      mockExportService as unknown as ExportService,
     );
 
     // Mock export headers service
@@ -76,11 +80,14 @@ describe('EnergyDiagnosticsService', () => {
 
       const result = await energyDiagnosticsService.getEnergyDiagnosticsData();
 
-      expect(result).toEqual({
-        opportunities: mockEnergyDiagnostics,
-        page: 1,
-        pageSize: DEFAULT_PAGE_SIZE,
-      });
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toEqual({
+          opportunities: mockEnergyDiagnostics,
+          page: 1,
+          pageSize: DEFAULT_PAGE_SIZE,
+        });
+      }
       expect(mockEnergyDiagnosticsRepository.findAll).toHaveBeenCalledWith(
         undefined,
         { limit: DEFAULT_PAGE_SIZE, offset: 0 },
@@ -97,11 +104,14 @@ describe('EnergyDiagnosticsService', () => {
       const result =
         await energyDiagnosticsService.getEnergyDiagnosticsData(filters);
 
-      expect(result).toEqual({
-        opportunities: mockEnergyDiagnostics,
-        page: 3,
-        pageSize: 25,
-      });
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toEqual({
+          opportunities: mockEnergyDiagnostics,
+          page: 3,
+          pageSize: 25,
+        });
+      }
       expect(mockEnergyDiagnosticsRepository.findAll).toHaveBeenCalledWith(
         filters,
         { limit: 25, offset: 50 }, // (3-1) * 25
@@ -130,13 +140,18 @@ describe('EnergyDiagnosticsService', () => {
       );
     });
 
-    it('should handle repository errors', async () => {
+    it('should return error on repository failure', async () => {
       const error = new Error('Repository error');
       mockEnergyDiagnosticsRepository.findAll.mockRejectedValue(error);
 
-      await expect(
-        energyDiagnosticsService.getEnergyDiagnosticsData(),
-      ).rejects.toThrow('Repository error');
+      const result = await energyDiagnosticsService.getEnergyDiagnosticsData();
+
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.reason).toBe(
+          EnergyDiagnosticsServiceErrorReason.UNKNOWN_ERROR,
+        );
+      }
     });
   });
 
@@ -147,7 +162,10 @@ describe('EnergyDiagnosticsService', () => {
 
       const result = await energyDiagnosticsService.getEnergyDiagnosticsCount();
 
-      expect(result).toBe(expectedCount);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toBe(expectedCount);
+      }
       expect(mockEnergyDiagnosticsRepository.count).toHaveBeenCalledWith(
         undefined,
       );
@@ -165,19 +183,27 @@ describe('EnergyDiagnosticsService', () => {
       const result =
         await energyDiagnosticsService.getEnergyDiagnosticsCount(filters);
 
-      expect(result).toBe(expectedCount);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toBe(expectedCount);
+      }
       expect(mockEnergyDiagnosticsRepository.count).toHaveBeenCalledWith(
         filters,
       );
     });
 
-    it('should handle repository count errors', async () => {
+    it('should return error on repository count failure', async () => {
       const error = new Error('Count error');
       mockEnergyDiagnosticsRepository.count.mockRejectedValue(error);
 
-      await expect(
-        energyDiagnosticsService.getEnergyDiagnosticsCount(),
-      ).rejects.toThrow('Count error');
+      const result = await energyDiagnosticsService.getEnergyDiagnosticsCount();
+
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.reason).toBe(
+          EnergyDiagnosticsServiceErrorReason.UNKNOWN_ERROR,
+        );
+      }
     });
   });
 
@@ -193,13 +219,16 @@ describe('EnergyDiagnosticsService', () => {
           energyDiagnosticId,
         );
 
-      expect(result).toBe(mockEnergyDiagnostic);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toBe(mockEnergyDiagnostic);
+      }
       expect(mockEnergyDiagnosticsRepository.findById).toHaveBeenCalledWith(
         energyDiagnosticId,
       );
     });
 
-    it('should return null when energy diagnostic not found', async () => {
+    it('should return NOT_FOUND when energy diagnostic not found', async () => {
       const energyDiagnosticId = 'non-existent-energy-diagnostic';
       mockEnergyDiagnosticsRepository.findById.mockResolvedValue(null);
 
@@ -208,20 +237,33 @@ describe('EnergyDiagnosticsService', () => {
           energyDiagnosticId,
         );
 
-      expect(result).toBeNull();
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.reason).toBe(
+          EnergyDiagnosticsServiceErrorReason.NOT_FOUND,
+        );
+      }
       expect(mockEnergyDiagnosticsRepository.findById).toHaveBeenCalledWith(
         energyDiagnosticId,
       );
     });
 
-    it('should handle repository findById errors', async () => {
+    it('should return error on repository findById failure', async () => {
       const error = new Error('Find error');
       const energyDiagnosticId = 'energy-diagnostic-123';
       mockEnergyDiagnosticsRepository.findById.mockRejectedValue(error);
 
-      await expect(
-        energyDiagnosticsService.getEnergyDiagnosticById(energyDiagnosticId),
-      ).rejects.toThrow('Find error');
+      const result =
+        await energyDiagnosticsService.getEnergyDiagnosticById(
+          energyDiagnosticId,
+        );
+
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.reason).toBe(
+          EnergyDiagnosticsServiceErrorReason.UNKNOWN_ERROR,
+        );
+      }
     });
   });
 
@@ -235,14 +277,13 @@ describe('EnergyDiagnosticsService', () => {
       mockEnergyDiagnostic,
       { ...mockEnergyDiagnostic, id: 'energy-diagnostic-2' },
     ];
-    const mockBlob = new Blob(['test data']);
 
     beforeEach(() => {
       mockEnergyDiagnosticsRepository.findAll.mockResolvedValue(
         mockEnergyDiagnosticsForExport,
       );
-      mockExportService.exportToCSV.mockResolvedValue(mockBlob);
-      mockExportService.exportToXLSX.mockResolvedValue(mockBlob);
+      mockExportService.exportToCSV.mockResolvedValue(succeed(mockBlob));
+      mockExportService.exportToXLSX.mockResolvedValue(succeed(mockBlob));
     });
 
     it('should export to CSV successfully when under limit', async () => {
@@ -250,7 +291,10 @@ describe('EnergyDiagnosticsService', () => {
 
       const result = await energyDiagnosticsService.exportList(filters, 'csv');
 
-      expect(result).toBe(mockBlob);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toBe(mockBlob);
+      }
       expect(mockEnergyDiagnosticsRepository.count).toHaveBeenCalledWith(
         filters,
       );
@@ -276,7 +320,10 @@ describe('EnergyDiagnosticsService', () => {
 
       const result = await energyDiagnosticsService.exportList(filters, 'xlsx');
 
-      expect(result).toBe(mockBlob);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toBe(mockBlob);
+      }
       expect(mockExportService.exportToXLSX).toHaveBeenCalledWith(
         mockEnergyDiagnosticsForExport,
         {
@@ -288,66 +335,93 @@ describe('EnergyDiagnosticsService', () => {
       );
     });
 
-    it('should throw error when export limit exceeded', async () => {
+    it('should return error when export limit exceeded', async () => {
       mockEnergyDiagnosticsRepository.count.mockResolvedValue(900); // Over 500 limit
 
-      await expect(
-        energyDiagnosticsService.exportList(filters, 'csv'),
-      ).rejects.toThrow(
-        'Export limit exceeded. Found 900 items, maximum allowed is 500. Please refine your filters.',
-      );
+      const result = await energyDiagnosticsService.exportList(filters, 'csv');
+
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.reason).toBe(
+          EnergyDiagnosticsServiceErrorReason.EXPORT_LIMIT_EXCEEDED,
+        );
+      }
 
       expect(mockEnergyDiagnosticsRepository.findAll).not.toHaveBeenCalled();
       expect(mockExportService.exportToCSV).not.toHaveBeenCalled();
     });
 
-    it('should throw error for unsupported export format', async () => {
+    it('should return error for unsupported export format', async () => {
       mockEnergyDiagnosticsRepository.count.mockResolvedValue(100);
 
-      await expect(
-        energyDiagnosticsService.exportList(filters, 'pdf' as ExportFormat),
-      ).rejects.toThrow('Unsupported export format: pdf');
+      const result = await energyDiagnosticsService.exportList(
+        filters,
+        'pdf' as 'csv' | 'xlsx',
+      );
+
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.reason).toBe(
+          EnergyDiagnosticsServiceErrorReason.UNSUPPORTED_FORMAT,
+        );
+      }
     });
 
-    it('should handle export service errors', async () => {
+    it('should return error on export service failure', async () => {
       mockEnergyDiagnosticsRepository.count.mockResolvedValue(100);
       const exportError = new Error('Export failed');
       mockExportService.exportToCSV.mockRejectedValue(exportError);
 
-      await expect(
-        energyDiagnosticsService.exportList(filters, 'csv'),
-      ).rejects.toThrow('Export failed');
+      const result = await energyDiagnosticsService.exportList(filters, 'csv');
+
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.reason).toBe(
+          EnergyDiagnosticsServiceErrorReason.UNKNOWN_ERROR,
+        );
+      }
     });
 
-    it('should handle repository errors during export', async () => {
+    it('should return error on repository failure during export', async () => {
       mockEnergyDiagnosticsRepository.count.mockResolvedValue(100);
       const repositoryError = new Error('Repository export error');
       mockEnergyDiagnosticsRepository.findAll.mockRejectedValue(
         repositoryError,
       );
 
-      await expect(
-        energyDiagnosticsService.exportList(filters, 'csv'),
-      ).rejects.toThrow('Repository export error');
+      const result = await energyDiagnosticsService.exportList(filters, 'csv');
+
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.reason).toBe(
+          EnergyDiagnosticsServiceErrorReason.UNKNOWN_ERROR,
+        );
+      }
     });
 
-    it('should validate export limit is exactly 500', async () => {
+    it('should export successfully when count is exactly 500', async () => {
       mockEnergyDiagnosticsRepository.count.mockResolvedValue(500); // Exactly at limit
 
       const result = await energyDiagnosticsService.exportList(filters, 'csv');
 
-      expect(result).toBe(mockBlob);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toBe(mockBlob);
+      }
       expect(mockExportService.exportToCSV).toHaveBeenCalled();
     });
 
-    it('should reject when count is 501 (just over limit)', async () => {
+    it('should return error when count is 501 (just over limit)', async () => {
       mockEnergyDiagnosticsRepository.count.mockResolvedValue(501); // Just over limit
 
-      await expect(
-        energyDiagnosticsService.exportList(filters, 'csv'),
-      ).rejects.toThrow(
-        'Export limit exceeded. Found 501 items, maximum allowed is 500. Please refine your filters.',
-      );
+      const result = await energyDiagnosticsService.exportList(filters, 'csv');
+
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.reason).toBe(
+          EnergyDiagnosticsServiceErrorReason.EXPORT_LIMIT_EXCEEDED,
+        );
+      }
     });
   });
 });

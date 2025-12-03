@@ -5,19 +5,24 @@ import {
   Body,
   Param,
   Res,
-  HttpStatus,
-  HttpException,
   StreamableFile,
+  NotFoundException,
+  BadRequestException,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { Response } from 'express';
-import { ListingService } from './services/listing.service';
+import {
+  ListingService,
+  ListingServiceErrorReason,
+} from './services/listing.service';
 import {
   listingFiltersSchema,
   listingExportRequestSchema,
   type ListingFilters,
   type ListingExportRequest,
 } from '@linkinvests/shared';
+import { isRefusal } from '~/common/utils/operation-result';
 
 @Controller('listings')
 export class ListingsController {
@@ -27,30 +32,45 @@ export class ListingsController {
   async search(
     @Body(new ZodValidationPipe(listingFiltersSchema)) filters: ListingFilters,
   ) {
-    return this.listingService.getListingsData(filters);
+    const result = await this.listingService.getListingsData(filters);
+    if (isRefusal(result)) {
+      throw new InternalServerErrorException();
+    }
+    return result.data;
   }
 
   @Post('count')
   async count(
     @Body(new ZodValidationPipe(listingFiltersSchema)) filters: ListingFilters,
   ) {
-    const count = await this.listingService.getListingsCount(filters);
-    return { count };
+    const result = await this.listingService.getListingsCount(filters);
+    if (isRefusal(result)) {
+      throw new InternalServerErrorException();
+    }
+    return { count: result.data };
   }
 
   @Get('sources')
   async getSources() {
-    const sources = await this.listingService.getAvailableSources();
-    return { sources };
+    const result = await this.listingService.getAvailableSources();
+    if (isRefusal(result)) {
+      throw new InternalServerErrorException();
+    }
+    return { sources: result.data };
   }
 
   @Get(':id')
   async getById(@Param('id') id: string) {
-    const listing = await this.listingService.getListingById(id);
-    if (!listing) {
-      throw new HttpException('Listing not found', HttpStatus.NOT_FOUND);
+    const result = await this.listingService.getListingById(id);
+    if (isRefusal(result)) {
+      switch (result.reason) {
+        case ListingServiceErrorReason.NOT_FOUND:
+          throw new NotFoundException('Listing not found');
+        default:
+          throw new InternalServerErrorException();
+      }
     }
-    return listing;
+    return result.data;
   }
 
   @Post('export')
@@ -59,10 +79,23 @@ export class ListingsController {
     body: ListingExportRequest,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const blob = await this.listingService.exportList(
+    const result = await this.listingService.exportList(
       body.filters ?? {},
       body.format,
     );
+
+    if (isRefusal(result)) {
+      switch (result.reason) {
+        case ListingServiceErrorReason.EXPORT_LIMIT_EXCEEDED:
+          throw new BadRequestException(
+            'Export limit exceeded. Please refine your filters.',
+          );
+        case ListingServiceErrorReason.UNSUPPORTED_FORMAT:
+          throw new BadRequestException('Unsupported export format');
+        default:
+          throw new InternalServerErrorException();
+      }
+    }
 
     const contentType =
       body.format === 'csv'
@@ -76,7 +109,7 @@ export class ListingsController {
       'Content-Disposition': `attachment; filename="listings.${extension}"`,
     });
 
-    const buffer = Buffer.from(await blob.arrayBuffer());
+    const buffer = Buffer.from(await result.data.arrayBuffer());
     return new StreamableFile(buffer);
   }
 }

@@ -2,9 +2,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { mockClass } from '~/test-utils/mock-class';
-import { LiquidationService } from './services/liquidation.service';
+import {
+  LiquidationService,
+  LiquidationServiceErrorReason,
+} from './services/liquidation.service';
 import { LiquidationsController } from './liquidations.controller';
 import type { Liquidation } from '@linkinvests/shared';
+import { succeed, refuse } from '~/common/utils/operation-result';
 
 describe('LiquidationsController', () => {
   let app: INestApplication;
@@ -52,7 +56,7 @@ describe('LiquidationsController', () => {
   describe('POST /liquidations/search', () => {
     it('should return 200 with paginated data when service succeeds', async () => {
       mockLiquidationService.getLiquidationsData.mockResolvedValue(
-        mockPaginatedResponse,
+        succeed(mockPaginatedResponse),
       );
 
       const response = await request(app.getHttpServer())
@@ -75,7 +79,7 @@ describe('LiquidationsController', () => {
 
     it('should pass filters to service correctly', async () => {
       mockLiquidationService.getLiquidationsData.mockResolvedValue(
-        mockPaginatedResponse,
+        succeed(mockPaginatedResponse),
       );
 
       const filters = {
@@ -93,11 +97,24 @@ describe('LiquidationsController', () => {
         filters,
       );
     });
+
+    it('should return 500 when service returns error', async () => {
+      mockLiquidationService.getLiquidationsData.mockResolvedValue(
+        refuse(LiquidationServiceErrorReason.UNKNOWN_ERROR),
+      );
+
+      await request(app.getHttpServer())
+        .post('/liquidations/search')
+        .send({})
+        .expect(500);
+    });
   });
 
   describe('POST /liquidations/count', () => {
     it('should return 200 with count object', async () => {
-      mockLiquidationService.getLiquidationsCount.mockResolvedValue(42);
+      mockLiquidationService.getLiquidationsCount.mockResolvedValue(
+        succeed(42),
+      );
 
       const response = await request(app.getHttpServer())
         .post('/liquidations/count')
@@ -109,7 +126,9 @@ describe('LiquidationsController', () => {
     });
 
     it('should pass filters to service correctly', async () => {
-      mockLiquidationService.getLiquidationsCount.mockResolvedValue(10);
+      mockLiquidationService.getLiquidationsCount.mockResolvedValue(
+        succeed(10),
+      );
 
       const filters = {
         departments: ['75'],
@@ -124,12 +143,23 @@ describe('LiquidationsController', () => {
         filters,
       );
     });
+
+    it('should return 500 when service returns error', async () => {
+      mockLiquidationService.getLiquidationsCount.mockResolvedValue(
+        refuse(LiquidationServiceErrorReason.UNKNOWN_ERROR),
+      );
+
+      await request(app.getHttpServer())
+        .post('/liquidations/count')
+        .send({})
+        .expect(500);
+    });
   });
 
   describe('GET /liquidations/:id', () => {
     it('should return 200 with liquidation when found', async () => {
       mockLiquidationService.getLiquidationById.mockResolvedValue(
-        mockLiquidation,
+        succeed(mockLiquidation),
       );
 
       const response = await request(app.getHttpServer())
@@ -147,7 +177,9 @@ describe('LiquidationsController', () => {
     });
 
     it('should return 404 when liquidation not found', async () => {
-      mockLiquidationService.getLiquidationById.mockResolvedValue(null);
+      mockLiquidationService.getLiquidationById.mockResolvedValue(
+        refuse(LiquidationServiceErrorReason.NOT_FOUND),
+      );
 
       await request(app.getHttpServer())
         .get('/liquidations/non-existent')
@@ -162,7 +194,7 @@ describe('LiquidationsController', () => {
   describe('POST /liquidations/export', () => {
     it('should return CSV file with correct headers', async () => {
       const mockBlob = new Blob(['id,label\n1,Test'], { type: 'text/csv' });
-      mockLiquidationService.exportList.mockResolvedValue(mockBlob);
+      mockLiquidationService.exportList.mockResolvedValue(succeed(mockBlob));
 
       const response = await request(app.getHttpServer())
         .post('/liquidations/export')
@@ -180,7 +212,7 @@ describe('LiquidationsController', () => {
       const mockBlob = new Blob(['xlsx data'], {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       });
-      mockLiquidationService.exportList.mockResolvedValue(mockBlob);
+      mockLiquidationService.exportList.mockResolvedValue(succeed(mockBlob));
 
       const response = await request(app.getHttpServer())
         .post('/liquidations/export')
@@ -201,7 +233,7 @@ describe('LiquidationsController', () => {
 
     it('should pass filters to service when provided', async () => {
       const mockBlob = new Blob(['data']);
-      mockLiquidationService.exportList.mockResolvedValue(mockBlob);
+      mockLiquidationService.exportList.mockResolvedValue(succeed(mockBlob));
 
       const filters = { departments: ['75'] };
 
@@ -220,6 +252,28 @@ describe('LiquidationsController', () => {
       await request(app.getHttpServer())
         .post('/liquidations/export')
         .send({ format: 'pdf' })
+        .expect(400);
+    });
+
+    it('should return 400 when export limit exceeded', async () => {
+      mockLiquidationService.exportList.mockResolvedValue(
+        refuse(LiquidationServiceErrorReason.EXPORT_LIMIT_EXCEEDED),
+      );
+
+      await request(app.getHttpServer())
+        .post('/liquidations/export')
+        .send({ format: 'csv' })
+        .expect(400);
+    });
+
+    it('should return 400 for unsupported format from service', async () => {
+      mockLiquidationService.exportList.mockResolvedValue(
+        refuse(LiquidationServiceErrorReason.UNSUPPORTED_FORMAT),
+      );
+
+      await request(app.getHttpServer())
+        .post('/liquidations/export')
+        .send({ format: 'csv' })
         .expect(400);
     });
   });

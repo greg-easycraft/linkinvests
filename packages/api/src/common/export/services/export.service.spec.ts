@@ -11,10 +11,13 @@ describe('ExportService', () => {
     it('should return empty blob for empty data', async () => {
       const result = await exportService.exportToCSV([]);
 
-      expect(result).toBeInstanceOf(Blob);
-      expect(result.type).toBe('text/csv');
-      const text = await result.text();
-      expect(text).toBe('');
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toBeInstanceOf(Blob);
+        expect(result.data.type).toBe('text/csv');
+        const text = await result.data.text();
+        expect(text).toBe('');
+      }
     });
 
     it('should export data with headers', async () => {
@@ -25,12 +28,15 @@ describe('ExportService', () => {
 
       const result = await exportService.exportToCSV(data);
 
-      const text = await result.text();
-      const lines = text.split('\n');
+      expect(result.success).toBe(true);
+      if (result.success) {
+        const text = await result.data.text();
+        const lines = text.split('\n');
 
-      expect(lines[0]).toBe('"id","name","value"');
-      expect(lines[1]).toBe('"1","Test","100"');
-      expect(lines[2]).toBe('"2","Test2","200"');
+        expect(lines[0]).toBe('"id","name","value"');
+        expect(lines[1]).toBe('"1","Test","100"');
+        expect(lines[2]).toBe('"2","Test2","200"');
+      }
     });
 
     it('should use custom headers when provided', async () => {
@@ -39,10 +45,13 @@ describe('ExportService', () => {
 
       const result = await exportService.exportToCSV(data, customHeaders);
 
-      const text = await result.text();
-      const lines = text.split('\n');
+      expect(result.success).toBe(true);
+      if (result.success) {
+        const text = await result.data.text();
+        const lines = text.split('\n');
 
-      expect(lines[0]).toBe('"ID","Nom"');
+        expect(lines[0]).toBe('"ID","Nom"');
+      }
     });
 
     it('should handle null and undefined values', async () => {
@@ -50,10 +59,13 @@ describe('ExportService', () => {
 
       const result = await exportService.exportToCSV(data);
 
-      const text = await result.text();
-      const lines = text.split('\n');
+      expect(result.success).toBe(true);
+      if (result.success) {
+        const text = await result.data.text();
+        const lines = text.split('\n');
 
-      expect(lines[1]).toBe('"1","",""');
+        expect(lines[1]).toBe('"1","",""');
+      }
     });
 
     it('should escape double quotes in values', async () => {
@@ -61,10 +73,13 @@ describe('ExportService', () => {
 
       const result = await exportService.exportToCSV(data);
 
-      const text = await result.text();
-      const lines = text.split('\n');
+      expect(result.success).toBe(true);
+      if (result.success) {
+        const text = await result.data.text();
+        const lines = text.split('\n');
 
-      expect(lines[1]).toBe('"1","Test ""quoted"" value"');
+        expect(lines[1]).toBe('"1","Test ""quoted"" value"');
+      }
     });
 
     it('should handle object values by stringifying them', async () => {
@@ -72,13 +87,16 @@ describe('ExportService', () => {
 
       const result = await exportService.exportToCSV(data);
 
-      const text = await result.text();
-      const lines = text.split('\n');
+      expect(result.success).toBe(true);
+      if (result.success) {
+        const text = await result.data.text();
+        const lines = text.split('\n');
 
-      // Object is stringified and quotes are escaped
-      expect(lines[1]).toContain('"1"');
-      expect(lines[1]).toContain('key');
-      expect(lines[1]).toContain('value');
+        // Object is stringified and quotes are escaped
+        expect(lines[1]).toContain('"1"');
+        expect(lines[1]).toContain('key');
+        expect(lines[1]).toContain('value');
+      }
     });
 
     it('should handle array values by stringifying them', async () => {
@@ -86,10 +104,13 @@ describe('ExportService', () => {
 
       const result = await exportService.exportToCSV(data);
 
-      const text = await result.text();
-      const lines = text.split('\n');
+      expect(result.success).toBe(true);
+      if (result.success) {
+        const text = await result.data.text();
+        const lines = text.split('\n');
 
-      expect(lines[1]).toContain('[');
+        expect(lines[1]).toContain('[');
+      }
     });
 
     it('should preserve special characters', async () => {
@@ -97,8 +118,11 @@ describe('ExportService', () => {
 
       const result = await exportService.exportToCSV(data);
 
-      const text = await result.text();
-      expect(text).toContain('Café résumé');
+      expect(result.success).toBe(true);
+      if (result.success) {
+        const text = await result.data.text();
+        expect(text).toContain('Café résumé');
+      }
     });
 
     it('should handle numeric values', async () => {
@@ -106,10 +130,13 @@ describe('ExportService', () => {
 
       const result = await exportService.exportToCSV(data);
 
-      const text = await result.text();
-      const lines = text.split('\n');
+      expect(result.success).toBe(true);
+      if (result.success) {
+        const text = await result.data.text();
+        const lines = text.split('\n');
 
-      expect(lines[1]).toBe('"123.45","0"');
+        expect(lines[1]).toBe('"123.45","0"');
+      }
     });
 
     it('should handle boolean values', async () => {
@@ -117,10 +144,13 @@ describe('ExportService', () => {
 
       const result = await exportService.exportToCSV(data);
 
-      const text = await result.text();
-      const lines = text.split('\n');
+      expect(result.success).toBe(true);
+      if (result.success) {
+        const text = await result.data.text();
+        const lines = text.split('\n');
 
-      expect(lines[1]).toBe('"true","false"');
+        expect(lines[1]).toBe('"true","false"');
+      }
     });
 
     it('should set correct content type', async () => {
@@ -128,7 +158,10 @@ describe('ExportService', () => {
 
       const result = await exportService.exportToCSV(data);
 
-      expect(result.type).toBe('text/csv;charset=utf-8');
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data.type).toBe('text/csv;charset=utf-8');
+      }
     });
 
     it('should handle partial custom headers', async () => {
@@ -137,10 +170,13 @@ describe('ExportService', () => {
 
       const result = await exportService.exportToCSV(data, customHeaders);
 
-      const text = await result.text();
-      const lines = text.split('\n');
+      expect(result.success).toBe(true);
+      if (result.success) {
+        const text = await result.data.text();
+        const lines = text.split('\n');
 
-      expect(lines[0]).toBe('"ID","name","value"');
+        expect(lines[0]).toBe('"ID","name","value"');
+      }
     });
   });
 
@@ -150,10 +186,13 @@ describe('ExportService', () => {
 
       const result = await exportService.exportToXLSX(data);
 
-      expect(result).toBeInstanceOf(Blob);
-      expect(result.type).toBe(
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      );
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toBeInstanceOf(Blob);
+        expect(result.data.type).toBe(
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        );
+      }
     });
 
     it('should use custom headers when provided', async () => {
@@ -162,18 +201,24 @@ describe('ExportService', () => {
 
       const result = await exportService.exportToXLSX(data, customHeaders);
 
-      // Since current implementation uses CSV format internally
-      const text = await result.text();
-      expect(text).toContain('ID');
-      expect(text).toContain('Nom');
+      expect(result.success).toBe(true);
+      if (result.success) {
+        // Since current implementation uses CSV format internally
+        const text = await result.data.text();
+        expect(text).toContain('ID');
+        expect(text).toContain('Nom');
+      }
     });
 
     it('should return empty blob for empty data', async () => {
       const result = await exportService.exportToXLSX([]);
 
-      expect(result).toBeInstanceOf(Blob);
-      const text = await result.text();
-      expect(text).toBe('');
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toBeInstanceOf(Blob);
+        const text = await result.data.text();
+        expect(text).toBe('');
+      }
     });
   });
 
@@ -181,13 +226,17 @@ describe('ExportService', () => {
     it('should generate filename with csv extension', () => {
       const result = exportService.generateFilename('listings', 'csv');
 
-      expect(result).toMatch(/^listings_\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}-\d{3}Z\.csv$/);
+      expect(result).toMatch(
+        /^listings_\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}-\d{3}Z\.csv$/,
+      );
     });
 
     it('should generate filename with xlsx extension', () => {
       const result = exportService.generateFilename('auctions', 'xlsx');
 
-      expect(result).toMatch(/^auctions_\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}-\d{3}Z\.xlsx$/);
+      expect(result).toMatch(
+        /^auctions_\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}-\d{3}Z\.xlsx$/,
+      );
     });
 
     it('should include timestamp in ISO format', () => {
@@ -201,7 +250,10 @@ describe('ExportService', () => {
     });
 
     it('should handle prefix with special characters', () => {
-      const result = exportService.generateFilename('energy-diagnostics', 'csv');
+      const result = exportService.generateFilename(
+        'energy-diagnostics',
+        'csv',
+      );
 
       expect(result).toMatch(/^energy-diagnostics_/);
       expect(result).toMatch(/\.csv$/);

@@ -3,13 +3,20 @@ import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import * as schema from '@linkinvests/db';
 import type { DomainDbType } from '~/types/db';
+import {
+  ALL_ENERGY_DIAGNOSTICS,
+  ALL_AUCTIONS,
+  ALL_SUCCESSIONS,
+  ALL_LIQUIDATIONS,
+  ALL_LISTINGS,
+} from './fixtures';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 require('dotenv').config();
 
 const TEST_DB_URL = getDbUrl();
 
-export function useTestDb(): DomainDbType {
+export function useTestDb(autoInjectFixtures: boolean = true): DomainDbType {
   if (!TEST_DB_URL) {
     throw new Error('TEST_DATABASE_URL is not set');
   }
@@ -25,12 +32,18 @@ export function useTestDb(): DomainDbType {
     await db.delete(schema.opportunityListings);
   }
 
-  beforeAll(async () => {
+  beforeAll(() => {
     execSync(`DATABASE_URL=${TEST_DB_URL} npx drizzle-kit push --force`);
   });
 
   beforeEach(async () => {
     await resetDb();
+    if (!autoInjectFixtures) return;
+    await db.insert(schema.opportunityAuctions).values(ALL_AUCTIONS);
+    await db.insert(schema.opportunitySuccessions).values(ALL_SUCCESSIONS);
+    await db.insert(schema.opportunityLiquidations).values(ALL_LIQUIDATIONS);
+    await db.insert(schema.energyDiagnostics).values(ALL_ENERGY_DIAGNOSTICS);
+    await db.insert(schema.opportunityListings).values(ALL_LISTINGS);
   });
 
   afterAll(async () => {

@@ -1,13 +1,16 @@
+import type { OperationResult } from '~/common/utils/operation-result';
+import type { ExportServiceErrorReason } from './services/export.service';
+
 export type ExportFormat = 'csv' | 'xlsx';
 
 export interface IExportService {
   exportToCSV(
-    data: Record<string, unknown>[],
+    data: Array<Record<string, unknown>>,
     customHeaders?: Record<string, string>,
-  ): Promise<Blob>;
+  ): Promise<OperationResult<Blob, ExportServiceErrorReason>>;
   exportToXLSX(
-    data: Record<string, unknown>[],
+    data: Array<Record<string, unknown>>,
     customHeaders?: Record<string, string>,
-  ): Promise<Blob>;
+  ): Promise<OperationResult<Blob, ExportServiceErrorReason>>;
   generateFilename(prefix: string, format: ExportFormat): string;
 }

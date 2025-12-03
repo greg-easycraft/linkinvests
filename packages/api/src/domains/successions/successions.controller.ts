@@ -5,19 +5,24 @@ import {
   Body,
   Param,
   Res,
-  HttpStatus,
-  HttpException,
   StreamableFile,
+  NotFoundException,
+  BadRequestException,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { Response } from 'express';
-import { SuccessionService } from './services/succession.service';
+import {
+  SuccessionService,
+  SuccessionServiceErrorReason,
+} from './services/succession.service';
 import {
   successionFiltersSchema,
   successionExportRequestSchema,
   type SuccessionFilters,
   type SuccessionExportRequest,
 } from '@linkinvests/shared';
+import { isRefusal } from '~/common/utils/operation-result';
 
 @Controller('successions')
 export class SuccessionsController {
@@ -28,7 +33,11 @@ export class SuccessionsController {
     @Body(new ZodValidationPipe(successionFiltersSchema))
     filters: SuccessionFilters,
   ) {
-    return this.successionService.getSuccessionsData(filters);
+    const result = await this.successionService.getSuccessionsData(filters);
+    if (isRefusal(result)) {
+      throw new InternalServerErrorException();
+    }
+    return result.data;
   }
 
   @Post('count')
@@ -36,17 +45,25 @@ export class SuccessionsController {
     @Body(new ZodValidationPipe(successionFiltersSchema))
     filters: SuccessionFilters,
   ) {
-    const count = await this.successionService.getSuccessionsCount(filters);
-    return { count };
+    const result = await this.successionService.getSuccessionsCount(filters);
+    if (isRefusal(result)) {
+      throw new InternalServerErrorException();
+    }
+    return { count: result.data };
   }
 
   @Get(':id')
   async getById(@Param('id') id: string) {
-    const succession = await this.successionService.getSuccessionById(id);
-    if (!succession) {
-      throw new HttpException('Succession not found', HttpStatus.NOT_FOUND);
+    const result = await this.successionService.getSuccessionById(id);
+    if (isRefusal(result)) {
+      switch (result.reason) {
+        case SuccessionServiceErrorReason.NOT_FOUND:
+          throw new NotFoundException('Succession not found');
+        default:
+          throw new InternalServerErrorException();
+      }
     }
-    return succession;
+    return result.data;
   }
 
   @Post('export')
@@ -55,10 +72,23 @@ export class SuccessionsController {
     body: SuccessionExportRequest,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const blob = await this.successionService.exportList(
+    const result = await this.successionService.exportList(
       body.filters ?? {},
       body.format,
     );
+
+    if (isRefusal(result)) {
+      switch (result.reason) {
+        case SuccessionServiceErrorReason.EXPORT_LIMIT_EXCEEDED:
+          throw new BadRequestException(
+            'Export limit exceeded. Please refine your filters.',
+          );
+        case SuccessionServiceErrorReason.UNSUPPORTED_FORMAT:
+          throw new BadRequestException('Unsupported export format');
+        default:
+          throw new InternalServerErrorException();
+      }
+    }
 
     const contentType =
       body.format === 'csv'
@@ -72,7 +102,7 @@ export class SuccessionsController {
       'Content-Disposition': `attachment; filename="successions.${extension}"`,
     });
 
-    const buffer = Buffer.from(await blob.arrayBuffer());
+    const buffer = Buffer.from(await result.data.arrayBuffer());
     return new StreamableFile(buffer);
   }
 }

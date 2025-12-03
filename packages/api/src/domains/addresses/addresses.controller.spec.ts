@@ -7,6 +7,8 @@ import { AddressesController } from './addresses.controller';
 import type { AddressSearchResult } from '@linkinvests/shared';
 import { EnergyClass } from '@linkinvests/shared';
 import type { DiagnosticLink } from './lib.types';
+import { succeed, refuse } from '~/common/utils/operation-result';
+import { AddressSearchServiceErrorReason } from './services/address-search.service';
 
 describe('AddressesController', () => {
   let app: INestApplication;
@@ -60,9 +62,9 @@ describe('AddressesController', () => {
 
   describe('POST /addresses/search', () => {
     it('should return 200 with plausible addresses', async () => {
-      mockAddressSearchService.getPlausibleAddresses.mockResolvedValue([
-        mockAddressSearchResult,
-      ]);
+      mockAddressSearchService.getPlausibleAddresses.mockResolvedValue(
+        succeed([mockAddressSearchResult]),
+      );
 
       const input = {
         zipCode: '75001',
@@ -82,7 +84,9 @@ describe('AddressesController', () => {
     });
 
     it('should return empty array when no results found', async () => {
-      mockAddressSearchService.getPlausibleAddresses.mockResolvedValue([]);
+      mockAddressSearchService.getPlausibleAddresses.mockResolvedValue(
+        succeed([]),
+      );
 
       const input = {
         zipCode: '99999',
@@ -104,13 +108,30 @@ describe('AddressesController', () => {
         .send({ zipCode: '123' }) // Invalid: too short and missing required fields
         .expect(400);
     });
+
+    it('should return 500 when service returns error', async () => {
+      mockAddressSearchService.getPlausibleAddresses.mockResolvedValue(
+        refuse(AddressSearchServiceErrorReason.UNKNOWN_ERROR),
+      );
+
+      const input = {
+        zipCode: '75001',
+        energyClass: EnergyClass.F,
+        squareFootage: 75,
+      };
+
+      await request(app.getHttpServer())
+        .post('/addresses/search')
+        .send(input)
+        .expect(500);
+    });
   });
 
   describe('POST /addresses/link', () => {
     it('should return 200 with link results for auction', async () => {
-      mockAddressSearchService.searchAndLinkForOpportunity.mockResolvedValue([
-        mockDiagnosticLink,
-      ]);
+      mockAddressSearchService.searchAndLinkForOpportunity.mockResolvedValue(
+        succeed([mockDiagnosticLink]),
+      );
 
       const body = {
         input: {
@@ -142,9 +163,9 @@ describe('AddressesController', () => {
         ...mockDiagnosticLink,
         opportunityId: 'listing-123',
       };
-      mockAddressSearchService.searchAndLinkForOpportunity.mockResolvedValue([
-        listingLink,
-      ]);
+      mockAddressSearchService.searchAndLinkForOpportunity.mockResolvedValue(
+        succeed([listingLink]),
+      );
 
       const body = {
         input: {
@@ -199,13 +220,34 @@ describe('AddressesController', () => {
         })
         .expect(400);
     });
+
+    it('should return 500 when service returns error', async () => {
+      mockAddressSearchService.searchAndLinkForOpportunity.mockResolvedValue(
+        refuse(AddressSearchServiceErrorReason.UNKNOWN_ERROR),
+      );
+
+      const body = {
+        input: {
+          zipCode: '75001',
+          energyClass: EnergyClass.F,
+          squareFootage: 75,
+        },
+        opportunityId: '550e8400-e29b-41d4-a716-446655440000',
+        opportunityType: 'auction',
+      };
+
+      await request(app.getHttpServer())
+        .post('/addresses/link')
+        .send(body)
+        .expect(500);
+    });
   });
 
   describe('GET /addresses/links/:opportunityId', () => {
     it('should return 200 with diagnostic links for auction', async () => {
-      mockAddressSearchService.getDiagnosticLinks.mockResolvedValue([
-        mockDiagnosticLink,
-      ]);
+      mockAddressSearchService.getDiagnosticLinks.mockResolvedValue(
+        succeed([mockDiagnosticLink]),
+      );
 
       const response = await request(app.getHttpServer())
         .get('/addresses/links/550e8400-e29b-41d4-a716-446655440000')
@@ -220,9 +262,9 @@ describe('AddressesController', () => {
     });
 
     it('should return 200 with diagnostic links for listing', async () => {
-      mockAddressSearchService.getDiagnosticLinks.mockResolvedValue([
-        mockDiagnosticLink,
-      ]);
+      mockAddressSearchService.getDiagnosticLinks.mockResolvedValue(
+        succeed([mockDiagnosticLink]),
+      );
 
       await request(app.getHttpServer())
         .get('/addresses/links/550e8400-e29b-41d4-a716-446655440001')
@@ -236,7 +278,9 @@ describe('AddressesController', () => {
     });
 
     it('should return empty array when no links found', async () => {
-      mockAddressSearchService.getDiagnosticLinks.mockResolvedValue([]);
+      mockAddressSearchService.getDiagnosticLinks.mockResolvedValue(
+        succeed([]),
+      );
 
       const response = await request(app.getHttpServer())
         .get('/addresses/links/550e8400-e29b-41d4-a716-446655440002')
@@ -257,6 +301,17 @@ describe('AddressesController', () => {
         .get('/addresses/links/550e8400-e29b-41d4-a716-446655440000')
         .query({ opportunityType: 'invalid' })
         .expect(400);
+    });
+
+    it('should return 500 when service returns error', async () => {
+      mockAddressSearchService.getDiagnosticLinks.mockResolvedValue(
+        refuse(AddressSearchServiceErrorReason.UNKNOWN_ERROR),
+      );
+
+      await request(app.getHttpServer())
+        .get('/addresses/links/550e8400-e29b-41d4-a716-446655440000')
+        .query({ opportunityType: 'auction' })
+        .expect(500);
     });
   });
 });

@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Query,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { AddressSearchService } from './services/address-search.service';
 import {
@@ -9,6 +17,7 @@ import {
   type AddressLinkRequest,
   type GetDiagnosticLinksQuery,
 } from '@linkinvests/shared';
+import { isRefusal, isSuccess } from '~/common/utils/operation-result';
 
 @Controller('addresses')
 export class AddressesController {
@@ -19,7 +28,11 @@ export class AddressesController {
     @Body(new ZodValidationPipe(addressSearchInputSchema))
     input: AddressSearchInput,
   ) {
-    return this.addressSearchService.getPlausibleAddresses(input);
+    const result = await this.addressSearchService.getPlausibleAddresses(input);
+    if (isRefusal(result) || !isSuccess(result)) {
+      throw new InternalServerErrorException();
+    }
+    return result.data;
   }
 
   @Post('link')
@@ -27,11 +40,15 @@ export class AddressesController {
     @Body(new ZodValidationPipe(addressLinkRequestSchema))
     body: AddressLinkRequest,
   ) {
-    return this.addressSearchService.searchAndLinkForOpportunity(
+    const result = await this.addressSearchService.searchAndLinkForOpportunity(
       body.input,
       body.opportunityId,
       body.opportunityType,
     );
+    if (isRefusal(result) || !isSuccess(result)) {
+      throw new InternalServerErrorException();
+    }
+    return result.data;
   }
 
   @Get('links/:opportunityId')
@@ -40,9 +57,14 @@ export class AddressesController {
     @Query(new ZodValidationPipe(getDiagnosticLinksQuerySchema))
     query: GetDiagnosticLinksQuery,
   ) {
-    return this.addressSearchService.getDiagnosticLinks(
+    const result = await this.addressSearchService.getDiagnosticLinks(
       opportunityId,
       query.opportunityType,
     );
+
+    if (isRefusal(result) || !isSuccess(result)) {
+      throw new InternalServerErrorException();
+    }
+    return result.data;
   }
 }

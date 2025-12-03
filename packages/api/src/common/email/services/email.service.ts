@@ -1,10 +1,22 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Resend } from 'resend';
 import { CONFIG_TOKEN, type ConfigType } from '~/common/config';
+import {
+  type OperationResult,
+  succeed,
+  refuse,
+} from '~/common/utils/operation-result';
+
+export enum EmailServiceErrorReason {
+  SEND_FAILED = 'SEND_FAILED',
+  UNKNOWN_ERROR = 'UNKNOWN_ERROR',
+}
 
 @Injectable()
 export class EmailService {
+  private readonly logger = new Logger(EmailService.name);
   private readonly resend: Resend;
+
   constructor(@Inject(CONFIG_TOKEN) private readonly config: ConfigType) {
     this.resend = new Resend(this.config.RESEND_API_KEY);
   }
@@ -13,8 +25,9 @@ export class EmailService {
     userEmail: string,
     url: string,
     userName?: string,
-  ): Promise<void> {
-    const body = `
+  ): Promise<OperationResult<void, EmailServiceErrorReason>> {
+    try {
+      const body = `
             <!DOCTYPE html>
             <html>
               <head>
@@ -56,14 +69,20 @@ export class EmailService {
             </html>
     `;
 
-    const success = await this.sendEmail(
-      userEmail,
-      'Réinitialisation de mot de passe - LinkInvests',
-      body,
-    );
+      const success = await this.sendEmail(
+        userEmail,
+        'Réinitialisation de mot de passe - LinkInvests',
+        body,
+      );
 
-    if (!success) {
-      throw new Error('Failed to send reset password email');
+      if (!success) {
+        return refuse(EmailServiceErrorReason.SEND_FAILED);
+      }
+
+      return succeed(undefined);
+    } catch (error) {
+      this.logger.error('Failed to send reset password email', error);
+      return refuse(EmailServiceErrorReason.UNKNOWN_ERROR);
     }
   }
 
@@ -71,8 +90,9 @@ export class EmailService {
     userEmail: string,
     url: string,
     userName?: string,
-  ): Promise<void> {
-    const body = `
+  ): Promise<OperationResult<void, EmailServiceErrorReason>> {
+    try {
+      const body = `
             <!DOCTYPE html>
             <html>
               <head>
@@ -110,14 +130,20 @@ export class EmailService {
             </html>
           `;
 
-    const success = await this.sendEmail(
-      userEmail,
-      'Vérifiez votre email - LinkInvests',
-      body,
-    );
+      const success = await this.sendEmail(
+        userEmail,
+        'Vérifiez votre email - LinkInvests',
+        body,
+      );
 
-    if (!success) {
-      throw new Error('Failed to send verification email');
+      if (!success) {
+        return refuse(EmailServiceErrorReason.SEND_FAILED);
+      }
+
+      return succeed(undefined);
+    } catch (error) {
+      this.logger.error('Failed to send verification email', error);
+      return refuse(EmailServiceErrorReason.UNKNOWN_ERROR);
     }
   }
 

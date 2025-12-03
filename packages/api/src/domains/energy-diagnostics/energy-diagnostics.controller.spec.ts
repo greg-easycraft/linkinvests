@@ -2,9 +2,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { mockClass } from '~/test-utils/mock-class';
-import { EnergyDiagnosticsService } from './services/energy-diagnostics.service';
+import {
+  EnergyDiagnosticsService,
+  EnergyDiagnosticsServiceErrorReason,
+} from './services/energy-diagnostics.service';
 import { EnergyDiagnosticsController } from './energy-diagnostics.controller';
 import type { EnergyDiagnostic } from '@linkinvests/shared';
+import { succeed, refuse } from '~/common/utils/operation-result';
 
 describe('EnergyDiagnosticsController', () => {
   let app: INestApplication;
@@ -56,7 +60,7 @@ describe('EnergyDiagnosticsController', () => {
   describe('POST /energy-diagnostics/search', () => {
     it('should return 200 with paginated data when service succeeds', async () => {
       mockEnergyDiagnosticsService.getEnergyDiagnosticsData.mockResolvedValue(
-        mockPaginatedResponse,
+        succeed(mockPaginatedResponse),
       );
 
       const response = await request(app.getHttpServer())
@@ -81,7 +85,7 @@ describe('EnergyDiagnosticsController', () => {
 
     it('should pass filters to service correctly', async () => {
       mockEnergyDiagnosticsService.getEnergyDiagnosticsData.mockResolvedValue(
-        mockPaginatedResponse,
+        succeed(mockPaginatedResponse),
       );
 
       const filters = {
@@ -99,12 +103,23 @@ describe('EnergyDiagnosticsController', () => {
         mockEnergyDiagnosticsService.getEnergyDiagnosticsData,
       ).toHaveBeenCalledWith(filters);
     });
+
+    it('should return 500 when service returns error', async () => {
+      mockEnergyDiagnosticsService.getEnergyDiagnosticsData.mockResolvedValue(
+        refuse(EnergyDiagnosticsServiceErrorReason.UNKNOWN_ERROR),
+      );
+
+      await request(app.getHttpServer())
+        .post('/energy-diagnostics/search')
+        .send({})
+        .expect(500);
+    });
   });
 
   describe('POST /energy-diagnostics/count', () => {
     it('should return 200 with count object', async () => {
       mockEnergyDiagnosticsService.getEnergyDiagnosticsCount.mockResolvedValue(
-        42,
+        succeed(42),
       );
 
       const response = await request(app.getHttpServer())
@@ -120,7 +135,7 @@ describe('EnergyDiagnosticsController', () => {
 
     it('should pass filters to service correctly', async () => {
       mockEnergyDiagnosticsService.getEnergyDiagnosticsCount.mockResolvedValue(
-        10,
+        succeed(10),
       );
 
       const filters = {
@@ -136,12 +151,23 @@ describe('EnergyDiagnosticsController', () => {
         mockEnergyDiagnosticsService.getEnergyDiagnosticsCount,
       ).toHaveBeenCalledWith(filters);
     });
+
+    it('should return 500 when service returns error', async () => {
+      mockEnergyDiagnosticsService.getEnergyDiagnosticsCount.mockResolvedValue(
+        refuse(EnergyDiagnosticsServiceErrorReason.UNKNOWN_ERROR),
+      );
+
+      await request(app.getHttpServer())
+        .post('/energy-diagnostics/count')
+        .send({})
+        .expect(500);
+    });
   });
 
   describe('GET /energy-diagnostics/:id', () => {
     it('should return 200 with energy diagnostic when found', async () => {
       mockEnergyDiagnosticsService.getEnergyDiagnosticById.mockResolvedValue(
-        mockEnergyDiagnostic,
+        succeed(mockEnergyDiagnostic),
       );
 
       const response = await request(app.getHttpServer())
@@ -160,7 +186,7 @@ describe('EnergyDiagnosticsController', () => {
 
     it('should return 404 when energy diagnostic not found', async () => {
       mockEnergyDiagnosticsService.getEnergyDiagnosticById.mockResolvedValue(
-        null,
+        refuse(EnergyDiagnosticsServiceErrorReason.NOT_FOUND),
       );
 
       await request(app.getHttpServer())
@@ -176,7 +202,7 @@ describe('EnergyDiagnosticsController', () => {
   describe('GET /energy-diagnostics/external/:externalId', () => {
     it('should return 200 with energy diagnostic when found by external ID', async () => {
       mockEnergyDiagnosticsService.getEnergyDiagnosticByExternalId.mockResolvedValue(
-        mockEnergyDiagnostic,
+        succeed(mockEnergyDiagnostic),
       );
 
       const response = await request(app.getHttpServer())
@@ -195,7 +221,7 @@ describe('EnergyDiagnosticsController', () => {
 
     it('should return 404 when energy diagnostic not found by external ID', async () => {
       mockEnergyDiagnosticsService.getEnergyDiagnosticByExternalId.mockResolvedValue(
-        null,
+        refuse(EnergyDiagnosticsServiceErrorReason.NOT_FOUND),
       );
 
       await request(app.getHttpServer())
@@ -211,7 +237,9 @@ describe('EnergyDiagnosticsController', () => {
   describe('POST /energy-diagnostics/export', () => {
     it('should return CSV file with correct headers', async () => {
       const mockBlob = new Blob(['id,label\n1,Test'], { type: 'text/csv' });
-      mockEnergyDiagnosticsService.exportList.mockResolvedValue(mockBlob);
+      mockEnergyDiagnosticsService.exportList.mockResolvedValue(
+        succeed(mockBlob),
+      );
 
       const response = await request(app.getHttpServer())
         .post('/energy-diagnostics/export')
@@ -232,7 +260,9 @@ describe('EnergyDiagnosticsController', () => {
       const mockBlob = new Blob(['xlsx data'], {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       });
-      mockEnergyDiagnosticsService.exportList.mockResolvedValue(mockBlob);
+      mockEnergyDiagnosticsService.exportList.mockResolvedValue(
+        succeed(mockBlob),
+      );
 
       const response = await request(app.getHttpServer())
         .post('/energy-diagnostics/export')
@@ -253,7 +283,9 @@ describe('EnergyDiagnosticsController', () => {
 
     it('should pass filters to service when provided', async () => {
       const mockBlob = new Blob(['data']);
-      mockEnergyDiagnosticsService.exportList.mockResolvedValue(mockBlob);
+      mockEnergyDiagnosticsService.exportList.mockResolvedValue(
+        succeed(mockBlob),
+      );
 
       const filters = { departments: ['75'] };
 
@@ -272,6 +304,28 @@ describe('EnergyDiagnosticsController', () => {
       await request(app.getHttpServer())
         .post('/energy-diagnostics/export')
         .send({ format: 'pdf' })
+        .expect(400);
+    });
+
+    it('should return 400 when export limit exceeded', async () => {
+      mockEnergyDiagnosticsService.exportList.mockResolvedValue(
+        refuse(EnergyDiagnosticsServiceErrorReason.EXPORT_LIMIT_EXCEEDED),
+      );
+
+      await request(app.getHttpServer())
+        .post('/energy-diagnostics/export')
+        .send({ format: 'csv' })
+        .expect(400);
+    });
+
+    it('should return 400 for unsupported format from service', async () => {
+      mockEnergyDiagnosticsService.exportList.mockResolvedValue(
+        refuse(EnergyDiagnosticsServiceErrorReason.UNSUPPORTED_FORMAT),
+      );
+
+      await request(app.getHttpServer())
+        .post('/energy-diagnostics/export')
+        .send({ format: 'csv' })
         .expect(400);
     });
   });

@@ -1,9 +1,7 @@
-import { AuctionService } from './auction.service';
+import { AuctionService, AuctionServiceErrorReason } from './auction.service';
 import type { AuctionRepository } from '../lib.types';
-import type {
-  IExportService,
-  ExportFormat,
-} from '~/common/export/export.types';
+import type { IExportService } from '~/common/export/export.types';
+import type { ExportService } from '~/common/export/services/export.service';
 import type { IOpportunityFilters } from '~/types';
 import {
   OpportunityType,
@@ -12,6 +10,7 @@ import {
 } from '@linkinvests/shared';
 import { DEFAULT_PAGE_SIZE } from '~/constants';
 import { getOpportunityHeaders } from '~/common/export/services/export-headers.service';
+import { succeed } from '~/common/utils/operation-result';
 
 // Mock the export-headers service
 jest.mock('~/common/export/services/export-headers.service', () => ({
@@ -46,6 +45,8 @@ describe('AuctionService', () => {
     updatedAt: new Date('2024-01-01'),
   };
 
+  const mockBlob = new Blob(['test data']);
+
   beforeEach(() => {
     jest.clearAllMocks();
 
@@ -65,7 +66,7 @@ describe('AuctionService', () => {
     // Initialize service with mocked dependencies
     auctionService = new AuctionService(
       mockAuctionRepository,
-      mockExportService,
+      mockExportService as unknown as ExportService,
     );
 
     // Mock export headers service
@@ -83,11 +84,14 @@ describe('AuctionService', () => {
 
       const result = await auctionService.getAuctionsData();
 
-      expect(result).toEqual({
-        opportunities: mockAuctions,
-        page: 1,
-        pageSize: DEFAULT_PAGE_SIZE,
-      });
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toEqual({
+          opportunities: mockAuctions,
+          page: 1,
+          pageSize: DEFAULT_PAGE_SIZE,
+        });
+      }
       expect(mockAuctionRepository.findAll).toHaveBeenCalledWith(undefined, {
         limit: DEFAULT_PAGE_SIZE,
         offset: 0,
@@ -101,11 +105,14 @@ describe('AuctionService', () => {
 
       const result = await auctionService.getAuctionsData(filters);
 
-      expect(result).toEqual({
-        opportunities: mockAuctions,
-        page: 3,
-        pageSize: 25,
-      });
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toEqual({
+          opportunities: mockAuctions,
+          page: 3,
+          pageSize: 25,
+        });
+      }
       expect(mockAuctionRepository.findAll).toHaveBeenCalledWith(
         filters,
         { limit: 25, offset: 50 }, // (3-1) * 25
@@ -130,13 +137,16 @@ describe('AuctionService', () => {
       });
     });
 
-    it('should handle repository errors', async () => {
+    it('should return error on repository failure', async () => {
       const error = new Error('Repository error');
       mockAuctionRepository.findAll.mockRejectedValue(error);
 
-      await expect(auctionService.getAuctionsData()).rejects.toThrow(
-        'Repository error',
-      );
+      const result = await auctionService.getAuctionsData();
+
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.reason).toBe(AuctionServiceErrorReason.UNKNOWN_ERROR);
+      }
     });
   });
 
@@ -147,7 +157,10 @@ describe('AuctionService', () => {
 
       const result = await auctionService.getAuctionsCount();
 
-      expect(result).toBe(expectedCount);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toBe(expectedCount);
+      }
       expect(mockAuctionRepository.count).toHaveBeenCalledWith(undefined);
     });
 
@@ -158,17 +171,23 @@ describe('AuctionService', () => {
 
       const result = await auctionService.getAuctionsCount(filters);
 
-      expect(result).toBe(expectedCount);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toBe(expectedCount);
+      }
       expect(mockAuctionRepository.count).toHaveBeenCalledWith(filters);
     });
 
-    it('should handle repository count errors', async () => {
+    it('should return error on repository count failure', async () => {
       const error = new Error('Count error');
       mockAuctionRepository.count.mockRejectedValue(error);
 
-      await expect(auctionService.getAuctionsCount()).rejects.toThrow(
-        'Count error',
-      );
+      const result = await auctionService.getAuctionsCount();
+
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.reason).toBe(AuctionServiceErrorReason.UNKNOWN_ERROR);
+      }
     });
   });
 
@@ -179,28 +198,37 @@ describe('AuctionService', () => {
 
       const result = await auctionService.getAuctionById(auctionId);
 
-      expect(result).toBe(mockAuction);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toBe(mockAuction);
+      }
       expect(mockAuctionRepository.findById).toHaveBeenCalledWith(auctionId);
     });
 
-    it('should return null when auction not found', async () => {
+    it('should return NOT_FOUND when auction not found', async () => {
       const auctionId = 'non-existent-auction';
       mockAuctionRepository.findById.mockResolvedValue(null);
 
       const result = await auctionService.getAuctionById(auctionId);
 
-      expect(result).toBeNull();
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.reason).toBe(AuctionServiceErrorReason.NOT_FOUND);
+      }
       expect(mockAuctionRepository.findById).toHaveBeenCalledWith(auctionId);
     });
 
-    it('should handle repository findById errors', async () => {
+    it('should return error on repository findById failure', async () => {
       const error = new Error('Find error');
       const auctionId = 'auction-123';
       mockAuctionRepository.findById.mockRejectedValue(error);
 
-      await expect(auctionService.getAuctionById(auctionId)).rejects.toThrow(
-        'Find error',
-      );
+      const result = await auctionService.getAuctionById(auctionId);
+
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.reason).toBe(AuctionServiceErrorReason.UNKNOWN_ERROR);
+      }
     });
   });
 
@@ -210,12 +238,11 @@ describe('AuctionService', () => {
       mockAuction,
       { ...mockAuction, id: 'auction-2' },
     ];
-    const mockBlob = new Blob(['test data']);
 
     beforeEach(() => {
       mockAuctionRepository.findAll.mockResolvedValue(mockAuctionsForExport);
-      mockExportService.exportToCSV.mockResolvedValue(mockBlob);
-      mockExportService.exportToXLSX.mockResolvedValue(mockBlob);
+      mockExportService.exportToCSV.mockResolvedValue(succeed(mockBlob));
+      mockExportService.exportToXLSX.mockResolvedValue(succeed(mockBlob));
     });
 
     it('should export to CSV successfully when under limit', async () => {
@@ -223,7 +250,10 @@ describe('AuctionService', () => {
 
       const result = await auctionService.exportList(filters, 'csv');
 
-      expect(result).toBe(mockBlob);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toBe(mockBlob);
+      }
       expect(mockAuctionRepository.count).toHaveBeenCalledWith(filters);
       expect(mockAuctionRepository.findAll).toHaveBeenCalledWith(filters);
       expect(getOpportunityHeaders).toHaveBeenCalledWith(
@@ -240,67 +270,97 @@ describe('AuctionService', () => {
 
       const result = await auctionService.exportList(filters, 'xlsx');
 
-      expect(result).toBe(mockBlob);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toBe(mockBlob);
+      }
       expect(mockExportService.exportToXLSX).toHaveBeenCalledWith(
         mockAuctionsForExport,
         { title: 'Titre', address: 'Adresse', price: 'Prix' },
       );
     });
 
-    it('should throw error when export limit exceeded', async () => {
+    it('should return error when export limit exceeded', async () => {
       mockAuctionRepository.count.mockResolvedValue(600); // Over 500 limit
 
-      await expect(auctionService.exportList(filters, 'csv')).rejects.toThrow(
-        'Export limit exceeded. Found 600 items, maximum allowed is 500. Please refine your filters.',
-      );
+      const result = await auctionService.exportList(filters, 'csv');
+
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.reason).toBe(
+          AuctionServiceErrorReason.EXPORT_LIMIT_EXCEEDED,
+        );
+      }
 
       expect(mockAuctionRepository.findAll).not.toHaveBeenCalled();
       expect(mockExportService.exportToCSV).not.toHaveBeenCalled();
     });
 
-    it('should throw error for unsupported export format', async () => {
+    it('should return error for unsupported export format', async () => {
       mockAuctionRepository.count.mockResolvedValue(100);
 
-      await expect(
-        auctionService.exportList(filters, 'pdf' as ExportFormat),
-      ).rejects.toThrow('Unsupported export format: pdf');
+      const result = await auctionService.exportList(
+        filters,
+        'pdf' as 'csv' | 'xlsx',
+      );
+
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.reason).toBe(
+          AuctionServiceErrorReason.UNSUPPORTED_FORMAT,
+        );
+      }
     });
 
-    it('should handle export service errors', async () => {
+    it('should return error on export service failure', async () => {
       mockAuctionRepository.count.mockResolvedValue(100);
       const exportError = new Error('Export failed');
       mockExportService.exportToCSV.mockRejectedValue(exportError);
 
-      await expect(auctionService.exportList(filters, 'csv')).rejects.toThrow(
-        'Export failed',
-      );
+      const result = await auctionService.exportList(filters, 'csv');
+
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.reason).toBe(AuctionServiceErrorReason.UNKNOWN_ERROR);
+      }
     });
 
-    it('should handle repository errors during export', async () => {
+    it('should return error on repository failure during export', async () => {
       mockAuctionRepository.count.mockResolvedValue(100);
       const repositoryError = new Error('Repository export error');
       mockAuctionRepository.findAll.mockRejectedValue(repositoryError);
 
-      await expect(auctionService.exportList(filters, 'csv')).rejects.toThrow(
-        'Repository export error',
-      );
+      const result = await auctionService.exportList(filters, 'csv');
+
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.reason).toBe(AuctionServiceErrorReason.UNKNOWN_ERROR);
+      }
     });
 
-    it('should validate export limit is exactly 500', async () => {
+    it('should export successfully when count is exactly 500', async () => {
       mockAuctionRepository.count.mockResolvedValue(500); // Exactly at limit
 
       const result = await auctionService.exportList(filters, 'csv');
 
-      expect(result).toBe(mockBlob);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toBe(mockBlob);
+      }
       expect(mockExportService.exportToCSV).toHaveBeenCalled();
     });
 
-    it('should reject when count is 501 (just over limit)', async () => {
+    it('should return error when count is 501 (just over limit)', async () => {
       mockAuctionRepository.count.mockResolvedValue(501); // Just over limit
 
-      await expect(auctionService.exportList(filters, 'csv')).rejects.toThrow(
-        'Export limit exceeded. Found 501 items, maximum allowed is 500. Please refine your filters.',
-      );
+      const result = await auctionService.exportList(filters, 'csv');
+
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.reason).toBe(
+          AuctionServiceErrorReason.EXPORT_LIMIT_EXCEEDED,
+        );
+      }
     });
   });
 });
