@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Resend } from 'resend';
-import { CONFIG_TOKEN, type ConfigType } from '~/common/config/index';
+import { CONFIG_TOKEN, type ConfigType } from '~/common/config';
 
 @Injectable()
 export class EmailService {

@@ -6,7 +6,7 @@ import { LiquidationRepository } from '../lib.types';
 import type { ILiquidationFilters, PaginationFilters } from '~/types/filters';
 import { calculateStartDate } from '~/constants/date-periods';
 import type { Liquidation } from '@linkinvests/shared';
-import { DATABASE_TOKEN } from '~/common/database/index';
+import { DATABASE_TOKEN } from '~/common/database';
 
 @Injectable()
 export class DrizzleLiquidationRepository extends LiquidationRepository {

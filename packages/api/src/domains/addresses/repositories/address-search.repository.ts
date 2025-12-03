@@ -5,7 +5,7 @@ import { energyDiagnostics, auctionEnergyDiagnosticLinks, listingEnergyDiagnosti
 import { MAX_NUMBER_OF_RESULTS, AddressSearchRepository, type DiagnosticLinkInput, type DiagnosticLink } from '../lib.types';
 import type { DiagnosticQueryInput } from '../lib.types';
 import type { EnergyDiagnostic } from '@linkinvests/shared';
-import { DATABASE_TOKEN } from '~/common/database/index';
+import { DATABASE_TOKEN } from '~/common/database';
 
 @Injectable()
 export class DrizzleAddressSearchRepository extends AddressSearchRepository {

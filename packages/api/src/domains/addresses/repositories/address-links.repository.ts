@@ -3,7 +3,7 @@ import { desc, eq } from 'drizzle-orm';
 import type { DomainDbType } from '~/types/db';
 import { energyDiagnostics, auctionEnergyDiagnosticLinks, listingEnergyDiagnosticLinks } from '@linkinvests/db';
 import { type DiagnosticLinkInput, type DiagnosticLink, AddressLinksRepository } from '../lib.types';
-import { DATABASE_TOKEN } from '~/common/database/index';
+import { DATABASE_TOKEN } from '~/common/database';
 
 @Injectable()
 export class DrizzleAddressLinksRepository extends AddressLinksRepository {

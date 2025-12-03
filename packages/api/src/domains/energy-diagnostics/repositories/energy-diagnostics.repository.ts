@@ -7,7 +7,7 @@ import type { IEnergyDiagnosticFilters, PaginationFilters } from '~/types/filter
 import { calculateStartDate } from '~/constants/date-periods';
 import type { EnergyDiagnostic } from '@linkinvests/shared';
 import { DEFAULT_PAGE_SIZE } from '~/constants/filters';
-import { DATABASE_TOKEN } from '~/common/database/index';
+import { DATABASE_TOKEN } from '~/common/database';
 
 @Injectable()
 export class DrizzleEnergyDiagnosticsRepository extends EnergyDiagnosticsRepository {

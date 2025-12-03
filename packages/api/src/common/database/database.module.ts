@@ -3,7 +3,7 @@ import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import * as schema from '@linkinvests/db';
 import { DATABASE_TOKEN } from './database.tokens';
-import { CONFIG_TOKEN, type ConfigType } from '../config/index';
+import { CONFIG_TOKEN, type ConfigType } from '../config';
 
 @Global()
 @Module({

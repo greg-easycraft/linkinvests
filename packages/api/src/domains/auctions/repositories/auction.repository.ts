@@ -6,7 +6,7 @@ import { AuctionRepository } from '../lib.types';
 import type { IAuctionFilters, PaginationFilters } from '~/types/filters';
 import { calculateStartDate } from '~/constants/date-periods';
 import { AuctionOccupationStatus, AuctionSource, PropertyType, EnergyClass, type Auction } from '@linkinvests/shared';
-import { DATABASE_TOKEN } from '~/common/database/index';
+import { DATABASE_TOKEN } from '~/common/database';
 
 @Injectable()
 export class DrizzleAuctionRepository extends AuctionRepository {
