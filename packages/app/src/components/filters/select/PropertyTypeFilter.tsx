@@ -12,7 +12,7 @@ export function PropertyTypeFilter({
   onValueChange,
 }: PropertyTypeFilterProps): React.ReactElement {
   const handleToggle = (propertyType: PropertyType) => {
-    const currentValues = value ?? []
+    const currentValues = value
     const newValues = currentValues.includes(propertyType)
       ? currentValues.filter((v) => v !== propertyType)
       : [...currentValues, propertyType]
@@ -28,7 +28,7 @@ export function PropertyTypeFilter({
           <div key={option.value} className="flex items-center space-x-2">
             <Checkbox
               id={`property-type-${option.value}`}
-              checked={value?.includes(option.value) ?? false}
+              checked={value.includes(option.value)}
               onCheckedChange={() => handleToggle(option.value)}
             />
             <label

@@ -143,7 +143,7 @@ export function OpportunityCard({
                     border: 'none',
                   }}
                 >
-                  {TYPE_LABELS[type] ?? type}
+                  {TYPE_LABELS[type]}
                 </Badge>
                 {externalUrl && (
                   <Button

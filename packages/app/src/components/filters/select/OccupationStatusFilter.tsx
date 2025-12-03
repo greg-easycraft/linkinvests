@@ -12,10 +12,9 @@ export function OccupationStatusFilter({
   onValueChange,
 }: OccupationStatusFilterProps): React.ReactElement {
   const handleToggle = (status: AuctionOccupationStatus) => {
-    const currentValues = value ?? []
-    const newValues = currentValues.includes(status)
-      ? currentValues.filter((v) => v !== status)
-      : [...currentValues, status]
+    const newValues = value.includes(status)
+      ? value.filter((v) => v !== status)
+      : [...value, status]
 
     onValueChange(newValues.length > 0 ? newValues : undefined)
   }
@@ -30,7 +29,7 @@ export function OccupationStatusFilter({
           <div key={option.value} className="flex items-center space-x-2">
             <Checkbox
               id={`occupation-${option.value}`}
-              checked={value?.includes(option.value) ?? false}
+              checked={value.includes(option.value)}
               onCheckedChange={() => handleToggle(option.value)}
             />
             <label

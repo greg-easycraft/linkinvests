@@ -29,7 +29,7 @@ export function OpportunityHeader({
     <div className="flex items-center justify-between mb-4">
       <div className="flex items-center gap-4">
         <h1 className="text-2xl font-bold">
-          {TYPE_LABELS[opportunityType] ?? opportunityType}
+          {TYPE_LABELS[opportunityType]}
         </h1>
         <div className="text-sm text-muted-foreground">
           {isCountLoading ? (

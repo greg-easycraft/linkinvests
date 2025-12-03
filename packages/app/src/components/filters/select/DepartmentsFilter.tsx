@@ -28,11 +28,11 @@ export function DepartmentsFilter({
   }, [searchQuery])
 
   const selectedDepartments = useMemo(() => {
-    return getDepartmentsByIds(value ?? [])
+    return getDepartmentsByIds(value)
   }, [value])
 
   const handleToggle = (departmentId: string) => {
-    const currentValues = value ?? []
+    const currentValues = value
     const newValues = currentValues.includes(departmentId)
       ? currentValues.filter((v) => v !== departmentId)
       : [...currentValues, departmentId]
@@ -41,7 +41,7 @@ export function DepartmentsFilter({
   }
 
   const handleRemove = (departmentId: string) => {
-    const newValues = (value ?? []).filter((v) => v !== departmentId)
+    const newValues = (value).filter((v) => v !== departmentId)
     onValueChange(newValues.length > 0 ? newValues : undefined)
   }
 
@@ -75,12 +75,12 @@ export function DepartmentsFilter({
                 <div
                   key={dept.id}
                   className={`flex items-center justify-between px-2 py-1.5 rounded cursor-pointer hover:bg-accent ${
-                    value?.includes(dept.id) ? 'bg-accent' : ''
+                    value.includes(dept.id) ? 'bg-accent' : ''
                   }`}
                   onClick={() => handleToggle(dept.id)}
                 >
                   <span className="text-sm">{dept.label}</span>
-                  {value?.includes(dept.id) && (
+                  {value.includes(dept.id) && (
                     <span className="text-primary">✓</span>
                   )}
                 </div>
