@@ -1,4 +1,4 @@
-import type { DatePeriod } from '~/types/filters.js';
+import type { DatePeriod } from '~/types/filters';
 
 export function calculateStartDate(period: DatePeriod): Date {
   const now = new Date();

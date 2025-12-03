@@ -1,13 +1,13 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { and, eq, gte, inArray, lte, sql, type SQL } from 'drizzle-orm';
-import type { DomainDbType } from '~/types/db.js';
+import type { DomainDbType } from '~/types/db';
 import { energyDiagnostics } from '@linkinvests/db';
-import { EnergyDiagnosticsRepository } from '../lib.types.js';
-import type { IEnergyDiagnosticFilters, PaginationFilters } from '~/types/filters.js';
-import { calculateStartDate } from '~/constants/date-periods.js';
+import { EnergyDiagnosticsRepository } from '../lib.types';
+import type { IEnergyDiagnosticFilters, PaginationFilters } from '~/types/filters';
+import { calculateStartDate } from '~/constants/date-periods';
 import type { EnergyDiagnostic } from '@linkinvests/shared';
-import { DEFAULT_PAGE_SIZE } from '~/constants/filters.js';
-import { DATABASE_TOKEN } from '~/common/database/index.js';
+import { DEFAULT_PAGE_SIZE } from '~/constants/filters';
+import { DATABASE_TOKEN } from '~/common/database/index';
 
 @Injectable()
 export class DrizzleEnergyDiagnosticsRepository extends EnergyDiagnosticsRepository {

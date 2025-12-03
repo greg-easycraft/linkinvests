@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { AddressSearchRepository, AddressLinksRepository, MAX_DIAGNOSTIC_LINKS, type DiagnosticLink } from '../lib.types.js';
+import { AddressSearchRepository, AddressLinksRepository, MAX_DIAGNOSTIC_LINKS, type DiagnosticLink } from '../lib.types';
 import type { AddressSearchInput, AddressSearchResult, EnergyDiagnostic } from '@linkinvests/shared';
-import { extractStreetFromAddress, extractCityFromAddress, calculateMatchScore } from '../utils/string-utils.js';
+import { extractStreetFromAddress, extractCityFromAddress, calculateMatchScore } from '../utils/string-utils';
 
 export type OpportunityType = 'auction' | 'listing';
 

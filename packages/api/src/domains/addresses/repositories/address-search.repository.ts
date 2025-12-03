@@ -1,11 +1,11 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { and, desc, eq, gte, ilike, inArray, lte, SQL } from 'drizzle-orm';
-import type { DomainDbType } from '~/types/db.js';
+import type { DomainDbType } from '~/types/db';
 import { energyDiagnostics, auctionEnergyDiagnosticLinks, listingEnergyDiagnosticLinks } from '@linkinvests/db';
-import { MAX_NUMBER_OF_RESULTS, AddressSearchRepository, type DiagnosticLinkInput, type DiagnosticLink } from '../lib.types.js';
-import type { DiagnosticQueryInput } from '../lib.types.js';
+import { MAX_NUMBER_OF_RESULTS, AddressSearchRepository, type DiagnosticLinkInput, type DiagnosticLink } from '../lib.types';
+import type { DiagnosticQueryInput } from '../lib.types';
 import type { EnergyDiagnostic } from '@linkinvests/shared';
-import { DATABASE_TOKEN } from '~/common/database/index.js';
+import { DATABASE_TOKEN } from '~/common/database/index';
 
 @Injectable()
 export class DrizzleAddressSearchRepository extends AddressSearchRepository {

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { SuccessionRepository } from './lib.types.js';
-import { DrizzleSuccessionRepository } from './repositories/succession.repository.js';
-import { SuccessionService } from './services/succession.service.js';
+import { SuccessionRepository } from './lib.types';
+import { DrizzleSuccessionRepository } from './repositories/succession.repository';
+import { SuccessionService } from './services/succession.service';
 
 @Module({
   providers: [

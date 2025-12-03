@@ -1,2 +1,2 @@
-export * from './filters.js';
-export * from './date-periods.js';
+export * from './filters';
+export * from './date-periods';

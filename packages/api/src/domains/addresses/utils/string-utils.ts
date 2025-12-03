@@ -1,4 +1,4 @@
-import Fuse from 'fuse.js';
+import Fuse from 'fuse';
 
 /**
  * Extracts street address from an address string (text before zipcode).
@@ -51,7 +51,7 @@ export function standardizeString(str: string): string {
 }
 
 /**
- * Calculates the match score between two strings using Fuse.js.
+ * Calculates the match score between two strings using Fuse.
  * @param originalStr - The original string to match against.
  * @param strToMatch - The string to match against the original string.
  * @returns The match score between the two strings. 0 for perfect match, 1 for no match.

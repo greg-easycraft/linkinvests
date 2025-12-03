@@ -1,12 +1,12 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { and, arrayContains, eq, gte, inArray, lte, sql, type SQL } from 'drizzle-orm';
-import type { DomainDbType } from '~/types/db.js';
+import type { DomainDbType } from '~/types/db';
 import { opportunityListings } from '@linkinvests/db';
-import { ListingRepository } from '../lib.types.js';
-import type { IListingFilters, PaginationFilters } from '~/types/filters.js';
-import { calculateStartDate } from '~/constants/date-periods.js';
+import { ListingRepository } from '../lib.types';
+import type { IListingFilters, PaginationFilters } from '~/types/filters';
+import { calculateStartDate } from '~/constants/date-periods';
 import { EnergyClass, PropertyType, type Listing } from '@linkinvests/shared';
-import { DATABASE_TOKEN } from '~/common/database/index.js';
+import { DATABASE_TOKEN } from '~/common/database/index';
 
 @Injectable()
 export class DrizzleListingRepository extends ListingRepository {

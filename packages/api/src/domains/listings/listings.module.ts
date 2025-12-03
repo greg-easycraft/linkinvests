@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { ListingRepository } from './lib.types.js';
-import { DrizzleListingRepository } from './repositories/listing.repository.js';
-import { ListingService } from './services/listing.service.js';
+import { ListingRepository } from './lib.types';
+import { DrizzleListingRepository } from './repositories/listing.repository';
+import { ListingService } from './services/listing.service';
 
 @Module({
   providers: [

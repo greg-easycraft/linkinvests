@@ -1,1 +1,1 @@
-export * from './liquidation.service.js';
+export * from './liquidation.service';

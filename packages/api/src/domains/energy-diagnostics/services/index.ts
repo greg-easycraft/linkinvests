@@ -1,1 +1,1 @@
-export * from './energy-diagnostics.service.js';
+export * from './energy-diagnostics.service';

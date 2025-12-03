@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { LiquidationRepository } from './lib.types.js';
-import { DrizzleLiquidationRepository } from './repositories/liquidation.repository.js';
-import { LiquidationService } from './services/liquidation.service.js';
+import { LiquidationRepository } from './lib.types';
+import { DrizzleLiquidationRepository } from './repositories/liquidation.repository';
+import { LiquidationService } from './services/liquidation.service';
 
 @Module({
   providers: [

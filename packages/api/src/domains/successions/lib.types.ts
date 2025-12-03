@@ -1,4 +1,4 @@
-import type { ISuccessionFilters, PaginationFilters } from '~/types/filters.js';
+import type { ISuccessionFilters, PaginationFilters } from '~/types/filters';
 import type { Succession } from '@linkinvests/shared';
 
 export abstract class SuccessionRepository {

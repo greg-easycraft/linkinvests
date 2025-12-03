@@ -1,9 +1,9 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { desc, eq } from 'drizzle-orm';
-import type { DomainDbType } from '~/types/db.js';
+import type { DomainDbType } from '~/types/db';
 import { energyDiagnostics, auctionEnergyDiagnosticLinks, listingEnergyDiagnosticLinks } from '@linkinvests/db';
-import { type DiagnosticLinkInput, type DiagnosticLink, AddressLinksRepository } from '../lib.types.js';
-import { DATABASE_TOKEN } from '~/common/database/index.js';
+import { type DiagnosticLinkInput, type DiagnosticLink, AddressLinksRepository } from '../lib.types';
+import { DATABASE_TOKEN } from '~/common/database/index';
 
 @Injectable()
 export class DrizzleAddressLinksRepository extends AddressLinksRepository {

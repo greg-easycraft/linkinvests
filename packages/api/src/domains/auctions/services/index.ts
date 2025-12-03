@@ -1,1 +1,1 @@
-export * from './auction.service.js';
+export * from './auction.service';

@@ -1,1 +1,1 @@
-export * from './energy-diagnostics.repository.js';
+export * from './energy-diagnostics.repository';

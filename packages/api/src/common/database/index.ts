@@ -1,2 +1,2 @@
-export * from './database.module.js';
-export * from './database.tokens.js';
+export * from './database.module';
+export * from './database.tokens';

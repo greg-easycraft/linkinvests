@@ -1,2 +1,2 @@
-export * from './export.service.js';
-export * from './export-headers.service.js';
+export * from './export.service';
+export * from './export-headers.service';

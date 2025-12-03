@@ -1,1 +1,1 @@
-export * from './address-search.service.js';
+export * from './address-search.service';

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import type { IExportService, ExportFormat } from '../export.types.js';
+import type { IExportService, ExportFormat } from '../export.types';
 
 @Injectable()
 export class ExportService implements IExportService {

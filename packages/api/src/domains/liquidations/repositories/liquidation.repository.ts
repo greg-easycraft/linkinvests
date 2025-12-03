@@ -1,12 +1,12 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { and, eq, gte, inArray, lte, sql, type SQL } from 'drizzle-orm';
-import type { DomainDbType } from '~/types/db.js';
+import type { DomainDbType } from '~/types/db';
 import { opportunityLiquidations } from '@linkinvests/db';
-import { LiquidationRepository } from '../lib.types.js';
-import type { ILiquidationFilters, PaginationFilters } from '~/types/filters.js';
-import { calculateStartDate } from '~/constants/date-periods.js';
+import { LiquidationRepository } from '../lib.types';
+import type { ILiquidationFilters, PaginationFilters } from '~/types/filters';
+import { calculateStartDate } from '~/constants/date-periods';
 import type { Liquidation } from '@linkinvests/shared';
-import { DATABASE_TOKEN } from '~/common/database/index.js';
+import { DATABASE_TOKEN } from '~/common/database/index';
 
 @Injectable()
 export class DrizzleLiquidationRepository extends LiquidationRepository {

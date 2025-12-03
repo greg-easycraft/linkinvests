@@ -1,2 +1,2 @@
-export * from './email.module.js';
-export * from './services/index.js';
+export * from './email.module';
+export * from './services/index';

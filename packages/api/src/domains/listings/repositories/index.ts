@@ -1,1 +1,1 @@
-export * from './listing.repository.js';
+export * from './listing.repository';

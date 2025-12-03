@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { AddressSearchRepository, AddressLinksRepository } from './lib.types.js';
-import { DrizzleAddressSearchRepository } from './repositories/address-search.repository.js';
-import { DrizzleAddressLinksRepository } from './repositories/address-links.repository.js';
-import { AddressSearchService } from './services/address-search.service.js';
+import { AddressSearchRepository, AddressLinksRepository } from './lib.types';
+import { DrizzleAddressSearchRepository } from './repositories/address-search.repository';
+import { DrizzleAddressLinksRepository } from './repositories/address-links.repository';
+import { AddressSearchService } from './services/address-search.service';
 
 @Module({
   providers: [

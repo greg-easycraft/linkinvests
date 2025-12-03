@@ -1,3 +1,3 @@
-export * from './export.module.js';
-export * from './export.types.js';
-export * from './services/index.js';
+export * from './export.module';
+export * from './export.types';
+export * from './services/index';

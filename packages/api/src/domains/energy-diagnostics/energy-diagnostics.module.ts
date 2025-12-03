@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { EnergyDiagnosticsRepository } from './lib.types.js';
-import { DrizzleEnergyDiagnosticsRepository } from './repositories/energy-diagnostics.repository.js';
-import { EnergyDiagnosticsService } from './services/energy-diagnostics.service.js';
+import { EnergyDiagnosticsRepository } from './lib.types';
+import { DrizzleEnergyDiagnosticsRepository } from './repositories/energy-diagnostics.repository';
+import { EnergyDiagnosticsService } from './services/energy-diagnostics.service';
 
 @Module({
   providers: [

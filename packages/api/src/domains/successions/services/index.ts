@@ -1,1 +1,1 @@
-export * from './succession.service.js';
+export * from './succession.service';

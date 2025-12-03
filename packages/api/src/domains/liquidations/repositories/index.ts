@@ -1,1 +1,1 @@
-export * from './liquidation.repository.js';
+export * from './liquidation.repository';

@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { ListingRepository } from '../lib.types.js';
-import type { IListingFilters } from '~/types/filters.js';
+import { ListingRepository } from '../lib.types';
+import type { IListingFilters } from '~/types/filters';
 import type { Listing } from '@linkinvests/shared';
 import { OpportunityType } from '@linkinvests/shared';
-import type { OpportunitiesDataQueryResult } from '~/types/query-result.js';
-import { ExportService } from '~/common/export/services/export.service.js';
-import type { ExportFormat } from '~/common/export/export.types.js';
-import { getOpportunityHeaders } from '~/common/export/services/export-headers.service.js';
-import { DEFAULT_PAGE_SIZE } from '~/constants/filters.js';
+import type { OpportunitiesDataQueryResult } from '~/types/query-result';
+import { ExportService } from '~/common/export/services/export.service';
+import type { ExportFormat } from '~/common/export/export.types';
+import { getOpportunityHeaders } from '~/common/export/services/export-headers.service';
+import { DEFAULT_PAGE_SIZE } from '~/constants/filters';
 
 @Injectable()
 export class ListingService {

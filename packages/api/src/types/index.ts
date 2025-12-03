@@ -1,3 +1,3 @@
-export * from './db.js';
-export * from './filters.js';
-export * from './query-result.js';
+export * from './db';
+export * from './filters';
+export * from './query-result';
