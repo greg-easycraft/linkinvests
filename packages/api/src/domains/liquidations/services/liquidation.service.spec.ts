@@ -1,40 +1,35 @@
 import { LiquidationService } from './liquidation.service';
-import type { ILiquidationRepository } from '../lib.types';
+import type { LiquidationRepository } from '../lib.types';
 import type {
   IExportService,
   ExportFormat,
-} from '~/server/services/export.service';
+} from '~/common/export/export.types';
 import type { IOpportunityFilters } from '~/types/filters';
 import { OpportunityType, type Liquidation } from '@linkinvests/shared';
 import { DEFAULT_PAGE_SIZE } from '~/constants/filters';
-import { getOpportunityHeaders } from '~/server/services/export-headers.service';
+import { getOpportunityHeaders } from '~/common/export/services/export-headers.service';
 
 // Mock the export-headers service
-jest.mock('~/server/services/export-headers.service', () => ({
+jest.mock('~/common/export/services/export-headers.service', () => ({
   getOpportunityHeaders: jest.fn(),
 }));
 
 describe('LiquidationService', () => {
   let liquidationService: LiquidationService;
-  let mockLiquidationRepository: jest.Mocked<ILiquidationRepository>;
+  let mockLiquidationRepository: jest.Mocked<LiquidationRepository>;
   let mockExportService: jest.Mocked<IExportService>;
 
   const mockLiquidation: Liquidation = {
     id: 'liquidation-1',
-    // @ts-expect-error - type property doesn't exist on Liquidation but needed for test
-    type: OpportunityType.LIQUIDATION,
-    title: 'Test Liquidation',
-    description: 'Test Description',
+    label: 'Test Liquidation',
     address: 'Test Address',
     zipCode: '75001',
-    city: 'Paris',
     department: '75',
-    price: 180000,
-    surface: 60,
-    rooms: 2,
-    liquidationDate: new Date('2024-01-15'),
-    liquidationType: 'Judiciaire',
-    coordinates: { lat: 48.8566, lng: 2.3522 },
+    latitude: 48.8566,
+    longitude: 2.3522,
+    opportunityDate: '2024-01-15',
+    externalId: 'external-123',
+    siret: '12345678901234',
     createdAt: new Date('2024-01-01'),
     updatedAt: new Date('2024-01-01'),
   };

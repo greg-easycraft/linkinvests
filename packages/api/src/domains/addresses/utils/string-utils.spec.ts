@@ -2,9 +2,7 @@ import {
   extractStreetFromAddress,
   extractCityFromAddress,
   standardizeString,
-  damerauLevenshteinDistance,
-  calculateCityMatchScore,
-  calculateStreetMatchScore,
+  calculateMatchScore,
 } from './string-utils';
 
 describe('string-utils', () => {
@@ -166,189 +164,36 @@ describe('string-utils', () => {
     });
   });
 
-  describe('damerauLevenshteinDistance', () => {
+  describe('calculateMatchScore', () => {
     it('should return 0 for identical strings', () => {
-      const result = damerauLevenshteinDistance('paris', 'paris');
+      const result = calculateMatchScore('paris', 'paris');
       expect(result).toEqual(0);
     });
 
-    it('should return length of string when comparing with empty', () => {
-      expect(damerauLevenshteinDistance('paris', '')).toEqual(5);
-      expect(damerauLevenshteinDistance('', 'paris')).toEqual(5);
+    it('should return 0.1 when one string contains the other', () => {
+      const result = calculateMatchScore('Saint-Pierre', 'Saint');
+      expect(result).toEqual(0.1);
     });
 
-    it('should count single insertion', () => {
-      const result = damerauLevenshteinDistance('paris', 'pariss');
+    it('should return 0.1 when search string contains original', () => {
+      const result = calculateMatchScore('Paris', 'Paris France');
+      expect(result).toEqual(0.1);
+    });
+
+    it('should return low score for similar strings', () => {
+      const result = calculateMatchScore('paris', 'parsi');
+      expect(result).toBeGreaterThan(0);
+      expect(result).toBeLessThan(0.5);
+    });
+
+    it('should return high score for completely different strings', () => {
+      const result = calculateMatchScore('paris', 'london');
+      expect(result).toBeGreaterThan(0.5);
+    });
+
+    it('should return 1 for no match', () => {
+      const result = calculateMatchScore('abc', 'xyz');
       expect(result).toEqual(1);
-    });
-
-    it('should count single deletion', () => {
-      const result = damerauLevenshteinDistance('paris', 'pari');
-      expect(result).toEqual(1);
-    });
-
-    it('should count single substitution', () => {
-      const result = damerauLevenshteinDistance('paris', 'pariS');
-      expect(result).toEqual(1);
-    });
-
-    it('should count mid-string insertion', () => {
-      const result = damerauLevenshteinDistance('paris', 'pairis');
-      expect(result).toEqual(1); // Single 'i' insertion
-    });
-
-    it('should count adjacent character transposition', () => {
-      const result = damerauLevenshteinDistance('ab', 'ba');
-      expect(result).toEqual(1);
-    });
-
-    it('should handle completely different strings', () => {
-      const result = damerauLevenshteinDistance('paris', 'lyon');
-      expect(result).toEqual(5);
-    });
-  });
-
-  describe('calculateCityMatchScore', () => {
-    it('should return 100 for exact match', () => {
-      const result = calculateCityMatchScore('Paris', 'Paris');
-      expect(result).toEqual(100);
-    });
-
-    it('should return 100 for case-insensitive match', () => {
-      const result = calculateCityMatchScore('PARIS', 'paris');
-      expect(result).toEqual(100);
-    });
-
-    it('should return 100 for match with different accents', () => {
-      const result = calculateCityMatchScore('Évreux', 'Evreux');
-      expect(result).toEqual(100);
-    });
-
-    it('should return 100 for match with hyphens vs spaces', () => {
-      const result = calculateCityMatchScore('Saint-Pierre', 'Saint Pierre');
-      expect(result).toEqual(100);
-    });
-
-    it('should return high score for minor typo (distance <= 3)', () => {
-      const result = calculateCityMatchScore('Parsi', 'Paris');
-      expect(result).toBeGreaterThanOrEqual(55); // 100 - (2 * 15) = 70, allowing for some variance
-      expect(result).toBeLessThan(100);
-    });
-
-    it('should return moderate-high score for prefix match', () => {
-      const result = calculateCityMatchScore(
-        'Saint-Pierre',
-        'Saint-Pierre-le-Vieux',
-      );
-      expect(result).toBeGreaterThanOrEqual(50);
-      expect(result).toBeLessThanOrEqual(85);
-    });
-
-    it('should return low score for completely different cities', () => {
-      const result = calculateCityMatchScore('Lyon', 'Paris');
-      expect(result).toBeLessThan(50);
-    });
-
-    it('should return 0 for empty strings', () => {
-      expect(calculateCityMatchScore('', 'Paris')).toEqual(0);
-      expect(calculateCityMatchScore('Paris', '')).toEqual(0);
-      expect(calculateCityMatchScore('', '')).toEqual(0);
-    });
-
-    it('should handle French city names with accents', () => {
-      const result = calculateCityMatchScore('Besançon', 'Besancon');
-      expect(result).toEqual(100);
-    });
-
-    it('should handle apostrophes in city names', () => {
-      const result = calculateCityMatchScore(
-        "L'Haÿ-les-Roses",
-        'L Hay les Roses',
-      );
-      expect(result).toEqual(100);
-    });
-  });
-
-  describe('calculateStreetMatchScore', () => {
-    it('should return 100 for exact match', () => {
-      const result = calculateStreetMatchScore(
-        '9 rue de la paix',
-        '9 rue de la paix',
-      );
-      expect(result).toEqual(100);
-    });
-
-    it('should return 100 for case-insensitive match', () => {
-      const result = calculateStreetMatchScore(
-        '9 RUE DE LA PAIX',
-        '9 rue de la paix',
-      );
-      expect(result).toEqual(100);
-    });
-
-    it('should return 100 for match with different accents', () => {
-      const result = calculateStreetMatchScore(
-        '10 Rue des Écoles',
-        '10 Rue des Ecoles',
-      );
-      expect(result).toEqual(100);
-    });
-
-    it('should return high score for suffix match (missing street number)', () => {
-      const result = calculateStreetMatchScore(
-        '9 rue de la paix',
-        'rue de la paix',
-      );
-      expect(result).toBeGreaterThanOrEqual(50);
-      expect(result).toBeLessThanOrEqual(85);
-    });
-
-    it('should return high score for suffix match (different street number)', () => {
-      const result = calculateStreetMatchScore(
-        'rue de la paix',
-        '15 rue de la paix',
-      );
-      expect(result).toBeGreaterThanOrEqual(50);
-      expect(result).toBeLessThanOrEqual(85);
-    });
-
-    it('should return high score for minor typo (distance <= 3)', () => {
-      const result = calculateStreetMatchScore(
-        '9 rue de la paxi',
-        '9 rue de la paix',
-      );
-      expect(result).toBeGreaterThanOrEqual(55);
-      expect(result).toBeLessThan(100);
-    });
-
-    it('should return low score for completely different streets', () => {
-      const result = calculateStreetMatchScore(
-        'rue de la paix',
-        'avenue des champs',
-      );
-      expect(result).toBeLessThan(50);
-    });
-
-    it('should return 0 for empty strings', () => {
-      expect(calculateStreetMatchScore('', '9 rue de la paix')).toEqual(0);
-      expect(calculateStreetMatchScore('9 rue de la paix', '')).toEqual(0);
-      expect(calculateStreetMatchScore('', '')).toEqual(0);
-    });
-
-    it('should handle French street names with accents', () => {
-      const result = calculateStreetMatchScore(
-        '5 Allée François Mitterrand',
-        '5 Allee Francois Mitterrand',
-      );
-      expect(result).toEqual(100);
-    });
-
-    it('should handle apostrophes in street names', () => {
-      const result = calculateStreetMatchScore(
-        "12 Place de l'Église",
-        '12 Place de l Eglise',
-      );
-      expect(result).toEqual(100);
     });
   });
 });

@@ -1,40 +1,43 @@
 import { AuctionService } from './auction.service';
-import type { IAuctionRepository } from '../lib.types';
+import type { AuctionRepository } from '../lib.types';
 import type {
   IExportService,
   ExportFormat,
-} from '~/server/services/export.service';
+} from '~/common/export/export.types';
 import type { IOpportunityFilters } from '~/types/filters';
-import { OpportunityType, type Auction } from '@linkinvests/shared';
+import { OpportunityType, EnergyClass, type Auction } from '@linkinvests/shared';
 import { DEFAULT_PAGE_SIZE } from '~/constants/filters';
-import { getOpportunityHeaders } from '~/server/services/export-headers.service';
+import { getOpportunityHeaders } from '~/common/export/services/export-headers.service';
 
 // Mock the export-headers service
-jest.mock('~/server/services/export-headers.service', () => ({
+jest.mock('~/common/export/services/export-headers.service', () => ({
   getOpportunityHeaders: jest.fn(),
 }));
 
 describe('AuctionService', () => {
   let auctionService: AuctionService;
-  let mockAuctionRepository: jest.Mocked<IAuctionRepository>;
+  let mockAuctionRepository: jest.Mocked<AuctionRepository>;
   let mockExportService: jest.Mocked<IExportService>;
 
   const mockAuction: Auction = {
     id: 'auction-1',
-    // @ts-expect-error - type property doesn't exist on Auction but needed for test
-    type: OpportunityType.AUCTION,
-    title: 'Test Auction',
+    label: 'Test Auction',
     description: 'Test Description',
     address: 'Test Address',
     zipCode: '75001',
-    city: 'Paris',
     department: '75',
-    price: 100000,
-    surface: 50,
+    latitude: 48.8566,
+    longitude: 2.3522,
+    opportunityDate: '2024-01-15',
+    externalId: 'external-123',
+    url: 'https://example.com/auction/1',
+    squareFootage: 50,
     rooms: 2,
-    auctionDate: new Date('2024-01-15'),
-    estimatedPrice: 120000,
-    coordinates: { lat: 48.8566, lng: 2.3522 },
+    energyClass: EnergyClass.D,
+    currentPrice: 100000,
+    reservePrice: 80000,
+    source: 'test-source' as any,
+    occupationStatus: 'vacant' as any,
     createdAt: new Date('2024-01-01'),
     updatedAt: new Date('2024-01-01'),
   };

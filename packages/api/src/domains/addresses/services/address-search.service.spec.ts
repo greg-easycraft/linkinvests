@@ -1,42 +1,36 @@
 import { AddressSearchService } from './address-search.service';
 import type {
-  IAddressLinksRepository,
-  IAddressSearchRepository,
+  AddressLinksRepository,
+  AddressSearchRepository,
 } from '../lib.types';
 import type { AddressSearchInput, EnergyDiagnostic } from '@linkinvests/shared';
-import { EnergyClass, OpportunityType } from '@linkinvests/shared';
+import { EnergyClass } from '@linkinvests/shared';
 
 describe('AddressSearchService', () => {
   let addressSearchService: AddressSearchService;
   const mockAddressSearchRepository = {
     findAllForAddressSearch: jest.fn(),
     findById: jest.fn(),
-  } as jest.Mocked<IAddressSearchRepository>;
+  } as jest.Mocked<AddressSearchRepository>;
   const mockAddressLinksRepository = {
     saveAuctionDiagnosticLinks: jest.fn(),
     saveListingDiagnosticLinks: jest.fn(),
     getAuctionDiagnosticLinks: jest.fn(),
     getListingDiagnosticLinks: jest.fn(),
-  } as jest.Mocked<IAddressLinksRepository>;
+  } as jest.Mocked<AddressLinksRepository>;
 
   const mockEnergyDiagnostic: EnergyDiagnostic = {
     id: 'energy-diagnostic-1',
-    // @ts-expect-error - type property doesn't exist on EnergyDiagnostic but needed for test
-    type: OpportunityType.ENERGY_SIEVE,
-    title: 'Test Energy Diagnostic',
-    description: 'Test Description',
+    label: 'Test Energy Diagnostic',
     address: '123 Test Street',
     zipCode: '75001',
-    city: 'Paris',
     department: '75',
-    price: 150000,
-    surface: 50,
+    latitude: 48.8566,
+    longitude: 2.3522,
+    opportunityDate: '2024-01-15',
     squareFootage: 50,
-    rooms: 2,
     energyClass: 'F',
     externalId: 'external-123',
-    diagnosticDate: new Date('2024-01-15'),
-    coordinates: { lat: 48.8566, lng: 2.3522 },
     createdAt: new Date('2024-01-01'),
     updatedAt: new Date('2024-01-01'),
   };
@@ -63,7 +57,6 @@ describe('AddressSearchService', () => {
       const result = await addressSearchService.getPlausibleAddresses(input);
 
       expect(result).toEqual([]);
-      // @ts-expect-error - Test mock calls are guaranteed to exist in test context
       const call =
         mockAddressSearchRepository.findAllForAddressSearch.mock.calls[0][0];
       expect(call.zipCode).toBe('75001');

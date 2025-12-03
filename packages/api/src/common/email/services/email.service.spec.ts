@@ -1,12 +1,6 @@
 import { EmailService } from './email.service';
 import { Resend } from 'resend';
-
-// Mock env module
-jest.mock('~/lib/env', () => ({
-  env: {
-    RESEND_API_KEY: 'test-resend-api-key',
-  },
-}));
+import type { ConfigType } from '~/common/config';
 
 // Mock Resend
 jest.mock('resend', () => {
@@ -23,22 +17,31 @@ jest.mock('resend', () => {
 
 describe('EmailService', () => {
   let emailService: EmailService;
-  let mockResend: jest.Mocked<Resend>;
   let mockEmailSend: jest.MockedFunction<any>;
+  let mockConfig: ConfigType;
 
   beforeEach(() => {
     jest.clearAllMocks();
 
+    // Create mock config
+    mockConfig = {
+      PORT: 8080,
+      NODE_ENV: 'test',
+      LOG_LEVEL: 'info',
+      DATABASE_URL: 'postgres://localhost:5432/test',
+      RESEND_API_KEY: 'test-resend-api-key',
+    };
+
     // Create mock Resend instance
     mockEmailSend = jest.fn();
-    mockResend = {
+    (Resend as jest.Mock).mockImplementation(() => ({
       emails: {
         send: mockEmailSend,
       },
-    } as any;
+    }));
 
-    // Initialize service with mocked Resend
-    emailService = new EmailService(mockResend);
+    // Initialize service with mocked config
+    emailService = new EmailService(mockConfig);
   });
 
   describe('sendResetPasswordEmail', () => {
@@ -328,16 +331,14 @@ describe('EmailService', () => {
   });
 
   describe('constructor', () => {
-    it('should create EmailService with default Resend instance when none provided', () => {
-      // This test verifies the service can be instantiated with default constructor
-      const service = new EmailService();
+    it('should create EmailService with config', () => {
+      const service = new EmailService(mockConfig);
       expect(service).toBeInstanceOf(EmailService);
     });
 
-    it('should create EmailService with custom Resend instance', () => {
-      const customResend = new Resend('custom-api-key');
-      const service = new EmailService(customResend);
-      expect(service).toBeInstanceOf(EmailService);
+    it('should initialize Resend with API key from config', () => {
+      new EmailService(mockConfig);
+      expect(Resend).toHaveBeenCalledWith('test-resend-api-key');
     });
   });
 

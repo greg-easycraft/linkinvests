@@ -1,4 +1,4 @@
-import Fuse from 'fuse';
+import Fuse from 'fuse.js';
 
 /**
  * Extracts street address from an address string (text before zipcode).

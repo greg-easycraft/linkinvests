@@ -1,40 +1,45 @@
 import { ListingService } from './listing.service';
-import type { IListingRepository } from '../lib.types';
+import type { ListingRepository } from '../lib.types';
 import type {
   IExportService,
   ExportFormat,
-} from '~/server/services/export.service';
+} from '~/common/export/export.types';
 import type { IOpportunityFilters } from '~/types/filters';
-import { OpportunityType, type Listing } from '@linkinvests/shared';
+import { OpportunityType, EnergyClass, type Listing } from '@linkinvests/shared';
 import { DEFAULT_PAGE_SIZE } from '~/constants/filters';
-import { getOpportunityHeaders } from '~/server/services/export-headers.service';
+import { getOpportunityHeaders } from '~/common/export/services/export-headers.service';
 
 // Mock the export-headers service
-jest.mock('~/server/services/export-headers.service', () => ({
+jest.mock('~/common/export/services/export-headers.service', () => ({
   getOpportunityHeaders: jest.fn(),
 }));
 
 describe('ListingService', () => {
   let listingService: ListingService;
-  let mockListingRepository: jest.Mocked<IListingRepository>;
+  let mockListingRepository: jest.Mocked<ListingRepository>;
   let mockExportService: jest.Mocked<IExportService>;
 
   const mockListing: Listing = {
     id: 'listing-1',
-    // @ts-expect-error - type property doesn't exist on Listing but needed for test
-    type: OpportunityType.REAL_ESTATE_LISTING,
-    title: 'Test Listing',
+    label: 'Test Listing',
     description: 'Test Description',
     address: 'Test Address',
     zipCode: '75001',
-    city: 'Paris',
     department: '75',
+    latitude: 48.8566,
+    longitude: 2.3522,
+    opportunityDate: '2024-01-15',
+    externalId: 'external-123',
+    url: 'https://example.com/listing/1',
+    source: 'test-agency',
+    propertyType: 'FLAT' as any,
+    lastChangeDate: '2024-01-10',
     price: 250000,
-    surface: 75,
+    squareFootage: 75,
     rooms: 3,
-    listingDate: new Date('2024-01-15'),
-    agency: 'Test Agency',
-    coordinates: { lat: 48.8566, lng: 2.3522 },
+    energyClass: EnergyClass.D,
+    isSoldRented: false,
+    sellerType: 'professional',
     createdAt: new Date('2024-01-01'),
     updatedAt: new Date('2024-01-01'),
   };

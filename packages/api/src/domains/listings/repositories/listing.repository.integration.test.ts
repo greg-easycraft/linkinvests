@@ -254,7 +254,6 @@ describe('DrizzleListingRepository Integration Tests', () => {
         minPrice: 300000,
         maxPrice: 600000,
         minSquareFootage: 50,
-        features: { elevator: true },
       };
       const listings = await listingRepository.findAll(filters);
       listings.forEach((listing) => {

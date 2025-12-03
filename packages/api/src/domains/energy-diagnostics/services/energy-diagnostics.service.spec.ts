@@ -1,40 +1,36 @@
 import { EnergyDiagnosticsService } from './energy-diagnostics.service';
-import type { IEnergyDiagnosticsRepository } from '../lib.types';
+import type { EnergyDiagnosticsRepository } from '../lib.types';
 import type {
   IExportService,
   ExportFormat,
-} from '~/server/services/export.service';
+} from '~/common/export/export.types';
 import type { IOpportunityFilters } from '~/types/filters';
 import { OpportunityType, type EnergyDiagnostic } from '@linkinvests/shared';
 import { DEFAULT_PAGE_SIZE } from '~/constants/filters';
-import { getOpportunityHeaders } from '~/server/services/export-headers.service';
+import { getOpportunityHeaders } from '~/common/export/services/export-headers.service';
 
 // Mock the export-headers service
-jest.mock('~/server/services/export-headers.service', () => ({
+jest.mock('~/common/export/services/export-headers.service', () => ({
   getOpportunityHeaders: jest.fn(),
 }));
 
 describe('EnergyDiagnosticsService', () => {
   let energyDiagnosticsService: EnergyDiagnosticsService;
-  let mockEnergyDiagnosticsRepository: jest.Mocked<IEnergyDiagnosticsRepository>;
+  let mockEnergyDiagnosticsRepository: jest.Mocked<EnergyDiagnosticsRepository>;
   let mockExportService: jest.Mocked<IExportService>;
 
   const mockEnergyDiagnostic: EnergyDiagnostic = {
     id: 'energy-diagnostic-1',
-    // @ts-expect-error - type property doesn't exist on EnergyDiagnostic but needed for test
-    type: OpportunityType.ENERGY_SIEVE,
-    title: 'Test Energy Diagnostic',
-    description: 'Test Description',
+    label: 'Test Energy Diagnostic',
     address: 'Test Address',
     zipCode: '75001',
-    city: 'Paris',
     department: '75',
-    price: 150000,
-    surface: 45,
-    rooms: 2,
+    latitude: 48.8566,
+    longitude: 2.3522,
+    opportunityDate: '2024-01-15',
+    externalId: 'external-123',
+    squareFootage: 45,
     energyClass: 'F',
-    diagnosticDate: new Date('2024-01-15'),
-    coordinates: { lat: 48.8566, lng: 2.3522 },
     createdAt: new Date('2024-01-01'),
     updatedAt: new Date('2024-01-01'),
   };
@@ -46,6 +42,7 @@ describe('EnergyDiagnosticsService', () => {
     mockEnergyDiagnosticsRepository = {
       findAll: jest.fn(),
       findById: jest.fn(),
+      findByExternalId: jest.fn(),
       count: jest.fn(),
     };
 

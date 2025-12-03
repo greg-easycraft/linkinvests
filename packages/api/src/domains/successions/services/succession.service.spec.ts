@@ -1,40 +1,48 @@
 import { SuccessionService } from './succession.service';
-import type { ISuccessionRepository } from '../lib.types';
+import type { SuccessionRepository } from '../lib.types';
 import type {
   IExportService,
   ExportFormat,
-} from '~/server/services/export.service';
+} from '~/common/export/export.types';
 import type { IOpportunityFilters } from '~/types/filters';
 import { OpportunityType, type Succession } from '@linkinvests/shared';
 import { DEFAULT_PAGE_SIZE } from '~/constants/filters';
-import { getOpportunityHeaders } from '~/server/services/export-headers.service';
+import { getOpportunityHeaders } from '~/common/export/services/export-headers.service';
 
 // Mock the export-headers service
-jest.mock('~/server/services/export-headers.service', () => ({
+jest.mock('~/common/export/services/export-headers.service', () => ({
   getOpportunityHeaders: jest.fn(),
 }));
 
 describe('SuccessionService', () => {
   let successionService: SuccessionService;
-  let mockSuccessionRepository: jest.Mocked<ISuccessionRepository>;
+  let mockSuccessionRepository: jest.Mocked<SuccessionRepository>;
   let mockExportService: jest.Mocked<IExportService>;
 
   const mockSuccession: Succession = {
     id: 'succession-1',
-    // @ts-expect-error - type property doesn't exist on Succession but needed for test
-    type: OpportunityType.SUCCESSION,
-    title: 'Test Succession',
-    description: 'Test Description',
+    label: 'Test Succession',
     address: 'Test Address',
     zipCode: '75001',
-    city: 'Paris',
     department: '75',
-    price: 200000,
-    surface: 80,
-    rooms: 3,
-    successionDate: new Date('2024-01-15'),
-    notaryOffice: 'Test Notary Office',
-    coordinates: { lat: 48.8566, lng: 2.3522 },
+    latitude: 48.8566,
+    longitude: 2.3522,
+    opportunityDate: '2024-01-15',
+    externalId: 'external-123',
+    firstName: 'Jean',
+    lastName: 'Dupont',
+    mairieContact: {
+      name: 'Mairie de Paris',
+      address: {
+        complement1: '',
+        complement2: '',
+        numero_voie: '1 Place de l\'Hôtel de Ville',
+        service_distribution: '',
+        code_postal: '75004',
+        nom_commune: 'Paris',
+      },
+      phone: '01 42 76 40 40',
+    },
     createdAt: new Date('2024-01-01'),
     updatedAt: new Date('2024-01-01'),
   };
