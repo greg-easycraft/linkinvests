@@ -208,7 +208,7 @@ export class S3Service {
    * @param departmentId - Department number
    * @param date - Date string for the file
    */
-  generateFailingCompaniesKey(departmentId: number, date: string): string {
+  generateFailingCompaniesKey(departmentId: string, date: string): string {
     return `failing-companies/dept-${departmentId}/${date}.csv`;
   }
 }

@@ -16,7 +16,7 @@ export class ListingsCron {
 
   constructor(
     @InjectQueue(SOURCE_LISTINGS_QUEUE)
-    private readonly queue: Queue,
+    private readonly queue: Queue
   ) {}
 
   /**
@@ -68,17 +68,17 @@ export class ListingsCron {
               type: 'exponential',
               delay: 2000,
             },
-          },
+          }
         );
 
         this.logger.log(
-          `Enqueued recent listings jobs ${job.id} and ${landJob.id} for listings since ${afterDate} in department ${department}`,
+          `Enqueued recent listings jobs ${job.id} and ${landJob.id} for listings since ${afterDate} in department ${department}`
         );
       }
     } catch (error) {
       this.logger.error(
         `Failed to enqueue daily recent listings job: ${(error as Error).message}`,
-        (error as Error).stack,
+        (error as Error).stack
       );
       // Don't throw - let cron continue on schedule
     }

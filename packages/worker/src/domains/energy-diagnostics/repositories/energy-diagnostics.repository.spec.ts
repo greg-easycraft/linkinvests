@@ -26,7 +26,7 @@ describe('EnergyDiagnosticsRepository', () => {
     }).compile();
 
     repository = module.get<EnergyDiagnosticsRepository>(
-      EnergyDiagnosticsRepository,
+      EnergyDiagnosticsRepository
     );
 
     // Suppress logger output during tests
@@ -92,7 +92,7 @@ describe('EnergyDiagnosticsRepository', () => {
           opportunityDate: new Date('2024-01-15').toISOString().split('T')[0],
           squareFootage: 100,
           energyClass: 'A',
-        }),
+        })
       );
 
       await repository.insertOpportunities(opportunities);
@@ -117,7 +117,7 @@ describe('EnergyDiagnosticsRepository', () => {
           opportunityDate: new Date('2024-01-15').toISOString().split('T')[0],
           squareFootage: 100,
           energyClass: 'A',
-        }),
+        })
       );
 
       await repository.insertOpportunities(opportunities, 100);
@@ -250,7 +250,7 @@ describe('EnergyDiagnosticsRepository', () => {
       ];
 
       await expect(
-        repository.insertOpportunities(opportunities),
+        repository.insertOpportunities(opportunities)
       ).rejects.toThrow('Database connection failed');
       expect(repository['logger'].error).toHaveBeenCalled();
     });

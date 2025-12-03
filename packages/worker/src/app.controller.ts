@@ -48,9 +48,9 @@ export class AppController {
 
     const response = {
       status: overallStatus,
-      service: 'scraping-worker',
+      service: 'worker',
       message:
-        'Scraping worker is running. Job management has been moved to queues-monitor app.',
+        'Worker is running. Job management has been moved to queues-monitor app.',
       timestamp: new Date().toISOString(),
       checks,
     };

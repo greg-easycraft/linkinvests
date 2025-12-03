@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuctionsCron } from './auctions.cron';
-import { Queue } from 'bullmq';
 import { SCRAPING_QUEUE } from '@linkinvests/shared';
 
 // Mock BullMQ Queue

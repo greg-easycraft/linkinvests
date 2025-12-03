@@ -10,7 +10,7 @@ export class ListingsRepository {
 
   constructor(
     @Inject(DATABASE_CONNECTION)
-    private readonly db: DomainDbType,
+    private readonly db: DomainDbType
   ) {}
 
   /**
@@ -21,7 +21,7 @@ export class ListingsRepository {
    */
   async insertListings(
     listings: ListingInput[],
-    batchSize: number = 500,
+    batchSize: number = 500
   ): Promise<number> {
     if (listings.length === 0) {
       this.logger.log('No listings to insert');
@@ -32,7 +32,7 @@ export class ListingsRepository {
     let skippedCount = 0;
 
     this.logger.log(
-      `Starting batch insert of ${listings.length} listings with batch size ${batchSize}`,
+      `Starting batch insert of ${listings.length} listings with batch size ${batchSize}`
     );
 
     for (let i = 0; i < listings.length; i += batchSize) {
@@ -42,7 +42,7 @@ export class ListingsRepository {
         // Debug: Log the first record being inserted to verify structure
         if (i === 0 && batch[0]) {
           this.logger.debug(
-            `First DB record to insert: ${JSON.stringify(batch[0], null, 2)}`,
+            `First DB record to insert: ${JSON.stringify(batch[0], null, 2)}`
           );
         }
 
@@ -98,18 +98,18 @@ export class ListingsRepository {
         skippedCount += batchSkipped;
 
         this.logger.log(
-          `Processed batch ${batchNumber}/${totalBatches}: ${actualInsertCount} inserted, ${batchSkipped} skipped (duplicates). Total: ${insertedCount} inserted, ${skippedCount} skipped.`,
+          `Processed batch ${batchNumber}/${totalBatches}: ${actualInsertCount} inserted, ${batchSkipped} skipped (duplicates). Total: ${insertedCount} inserted, ${skippedCount} skipped.`
         );
       } catch (error) {
         this.logger.error(
-          `Failed to insert batch starting at index ${i} (batch ${Math.floor(i / batchSize) + 1}): ${(error as Error).message}`,
+          `Failed to insert batch starting at index ${i} (batch ${Math.floor(i / batchSize) + 1}): ${(error as Error).message}`
         );
         throw error; // Rethrow to let the processor handle the error
       }
     }
 
     this.logger.log(
-      `Batch insert completed: ${insertedCount} listings inserted, ${skippedCount} duplicates skipped out of ${listings.length} total`,
+      `Batch insert completed: ${insertedCount} listings inserted, ${skippedCount} duplicates skipped out of ${listings.length} total`
     );
 
     return insertedCount;
@@ -130,7 +130,7 @@ export class ListingsRepository {
       return result.length;
     } catch (error) {
       this.logger.error(
-        `Failed to get listings count for source ${source}: ${(error as Error).message}`,
+        `Failed to get listings count for source ${source}: ${(error as Error).message}`
       );
       throw error;
     }
@@ -144,7 +144,7 @@ export class ListingsRepository {
    */
   async getRecentListingsBySource(
     source: string,
-    limit: number = 10,
+    limit: number = 10
   ): Promise<any[]> {
     try {
       const result = await this.db
@@ -157,7 +157,7 @@ export class ListingsRepository {
       return result;
     } catch (error) {
       this.logger.error(
-        `Failed to get recent listings for source ${source}: ${(error as Error).message}`,
+        `Failed to get recent listings for source ${source}: ${(error as Error).message}`
       );
       throw error;
     }
@@ -171,18 +171,18 @@ export class ListingsRepository {
    */
   async deleteOldListings(
     beforeDate: string,
-    source?: string,
+    source?: string
   ): Promise<number> {
     try {
       let whereCondition: SQL<unknown> = lt(
         domainSchema.opportunityListings.createdAt,
-        new Date(beforeDate),
+        new Date(beforeDate)
       );
 
       if (source) {
         whereCondition = and(
           whereCondition,
-          eq(domainSchema.opportunityListings.source, source),
+          eq(domainSchema.opportunityListings.source, source)
         )!;
       }
 
@@ -193,13 +193,13 @@ export class ListingsRepository {
       const deletedCount = result.rowCount || 0;
 
       this.logger.log(
-        `Deleted ${deletedCount} listings ${source ? `from source ${source} ` : ''}created before ${beforeDate}`,
+        `Deleted ${deletedCount} listings ${source ? `from source ${source} ` : ''}created before ${beforeDate}`
       );
 
       return deletedCount;
     } catch (error) {
       this.logger.error(
-        `Failed to delete old listings: ${(error as Error).message}`,
+        `Failed to delete old listings: ${(error as Error).message}`
       );
       throw error;
     }

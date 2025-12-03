@@ -1,13 +1,13 @@
-name: Build and Deploy Scraper Docker Image
+name: Build and Deploy Worker Docker Image
 
 on:
     push:
         branches: [main]
         paths:
-            - 'packages/scraping-worker/**'
+            - 'packages/worker/**'
             - 'packages/shared/**'
             - 'packages/db/**'
-            - 'docker/scraper.Dockerfile'
+            - 'docker/worker.Dockerfile'
     workflow_dispatch:
 
 env:
@@ -15,7 +15,7 @@ env:
     DOCKER_BUILDKIT: 1
 
 jobs:
-    build-scraper:
+    build-worker:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout code

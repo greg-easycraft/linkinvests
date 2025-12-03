@@ -19,7 +19,7 @@ export class EnergyDiagnosticsProcessor extends WorkerHost {
 
   constructor(
     private readonly ademeApi: AdemeApiService,
-    private readonly opportunityRepository: EnergyDiagnosticsRepository,
+    private readonly opportunityRepository: EnergyDiagnosticsRepository
   ) {
     super();
   }
@@ -37,7 +37,7 @@ export class EnergyDiagnosticsProcessor extends WorkerHost {
       ? `from ${sinceDate} to ${beforeDate}`
       : `since ${sinceDate}`;
     this.logger.log(
-      `Starting to process energy sieves for department ${departmentId} ${dateRangeText} with classes ${energyClasses.join(', ')}`,
+      `Starting to process energy sieves for department ${departmentId} ${dateRangeText} with classes ${energyClasses.join(', ')}`
     );
 
     const stats = {
@@ -55,7 +55,7 @@ export class EnergyDiagnosticsProcessor extends WorkerHost {
         departmentId,
         sinceDate,
         energyClasses,
-        beforeDate,
+        beforeDate
       );
       stats.totalRecords = energyClassRecords.length;
       this.logger.log(`Fetched ${energyClassRecords.length} DPE records`);
@@ -77,13 +77,13 @@ export class EnergyDiagnosticsProcessor extends WorkerHost {
           stats.errors++;
           stats.invalidRecords++;
           this.logger.warn(
-            `Failed to transform record ${record.numero_dpe}: ${(error as Error).message}`,
+            `Failed to transform record ${record.numero_dpe}: ${(error as Error).message}`
           );
         }
       }
 
       this.logger.log(
-        `Transformed ${opportunities.length} valid opportunities (${stats.invalidRecords} invalid)`,
+        `Transformed ${opportunities.length} valid opportunities (${stats.invalidRecords} invalid)`
       );
 
       // Step 3: Insert opportunities into database in batches
@@ -97,14 +97,14 @@ export class EnergyDiagnosticsProcessor extends WorkerHost {
         } catch (error) {
           stats.errors++;
           this.logger.error(
-            `Failed to insert opportunities: ${(error as Error).message}`,
+            `Failed to insert opportunities: ${(error as Error).message}`
           );
         }
       }
 
       const duration = Date.now() - startTime;
       this.logger.log(
-        `Successfully processed energy sieves for department ${departmentId}`,
+        `Successfully processed energy sieves for department ${departmentId}`
       );
       this.logger.log(`Processing stats:
         - Duration: ${duration}ms
@@ -117,7 +117,7 @@ export class EnergyDiagnosticsProcessor extends WorkerHost {
     } catch (error) {
       this.logger.error(
         `Failed to process energy sieves for department ${departmentId}: ${(error as Error).message}`,
-        (error as Error).stack,
+        (error as Error).stack
       );
       throw error;
     }
@@ -140,7 +140,7 @@ export class EnergyDiagnosticsProcessor extends WorkerHost {
       record.date_etablissement_dpe || record.date_reception_dpe;
     if (!opportunityDateStr) {
       this.logger.warn(
-        `Missing opportunity date for record ${record.numero_dpe}`,
+        `Missing opportunity date for record ${record.numero_dpe}`
       );
       return null;
     }
@@ -165,7 +165,7 @@ export class EnergyDiagnosticsProcessor extends WorkerHost {
       energyDiagnosticInputSchema.safeParse(energyClassInput);
     if (!validationResult.success) {
       this.logger.warn(
-        `Invalid DPE record ${record.numero_dpe}: ${JSON.stringify(validationResult.error.issues)}`,
+        `Invalid DPE record ${record.numero_dpe}: ${JSON.stringify(validationResult.error.issues)}`
       );
       return null;
     }

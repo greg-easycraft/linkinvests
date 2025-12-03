@@ -6,12 +6,12 @@ import type { CompanyEstablishment } from '../types/failing-companies.types';
 @Injectable()
 export class FailingCompaniesOpportunityRepository {
   private readonly logger = new Logger(
-    FailingCompaniesOpportunityRepository.name,
+    FailingCompaniesOpportunityRepository.name
   );
 
   constructor(
     @Inject(DATABASE_CONNECTION)
-    private readonly db: DomainDbType,
+    private readonly db: DomainDbType
   ) {}
 
   /**
@@ -33,7 +33,7 @@ export class FailingCompaniesOpportunityRepository {
    * @returns Number of opportunities successfully inserted
    */
   async insertOpportunities(
-    establishments: CompanyEstablishment[],
+    establishments: CompanyEstablishment[]
   ): Promise<number> {
     if (establishments.length === 0) {
       return 0;
@@ -71,7 +71,7 @@ export class FailingCompaniesOpportunityRepository {
       return opportunities.length;
     } catch (error) {
       this.logger.error(
-        `Failed to insert opportunities: ${(error as Error).message}`,
+        `Failed to insert opportunities: ${(error as Error).message}`
       );
       throw error; // Rethrow to let the processor handle the error
     }

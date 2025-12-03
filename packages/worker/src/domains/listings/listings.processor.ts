@@ -16,7 +16,7 @@ export class ListingsProcessor extends WorkerHost {
 
   constructor(
     private readonly moteurImmoService: MoteurImmoService,
-    private readonly listingsRepository: ListingsRepository,
+    private readonly listingsRepository: ListingsRepository
   ) {
     super();
   }
@@ -52,7 +52,7 @@ export class ListingsProcessor extends WorkerHost {
       // Step 2: Prepare listings (already transformed and validated by service)
       this.logger.log('Step 2/3: Preparing validated listings...');
       const validatedListings = rawListings.map((listing) =>
-        this.validateListing(listing),
+        this.validateListing(listing)
       );
 
       const validListings = validatedListings.filter(Boolean) as ListingInput[];
@@ -73,7 +73,7 @@ export class ListingsProcessor extends WorkerHost {
         } catch (error) {
           stats.errors++;
           this.logger.error(
-            `Failed to insert listings: ${(error as Error).message}`,
+            `Failed to insert listings: ${(error as Error).message}`
           );
           throw error; // Re-throw to mark job as failed
         }
@@ -119,7 +119,7 @@ export class ListingsProcessor extends WorkerHost {
           duration,
           stack: (error as Error).stack,
           stats,
-        },
+        }
       );
       throw error; // Re-throw to mark job as failed and trigger retries
     }

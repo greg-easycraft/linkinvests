@@ -3,7 +3,7 @@ import { parse } from 'csv-parse';
 import { Readable, Transform } from 'stream';
 import { pipeline } from 'stream/promises';
 
-import { InseeCsvRow, CsvProcessingStats } from '../../../../../sourcing-worker/src/domains/deceases/types/deceases.types';
+import { InseeCsvRow, CsvProcessingStats } from '../types/deceases.types';
 
 @Injectable()
 export class CsvParsingService {
@@ -17,7 +17,7 @@ export class CsvParsingService {
    */
   public async parseCsv(
     buffer: Buffer,
-    minAge: number = 50,
+    minAge: number = 50
   ): Promise<{
     rows: InseeCsvRow[];
     stats: Omit<
@@ -163,7 +163,7 @@ export class CsvParsingService {
         error: error instanceof Error ? error.message : String(error),
       });
       throw new Error(
-        `CSV streaming parsing failed: ${error instanceof Error ? error.message : String(error)}`,
+        `CSV streaming parsing failed: ${error instanceof Error ? error.message : String(error)}`
       );
     }
   }
@@ -244,7 +244,7 @@ export class CsvParsingService {
    * @returns CSV content as string
    */
   public generateFailedRecordsCsv(
-    failedRows: Array<{ row: InseeCsvRow; error: string }>,
+    failedRows: Array<{ row: InseeCsvRow; error: string }>
   ): string {
     if (failedRows.length === 0) {
       return '';

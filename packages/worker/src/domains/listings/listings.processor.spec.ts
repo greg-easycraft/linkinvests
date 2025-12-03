@@ -131,12 +131,12 @@ describe('ListingsProcessor', () => {
           jobId: 'test-job-123',
           source: 'moteurimmo',
           fetchType: 'energyClass_energy_sieves',
-        }),
+        })
       );
 
       expect(processor['logger']['log']).toHaveBeenCalledWith(
         expect.stringContaining('Successfully processed listings'),
-        expect.objectContaining({ jobId: 'test-job-123' }),
+        expect.objectContaining({ jobId: 'test-job-123' })
       );
     });
 
@@ -168,7 +168,7 @@ describe('ListingsProcessor', () => {
 
       // Should log validation warnings
       expect(processor['logger']['warn']).toHaveBeenCalledWith(
-        expect.stringContaining('Invalid listing'),
+        expect.stringContaining('Invalid listing')
       );
     });
 
@@ -190,7 +190,7 @@ describe('ListingsProcessor', () => {
 
       // Should log appropriate message
       expect(processor['logger']['log']).toHaveBeenCalledWith(
-        'No valid listings to insert',
+        'No valid listings to insert'
       );
     });
 
@@ -216,12 +216,12 @@ describe('ListingsProcessor', () => {
       // Should log with default values
       expect(processor['logger']['log']).toHaveBeenCalledWith(
         expect.stringContaining(
-          'Starting to process listings for source moteurimmo all dates (type: custom)',
+          'Starting to process listings for source moteurimmo all dates (type: custom)'
         ),
         expect.objectContaining({
           source: 'moteurimmo',
           fetchType: 'custom',
-        }),
+        })
       );
     });
 
@@ -284,7 +284,7 @@ describe('ListingsProcessor', () => {
       mockMoteurImmoService.getListings.mockRejectedValue(serviceError);
 
       await expect(processor.process(mockJob)).rejects.toThrow(
-        'API connection failed',
+        'API connection failed'
       );
 
       // Should log error
@@ -294,7 +294,7 @@ describe('ListingsProcessor', () => {
           jobId: 'test-job-123',
           source: 'moteurimmo',
           stack: expect.any(String),
-        }),
+        })
       );
     });
 
@@ -313,12 +313,12 @@ describe('ListingsProcessor', () => {
       mockListingsRepository.insertListings.mockRejectedValue(repositoryError);
 
       await expect(processor.process(mockJob)).rejects.toThrow(
-        'Database connection failed',
+        'Database connection failed'
       );
 
       // Should log repository error specifically
       expect(processor['logger']['error']).toHaveBeenCalledWith(
-        'Failed to insert listings: Database connection failed',
+        'Failed to insert listings: Database connection failed'
       );
     });
 
@@ -345,7 +345,7 @@ describe('ListingsProcessor', () => {
 
       // Should log detailed statistics
       expect(processor['logger']['log']).toHaveBeenCalledWith(
-        expect.stringContaining('Processing stats for job test-job-123:'),
+        expect.stringContaining('Processing stats for job test-job-123:')
       );
 
       expect(processor['logger']['log']).toHaveBeenCalledWith(
@@ -358,7 +358,7 @@ describe('ListingsProcessor', () => {
           listingsInserted: 1,
           duplicatesSkipped: 1,
           errors: 1, // from invalid listing
-        }),
+        })
       );
     });
 
@@ -376,7 +376,7 @@ describe('ListingsProcessor', () => {
 
       expect(processor['logger']['log']).toHaveBeenCalledWith(
         expect.stringContaining('from 2024-01-01 to 2024-01-31'),
-        expect.any(Object),
+        expect.any(Object)
       );
 
       jest.clearAllMocks();
@@ -393,7 +393,7 @@ describe('ListingsProcessor', () => {
 
       expect(processor['logger']['log']).toHaveBeenCalledWith(
         expect.stringContaining('since 2024-01-01'),
-        expect.any(Object),
+        expect.any(Object)
       );
 
       jest.clearAllMocks();
@@ -408,7 +408,7 @@ describe('ListingsProcessor', () => {
 
       expect(processor['logger']['log']).toHaveBeenCalledWith(
         expect.stringContaining('all dates'),
-        expect.any(Object),
+        expect.any(Object)
       );
     });
   });

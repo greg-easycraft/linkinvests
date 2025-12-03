@@ -76,7 +76,7 @@ describe('GeocodingApiService', () => {
       } as any);
 
       const result = await service.geocodeAddress(
-        '123 Rue de Test 75001 Paris',
+        '123 Rue de Test 75001 Paris'
       );
 
       expect(result).toEqual({
@@ -85,12 +85,12 @@ describe('GeocodingApiService', () => {
       });
       expect(mockFetch).toHaveBeenCalledWith(
         expect.stringContaining(
-          'https://api-adresse.data.gouv.fr/search/?q=123%20Rue%20de%20Test%2075001%20Paris',
+          'https://api-adresse.data.gouv.fr/search/?q=123%20Rue%20de%20Test%2075001%20Paris'
         ),
         expect.objectContaining({
           method: 'GET',
           signal: expect.any(AbortSignal),
-        }),
+        })
       );
 
       sleepSpy.mockRestore();
@@ -101,7 +101,7 @@ describe('GeocodingApiService', () => {
 
       expect(result).toBeNull();
       expect(service['logger'].warn).toHaveBeenCalledWith(
-        'Empty address provided for geocoding',
+        'Empty address provided for geocoding'
       );
       expect(mockFetch).not.toHaveBeenCalled();
     });
@@ -111,7 +111,7 @@ describe('GeocodingApiService', () => {
 
       expect(result).toBeNull();
       expect(service['logger'].warn).toHaveBeenCalledWith(
-        'Empty address provided for geocoding',
+        'Empty address provided for geocoding'
       );
     });
 
@@ -132,7 +132,7 @@ describe('GeocodingApiService', () => {
 
       expect(result).toBeNull();
       expect(service['logger'].warn).toHaveBeenCalledWith(
-        expect.stringContaining('No geocoding results found'),
+        expect.stringContaining('No geocoding results found')
       );
 
       sleepSpy.mockRestore();
@@ -184,7 +184,7 @@ describe('GeocodingApiService', () => {
 
       expect(result).toBeNull();
       expect(service['logger'].warn).toHaveBeenCalledWith(
-        expect.stringContaining('Low geocoding confidence'),
+        expect.stringContaining('Low geocoding confidence')
       );
 
       sleepSpy.mockRestore();
@@ -233,7 +233,7 @@ describe('GeocodingApiService', () => {
       expect(result).toBeNull();
       expect(service['logger'].error).toHaveBeenCalledWith(
         expect.stringContaining('Failed to geocode address'),
-        expect.any(String),
+        expect.any(String)
       );
 
       sleepSpy.mockRestore();
@@ -253,7 +253,7 @@ describe('GeocodingApiService', () => {
 
       expect(mockFetch).toHaveBeenCalledWith(
         expect.stringContaining("123%20Rue%20de%20l'%C3%89glise%20%26%20Co"),
-        expect.any(Object),
+        expect.any(Object)
       );
 
       sleepSpy.mockRestore();
@@ -317,7 +317,7 @@ describe('GeocodingApiService', () => {
       expect(result).toEqual(mockGeocodingResponse);
       expect(sleepSpy).toHaveBeenCalledWith(1000); // 1 second * 1000ms
       expect(service['logger'].warn).toHaveBeenCalledWith(
-        expect.stringContaining('Rate limited'),
+        expect.stringContaining('Rate limited')
       );
 
       sleepSpy.mockRestore();
@@ -372,7 +372,7 @@ describe('GeocodingApiService', () => {
       expect(result).toEqual(mockGeocodingResponse);
       expect(mockFetch).toHaveBeenCalledTimes(3);
       expect(service['logger'].warn).toHaveBeenCalledWith(
-        expect.stringContaining('Retrying'),
+        expect.stringContaining('Retrying')
       );
 
       sleepSpy.mockRestore();
@@ -386,7 +386,7 @@ describe('GeocodingApiService', () => {
       mockFetch.mockRejectedValue(new Error('Network error'));
 
       await expect(
-        service['fetchWithRateLimit']('Test Address'),
+        service['fetchWithRateLimit']('Test Address')
       ).rejects.toThrow('Network error');
 
       expect(mockFetch).toHaveBeenCalledTimes(3); // maxRetries = 3
@@ -405,7 +405,7 @@ describe('GeocodingApiService', () => {
       } as any);
 
       await expect(
-        service['fetchWithRateLimit']('Test Address'),
+        service['fetchWithRateLimit']('Test Address')
       ).rejects.toThrow('API returned status 500');
 
       sleepSpy.mockRestore();

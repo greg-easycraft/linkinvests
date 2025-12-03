@@ -142,7 +142,7 @@ describe('ListingExtractorService', () => {
       ];
 
       // Mock the page evaluate to simulate what would happen in browser
-      mockPage.evaluate.mockImplementation((fn) => {
+      mockPage.evaluate.mockImplementation(() => {
         // Simulate browser environment where relative URLs are converted to absolute
         const absoluteUrls = relativeUrls.map((url) => {
           if (url.startsWith('/')) {
@@ -323,12 +323,14 @@ describe('ListingExtractorService', () => {
 
     it.skip('should track scroll attempts correctly', async () => {
       let scrollCount = 0;
-      mockPage.evaluate.mockImplementation(async () => {
+      mockPage.evaluate.mockImplementation(() => {
         const currentCount = scrollCount === 0 ? 1 : scrollCount + 1;
         scrollCount++;
-        return Array(currentCount)
-          .fill(null)
-          .map((_, i) => `url-${i}`);
+        return Promise.resolve(
+          Array(currentCount)
+            .fill(null)
+            .map((_, i) => `url-${i}`)
+        );
       });
 
       await service.extractAllListingsWithPagination(mockPage, 3);

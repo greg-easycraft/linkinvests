@@ -41,7 +41,7 @@ describe('FailingCompaniesProcessor', () => {
     }).compile();
 
     processor = module.get<FailingCompaniesProcessor>(
-      FailingCompaniesProcessor,
+      FailingCompaniesProcessor
     );
 
     // Suppress logger output during tests
@@ -59,7 +59,7 @@ describe('FailingCompaniesProcessor', () => {
       const url = processor['buildApiUrl']('75', '2024-01-01');
 
       expect(url).toContain(
-        'https://bodacc-datadila.opendatasoft.com/api/explore/v2.1/catalog/datasets/annonces-commerciales/exports/csv',
+        'https://bodacc-datadila.opendatasoft.com/api/explore/v2.1/catalog/datasets/annonces-commerciales/exports/csv'
       );
       expect(url).toContain('where=');
       expect(url).toContain('familleavis%3A%22collective%22');
@@ -118,7 +118,7 @@ describe('FailingCompaniesProcessor', () => {
       const buffer = Buffer.from(csvData);
       const arrayBuffer = buffer.buffer.slice(
         buffer.byteOffset,
-        buffer.byteOffset + buffer.byteLength,
+        buffer.byteOffset + buffer.byteLength
       );
 
       mockFetch.mockResolvedValue({
@@ -127,7 +127,7 @@ describe('FailingCompaniesProcessor', () => {
       } as any);
 
       const result = await processor['fetchCsvData'](
-        'https://example.com/test',
+        'https://example.com/test'
       );
 
       expect(result).toBeInstanceOf(Buffer);
@@ -145,7 +145,7 @@ describe('FailingCompaniesProcessor', () => {
       } as any);
 
       await expect(
-        processor['fetchCsvData']('https://example.com/test'),
+        processor['fetchCsvData']('https://example.com/test')
       ).rejects.toThrow('Failed to fetch data from API. Status: 404');
     });
 
@@ -153,7 +153,7 @@ describe('FailingCompaniesProcessor', () => {
       mockFetch.mockRejectedValue(new Error('Network error'));
 
       await expect(
-        processor['fetchCsvData']('https://example.com/test'),
+        processor['fetchCsvData']('https://example.com/test')
       ).rejects.toThrow('Network error');
 
       expect(processor['logger'].error).toHaveBeenCalled();
@@ -173,7 +173,7 @@ describe('FailingCompaniesProcessor', () => {
       const buffer = Buffer.from(csvData);
       const arrayBuffer = buffer.buffer.slice(
         buffer.byteOffset,
-        buffer.byteOffset + buffer.byteLength,
+        buffer.byteOffset + buffer.byteLength
       );
 
       mockFetch.mockResolvedValue({
@@ -182,10 +182,10 @@ describe('FailingCompaniesProcessor', () => {
       } as any);
 
       mockS3Service.generateFailingCompaniesKey.mockReturnValue(
-        'failing-companies/75/2024-01-01/75.csv',
+        'failing-companies/75/2024-01-01/75.csv'
       );
       mockS3Service.uploadFile.mockResolvedValue(
-        's3://bucket/failing-companies/75/2024-01-01/75.csv',
+        's3://bucket/failing-companies/75/2024-01-01/75.csv'
       );
       mockCompanyBuildingsQueue.add.mockResolvedValue({
         id: 'job-123',
@@ -196,19 +196,19 @@ describe('FailingCompaniesProcessor', () => {
       // Verify API URL construction
       expect(mockFetch).toHaveBeenCalledWith(
         expect.stringContaining('numerodepartement%3A75'),
-        expect.any(Object),
+        expect.any(Object)
       );
 
       // Verify S3 key generation
       expect(mockS3Service.generateFailingCompaniesKey).toHaveBeenCalledWith(
         75,
-        '2024-01-01',
+        '2024-01-01'
       );
 
       // Verify S3 upload
       expect(mockS3Service.uploadFile).toHaveBeenCalledWith(
         expect.any(Buffer),
-        'failing-companies/75/2024-01-01.csv',
+        'failing-companies/75/2024-01-01.csv'
       );
 
       // Verify queue enqueue
@@ -218,7 +218,7 @@ describe('FailingCompaniesProcessor', () => {
         {
           removeOnComplete: 100,
           removeOnFail: 100,
-        },
+        }
       );
     });
 
@@ -227,7 +227,7 @@ describe('FailingCompaniesProcessor', () => {
       const buffer = Buffer.from(csvData);
       const arrayBuffer = buffer.buffer.slice(
         buffer.byteOffset,
-        buffer.byteOffset + buffer.byteLength,
+        buffer.byteOffset + buffer.byteLength
       );
 
       mockFetch.mockResolvedValue({
@@ -236,10 +236,10 @@ describe('FailingCompaniesProcessor', () => {
       } as any);
 
       mockS3Service.generateFailingCompaniesKey.mockReturnValue(
-        'failing-companies/93/2024-06-15.csv',
+        'failing-companies/93/2024-06-15.csv'
       );
       mockS3Service.uploadFile.mockResolvedValue(
-        's3://bucket/failing-companies/93/2024-06-15.csv',
+        's3://bucket/failing-companies/93/2024-06-15.csv'
       );
       mockCompanyBuildingsQueue.add.mockResolvedValue({
         id: 'job-456',
@@ -251,7 +251,7 @@ describe('FailingCompaniesProcessor', () => {
 
       expect(mockS3Service.generateFailingCompaniesKey).toHaveBeenCalledWith(
         93,
-        '2024-06-15',
+        '2024-06-15'
       );
     });
 
@@ -260,7 +260,7 @@ describe('FailingCompaniesProcessor', () => {
       const buffer = Buffer.from(csvData);
       const arrayBuffer = buffer.buffer.slice(
         buffer.byteOffset,
-        buffer.byteOffset + buffer.byteLength,
+        buffer.byteOffset + buffer.byteLength
       );
 
       mockFetch.mockResolvedValue({
@@ -269,10 +269,10 @@ describe('FailingCompaniesProcessor', () => {
       } as any);
 
       mockS3Service.generateFailingCompaniesKey.mockReturnValue(
-        'failing-companies/75/2024-01-01.csv',
+        'failing-companies/75/2024-01-01.csv'
       );
       mockS3Service.uploadFile.mockResolvedValue(
-        's3://my-bucket/failing-companies/75/2024-01-01.csv',
+        's3://my-bucket/failing-companies/75/2024-01-01.csv'
       );
       mockCompanyBuildingsQueue.add.mockResolvedValue({
         id: 'job-789',
@@ -285,7 +285,7 @@ describe('FailingCompaniesProcessor', () => {
         {
           sourceFile: 's3://my-bucket/failing-companies/75/2024-01-01.csv',
         },
-        expect.any(Object),
+        expect.any(Object)
       );
     });
 
@@ -295,7 +295,7 @@ describe('FailingCompaniesProcessor', () => {
       await expect(processor.process(mockJob)).rejects.toThrow('API error');
       expect(processor['logger'].error).toHaveBeenCalledWith(
         expect.stringContaining('Failed to process failing companies'),
-        expect.any(String),
+        expect.any(String)
       );
     });
   });

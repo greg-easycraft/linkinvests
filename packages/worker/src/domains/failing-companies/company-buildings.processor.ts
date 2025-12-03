@@ -38,7 +38,7 @@ export class CompanyBuildingsProcessor extends WorkerHost {
     private readonly csvParserService: CsvParserService,
     private readonly rechercheEntreprisesApi: RechercheEntreprisesApiService,
     private readonly geocodingApi: GeocodingApiService,
-    private readonly opportunityRepository: FailingCompaniesOpportunityRepository,
+    private readonly opportunityRepository: FailingCompaniesOpportunityRepository
   ) {
     super();
   }
@@ -47,7 +47,7 @@ export class CompanyBuildingsProcessor extends WorkerHost {
     const { sourceFile } = job.data;
     const startTime = Date.now();
     this.logger.log(
-      `Starting to process company buildings from: ${sourceFile}`,
+      `Starting to process company buildings from: ${sourceFile}`
     );
 
     const stats: ProcessingStats = {
@@ -82,7 +82,7 @@ export class CompanyBuildingsProcessor extends WorkerHost {
       for (const [index, { siren, row }] of sirens.entries()) {
         try {
           this.logger.log(
-            `Processing SIREN ${index + 1}/${sirens.length}: ${siren}`,
+            `Processing SIREN ${index + 1}/${sirens.length}: ${siren}`
           );
 
           const establishments =
@@ -107,7 +107,7 @@ export class CompanyBuildingsProcessor extends WorkerHost {
             const transformed = await this.transformEstablishment(
               etablissement,
               row.dateparution, // Pass the parution date from CSV
-              stats,
+              stats
             );
             if (transformed) {
               allEstablishments.push({
@@ -129,13 +129,13 @@ export class CompanyBuildingsProcessor extends WorkerHost {
             error_reason: (error as Error).message,
           });
           this.logger.error(
-            `Error processing SIREN ${siren}: ${(error as Error).message}`,
+            `Error processing SIREN ${siren}: ${(error as Error).message}`
           );
         }
       }
 
       this.logger.log(
-        `Step 4/6: Transformed ${allEstablishments.length} establishment(s) to opportunities`,
+        `Step 4/6: Transformed ${allEstablishments.length} establishment(s) to opportunities`
       );
 
       // Step 5: Insert into database
@@ -143,7 +143,7 @@ export class CompanyBuildingsProcessor extends WorkerHost {
       if (allEstablishments.length > 0) {
         const insertedCount =
           await this.opportunityRepository.insertOpportunities(
-            allEstablishments,
+            allEstablishments
           );
         stats.opportunitiesInserted = insertedCount;
       }
@@ -153,7 +153,7 @@ export class CompanyBuildingsProcessor extends WorkerHost {
       if (failedRows.length > 0) {
         await this.uploadFailedRows(sourceFile, failedRows);
         this.logger.warn(
-          `Uploaded ${failedRows.length} failed row(s) to S3 with _failed suffix`,
+          `Uploaded ${failedRows.length} failed row(s) to S3 with _failed suffix`
         );
       }
 
@@ -163,7 +163,7 @@ export class CompanyBuildingsProcessor extends WorkerHost {
 
       const duration = Date.now() - startTime;
       this.logger.log(
-        `Successfully processed company buildings from: ${sourceFile}`,
+        `Successfully processed company buildings from: ${sourceFile}`
       );
       this.logger.log(`Processing stats:
         - Duration: ${duration}ms
@@ -179,7 +179,7 @@ export class CompanyBuildingsProcessor extends WorkerHost {
     } catch (error) {
       this.logger.error(
         `Failed to process company buildings from ${sourceFile}: ${(error as Error).message}`,
-        (error as Error).stack,
+        (error as Error).stack
       );
       throw error;
     }
@@ -190,7 +190,7 @@ export class CompanyBuildingsProcessor extends WorkerHost {
    */
   private async uploadFailedRows(
     sourceFile: string,
-    failedRows: FailingCompanyCsvRow[],
+    failedRows: FailingCompanyCsvRow[]
   ): Promise<void> {
     try {
       // Generate failed file path
@@ -213,7 +213,7 @@ export class CompanyBuildingsProcessor extends WorkerHost {
       this.logger.log(`Uploaded failed rows to: ${failedFileKey}`);
     } catch (error) {
       this.logger.error(
-        `Failed to upload failed rows: ${(error as Error).message}`,
+        `Failed to upload failed rows: ${(error as Error).message}`
       );
       // Don't throw - this is not critical
     }
@@ -225,7 +225,7 @@ export class CompanyBuildingsProcessor extends WorkerHost {
   private async transformEstablishment(
     etablissement: Etablissement,
     opportunityDate: string,
-    stats: ProcessingStats,
+    stats: ProcessingStats
   ): Promise<Omit<CompanyEstablishment, 'name'> | null> {
     try {
       let latitude = etablissement.latitude;
@@ -244,7 +244,7 @@ export class CompanyBuildingsProcessor extends WorkerHost {
         } else {
           stats.geocodingFailures++;
           this.logger.warn(
-            `Failed to geocode establishment ${etablissement.siret} at address: ${fullAddress}. Skipping.`,
+            `Failed to geocode establishment ${etablissement.siret} at address: ${fullAddress}. Skipping.`
           );
           return null; // Skip this establishment if geocoding fails
         }
@@ -252,7 +252,7 @@ export class CompanyBuildingsProcessor extends WorkerHost {
 
       if (Number.isNaN(latitude) || Number.isNaN(longitude)) {
         this.logger.warn(
-          `Invalid coordinates for establishment ${etablissement.siret}: ${latitude}, ${longitude}. Skipping.`,
+          `Invalid coordinates for establishment ${etablissement.siret}: ${latitude}, ${longitude}. Skipping.`
         );
         return null;
       }
@@ -270,7 +270,7 @@ export class CompanyBuildingsProcessor extends WorkerHost {
       };
     } catch (error) {
       this.logger.error(
-        `Failed to transform establishment ${etablissement.siret}: ${(error as Error).message}`,
+        `Failed to transform establishment ${etablissement.siret}: ${(error as Error).message}`
       );
       return null;
     }

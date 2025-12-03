@@ -33,7 +33,7 @@ export class CsvParserService {
     } catch (error) {
       this.logger.error(
         `Failed to parse CSV: ${(error as Error).message}`,
-        (error as Error).stack,
+        (error as Error).stack
       );
       throw error;
     }
@@ -45,7 +45,7 @@ export class CsvParserService {
    * @returns Array of unique SIREN numbers with their source rows
    */
   extractSirensFromRows(
-    rows: FailingCompanyCsvRow[],
+    rows: FailingCompanyCsvRow[]
   ): Array<{ siren: string; row: FailingCompanyCsvRow }> {
     const sirenMap = new Map<string, FailingCompanyCsvRow>();
     let successCount = 0;
@@ -61,7 +61,7 @@ export class CsvParserService {
       } catch (error) {
         errorCount++;
         this.logger.warn(
-          `Failed to extract SIREN from row ${index + 1}: ${(error as Error).message}`,
+          `Failed to extract SIREN from row ${index + 1}: ${(error as Error).message}`
         );
       }
     }
@@ -72,7 +72,7 @@ export class CsvParserService {
     }));
 
     this.logger.log(
-      `Extracted ${sirens.length} unique SIREN(s) from ${rows.length} rows (${successCount} successful, ${errorCount} errors)`,
+      `Extracted ${sirens.length} unique SIREN(s) from ${rows.length} rows (${successCount} successful, ${errorCount} errors)`
     );
 
     return sirens;
@@ -102,7 +102,7 @@ export class CsvParserService {
     try {
       // Parse the JSON from listepersonnes field
       const personnesData = JSON.parse(
-        row.listepersonnes,
+        row.listepersonnes
       ) as ListePersonnesData[];
       // listepersonnes can be an array or a single object
       const personnes = Array.isArray(personnesData)
@@ -120,7 +120,7 @@ export class CsvParserService {
             return siren;
           } else {
             this.logger.warn(
-              `Invalid SIREN format: ${siren} (expected 9 digits)`,
+              `Invalid SIREN format: ${siren} (expected 9 digits)`
             );
           }
         }
@@ -135,7 +135,7 @@ export class CsvParserService {
       }
 
       throw new Error(
-        `Failed to parse listepersonnes JSON: ${(error as Error).message}`,
+        `Failed to parse listepersonnes JSON: ${(error as Error).message}`
       );
     }
   }

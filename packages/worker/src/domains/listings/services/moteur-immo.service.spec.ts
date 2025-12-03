@@ -45,7 +45,7 @@ describe('MoteurImmoService', () => {
     it('should build correct API request body with basic parameters', () => {
       const requestBody = service['buildApiRequestBody'](
         { afterDate: '2024-01-01' },
-        1,
+        1
       );
 
       expect(requestBody).toEqual({
@@ -70,7 +70,7 @@ describe('MoteurImmoService', () => {
         {
           propertyTypes: [PropertyType.FLAT, PropertyType.HOUSE],
         },
-        1,
+        1
       );
 
       expect(requestBody).toEqual({
@@ -194,7 +194,7 @@ describe('MoteurImmoService', () => {
       expect(service['mapPropertyType']('house')).toBe(PropertyType.HOUSE);
       expect(service['mapPropertyType']('land')).toBe(PropertyType.LAND);
       expect(service['mapPropertyType']('premises')).toBe(
-        PropertyType.COMMERCIAL,
+        PropertyType.COMMERCIAL
       );
       expect(service['mapPropertyType']('unknown')).toBe(PropertyType.OTHER);
       expect(service['mapPropertyType'](undefined)).toBe(PropertyType.OTHER);
@@ -310,7 +310,7 @@ describe('MoteurImmoService', () => {
 
       const result = await service['fetchListingsPage'](
         { afterDate: '2024-01-01' },
-        1,
+        1
       );
 
       expect(mockFetch).toHaveBeenCalledWith(
@@ -327,7 +327,7 @@ describe('MoteurImmoService', () => {
             offset: 0,
           }),
           signal: expect.any(AbortSignal),
-        }),
+        })
       );
 
       expect(result).toEqual(mockApiResponse.ads);
@@ -381,7 +381,7 @@ describe('MoteurImmoService', () => {
 
       const result = await service['fetchListingsPage'](
         { afterDate: '2024-01-01' },
-        1,
+        1
       );
 
       expect(sleepSpy).toHaveBeenCalledWith(5000); // 5 seconds
@@ -404,7 +404,7 @@ describe('MoteurImmoService', () => {
 
       const result = await service['fetchListingsPage'](
         { afterDate: '2024-01-01' },
-        1,
+        1
       );
 
       expect(sleepSpy).toHaveBeenCalledTimes(2);
@@ -420,7 +420,7 @@ describe('MoteurImmoService', () => {
       mockFetch.mockRejectedValue(new Error('Network error'));
 
       await expect(
-        service['fetchListingsPage']({ afterDate: '2024-01-01' }, 1),
+        service['fetchListingsPage']({ afterDate: '2024-01-01' }, 1)
       ).rejects.toThrow('Network error');
 
       expect(mockFetch).toHaveBeenCalledTimes(3); // Max retries
@@ -433,7 +433,7 @@ describe('MoteurImmoService', () => {
       } as any);
 
       await expect(
-        service['fetchListingsPage']({ afterDate: '2024-01-01' }, 1),
+        service['fetchListingsPage']({ afterDate: '2024-01-01' }, 1)
       ).rejects.toThrow('Moteur Immo API returned status 400: Bad Request');
     });
   });
@@ -547,7 +547,7 @@ describe('MoteurImmoService', () => {
 
       expect(result).toHaveLength(3);
       expect(result.every((listing) => listing.source === 'seloger')).toBe(
-        true,
+        true
       );
     });
 
@@ -570,7 +570,7 @@ describe('MoteurImmoService', () => {
       // Should return listings from successful page
       expect(result).toHaveLength(2);
       expect(service['logger']['warn']).toHaveBeenCalledWith(
-        expect.stringContaining('Reached API pagination limit'),
+        expect.stringContaining('Reached API pagination limit')
       );
     });
   });

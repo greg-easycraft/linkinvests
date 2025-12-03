@@ -5,7 +5,7 @@ import type {
   MairieContactInfo,
   RawMairieAddress,
   RawMairieData,
-} from '../../../../../sourcing-worker/src/domains/deceases/types/deceases.types';
+} from '../types/deceases.types';
 
 export interface MairieData {
   contactInfo: MairieContactInfo;
@@ -79,7 +79,7 @@ export class InseeApiService {
             : this.retryDelay * attempt;
           this.logger.warn(
             { attempt, waitTime },
-            `Rate limited. Waiting ${waitTime}ms`,
+            `Rate limited. Waiting ${waitTime}ms`
           );
           await this.sleep(waitTime);
           continue;
@@ -96,7 +96,7 @@ export class InseeApiService {
         if (attempt < this.maxRetries) {
           this.logger.warn(
             { attempt, maxRetries: this.maxRetries, error },
-            `Attempt ${attempt}/${this.maxRetries} failed. Retrying...`,
+            `Attempt ${attempt}/${this.maxRetries} failed. Retrying...`
           );
           await this.sleep(this.retryDelay * attempt);
         }
@@ -140,7 +140,7 @@ export class InseeApiService {
     }
 
     const addressWithCoordinates = adresse.find(
-      (address) => address.type_adresse === 'Adresse',
+      (address) => address.type_adresse === 'Adresse'
     );
     if (!addressWithCoordinates) {
       throw new Error('No address with coordinates found');
@@ -148,7 +148,7 @@ export class InseeApiService {
 
     const { latitude, longitude } = addressWithCoordinates;
     const postalAddress = adresse.find(
-      (address) => address.type_adresse === 'Adresse postale',
+      (address) => address.type_adresse === 'Adresse postale'
     );
     return {
       contactInfo: {

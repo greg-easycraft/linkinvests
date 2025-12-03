@@ -33,7 +33,7 @@ describe('EnergyDiagnosticsProcessor', () => {
     }).compile();
 
     processor = module.get<EnergyDiagnosticsProcessor>(
-      EnergyDiagnosticsProcessor,
+      EnergyDiagnosticsProcessor
     );
 
     // Suppress logger output during tests
@@ -224,7 +224,7 @@ describe('EnergyDiagnosticsProcessor', () => {
         75,
         '2024-01-01',
         ['F', 'G'],
-        undefined,
+        undefined
       );
       expect(mockRepository.insertOpportunities).toHaveBeenCalledWith(
         expect.arrayContaining([
@@ -240,7 +240,7 @@ describe('EnergyDiagnosticsProcessor', () => {
             energyClass: 'G',
             squareFootage: 100,
           }),
-        ]),
+        ])
       );
     });
 
@@ -263,7 +263,7 @@ describe('EnergyDiagnosticsProcessor', () => {
         75,
         '2024-01-01',
         ['F', 'G'],
-        '2024-12-31',
+        '2024-12-31'
       );
     });
 
@@ -272,7 +272,7 @@ describe('EnergyDiagnosticsProcessor', () => {
       mockAdemeApi.fetchAllDpeRecords.mockRejectedValue(apiError);
 
       await expect(processor.process(mockJob)).rejects.toThrow(
-        'API connection failed',
+        'API connection failed'
       );
       expect(processor['logger'].error).toHaveBeenCalled();
     });
@@ -286,7 +286,7 @@ describe('EnergyDiagnosticsProcessor', () => {
 
       // Should log error but not throw (error is caught and logged)
       expect(processor['logger'].error).toHaveBeenCalledWith(
-        expect.stringContaining('Failed to insert opportunities'),
+        expect.stringContaining('Failed to insert opportunities')
       );
     });
   });

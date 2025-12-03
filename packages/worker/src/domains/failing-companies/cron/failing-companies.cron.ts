@@ -10,7 +10,7 @@ export class FailingCompaniesCron {
 
   constructor(
     @InjectQueue(SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE)
-    private readonly queue: Queue,
+    private readonly queue: Queue
   ) {}
 
   /**
@@ -35,7 +35,7 @@ export class FailingCompaniesCron {
       }
 
       this.logger.log(
-        `Enqueuing failing companies jobs for date: ${sinceDate}`,
+        `Enqueuing failing companies jobs for date: ${sinceDate}`
       );
 
       // Enqueue jobs for all departments (1-95)
@@ -52,17 +52,17 @@ export class FailingCompaniesCron {
             {
               removeOnComplete: 100,
               removeOnFail: 100,
-            },
+            }
           )
           .then(({ id: jobId }) => {
             this.logger.debug(
-              `Enqueued job ${jobId} for department ${departmentId}`,
+              `Enqueued job ${jobId} for department ${departmentId}`
             );
             return jobId;
           })
           .catch((error: Error) => {
             this.logger.error(
-              `Failed to enqueue job for department ${departmentId}: ${error.message}`,
+              `Failed to enqueue job for department ${departmentId}: ${error.message}`
             );
             return null;
           });
@@ -74,13 +74,13 @@ export class FailingCompaniesCron {
       const jobIds = await Promise.all(jobPromises);
 
       this.logger.log(
-        `Successfully enqueued ${jobIds.length} failing companies jobs for ${sinceDate}`,
+        `Successfully enqueued ${jobIds.length} failing companies jobs for ${sinceDate}`
       );
     } catch (error) {
       const err = error as Error;
       this.logger.error(
         `Failed to execute daily failing companies cron job: ${err.message}`,
-        err.stack,
+        err.stack
       );
       // Don't throw - let the cron continue to run on schedule
     }

@@ -4,7 +4,7 @@ import { OpportunityType, SuccessionInput } from '@linkinvests/shared';
 import { DATABASE_CONNECTION } from '~/database';
 
 import { DeceasesOpportunityRepository } from './deceases-opportunity.repository';
-import type { MairieContactInfo } from '../../../../../sourcing-worker/src/domains/deceases/types/deceases.types';
+import type { MairieContactInfo } from '../types/deceases.types';
 
 describe('DeceasesOpportunityRepository', () => {
   let repository: DeceasesOpportunityRepository;
@@ -32,7 +32,7 @@ describe('DeceasesOpportunityRepository', () => {
     }).compile();
 
     repository = module.get<DeceasesOpportunityRepository>(
-      DeceasesOpportunityRepository,
+      DeceasesOpportunityRepository
     );
 
     // Suppress logger output during tests
@@ -132,7 +132,7 @@ describe('DeceasesOpportunityRepository', () => {
               nom_commune: 'Paris',
             },
           },
-        }),
+        })
       );
 
       const result = await repository.insertOpportunities(opportunities);
@@ -171,7 +171,7 @@ describe('DeceasesOpportunityRepository', () => {
               nom_commune: 'Paris',
             },
           },
-        }),
+        })
       );
 
       const result = await repository.insertOpportunities(opportunities, 250);
@@ -296,7 +296,7 @@ describe('DeceasesOpportunityRepository', () => {
         expect.arrayContaining([
           expect.objectContaining({ type: OpportunityType.SUCCESSION }),
           expect.objectContaining({ type: OpportunityType.SUCCESSION }),
-        ]),
+        ])
       );
     });
 
@@ -363,16 +363,16 @@ describe('DeceasesOpportunityRepository', () => {
               nom_commune: 'Paris',
             },
           },
-        }),
+        })
       );
 
       await repository.insertOpportunities(opportunities);
 
       expect(repository['logger'].log).toHaveBeenCalledWith(
-        'Batch 1: Inserted 500/1000 opportunities',
+        'Batch 1: Inserted 500/1000 opportunities'
       );
       expect(repository['logger'].log).toHaveBeenCalledWith(
-        'Batch 2: Inserted 1000/1000 opportunities',
+        'Batch 2: Inserted 1000/1000 opportunities'
       );
     });
 
@@ -408,7 +408,7 @@ describe('DeceasesOpportunityRepository', () => {
       await repository.insertOpportunities(opportunities);
 
       expect(repository['logger'].log).toHaveBeenCalledWith(
-        'Successfully inserted 1 opportunities',
+        'Successfully inserted 1 opportunities'
       );
     });
 
@@ -445,7 +445,7 @@ describe('DeceasesOpportunityRepository', () => {
       ];
 
       await expect(
-        repository.insertOpportunities(opportunities),
+        repository.insertOpportunities(opportunities)
       ).rejects.toThrow('Database connection failed');
 
       expect(repository['logger'].error).toHaveBeenCalledWith(
@@ -454,7 +454,7 @@ describe('DeceasesOpportunityRepository', () => {
           batchStart: 0,
           batchSize: 1,
         }),
-        'Failed to insert batch',
+        'Failed to insert batch'
       );
     });
 

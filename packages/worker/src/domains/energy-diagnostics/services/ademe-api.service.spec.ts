@@ -37,11 +37,11 @@ describe('AdemeApiService', () => {
         '2024-01-01',
         ['F', 'G'],
         1,
-        1000,
+        1000
       );
 
       expect(url).toContain(
-        'https://data.ademe.fr/data-fair/api/v1/datasets/dpe03existant/lines',
+        'https://data.ademe.fr/data-fair/api/v1/datasets/dpe03existant/lines'
       );
       expect(url).toContain('size=1000');
       expect(url).toContain('page=1');
@@ -69,7 +69,7 @@ describe('AdemeApiService', () => {
         '2024-01-01',
         ['D', 'E', 'F', 'G'],
         1,
-        1000,
+        1000
       );
 
       expect(url).toContain('etiquette_dpe%3A%28D+OR+E+OR+F+OR+G%29');
@@ -93,7 +93,7 @@ describe('AdemeApiService', () => {
         ['F', 'G'],
         1,
         1000,
-        '2024-12-31',
+        '2024-12-31'
       );
 
       expect(url).toContain('date_etablissement_dpe%3A%3E%3D2024-01-01');
@@ -106,7 +106,7 @@ describe('AdemeApiService', () => {
         '2024-01-01',
         ['F', 'G'],
         1,
-        1000,
+        1000
       );
 
       expect(url).toContain('date_etablissement_dpe%3A%3E%3D2024-01-01');
@@ -146,7 +146,7 @@ describe('AdemeApiService', () => {
         '2024-01-01',
         ['F', 'G'],
         1,
-        1000,
+        1000
       );
 
       expect(result).toEqual(mockDpeRecords);
@@ -155,7 +155,7 @@ describe('AdemeApiService', () => {
         expect.objectContaining({
           method: 'GET',
           signal: expect.any(AbortSignal),
-        }),
+        })
       );
     });
 
@@ -170,7 +170,7 @@ describe('AdemeApiService', () => {
         '2024-01-01',
         ['F'],
         1,
-        1000,
+        1000
       );
 
       expect(result).toEqual([]);
@@ -187,7 +187,7 @@ describe('AdemeApiService', () => {
       } as any);
 
       await expect(
-        service['fetchDpePage']('75', '2024-01-01', ['F'], 1, 1000),
+        service['fetchDpePage']('75', '2024-01-01', ['F'], 1, 1000)
       ).rejects.toThrow('ADEME API returned status 500');
 
       sleepSpy.mockRestore();
@@ -220,13 +220,13 @@ describe('AdemeApiService', () => {
         '2024-01-01',
         ['F'],
         1,
-        1000,
+        1000
       );
 
       expect(result).toEqual(mockDpeRecords);
       expect(sleepSpy).toHaveBeenCalledWith(2000); // 2 seconds * 1000ms
       expect(service['logger'].warn).toHaveBeenCalledWith(
-        expect.stringContaining('Rate limited'),
+        expect.stringContaining('Rate limited')
       );
     });
 
@@ -257,7 +257,7 @@ describe('AdemeApiService', () => {
         '2024-01-01',
         ['F'],
         1,
-        1000,
+        1000
       );
 
       expect(result).toEqual(mockDpeRecords);
@@ -287,14 +287,14 @@ describe('AdemeApiService', () => {
         '2024-01-01',
         ['F'],
         1,
-        1000,
+        1000
       );
 
       expect(result).toEqual(mockDpeRecords);
       expect(mockFetch).toHaveBeenCalledTimes(3);
       expect(sleepSpy).toHaveBeenCalledTimes(2); // 2 retries
       expect(service['logger'].warn).toHaveBeenCalledWith(
-        expect.stringContaining('Retrying'),
+        expect.stringContaining('Retrying')
       );
     });
 
@@ -306,14 +306,14 @@ describe('AdemeApiService', () => {
         .mockResolvedValue(undefined);
 
       await expect(
-        service['fetchDpePage']('75', '2024-01-01', ['F'], 1, 1000),
+        service['fetchDpePage']('75', '2024-01-01', ['F'], 1, 1000)
       ).rejects.toThrow('Network error');
 
       expect(mockFetch).toHaveBeenCalledTimes(3); // maxRetries = 3
       expect(sleepSpy).toHaveBeenCalledTimes(2); // 2 retry delays
       expect(service['logger'].error).toHaveBeenCalledWith(
         expect.stringContaining('Failed to fetch DPE records'),
-        expect.any(String),
+        expect.any(String)
       );
     });
 
@@ -352,7 +352,7 @@ describe('AdemeApiService', () => {
         ['F', 'G'],
         1,
         1000,
-        '2024-12-31',
+        '2024-12-31'
       );
 
       expect(result).toEqual(mockDpeRecords);
@@ -361,11 +361,11 @@ describe('AdemeApiService', () => {
         expect.objectContaining({
           method: 'GET',
           signal: expect.any(AbortSignal),
-        }),
+        })
       );
       expect(mockFetch).toHaveBeenCalledWith(
         expect.stringContaining('date_etablissement_dpe%3A%3C%3D2024-12-31'),
-        expect.any(Object),
+        expect.any(Object)
       );
     });
   });
@@ -410,7 +410,7 @@ describe('AdemeApiService', () => {
         '75',
         '2024-01-01',
         ['F', 'G'],
-        '2024-12-31',
+        '2024-12-31'
       );
 
       expect(result).toEqual(mockDpeRecords);
@@ -420,7 +420,7 @@ describe('AdemeApiService', () => {
         ['F', 'G'],
         1,
         1000,
-        '2024-12-31',
+        '2024-12-31'
       );
     });
 
@@ -449,7 +449,7 @@ describe('AdemeApiService', () => {
 
       expect(result).toHaveLength(1000);
       expect(service['logger'].warn).toHaveBeenCalledWith(
-        expect.stringContaining('Reached API pagination limit'),
+        expect.stringContaining('Reached API pagination limit')
       );
     });
 
@@ -459,7 +459,7 @@ describe('AdemeApiService', () => {
         .mockRejectedValue(new Error('Network error'));
 
       await expect(
-        service.fetchAllDpeRecords('75', '2024-01-01', ['F']),
+        service.fetchAllDpeRecords('75', '2024-01-01', ['F'])
       ).rejects.toThrow('Network error');
     });
 
@@ -470,7 +470,7 @@ describe('AdemeApiService', () => {
         .mockRejectedValueOnce(new Error('Network timeout'));
 
       await expect(
-        service.fetchAllDpeRecords('75', '2024-01-01', ['F']),
+        service.fetchAllDpeRecords('75', '2024-01-01', ['F'])
       ).rejects.toThrow('Network timeout');
     });
   });

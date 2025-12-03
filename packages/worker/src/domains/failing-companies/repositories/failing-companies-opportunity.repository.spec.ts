@@ -26,7 +26,7 @@ describe('FailingCompaniesOpportunityRepository', () => {
     }).compile();
 
     repository = module.get<FailingCompaniesOpportunityRepository>(
-      FailingCompaniesOpportunityRepository,
+      FailingCompaniesOpportunityRepository
     );
 
     // Suppress logger output during tests
@@ -194,7 +194,7 @@ describe('FailingCompaniesOpportunityRepository', () => {
       ];
 
       await expect(
-        repository.insertOpportunities(establishments),
+        repository.insertOpportunities(establishments)
       ).rejects.toThrow('Database connection failed');
       expect(repository['logger'].error).toHaveBeenCalled();
     });

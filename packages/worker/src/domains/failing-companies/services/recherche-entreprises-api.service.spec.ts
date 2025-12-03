@@ -28,7 +28,7 @@ describe('RechercheEntreprisesApiService', () => {
     }).compile();
 
     service = module.get<RechercheEntreprisesApiService>(
-      RechercheEntreprisesApiService,
+      RechercheEntreprisesApiService
     );
 
     // Suppress logger output during tests
@@ -89,7 +89,7 @@ describe('RechercheEntreprisesApiService', () => {
         expect.objectContaining({
           method: 'GET',
           signal: expect.any(AbortSignal),
-        }),
+        })
       );
 
       sleepSpy.mockRestore();
@@ -135,7 +135,7 @@ describe('RechercheEntreprisesApiService', () => {
 
       expect(result).toEqual([]);
       expect(service['logger'].warn).toHaveBeenCalledWith(
-        'Invalid SIREN format: 12345',
+        'Invalid SIREN format: 12345'
       );
       expect(mockFetch).not.toHaveBeenCalled();
     });
@@ -145,7 +145,7 @@ describe('RechercheEntreprisesApiService', () => {
 
       expect(result).toEqual([]);
       expect(service['logger'].warn).toHaveBeenCalledWith(
-        'Invalid SIREN format: 12345678A',
+        'Invalid SIREN format: 12345678A'
       );
     });
 
@@ -171,7 +171,7 @@ describe('RechercheEntreprisesApiService', () => {
 
       expect(result).toEqual([]);
       expect(service['logger'].warn).toHaveBeenCalledWith(
-        'No results found for SIREN: 999999999',
+        'No results found for SIREN: 999999999'
       );
 
       sleepSpy.mockRestore();
@@ -206,7 +206,7 @@ describe('RechercheEntreprisesApiService', () => {
       expect(result).toEqual([]);
       expect(service['logger'].error).toHaveBeenCalledWith(
         expect.stringContaining('Failed to fetch establishments'),
-        expect.any(String),
+        expect.any(String)
       );
 
       sleepSpy.mockRestore();
@@ -328,7 +328,7 @@ describe('RechercheEntreprisesApiService', () => {
       expect(result).toEqual(mockResponse);
       expect(sleepSpy).toHaveBeenCalledWith(2000); // 2 seconds * 1000ms
       expect(service['logger'].warn).toHaveBeenCalledWith(
-        expect.stringContaining('Rate limited'),
+        expect.stringContaining('Rate limited')
       );
 
       sleepSpy.mockRestore();
@@ -383,7 +383,7 @@ describe('RechercheEntreprisesApiService', () => {
       expect(result).toEqual(mockResponse);
       expect(mockFetch).toHaveBeenCalledTimes(3);
       expect(service['logger'].warn).toHaveBeenCalledWith(
-        expect.stringContaining('Retrying'),
+        expect.stringContaining('Retrying')
       );
 
       sleepSpy.mockRestore();
@@ -397,7 +397,7 @@ describe('RechercheEntreprisesApiService', () => {
       mockFetch.mockRejectedValue(new Error('Network error'));
 
       await expect(service['fetchWithRateLimit']('123456789')).rejects.toThrow(
-        'Network error',
+        'Network error'
       );
 
       expect(mockFetch).toHaveBeenCalledTimes(3); // maxRetries = 3
@@ -416,7 +416,7 @@ describe('RechercheEntreprisesApiService', () => {
       } as any);
 
       await expect(service['fetchWithRateLimit']('123456789')).rejects.toThrow(
-        'API returned status 500',
+        'API returned status 500'
       );
 
       sleepSpy.mockRestore();

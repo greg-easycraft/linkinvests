@@ -20,7 +20,7 @@ export class FailingCompaniesProcessor extends WorkerHost {
   constructor(
     private readonly s3Service: S3Service,
     @InjectQueue(SOURCE_COMPANY_BUILDINGS_QUEUE)
-    private readonly companyBuildingsQueue: Queue,
+    private readonly companyBuildingsQueue: Queue
   ) {
     super();
   }
@@ -32,7 +32,7 @@ export class FailingCompaniesProcessor extends WorkerHost {
       ? `from ${sinceDate} to ${beforeDate}`
       : `since ${sinceDate}`;
     this.logger.log(
-      `Starting to process failing companies for department ${formattedDepartmentId} ${dateRangeText}`,
+      `Starting to process failing companies for department ${formattedDepartmentId} ${dateRangeText}`
     );
 
     try {
@@ -40,20 +40,20 @@ export class FailingCompaniesProcessor extends WorkerHost {
       const apiUrl = this.buildApiUrl(
         formattedDepartmentId,
         sinceDate,
-        beforeDate,
+        beforeDate
       );
       this.logger.log(`Fetching data from: ${apiUrl}`);
 
       // 2. Fetch CSV data from the API
       const csvData = await this.fetchCsvData(apiUrl);
       this.logger.log(
-        `Fetched CSV data: ${csvData.length} bytes for department ${formattedDepartmentId}`,
+        `Fetched CSV data: ${csvData.length} bytes for department ${formattedDepartmentId}`
       );
 
       // 3. Upload CSV to S3
       const s3Key = this.s3Service.generateFailingCompaniesKey(
         formattedDepartmentId,
-        sinceDate,
+        sinceDate
       );
       const s3Path = await this.s3Service.uploadFile(csvData, s3Key);
       this.logger.log(`Uploaded CSV to S3: ${s3Path}`);
@@ -65,17 +65,17 @@ export class FailingCompaniesProcessor extends WorkerHost {
         {
           removeOnComplete: 100,
           removeOnFail: 100,
-        },
+        }
       );
       this.logger.log(
-        `Enqueued company buildings job: ${job.id} for file: ${s3Path} for department ${formattedDepartmentId}`,
+        `Enqueued company buildings job: ${job.id} for file: ${s3Path} for department ${formattedDepartmentId}`
       );
 
       this.logger.log('Successfully processed failing companies');
     } catch (error) {
       this.logger.error(
         `Failed to process failing companies: ${(error as Error).message}`,
-        (error as Error).stack,
+        (error as Error).stack
       );
       throw error;
     }
@@ -87,7 +87,7 @@ export class FailingCompaniesProcessor extends WorkerHost {
   private buildApiUrl(
     departmentId: string,
     sinceDate: string,
-    beforeDate?: string,
+    beforeDate?: string
   ): string {
     const baseUrl =
       'https://bodacc-datadila.opendatasoft.com/api/explore/v2.1/catalog/datasets/annonces-commerciales/exports/csv';
@@ -120,7 +120,7 @@ export class FailingCompaniesProcessor extends WorkerHost {
 
       if (response.status !== 200) {
         throw new Error(
-          `Failed to fetch data from API. Status: ${response.status}`,
+          `Failed to fetch data from API. Status: ${response.status}`
         );
       }
 

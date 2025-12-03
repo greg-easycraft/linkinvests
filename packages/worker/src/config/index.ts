@@ -22,6 +22,7 @@ const configSchema = z.object({
   // Gemini AI Configuration
   GEMINI_API_KEY: z.string(),
   GENKIT_ENV: z.enum(['dev', 'prod']).default('dev'),
+  MOTEUR_IMMO_API_KEY: z.string(),
 });
 
 export const config = configSchema.parse({

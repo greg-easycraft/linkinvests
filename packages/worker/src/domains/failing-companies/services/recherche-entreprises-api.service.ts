@@ -54,14 +54,14 @@ export class RechercheEntreprisesApiService {
       }
 
       this.logger.log(
-        `Found ${establishments.length} establishment(s) for SIREN: ${siren}`,
+        `Found ${establishments.length} establishment(s) for SIREN: ${siren}`
       );
 
       return establishments;
     } catch (error) {
       this.logger.error(
         `Failed to fetch establishments for SIREN ${siren}: ${(error as Error).message}`,
-        (error as Error).stack,
+        (error as Error).stack
       );
       return [];
     }
@@ -71,7 +71,7 @@ export class RechercheEntreprisesApiService {
    * Fetch data from API with rate limiting and retry logic
    */
   private async fetchWithRateLimit(
-    siren: string,
+    siren: string
   ): Promise<RechercheEntreprisesResponse> {
     // Rate limiting: ensure minimum interval between requests
     const now = Date.now();
@@ -111,7 +111,7 @@ export class RechercheEntreprisesApiService {
             ? parseInt(retryAfter, 10) * 1000
             : this.retryDelay * attempt;
           this.logger.warn(
-            `Rate limited. Waiting ${waitTime}ms before retry ${attempt}/${this.maxRetries}`,
+            `Rate limited. Waiting ${waitTime}ms before retry ${attempt}/${this.maxRetries}`
           );
           await this.sleep(waitTime);
           continue;
@@ -121,13 +121,13 @@ export class RechercheEntreprisesApiService {
           throw new Error(`API returned status ${response.status}`);
         }
 
-        const body = await response.json();
-        return body as RechercheEntreprisesResponse;
+        const body = (await response.json()) as RechercheEntreprisesResponse;
+        return body;
       } catch (error) {
         lastError = error as Error;
         if (attempt < this.maxRetries) {
           this.logger.warn(
-            `Attempt ${attempt}/${this.maxRetries} failed: ${lastError.message}. Retrying...`,
+            `Attempt ${attempt}/${this.maxRetries} failed: ${lastError.message}. Retrying...`
           );
           await this.sleep(this.retryDelay * attempt);
         }

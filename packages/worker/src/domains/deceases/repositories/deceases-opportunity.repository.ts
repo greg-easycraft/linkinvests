@@ -11,12 +11,12 @@ export class DeceasesOpportunityRepository {
 
   constructor(
     @Inject(DATABASE_CONNECTION)
-    private readonly db: DomainDbType,
+    private readonly db: DomainDbType
   ) {}
 
   async insertOpportunities(
     opportunities: SuccessionInput[],
-    batchSize: number = 500,
+    batchSize: number = 500
   ): Promise<number> {
     if (opportunities.length === 0) {
       return 0;
@@ -37,12 +37,12 @@ export class DeceasesOpportunityRepository {
 
         insertedCount += batch.length;
         this.logger.log(
-          `Batch ${Math.floor(i / batchSize) + 1}: Inserted ${insertedCount}/${opportunities.length} opportunities`,
+          `Batch ${Math.floor(i / batchSize) + 1}: Inserted ${insertedCount}/${opportunities.length} opportunities`
         );
       } catch (error: unknown) {
         this.logger.error(
           { error, batchStart: i, batchSize: batch.length },
-          'Failed to insert batch',
+          'Failed to insert batch'
         );
         throw error;
       }

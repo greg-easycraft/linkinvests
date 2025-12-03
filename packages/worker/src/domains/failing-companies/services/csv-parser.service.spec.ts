@@ -57,7 +57,7 @@ describe('CsvParserService', () => {
     it('should throw error for malformed CSV', () => {
       const invalidCsv = Buffer.from(
         'invalid,csv,data\nwithout"proper"format',
-        'utf-8',
+        'utf-8'
       );
 
       expect(() => service.parseCsv(invalidCsv)).toThrow();

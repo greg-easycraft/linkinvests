@@ -1,5 +1,5 @@
 {
-  "name": "@linkinvests/scraping-worker",
+  "name": "@linkinvests/worker",
   "version": "1.0.0",
   "description": "NestJS worker for web scraping real estate opportunities",
   "author": "",
@@ -37,6 +37,7 @@
     "@playwright/test": "^1.56.1",
     "adm-zip": "^0.5.16",
     "bullmq": "^5.61.2",
+    "csv-parse": "^6.1.0",
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.44.7",
     "genkit": "^1.24.0",

@@ -105,7 +105,7 @@ export class MoteurImmoService {
 
   constructor(
     @Inject(CONFIG_TOKEN)
-    private readonly config: ConfigType,
+    private readonly config: ConfigType
   ) {
     // Hard-coded base URL as discovered from API testing
     this.baseUrl = 'https://moteurimmo.fr/api';
@@ -136,7 +136,7 @@ export class MoteurImmoService {
         allListings.push(...transformedListings);
 
         this.logger.log(
-          `Fetched page ${page}: ${listings.length} raw records, ${transformedListings.length} valid listings (total: ${allListings.length})`,
+          `Fetched page ${page}: ${listings.length} raw records, ${transformedListings.length} valid listings (total: ${allListings.length})`
         );
 
         // Check if we've reached the last page
@@ -152,7 +152,7 @@ export class MoteurImmoService {
         // If we get an error after fetching some records, it might be pagination limit
         if (allListings.length > 0 && err.message.includes('400')) {
           this.logger.warn(
-            `Reached API pagination limit at page ${page}. Continuing with ${allListings.length} listings already fetched.`,
+            `Reached API pagination limit at page ${page}. Continuing with ${allListings.length} listings already fetched.`
           );
           hasMorePages = false;
         } else {
@@ -163,7 +163,7 @@ export class MoteurImmoService {
     }
 
     this.logger.log(
-      `Completed fetching ${allListings.length} listings from Moteur Immo`,
+      `Completed fetching ${allListings.length} listings from Moteur Immo`
     );
 
     if (this.hasTooManyListings) {
@@ -178,7 +178,7 @@ export class MoteurImmoService {
    */
   private async fetchListingsPage(
     filters: ListingsJobFilters,
-    page: number,
+    page: number
   ): Promise<MoteurImmoListing[]> {
     const requestBody = this.buildApiRequestBody(filters, page);
 
@@ -216,7 +216,7 @@ export class MoteurImmoService {
             ? parseInt(retryAfter, 10) * 1000
             : this.retryDelay * attempt;
           this.logger.warn(
-            `Rate limited on page ${page}. Waiting ${waitTime}ms before retry ${attempt}/${this.maxRetries}`,
+            `Rate limited on page ${page}. Waiting ${waitTime}ms before retry ${attempt}/${this.maxRetries}`
           );
           await this.sleep(waitTime);
           continue;
@@ -225,7 +225,7 @@ export class MoteurImmoService {
         if (response.status !== 200) {
           const errorText = await response.text().catch(() => 'Unknown error');
           throw new Error(
-            `Moteur Immo API returned status ${response.status}: ${errorText}`,
+            `Moteur Immo API returned status ${response.status}: ${errorText}`
           );
         }
 
@@ -242,7 +242,7 @@ export class MoteurImmoService {
         lastError = error as Error;
         if (attempt < this.maxRetries) {
           this.logger.warn(
-            `Attempt ${attempt}/${this.maxRetries} failed for page ${page}: ${lastError.message}. Retrying...`,
+            `Attempt ${attempt}/${this.maxRetries} failed for page ${page}: ${lastError.message}. Retrying...`
           );
           await this.sleep(this.retryDelay * attempt);
         }
@@ -251,7 +251,7 @@ export class MoteurImmoService {
 
     this.logger.error(
       `Failed to fetch listings from Moteur Immo API after ${this.maxRetries} attempts: ${lastError?.message}`,
-      lastError?.stack,
+      lastError?.stack
     );
     throw (
       lastError || new Error('Failed to fetch listings from Moteur Immo API')
@@ -308,7 +308,7 @@ export class MoteurImmoService {
       };
     } catch (error) {
       this.logger.warn(
-        `Failed to transform listing ${apiListing.adId}: ${(error as Error).message}`,
+        `Failed to transform listing ${apiListing.adId}: ${(error as Error).message}`
       );
       return null;
     }
@@ -343,7 +343,7 @@ export class MoteurImmoService {
    */
   private buildApiRequestBody(
     filters: ListingsJobFilters,
-    page: number,
+    page: number
   ): Record<string, unknown> {
     const requestBody: Record<string, unknown> & { categories: string[] } = {
       apiKey: this.apiKey,
@@ -365,22 +365,22 @@ export class MoteurImmoService {
     if (filters.afterDate) {
       if (filters.usePublicationDate) {
         requestBody.creationDateAfter = new Date(
-          filters.afterDate,
+          filters.afterDate
         ).toISOString();
       } else {
         requestBody.lastEventDateAfter = new Date(
-          filters.afterDate,
+          filters.afterDate
         ).toISOString();
       }
     }
     if (filters.beforeDate) {
       if (filters.usePublicationDate) {
         requestBody.creationDateBefore = new Date(
-          filters.beforeDate,
+          filters.beforeDate
         ).toISOString();
       } else {
         requestBody.lastEventDateBefore = new Date(
-          filters.beforeDate,
+          filters.beforeDate
         ).toISOString();
       }
     }
@@ -388,14 +388,14 @@ export class MoteurImmoService {
     if (filters.energyGradeMax) {
       requestBody.energyGradeMax = filters.energyGradeMax;
       requestBody.categories = requestBody.categories.filter(
-        (type) => type !== 'land',
+        (type) => type !== 'land'
       );
     }
 
     if (filters.energyGradeMin) {
       requestBody.energyGradeMin = filters.energyGradeMin;
       requestBody.categories = requestBody.categories.filter(
-        (type) => type !== 'land',
+        (type) => type !== 'land'
       );
     }
 

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/require-await */
 import { Test, TestingModule } from '@nestjs/testing';
 
-import type { ApiLannuaireResponse } from '../../../../../sourcing-worker/src/domains/deceases/types/deceases.types';
+import type { ApiLannuaireResponse } from '../types/deceases.types';
 import { InseeApiService } from './insee-api.service';
 
 describe('InseeApiService', () => {
@@ -134,7 +134,7 @@ describe('InseeApiService', () => {
         expect.objectContaining({
           method: 'GET',
           signal: expect.any(AbortSignal),
-        }),
+        })
       );
     });
 
@@ -434,7 +434,7 @@ describe('InseeApiService', () => {
         Promise.resolve({
           status: 200,
           json: () => Promise.resolve(responseWithoutCoordinatesAddress),
-        } as Response),
+        } as Response)
       );
 
       const result = await service.fetchMairieData('12345');

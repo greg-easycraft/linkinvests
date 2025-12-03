@@ -1,5 +1,5 @@
 import { CsvParsingService } from './csv-parsing.service';
-import { InseeCsvRow } from '../../../../../sourcing-worker/src/domains/deceases/types/deceases.types';
+import { InseeCsvRow } from '../types/deceases.types';
 
 describe('CsvParsingService', () => {
   let service: CsvParsingService;
@@ -98,7 +98,7 @@ describe('CsvParsingService', () => {
       const buffer = Buffer.from(invalidCsv, 'utf-8');
 
       await expect(service.parseCsv(buffer, 50)).rejects.toThrow(
-        'CSV streaming parsing failed',
+        'CSV streaming parsing failed'
       );
     });
   });

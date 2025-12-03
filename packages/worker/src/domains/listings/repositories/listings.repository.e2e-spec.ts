@@ -87,7 +87,7 @@ describe('ListingsRepository (Integration)', () => {
       expect(result).toBe(0);
       expect(mockDb.insert).not.toHaveBeenCalled();
       expect(repository['logger']['log']).toHaveBeenCalledWith(
-        'No listings to insert',
+        'No listings to insert'
       );
     });
 
@@ -167,17 +167,15 @@ describe('ListingsRepository (Integration)', () => {
 
       // Should log batch progress
       expect(repository['logger']['log']).toHaveBeenCalledWith(
-        expect.stringContaining('Starting batch insert of 250 listings'),
+        expect.stringContaining('Starting batch insert of 250 listings')
       );
 
       expect(repository['logger']['log']).toHaveBeenCalledWith(
-        expect.stringContaining('Processed batch 1/3: 100 inserted, 0 skipped'),
+        expect.stringContaining('Processed batch 1/3: 100 inserted, 0 skipped')
       );
 
       expect(repository['logger']['log']).toHaveBeenCalledWith(
-        expect.stringContaining(
-          'Batch insert completed: 300 listings inserted',
-        ),
+        expect.stringContaining('Batch insert completed: 300 listings inserted')
       );
     });
 
@@ -188,11 +186,11 @@ describe('ListingsRepository (Integration)', () => {
       mockDb.onConflictDoNothing.mockRejectedValue(dbError);
 
       await expect(repository.insertListings(listings)).rejects.toThrow(
-        'Database connection failed',
+        'Database connection failed'
       );
 
       expect(repository['logger']['error']).toHaveBeenCalledWith(
-        expect.stringContaining('Failed to insert batch starting at index 0'),
+        expect.stringContaining('Failed to insert batch starting at index 0')
       );
     });
 
@@ -207,7 +205,7 @@ describe('ListingsRepository (Integration)', () => {
       await repository.insertListings(listings);
 
       expect(repository['logger']['debug']).toHaveBeenCalledWith(
-        expect.stringContaining('First DB record to insert:'),
+        expect.stringContaining('First DB record to insert:')
       );
     });
   });
@@ -252,13 +250,13 @@ describe('ListingsRepository (Integration)', () => {
       });
 
       await expect(
-        repository.getListingsCountBySource('moteurimmo'),
+        repository.getListingsCountBySource('moteurimmo')
       ).rejects.toThrow('Database query failed');
 
       expect(repository['logger']['error']).toHaveBeenCalledWith(
         expect.stringContaining(
-          'Failed to get listings count for source moteurimmo',
-        ),
+          'Failed to get listings count for source moteurimmo'
+        )
       );
     });
   });
@@ -282,7 +280,7 @@ describe('ListingsRepository (Integration)', () => {
 
       const result = await repository.getRecentListingsBySource(
         'moteurimmo',
-        5,
+        5
       );
 
       expect(result).toEqual(mockListings);
@@ -321,13 +319,13 @@ describe('ListingsRepository (Integration)', () => {
       });
 
       await expect(
-        repository.getRecentListingsBySource('moteurimmo'),
+        repository.getRecentListingsBySource('moteurimmo')
       ).rejects.toThrow('Database query failed');
 
       expect(repository['logger']['error']).toHaveBeenCalledWith(
         expect.stringContaining(
-          'Failed to get recent listings for source moteurimmo',
-        ),
+          'Failed to get recent listings for source moteurimmo'
+        )
       );
     });
   });
@@ -343,7 +341,7 @@ describe('ListingsRepository (Integration)', () => {
       expect(result).toBe(5);
       expect(mockDb.delete).toHaveBeenCalled();
       expect(repository['logger']['log']).toHaveBeenCalledWith(
-        expect.stringContaining('Deleted 5 listings created before 2023-12-31'),
+        expect.stringContaining('Deleted 5 listings created before 2023-12-31')
       );
     });
 
@@ -354,14 +352,14 @@ describe('ListingsRepository (Integration)', () => {
 
       const result = await repository.deleteOldListings(
         '2023-12-31',
-        'moteurimmo',
+        'moteurimmo'
       );
 
       expect(result).toBe(3);
       expect(repository['logger']['log']).toHaveBeenCalledWith(
         expect.stringContaining(
-          'Deleted 3 listings from source moteurimmo created before 2023-12-31',
-        ),
+          'Deleted 3 listings from source moteurimmo created before 2023-12-31'
+        )
       );
     });
 
@@ -393,11 +391,11 @@ describe('ListingsRepository (Integration)', () => {
       });
 
       await expect(repository.deleteOldListings('2023-12-31')).rejects.toThrow(
-        'Database delete failed',
+        'Database delete failed'
       );
 
       expect(repository['logger']['error']).toHaveBeenCalledWith(
-        expect.stringContaining('Failed to delete old listings'),
+        expect.stringContaining('Failed to delete old listings')
       );
     });
   });

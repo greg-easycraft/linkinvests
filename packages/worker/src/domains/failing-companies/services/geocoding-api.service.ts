@@ -35,7 +35,7 @@ export class GeocodingApiService {
       const feature = response.features[0];
       if (!feature) {
         this.logger.warn(
-          `No feature data in geocoding response for address: ${address}`,
+          `No feature data in geocoding response for address: ${address}`
         );
         return null;
       }
@@ -45,7 +45,7 @@ export class GeocodingApiService {
       // Check if confidence score is acceptable
       if (score < this.minScore) {
         this.logger.warn(
-          `Low geocoding confidence (${score}) for address: ${address}`,
+          `Low geocoding confidence (${score}) for address: ${address}`
         );
         return null;
       }
@@ -53,14 +53,14 @@ export class GeocodingApiService {
       const [longitude, latitude] = feature.geometry.coordinates;
 
       this.logger.debug(
-        `Successfully geocoded address (score: ${score}): ${address} -> ${latitude}, ${longitude}`,
+        `Successfully geocoded address (score: ${score}): ${address} -> ${latitude}, ${longitude}`
       );
 
       return { latitude, longitude };
     } catch (error) {
       this.logger.error(
         `Failed to geocode address "${address}": ${(error as Error).message}`,
-        (error as Error).stack,
+        (error as Error).stack
       );
       return null;
     }
@@ -70,7 +70,7 @@ export class GeocodingApiService {
    * Fetch data from API with rate limiting and retry logic
    */
   private async fetchWithRateLimit(
-    address: string,
+    address: string
   ): Promise<GeocodingResponse> {
     // Rate limiting: ensure minimum interval between requests
     const now = Date.now();
@@ -99,7 +99,7 @@ export class GeocodingApiService {
             ? parseInt(retryAfter, 10) * 1000
             : this.retryDelay * attempt;
           this.logger.warn(
-            `Rate limited. Waiting ${waitTime}ms before retry ${attempt}/${this.maxRetries}`,
+            `Rate limited. Waiting ${waitTime}ms before retry ${attempt}/${this.maxRetries}`
           );
           await this.sleep(waitTime);
           continue;
@@ -109,13 +109,13 @@ export class GeocodingApiService {
           throw new Error(`API returned status ${response.status}`);
         }
 
-        const body = await response.json();
-        return body as GeocodingResponse;
+        const body = (await response.json()) as GeocodingResponse;
+        return body;
       } catch (error) {
         lastError = error as Error;
         if (attempt < this.maxRetries) {
           this.logger.warn(
-            `Attempt ${attempt}/${this.maxRetries} failed: ${lastError.message}. Retrying...`,
+            `Attempt ${attempt}/${this.maxRetries} failed: ${lastError.message}. Retrying...`
           );
           await this.sleep(this.retryDelay * attempt);
         }

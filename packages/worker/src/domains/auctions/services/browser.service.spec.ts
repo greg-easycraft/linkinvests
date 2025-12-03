@@ -53,6 +53,7 @@ describe('BrowserService', () => {
     mockPage.waitForLoadState.mockResolvedValue(undefined);
 
     // Import and setup the mocked playwright
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { chromium } = require('playwright');
     chromium.launch.mockResolvedValue(mockBrowser);
 
@@ -72,6 +73,7 @@ describe('BrowserService', () => {
     it('should initialize browser successfully', async () => {
       await service.initialize();
 
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       const { chromium } = require('playwright');
       expect(chromium.launch).toHaveBeenCalledWith({
         headless: true,

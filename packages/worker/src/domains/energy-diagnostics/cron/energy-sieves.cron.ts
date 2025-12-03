@@ -12,7 +12,7 @@ export class EnergyDiagnosticsCron {
 
   constructor(
     @InjectQueue(SOURCE_ENERGY_SIEVES_QUEUE)
-    private readonly queue: Queue,
+    private readonly queue: Queue
   ) {}
 
   @Cron(CronExpression.EVERY_DAY_AT_1AM, {
@@ -49,13 +49,13 @@ export class EnergyDiagnosticsCron {
             })
             .then(({ id: jobId }) => {
               this.logger.debug(
-                `Enqueued job ${jobId} for department ${departmentId}`,
+                `Enqueued job ${jobId} for department ${departmentId}`
               );
               return jobId;
             })
             .catch((error: Error) => {
               this.logger.error(
-                `Failed to enqueue job for department ${departmentId}: ${error.message}`,
+                `Failed to enqueue job for department ${departmentId}: ${error.message}`
               );
               return null;
             });

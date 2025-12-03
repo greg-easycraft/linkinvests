@@ -9,7 +9,7 @@ export class EnergyDiagnosticsRepository {
 
   constructor(
     @Inject(DATABASE_CONNECTION)
-    private readonly db: DomainDbType,
+    private readonly db: DomainDbType
   ) {}
 
   /**
@@ -20,7 +20,7 @@ export class EnergyDiagnosticsRepository {
    */
   async insertOpportunities(
     opportunities: EnergyDiagnosticInput[],
-    batchSize: number = 500,
+    batchSize: number = 500
   ): Promise<number> {
     if (opportunities.length === 0) {
       return 0;
@@ -35,7 +35,7 @@ export class EnergyDiagnosticsRepository {
         // Debug: Log the first record being inserted to verify structure
         if (i === 0 && batch[0]) {
           this.logger.debug(
-            `First DB record to insert: ${JSON.stringify(batch[0], null, 2)}`,
+            `First DB record to insert: ${JSON.stringify(batch[0], null, 2)}`
           );
         }
 
@@ -48,11 +48,11 @@ export class EnergyDiagnosticsRepository {
 
         insertedCount += batch.length;
         this.logger.log(
-          `Inserted batch ${Math.floor(i / batchSize) + 1}: ${insertedCount}/${opportunities.length} opportunities`,
+          `Inserted batch ${Math.floor(i / batchSize) + 1}: ${insertedCount}/${opportunities.length} opportunities`
         );
       } catch (error) {
         this.logger.error(
-          `Failed to insert batch starting at index ${i}: ${(error as Error).message}`,
+          `Failed to insert batch starting at index ${i}: ${(error as Error).message}`
         );
         throw error; // Rethrow to let the processor handle the error
       }

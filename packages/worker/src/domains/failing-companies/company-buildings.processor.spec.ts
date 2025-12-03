@@ -69,7 +69,7 @@ describe('CompanyBuildingsProcessor', () => {
     }).compile();
 
     processor = module.get<CompanyBuildingsProcessor>(
-      CompanyBuildingsProcessor,
+      CompanyBuildingsProcessor
     );
 
     // Suppress logger output during tests
@@ -107,7 +107,7 @@ describe('CompanyBuildingsProcessor', () => {
       const result = await processor['transformEstablishment'](
         etablissement,
         '2024-01-15',
-        stats,
+        stats
       );
 
       expect(result).toEqual({
@@ -141,11 +141,11 @@ describe('CompanyBuildingsProcessor', () => {
       const result = await processor['transformEstablishment'](
         etablissement,
         '2024-01-15',
-        stats,
+        stats
       );
 
       expect(mockGeocodingApi.geocodeAddress).toHaveBeenCalledWith(
-        '123 Rue de Test 75001 Paris',
+        '123 Rue de Test 75001 Paris'
       );
       expect(result?.latitude).toBe(48.8566);
       expect(result?.longitude).toBe(2.3522);
@@ -177,7 +177,7 @@ describe('CompanyBuildingsProcessor', () => {
       const result = await processor['transformEstablishment'](
         etablissement,
         '2024-01-15',
-        freshStats,
+        freshStats
       );
 
       expect(result).toBeNull();
@@ -199,7 +199,7 @@ describe('CompanyBuildingsProcessor', () => {
       const result = await processor['transformEstablishment'](
         etablissement,
         '2024-01-15',
-        stats,
+        stats
       );
 
       expect(result?.department).toBe(93);
@@ -219,7 +219,7 @@ describe('CompanyBuildingsProcessor', () => {
       const result = await processor['transformEstablishment'](
         etablissementWithCommune,
         '2024-01-15',
-        stats,
+        stats
       );
 
       expect(result?.companyName).toBe('My Company');
@@ -233,7 +233,7 @@ describe('CompanyBuildingsProcessor', () => {
       const resultFallback = await processor['transformEstablishment'](
         etablissementWithoutCommune,
         '2024-01-15',
-        stats,
+        stats
       );
 
       expect(resultFallback?.companyName).toBe('Unknown Company');
@@ -266,7 +266,7 @@ describe('CompanyBuildingsProcessor', () => {
       await processor['transformEstablishment'](
         etablissement,
         '2024-01-15',
-        statsTracker,
+        statsTracker
       );
 
       expect(statsTracker.geocodingAttempts).toBe(6);
@@ -284,13 +284,13 @@ describe('CompanyBuildingsProcessor', () => {
       };
 
       mockGeocodingApi.geocodeAddress.mockRejectedValue(
-        new Error('Geocoding API error'),
+        new Error('Geocoding API error')
       );
 
       const result = await processor['transformEstablishment'](
         etablissement,
         '2024-01-15',
-        stats,
+        stats
       );
 
       expect(result).toBeNull();
@@ -311,7 +311,7 @@ describe('CompanyBuildingsProcessor', () => {
 
       expect(mockS3Service.uploadFile).toHaveBeenCalledWith(
         expect.any(Buffer),
-        'source_failed.csv',
+        'source_failed.csv'
       );
 
       const buffer = mockS3Service.uploadFile.mock.calls[0]?.[0];
@@ -327,12 +327,12 @@ describe('CompanyBuildingsProcessor', () => {
 
       await processor['uploadFailedRows'](
         's3://my-bucket/path/to/source.csv',
-        failedRows,
+        failedRows
       );
 
       expect(mockS3Service.uploadFile).toHaveBeenCalledWith(
         expect.any(Buffer),
-        'path/to/source_failed.csv',
+        'path/to/source_failed.csv'
       );
     });
 
@@ -361,7 +361,7 @@ describe('CompanyBuildingsProcessor', () => {
       mockS3Service.uploadFile.mockRejectedValue(new Error('Upload failed'));
 
       await expect(
-        processor['uploadFailedRows']('s3://bucket/source.csv', failedRows),
+        processor['uploadFailedRows']('s3://bucket/source.csv', failedRows)
       ).resolves.not.toThrow();
 
       expect(processor['logger'].error).toHaveBeenCalled();
@@ -401,7 +401,7 @@ describe('CompanyBuildingsProcessor', () => {
       await processor.process(mockJob);
 
       expect(mockS3Service.downloadFile).toHaveBeenCalledWith(
-        's3://bucket/source.csv',
+        's3://bucket/source.csv'
       );
     });
 
@@ -420,7 +420,7 @@ describe('CompanyBuildingsProcessor', () => {
 
       expect(mockCsvParser.parseCsv).toHaveBeenCalledWith(csvBuffer);
       expect(mockCsvParser.extractSirensFromRows).toHaveBeenCalledWith(
-        mockCsvRows,
+        mockCsvRows
       );
     });
 
@@ -448,7 +448,7 @@ describe('CompanyBuildingsProcessor', () => {
       await processor.process(mockJob);
 
       expect(mockRechercheApi.getEstablishmentsBySiren).toHaveBeenCalledWith(
-        '123456789',
+        '123456789'
       );
     });
 
@@ -467,7 +467,7 @@ describe('CompanyBuildingsProcessor', () => {
       await processor.process(mockJob);
 
       expect(processor['logger'].warn).toHaveBeenCalledWith(
-        'No establishments found for SIREN 123456789',
+        'No establishments found for SIREN 123456789'
       );
       expect(mockS3Service.uploadFile).toHaveBeenCalled();
     });
@@ -483,7 +483,7 @@ describe('CompanyBuildingsProcessor', () => {
       await processor.process(mockJob);
 
       expect(mockS3Service.deleteFile).toHaveBeenCalledWith(
-        's3://bucket/source.csv',
+        's3://bucket/source.csv'
       );
     });
 
@@ -503,7 +503,7 @@ describe('CompanyBuildingsProcessor', () => {
 
       expect(mockS3Service.uploadFile).toHaveBeenCalled();
       expect(processor['logger'].warn).toHaveBeenCalledWith(
-        expect.stringContaining('failed row(s)'),
+        expect.stringContaining('failed row(s)')
       );
     });
   });

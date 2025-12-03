@@ -28,7 +28,7 @@ export class AdemeApiService {
     department: string,
     sinceDate: string,
     energyClasses: string[] = ['F', 'G'],
-    beforeDate?: string,
+    beforeDate?: string
   ): Promise<DpeRecord[]> {
     const allRecords: DpeRecord[] = [];
     let page = 1;
@@ -39,7 +39,7 @@ export class AdemeApiService {
       ? `from ${sinceDate} to ${beforeDate}`
       : `since ${sinceDate}`;
     this.logger.log(
-      `Starting to fetch DPE records for department ${department} ${dateRangeText} with energy classes ${energyClasses.join(', ')}`,
+      `Starting to fetch DPE records for department ${department} ${dateRangeText} with energy classes ${energyClasses.join(', ')}`
     );
 
     while (hasMorePages) {
@@ -50,13 +50,13 @@ export class AdemeApiService {
           energyClasses,
           page,
           pageSize,
-          beforeDate,
+          beforeDate
         );
 
         allRecords.push(...records);
 
         this.logger.log(
-          `Fetched page ${page}: ${records.length} records (total: ${allRecords.length})`,
+          `Fetched page ${page}: ${records.length} records (total: ${allRecords.length})`
         );
 
         // If we got fewer records than pageSize, we've reached the last page
@@ -72,7 +72,7 @@ export class AdemeApiService {
         // Continue with the records we already fetched instead of failing completely
         if (err.message.includes('status 400') && allRecords.length > 0) {
           this.logger.warn(
-            `Reached API pagination limit at page ${page}. Continuing with ${allRecords.length} records already fetched.`,
+            `Reached API pagination limit at page ${page}. Continuing with ${allRecords.length} records already fetched.`
           );
           hasMorePages = false;
         } else {
@@ -83,7 +83,7 @@ export class AdemeApiService {
     }
 
     this.logger.log(
-      `Completed fetching ${allRecords.length} DPE records for department ${department}`,
+      `Completed fetching ${allRecords.length} DPE records for department ${department}`
     );
 
     return allRecords;
@@ -105,7 +105,7 @@ export class AdemeApiService {
     energyClasses: string[],
     page: number,
     size: number,
-    beforeDate?: string,
+    beforeDate?: string
   ): Promise<DpeRecord[]> {
     const url = this.buildApiUrl(
       department,
@@ -113,7 +113,7 @@ export class AdemeApiService {
       energyClasses,
       page,
       size,
-      beforeDate,
+      beforeDate
     );
 
     // Rate limiting: ensure minimum interval between requests
@@ -142,7 +142,7 @@ export class AdemeApiService {
             ? parseInt(retryAfter, 10) * 1000
             : this.retryDelay * attempt;
           this.logger.warn(
-            `Rate limited on page ${page}. Waiting ${waitTime}ms before retry ${attempt}/${this.maxRetries}`,
+            `Rate limited on page ${page}. Waiting ${waitTime}ms before retry ${attempt}/${this.maxRetries}`
           );
           await this.sleep(waitTime);
           continue;
@@ -159,7 +159,7 @@ export class AdemeApiService {
         lastError = error as Error;
         if (attempt < this.maxRetries) {
           this.logger.warn(
-            `Attempt ${attempt}/${this.maxRetries} failed for page ${page}: ${lastError.message}. Retrying...`,
+            `Attempt ${attempt}/${this.maxRetries} failed for page ${page}: ${lastError.message}. Retrying...`
           );
           await this.sleep(this.retryDelay * attempt);
         }
@@ -168,7 +168,7 @@ export class AdemeApiService {
 
     this.logger.error(
       `Failed to fetch DPE records from ADEME API after ${this.maxRetries} attempts: ${lastError?.message}`,
-      lastError?.stack,
+      lastError?.stack
     );
     throw lastError || new Error('Failed to fetch data from ADEME API');
   }
@@ -196,7 +196,7 @@ export class AdemeApiService {
     energyClasses: string[],
     page: number,
     size: number,
-    beforeDate?: string,
+    beforeDate?: string
   ): string {
     const departmentStr = department.toString().padStart(2, '0');
 
