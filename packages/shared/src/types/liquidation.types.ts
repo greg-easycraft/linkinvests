@@ -1,4 +1,4 @@
-import { BaseOpportunity } from './base-opportunity.types.js';
+import { BaseOpportunity } from './base-opportunity.types';
 
 export interface Liquidation extends BaseOpportunity {
   siret: string; // Required for liquidations
@@ -13,7 +13,10 @@ export interface Liquidation extends BaseOpportunity {
   };
 }
 
-export type LiquidationInput = Omit<Liquidation, 'id' | 'createdAt' | 'updatedAt'> ;
+export type LiquidationInput = Omit<
+  Liquidation,
+  'id' | 'createdAt' | 'updatedAt'
+>;
 
 // Legacy interface for backward compatibility during migration
 export interface CompanyContactData {

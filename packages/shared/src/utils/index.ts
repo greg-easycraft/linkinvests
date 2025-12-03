@@ -1,1 +1,1 @@
-export * from './succession.js';
+export * from './succession';

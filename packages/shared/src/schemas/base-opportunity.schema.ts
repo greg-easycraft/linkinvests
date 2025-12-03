@@ -1,7 +1,10 @@
 import { z } from 'zod';
-import { BaseOpportunity } from '../types/base-opportunity.types.js';
+import { BaseOpportunity } from '../types/base-opportunity.types';
 
-type BaseOpportunityInput = Omit<BaseOpportunity, 'id' | 'createdAt' | 'updatedAt'>;
+type BaseOpportunityInput = Omit<
+  BaseOpportunity,
+  'id' | 'createdAt' | 'updatedAt'
+>;
 
 export const baseOpportunityInputSchema = z.object({
   label: z.string(),
@@ -15,4 +18,5 @@ export const baseOpportunityInputSchema = z.object({
 });
 
 // Necessary to ensure coherent typing
-export const typedSchema = baseOpportunityInputSchema as z.ZodType<BaseOpportunityInput>;
+export const typedSchema =
+  baseOpportunityInputSchema as z.ZodType<BaseOpportunityInput>;

@@ -1,2 +1,2 @@
-export * from './queues.js';
-export * from './opportunity.js';
+export * from './queues';
+export * from './opportunity';

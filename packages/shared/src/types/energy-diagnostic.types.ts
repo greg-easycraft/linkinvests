@@ -1,4 +1,4 @@
-import { BaseOpportunity } from './base-opportunity.types.js';
+import { BaseOpportunity } from './base-opportunity.types';
 
 export interface EnergyDiagnostic extends BaseOpportunity {
   // Note: siret is not included as it's always null for energy sieves
@@ -8,4 +8,7 @@ export interface EnergyDiagnostic extends BaseOpportunity {
   address: string;
 }
 
-export type EnergyDiagnosticInput = Omit<EnergyDiagnostic, 'id' | 'createdAt' | 'updatedAt'>;
+export type EnergyDiagnosticInput = Omit<
+  EnergyDiagnostic,
+  'id' | 'createdAt' | 'updatedAt'
+>;

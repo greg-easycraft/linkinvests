@@ -1,6 +1,6 @@
-import z from "zod";
-import { baseOpportunityInputSchema } from "./base-opportunity.schema.js";
-import { EnergyDiagnosticInput } from "../types/energy-diagnostic.types.js";
+import z from 'zod';
+import { baseOpportunityInputSchema } from './base-opportunity.schema';
+import { EnergyDiagnosticInput } from '../types/energy-diagnostic.types';
 
 export const energyDiagnosticInputSchema = baseOpportunityInputSchema.extend({
   energyClass: z.string(),
@@ -9,4 +9,5 @@ export const energyDiagnosticInputSchema = baseOpportunityInputSchema.extend({
 });
 
 // Necessary to ensure coherent typing
-export const typedSchema = energyDiagnosticInputSchema as z.ZodType<EnergyDiagnosticInput>;
+export const typedSchema =
+  energyDiagnosticInputSchema as z.ZodType<EnergyDiagnosticInput>;

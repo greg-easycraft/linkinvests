@@ -1,23 +1,27 @@
 import { z } from 'zod';
-import { baseOpportunityInputSchema } from './base-opportunity.schema.js';
-import { SuccessionInput } from '../types/succession.types.js';
+import { baseOpportunityInputSchema } from './base-opportunity.schema';
+import { SuccessionInput } from '../types/succession.types';
 
 // Schema for mairie contact info
-const mairieContactSchema = z.object({
-  name: z.string().optional(),
-  address: z.object({
-    complement1: z.string(),
-    complement2: z.string().optional(),
-    numero_voie: z.string(),
-    service_distribution: z.string(),
-    code_postal: z.string(),
-    nom_commune: z.string(),
-  }).optional(),
-  phone: z.string().optional(),
-  email: z.email().optional(),
-  website: z.url().optional(),
-  openingHours: z.string().optional(),
-}).optional();
+const mairieContactSchema = z
+  .object({
+    name: z.string().optional(),
+    address: z
+      .object({
+        complement1: z.string(),
+        complement2: z.string().optional(),
+        numero_voie: z.string(),
+        service_distribution: z.string(),
+        code_postal: z.string(),
+        nom_commune: z.string(),
+      })
+      .optional(),
+    phone: z.string().optional(),
+    email: z.email().optional(),
+    website: z.url().optional(),
+    openingHours: z.string().optional(),
+  })
+  .optional();
 
 // Schema for succession input extending base opportunity
 export const successionInputSchema = baseOpportunityInputSchema.extend({

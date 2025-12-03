@@ -1,4 +1,4 @@
-import { EnergyClass } from "../constants/opportunity";
+import { EnergyClass } from '../constants/opportunity';
 
 // Address search input interface for the search form
 export interface AddressSearchInput {

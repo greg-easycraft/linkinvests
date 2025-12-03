@@ -1,20 +1,25 @@
 // Base types
-export * from './base-opportunity.types.js';
+export * from './base-opportunity.types';
 
 // Specific opportunity types
-export * from './auction.types.js';
-export * from './succession.types.js';
-export * from './liquidation.types.js';
-export * from './energy-diagnostic.types.js';
-export * from './listing.types.js';
+export * from './auction.types';
+export * from './succession.types';
+export * from './liquidation.types';
+export * from './energy-diagnostic.types';
+export * from './listing.types';
 
 // Address search types
-export * from './address-search.types.js';
+export * from './address-search.types';
 
-import { Auction } from './auction.types.js';
-import { Succession } from './succession.types.js';
-import { Liquidation } from './liquidation.types.js';
-import { EnergyDiagnostic } from './energy-diagnostic.types.js';
-import { Listing } from './listing.types.js';
+import { Auction } from './auction.types';
+import { Succession } from './succession.types';
+import { Liquidation } from './liquidation.types';
+import { EnergyDiagnostic } from './energy-diagnostic.types';
+import { Listing } from './listing.types';
 
-export type Opportunity = Auction | Succession | Liquidation | EnergyDiagnostic | Listing;
+export type Opportunity =
+  | Auction
+  | Succession
+  | Liquidation
+  | EnergyDiagnostic
+  | Listing;

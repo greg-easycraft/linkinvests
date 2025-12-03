@@ -1,7 +1,7 @@
 {
   "name": "@linkinvests/worker",
   "version": "1.0.0",
-  "description": "NestJS worker for web scraping real estate opportunities",
+  "description": "NestJS worker for sourcing real estate opportunities",
   "author": "",
   "private": true,
   "scripts": {
@@ -39,7 +39,6 @@
     "@nestjs/schedule": "^6.0.1",
     "@playwright/test": "^1.56.1",
     "adm-zip": "^0.5.16",
-    "bullMQAdapter": "link:@bull-board/api/bullMQAdapter",
     "bullmq": "^5.61.2",
     "csv-parse": "^6.1.0",
     "dotenv": "^17.2.3",

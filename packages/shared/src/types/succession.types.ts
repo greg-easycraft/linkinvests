@@ -1,4 +1,4 @@
-import { BaseOpportunity } from './base-opportunity.types.js';
+import { BaseOpportunity } from './base-opportunity.types';
 
 export interface Succession extends BaseOpportunity {
   address: string;
@@ -22,4 +22,7 @@ export interface Succession extends BaseOpportunity {
   };
 }
 
-export type SuccessionInput = Omit<Succession, 'id' | 'createdAt' | 'updatedAt'>;
+export type SuccessionInput = Omit<
+  Succession,
+  'id' | 'createdAt' | 'updatedAt'
+>;

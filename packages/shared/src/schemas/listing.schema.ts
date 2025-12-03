@@ -1,18 +1,24 @@
 import { z } from 'zod';
-import { baseOpportunityInputSchema } from './base-opportunity.schema.js';
-import { ListingInput } from '../types/listing.types.js';
-import { EnergyClass, PropertyType, UNKNOWN_ENERGY_CLASS } from '../constants/opportunity.js';
+import { baseOpportunityInputSchema } from './base-opportunity.schema';
+import { ListingInput } from '../types/listing.types';
+import {
+  EnergyClass,
+  PropertyType,
+  UNKNOWN_ENERGY_CLASS,
+} from '../constants/opportunity';
 
 // Schema for seller contact info
-const sellerContactSchema = z.object({
-  name: z.string().optional(),
-  address: z.string().optional(),
-  phone: z.string().optional(),
-  email: z.string().optional(),
-  website: z.url().optional(),
-  contact: z.string().optional(),
-  siret: z.string().optional(),
-}).optional();
+const sellerContactSchema = z
+  .object({
+    name: z.string().optional(),
+    address: z.string().optional(),
+    phone: z.string().optional(),
+    email: z.string().optional(),
+    website: z.url().optional(),
+    contact: z.string().optional(),
+    siret: z.string().optional(),
+  })
+  .optional();
 
 // Schema for listing input extending base opportunity
 export const listingInputSchema = baseOpportunityInputSchema.extend({

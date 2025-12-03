@@ -1,18 +1,25 @@
 import { z } from 'zod';
-import { baseOpportunityInputSchema } from './base-opportunity.schema.js';
-import { AuctionInput } from '../types/auction.types.js';
-import { AuctionOccupationStatus, AuctionSource, EnergyClass, UNKNOWN_ENERGY_CLASS } from '../constants/opportunity.js';
+import { baseOpportunityInputSchema } from './base-opportunity.schema';
+import { AuctionInput } from '../types/auction.types';
+import {
+  AuctionOccupationStatus,
+  AuctionSource,
+  EnergyClass,
+  UNKNOWN_ENERGY_CLASS,
+} from '../constants/opportunity';
 
 // Schema for auction house contact info
-const auctionHouseContactSchema = z.object({
-  name: z.string().optional(),
-  address: z.string().optional(),
-  phone: z.string().optional(),
-  email: z.email().optional(),
-  auctioneer: z.string().optional(),
-  registrationRequired: z.boolean().optional(),
-  depositAmount: z.number().optional(),
-}).optional();
+const auctionHouseContactSchema = z
+  .object({
+    name: z.string().optional(),
+    address: z.string().optional(),
+    phone: z.string().optional(),
+    email: z.email().optional(),
+    auctioneer: z.string().optional(),
+    registrationRequired: z.boolean().optional(),
+    depositAmount: z.number().optional(),
+  })
+  .optional();
 
 // Schema for auction input extending base opportunity
 export const auctionInputSchema = baseOpportunityInputSchema.extend({

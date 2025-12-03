@@ -1,5 +1,5 @@
-import { EnergyClassType, PropertyType } from '../constants/opportunity.js';
-import { BaseOpportunity } from './base-opportunity.types.js';
+import { EnergyClassType, PropertyType } from '../constants/opportunity';
+import { BaseOpportunity } from './base-opportunity.types';
 
 export interface Listing extends BaseOpportunity {
   // Listing-specific fields
