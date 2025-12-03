@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
+import { AuthModule } from './common/auth';
 import { ConfigModule } from './common/config';
-import { EmailModule } from './common/email';
 import { DatabaseModule } from './common/database';
+import { EmailModule } from './common/email';
 import { ExportModule } from './common/export';
 import { AuctionsModule } from './domains/auctions';
 import { ListingsModule } from './domains/listings';
@@ -13,8 +14,9 @@ import { AddressesModule } from './domains/addresses';
 @Module({
   imports: [
     ConfigModule,
-    EmailModule,
     DatabaseModule,
+    AuthModule,
+    EmailModule,
     ExportModule,
     AuctionsModule,
     ListingsModule,
