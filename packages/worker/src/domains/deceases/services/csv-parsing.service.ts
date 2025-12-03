@@ -3,7 +3,7 @@ import { parse } from 'csv-parse';
 import { Readable, Transform } from 'stream';
 import { pipeline } from 'stream/promises';
 
-import { InseeCsvRow, CsvProcessingStats } from '../types/deceases.types';
+import { InseeCsvRow, CsvProcessingStats } from '../../../../../sourcing-worker/src/domains/deceases/types/deceases.types';
 
 @Injectable()
 export class CsvParsingService {

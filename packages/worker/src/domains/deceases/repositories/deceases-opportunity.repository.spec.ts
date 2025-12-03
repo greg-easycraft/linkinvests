@@ -4,7 +4,7 @@ import { OpportunityType, SuccessionInput } from '@linkinvests/shared';
 import { DATABASE_CONNECTION } from '~/database';
 
 import { DeceasesOpportunityRepository } from './deceases-opportunity.repository';
-import type { MairieContactInfo } from '../types/deceases.types';
+import type { MairieContactInfo } from '../../../../../sourcing-worker/src/domains/deceases/types/deceases.types';
 
 describe('DeceasesOpportunityRepository', () => {
   let repository: DeceasesOpportunityRepository;

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/require-await */
 import { Test, TestingModule } from '@nestjs/testing';
 
-import type { ApiLannuaireResponse } from '../types/deceases.types';
+import type { ApiLannuaireResponse } from '../../../../../sourcing-worker/src/domains/deceases/types/deceases.types';
 import { InseeApiService } from './insee-api.service';
 
 describe('InseeApiService', () => {

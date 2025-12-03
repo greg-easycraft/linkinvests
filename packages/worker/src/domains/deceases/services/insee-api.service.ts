@@ -5,7 +5,7 @@ import type {
   MairieContactInfo,
   RawMairieAddress,
   RawMairieData,
-} from '../types/deceases.types';
+} from '../../../../../sourcing-worker/src/domains/deceases/types/deceases.types';
 
 export interface MairieData {
   contactInfo: MairieContactInfo;

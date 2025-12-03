@@ -1,5 +1,5 @@
 import { CsvParsingService } from './csv-parsing.service';
-import { InseeCsvRow } from '../types/deceases.types';
+import { InseeCsvRow } from '../../../../../sourcing-worker/src/domains/deceases/types/deceases.types';
 
 describe('CsvParsingService', () => {
   let service: CsvParsingService;
