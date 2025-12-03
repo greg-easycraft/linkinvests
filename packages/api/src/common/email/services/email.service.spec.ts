@@ -30,6 +30,8 @@ describe('EmailService', () => {
       LOG_LEVEL: 'info',
       DATABASE_URL: 'postgres://localhost:5432/test',
       RESEND_API_KEY: 'test-resend-api-key',
+      BETTER_AUTH_SECRET: 'test-better-auth-secret-32-chars-long',
+      BETTER_AUTH_URL: 'http://localhost:8080',
     };
 
     // Create mock Resend instance

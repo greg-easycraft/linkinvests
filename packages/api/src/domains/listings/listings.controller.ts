@@ -38,6 +38,12 @@ export class ListingsController {
     return { count };
   }
 
+  @Get('sources')
+  async getSources() {
+    const sources = await this.listingService.getAvailableSources();
+    return { sources };
+  }
+
   @Get(':id')
   async getById(@Param('id') id: string) {
     const listing = await this.listingService.getListingById(id);
@@ -45,12 +51,6 @@ export class ListingsController {
       throw new HttpException('Listing not found', HttpStatus.NOT_FOUND);
     }
     return listing;
-  }
-
-  @Get('sources')
-  async getSources() {
-    const sources = await this.listingService.getAvailableSources();
-    return { sources };
   }
 
   @Post('export')
