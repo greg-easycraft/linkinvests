@@ -1,70 +1,122 @@
 import { useQuery } from '@tanstack/react-query'
+import type { SearchResponse } from '@/api'
 import type {
   BaseOpportunity,
   IOpportunityFilters,
   OpportunitiesDataQueryResult,
-  OpportunityType,
 } from '@/types'
+import {
+  countAuctions,
+  countEnergyDiagnostics,
+  countLiquidations,
+  countListings,
+  countSuccessions,
+  getAuctionById,
+  getEnergyDiagnosticById,
+  getLiquidationById,
+  getListingById,
+  getSuccessionById,
+  searchAuctions,
+  searchEnergyDiagnostics,
+  searchLiquidations,
+  searchListings,
+  searchSuccessions,
+} from '@/api'
+import { OpportunityType } from '@/types'
 
-interface UseOpportunityDataOptions<T extends BaseOpportunity> {
-  opportunityType: OpportunityType
+// Opportunity types that have API support
+type SupportedOpportunityType =
+  | OpportunityType.AUCTION
+  | OpportunityType.REAL_ESTATE_LISTING
+  | OpportunityType.SUCCESSION
+  | OpportunityType.LIQUIDATION
+  | OpportunityType.ENERGY_SIEVE
+
+const API_FUNCTIONS: Record<
+  SupportedOpportunityType,
+  {
+    search: (filters: never) => Promise<SearchResponse<BaseOpportunity>>
+    count: (filters: never) => Promise<number>
+    getById: (id: string) => Promise<BaseOpportunity | null>
+  }
+> = {
+  [OpportunityType.AUCTION]: {
+    search: searchAuctions as (
+      filters: never,
+    ) => Promise<SearchResponse<BaseOpportunity>>,
+    count: countAuctions as (filters: never) => Promise<number>,
+    getById: getAuctionById as (id: string) => Promise<BaseOpportunity | null>,
+  },
+  [OpportunityType.REAL_ESTATE_LISTING]: {
+    search: searchListings as (
+      filters: never,
+    ) => Promise<SearchResponse<BaseOpportunity>>,
+    count: countListings as (filters: never) => Promise<number>,
+    getById: getListingById as (id: string) => Promise<BaseOpportunity | null>,
+  },
+  [OpportunityType.SUCCESSION]: {
+    search: searchSuccessions as (
+      filters: never,
+    ) => Promise<SearchResponse<BaseOpportunity>>,
+    count: countSuccessions as (filters: never) => Promise<number>,
+    getById: getSuccessionById as (
+      id: string,
+    ) => Promise<BaseOpportunity | null>,
+  },
+  [OpportunityType.LIQUIDATION]: {
+    search: searchLiquidations as (
+      filters: never,
+    ) => Promise<SearchResponse<BaseOpportunity>>,
+    count: countLiquidations as (filters: never) => Promise<number>,
+    getById: getLiquidationById as (
+      id: string,
+    ) => Promise<BaseOpportunity | null>,
+  },
+  [OpportunityType.ENERGY_SIEVE]: {
+    search: searchEnergyDiagnostics as (
+      filters: never,
+    ) => Promise<SearchResponse<BaseOpportunity>>,
+    count: countEnergyDiagnostics as (filters: never) => Promise<number>,
+    getById: getEnergyDiagnosticById as (
+      id: string,
+    ) => Promise<BaseOpportunity | null>,
+  },
+}
+
+interface UseOpportunityDataOptions {
+  opportunityType: SupportedOpportunityType
   filters: IOpportunityFilters
-  getDummyData: () => Array<T>
-  filterFn: (data: Array<T>, filters: IOpportunityFilters) => Array<T>
-  pageSize?: number
 }
 
 /**
- * Custom hook for fetching and filtering opportunity data
+ * Custom hook for fetching opportunity data from the API
  * Uses TanStack Query for caching and state management
  *
  * This hook:
- * - Generates dummy data using the provided generator
- * - Filters data based on current filters
- * - Handles pagination
+ * - Fetches data from the API with server-side filtering
+ * - Handles pagination via API
  * - Provides loading and error states
  */
 export function useOpportunityData<T extends BaseOpportunity>({
   opportunityType,
   filters,
-  getDummyData,
-  filterFn,
-  pageSize = 25,
-}: UseOpportunityDataOptions<T>) {
-  // Remove view from filters for query key (it shouldn't affect data)
-  const filtersWithoutView = { ...filters }
-  delete filtersWithoutView.view
+}: UseOpportunityDataOptions) {
+  // Remove view from filters for query key (it doesn't affect data)
+  const { view, ...filtersForQuery } = filters
 
-  // Data query - fetches and filters all data
+  // Get API functions for this opportunity type
+  const apiFunctions = API_FUNCTIONS[opportunityType]
+
+  // Data query - fetches paginated data from API
   const dataQuery = useQuery({
-    queryKey: [opportunityType.toLowerCase(), 'data', filtersWithoutView],
+    queryKey: [opportunityType.toLowerCase(), 'search', filtersForQuery],
     queryFn: async (): Promise<OpportunitiesDataQueryResult<T>> => {
-      // Simulate network delay for realism
-      await new Promise((resolve) =>
-        setTimeout(resolve, 200 + Math.random() * 300),
-      )
-
-      // Get all dummy data
-      const allData = getDummyData()
-
-      // Apply filters
-      const filteredData = filterFn(allData, filters)
-
-      // Sort data
-      const sortedData = sortData(
-        filteredData,
-        filters.sortBy,
-        filters.sortOrder,
-      )
-
-      // Paginate
-      const page = filters.page ?? 1
-      const startIndex = (page - 1) * pageSize
-      const paginatedData = sortedData.slice(startIndex, startIndex + pageSize)
-
+      const response = (await apiFunctions.search(
+        filtersForQuery as never,
+      )) as SearchResponse<T>
       return {
-        opportunities: paginatedData,
-        total: filteredData.length,
+        opportunities: response.opportunities,
+        total: response.opportunities.length,
       }
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
@@ -72,14 +124,9 @@ export function useOpportunityData<T extends BaseOpportunity>({
 
   // Count query - returns total count for pagination
   const countQuery = useQuery({
-    queryKey: [opportunityType.toLowerCase(), 'count', filtersWithoutView],
+    queryKey: [opportunityType.toLowerCase(), 'count', filtersForQuery],
     queryFn: async (): Promise<number> => {
-      // Small delay for count
-      await new Promise((resolve) => setTimeout(resolve, 100))
-
-      const allData = getDummyData()
-      const filteredData = filterFn(allData, filters)
-      return filteredData.length
+      return apiFunctions.count(filtersForQuery as never)
     },
     staleTime: 5 * 60 * 1000,
   })
@@ -99,72 +146,19 @@ export function useOpportunityData<T extends BaseOpportunity>({
 }
 
 /**
- * Sort data based on sort options
- */
-function sortData<T extends BaseOpportunity>(
-  data: Array<T>,
-  sortBy?: string,
-  sortOrder?: 'asc' | 'desc',
-): Array<T> {
-  if (!sortBy) return data
-
-  const sorted = [...data].sort((a, b) => {
-    const aValue = getNestedValue(a, sortBy)
-    const bValue = getNestedValue(b, sortBy)
-
-    if (aValue === undefined || aValue === null) return 1
-    if (bValue === undefined || bValue === null) return -1
-
-    if (typeof aValue === 'string' && typeof bValue === 'string') {
-      return aValue.localeCompare(bValue)
-    }
-
-    if (typeof aValue === 'number' && typeof bValue === 'number') {
-      return aValue - bValue
-    }
-
-    // Handle dates
-    if (sortBy.includes('Date') || sortBy.includes('date')) {
-      const dateA = new Date(aValue as string).getTime()
-      const dateB = new Date(bValue as string).getTime()
-      return dateA - dateB
-    }
-
-    return 0
-  })
-
-  return sortOrder === 'desc' ? sorted.reverse() : sorted
-}
-
-/**
- * Get nested value from object using dot notation
- */
-function getNestedValue<T>(obj: T, path: string): unknown {
-  return path.split('.').reduce((acc: unknown, part) => {
-    if (acc && typeof acc === 'object') {
-      return (acc as Record<string, unknown>)[part]
-    }
-    return undefined
-  }, obj as unknown)
-}
-
-/**
- * Hook for fetching a single opportunity by ID
+ * Hook for fetching a single opportunity by ID from the API
  */
 export function useOpportunityById<T extends BaseOpportunity>(
-  opportunityType: OpportunityType,
+  opportunityType: SupportedOpportunityType,
   id: string | undefined,
-  getById: (id: string) => T | undefined,
 ) {
+  const apiFunctions = API_FUNCTIONS[opportunityType]
+
   return useQuery({
     queryKey: [opportunityType.toLowerCase(), 'detail', id],
     queryFn: async (): Promise<T | null> => {
       if (!id) return null
-
-      // Simulate network delay
-      await new Promise((resolve) => setTimeout(resolve, 150))
-
-      return getById(id) ?? null
+      return (await apiFunctions.getById(id)) as T | null
     },
     enabled: !!id,
     staleTime: 5 * 60 * 1000,

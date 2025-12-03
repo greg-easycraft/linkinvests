@@ -3,7 +3,7 @@
  */
 import { DrizzleAuctionRepository } from './auction.repository';
 import { useTestDb } from '~/test-utils/use-test-db';
-import type { IAuctionFilters, PaginationFilters } from '~/types/filters';
+import type { IAuctionFilters, PaginationFilters } from '~/types';
 import {
   EnergyClass,
   OpportunityType,

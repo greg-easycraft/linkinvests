@@ -1,18 +1,38 @@
 import { Link, useParams } from '@tanstack/react-router'
-import { ArrowLeft, Calendar, Clock, ExternalLink, MapPin } from 'lucide-react'
+import {
+  ArrowLeft,
+  Calendar,
+  Clock,
+  ExternalLink,
+  Loader2,
+  MapPin,
+} from 'lucide-react'
 import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'
+import type { Listing } from '@/types'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Card } from '@/components/ui/card'
-import { getListingById } from '@/data'
+import { useOpportunityById } from '@/hooks'
 import { ListingDetails } from '@/components/opportunities/OpportunityDetailsModal/ListingDetails'
 import { ImageCarousel } from '@/components/opportunities/OpportunityDetailsModal/ImageCarousel'
+import { OpportunityType } from '@/types'
 
 export function ListingDetailPage(): React.ReactElement {
   const { listingId } = useParams({ strict: false })
-  const listing = listingId ? getListingById(listingId) : undefined
+  const { data: listing, isLoading } = useOpportunityById<Listing>(
+    OpportunityType.REAL_ESTATE_LISTING,
+    listingId,
+  )
+
+  if (isLoading) {
+    return (
+      <div className="container mx-auto px-4 py-8 flex justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    )
+  }
 
   if (!listing) {
     return (

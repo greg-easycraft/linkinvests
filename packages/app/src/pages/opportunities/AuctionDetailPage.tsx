@@ -1,18 +1,31 @@
 import { Link, useParams } from '@tanstack/react-router'
-import { ArrowLeft, Calendar, Clock, ExternalLink, MapPin } from 'lucide-react'
+import { ArrowLeft, Calendar, Clock, ExternalLink, Loader2, MapPin } from 'lucide-react'
 import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'
+import type { Auction } from '@/types'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Card } from '@/components/ui/card'
-import { getAuctionById } from '@/data'
+import { useOpportunityById } from '@/hooks'
 import { AuctionDetails } from '@/components/opportunities/OpportunityDetailsModal/AuctionDetails'
 import { ImageCarousel } from '@/components/opportunities/OpportunityDetailsModal/ImageCarousel'
+import { OpportunityType } from '@/types'
 
 export function AuctionDetailPage(): React.ReactElement {
   const { auctionId } = useParams({ strict: false })
-  const auction = auctionId ? getAuctionById(auctionId) : undefined
+  const { data: auction, isLoading } = useOpportunityById<Auction>(
+    OpportunityType.AUCTION,
+    auctionId,
+  )
+
+  if (isLoading) {
+    return (
+      <div className="container mx-auto px-4 py-8 flex justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    )
+  }
 
   if (!auction) {
     return (

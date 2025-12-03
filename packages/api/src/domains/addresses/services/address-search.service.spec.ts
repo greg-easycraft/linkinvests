@@ -339,4 +339,349 @@ describe('AddressSearchService', () => {
       expect(result[0]?.matchScore).toBeGreaterThanOrEqual(0);
     });
   });
+
+  describe('searchAndLinkForOpportunity', () => {
+    const mockDiagnosticLink = {
+      id: 'link-1',
+      energyDiagnosticId: 'energy-diagnostic-1',
+      matchScore: 95,
+      energyDiagnostic: {
+        id: 'energy-diagnostic-1',
+        address: '123 Test Street',
+        zipCode: '75001',
+        energyClass: 'F',
+        squareFootage: 50,
+        opportunityDate: '2024-01-15',
+        externalId: 'external-123',
+      },
+    };
+
+    it('should return empty array when no search results found', async () => {
+      const input = {
+        zipCode: '75001',
+        energyClass: EnergyClass.F,
+        squareFootage: 50,
+      };
+
+      mockAddressSearchRepository.findAllForAddressSearch.mockResolvedValue([]);
+
+      const result = await addressSearchService.searchAndLinkForOpportunity(
+        input,
+        'opportunity-123',
+        'auction',
+      );
+
+      expect(result).toEqual([]);
+      expect(
+        mockAddressLinksRepository.saveAuctionDiagnosticLinks,
+      ).not.toHaveBeenCalled();
+    });
+
+    it('should save and return auction diagnostic links', async () => {
+      const input = {
+        zipCode: '75001',
+        energyClass: EnergyClass.F,
+        squareFootage: 50,
+      };
+
+      mockAddressSearchRepository.findAllForAddressSearch.mockResolvedValue([
+        mockEnergyDiagnostic,
+      ]);
+      mockAddressLinksRepository.getAuctionDiagnosticLinks.mockResolvedValue([
+        mockDiagnosticLink,
+      ]);
+
+      const result = await addressSearchService.searchAndLinkForOpportunity(
+        input,
+        'opportunity-123',
+        'auction',
+      );
+
+      expect(
+        mockAddressLinksRepository.saveAuctionDiagnosticLinks,
+      ).toHaveBeenCalledWith([
+        {
+          opportunityId: 'opportunity-123',
+          energyDiagnosticId: 'energy-diagnostic-1',
+          matchScore: 100,
+        },
+      ]);
+      expect(
+        mockAddressLinksRepository.getAuctionDiagnosticLinks,
+      ).toHaveBeenCalledWith('opportunity-123');
+      expect(result).toEqual([mockDiagnosticLink]);
+    });
+
+    it('should save and return listing diagnostic links', async () => {
+      const input = {
+        zipCode: '75001',
+        energyClass: EnergyClass.F,
+        squareFootage: 50,
+      };
+
+      mockAddressSearchRepository.findAllForAddressSearch.mockResolvedValue([
+        mockEnergyDiagnostic,
+      ]);
+      mockAddressLinksRepository.getListingDiagnosticLinks.mockResolvedValue([
+        mockDiagnosticLink,
+      ]);
+
+      const result = await addressSearchService.searchAndLinkForOpportunity(
+        input,
+        'listing-123',
+        'listing',
+      );
+
+      expect(
+        mockAddressLinksRepository.saveListingDiagnosticLinks,
+      ).toHaveBeenCalledWith([
+        {
+          opportunityId: 'listing-123',
+          energyDiagnosticId: 'energy-diagnostic-1',
+          matchScore: 100,
+        },
+      ]);
+      expect(
+        mockAddressLinksRepository.getListingDiagnosticLinks,
+      ).toHaveBeenCalledWith('listing-123');
+      expect(result).toEqual([mockDiagnosticLink]);
+    });
+
+    it('should limit results to MAX_DIAGNOSTIC_LINKS', async () => {
+      const input = {
+        zipCode: '75001',
+        energyClass: EnergyClass.F,
+        squareFootage: 50,
+      };
+
+      // Create 10 mock results
+      const manyResults = Array.from({ length: 10 }, (_, i) => ({
+        ...mockEnergyDiagnostic,
+        id: `diag-${i}`,
+        externalId: `external-${i}`,
+      }));
+
+      mockAddressSearchRepository.findAllForAddressSearch.mockResolvedValue(
+        manyResults,
+      );
+      mockAddressLinksRepository.getAuctionDiagnosticLinks.mockResolvedValue([]);
+
+      await addressSearchService.searchAndLinkForOpportunity(
+        input,
+        'opportunity-123',
+        'auction',
+      );
+
+      // Should only save 5 links (MAX_DIAGNOSTIC_LINKS)
+      const savedLinks =
+        mockAddressLinksRepository.saveAuctionDiagnosticLinks.mock.calls[0][0];
+      expect(savedLinks).toHaveLength(5);
+    });
+
+    it('should round match scores when saving links', async () => {
+      const input = {
+        zipCode: '75001',
+        energyClass: EnergyClass.F,
+        squareFootage: 100,
+      };
+
+      const resultWithDecimalScore = {
+        ...mockEnergyDiagnostic,
+        squareFootage: 95, // 5% difference -> score = 100 - (0.05 * 30) = 98.5
+      };
+
+      mockAddressSearchRepository.findAllForAddressSearch.mockResolvedValue([
+        resultWithDecimalScore,
+      ]);
+      mockAddressLinksRepository.getAuctionDiagnosticLinks.mockResolvedValue([]);
+
+      await addressSearchService.searchAndLinkForOpportunity(
+        input,
+        'opportunity-123',
+        'auction',
+      );
+
+      const savedLinks =
+        mockAddressLinksRepository.saveAuctionDiagnosticLinks.mock.calls[0][0];
+      expect(savedLinks[0].matchScore).toBe(99); // Rounded from 98.5
+    });
+  });
+
+  describe('getDiagnosticLinks', () => {
+    const mockDiagnosticLinks = [
+      {
+        id: 'link-1',
+        energyDiagnosticId: 'energy-diagnostic-1',
+        matchScore: 95,
+        energyDiagnostic: {
+          id: 'energy-diagnostic-1',
+          address: '123 Test Street',
+          zipCode: '75001',
+          energyClass: 'F',
+          squareFootage: 50,
+          opportunityDate: '2024-01-15',
+          externalId: 'external-123',
+        },
+      },
+    ];
+
+    it('should return auction diagnostic links', async () => {
+      mockAddressLinksRepository.getAuctionDiagnosticLinks.mockResolvedValue(
+        mockDiagnosticLinks,
+      );
+
+      const result = await addressSearchService.getDiagnosticLinks(
+        'auction-123',
+        'auction',
+      );
+
+      expect(
+        mockAddressLinksRepository.getAuctionDiagnosticLinks,
+      ).toHaveBeenCalledWith('auction-123');
+      expect(result).toEqual(mockDiagnosticLinks);
+    });
+
+    it('should return listing diagnostic links', async () => {
+      mockAddressLinksRepository.getListingDiagnosticLinks.mockResolvedValue(
+        mockDiagnosticLinks,
+      );
+
+      const result = await addressSearchService.getDiagnosticLinks(
+        'listing-123',
+        'listing',
+      );
+
+      expect(
+        mockAddressLinksRepository.getListingDiagnosticLinks,
+      ).toHaveBeenCalledWith('listing-123');
+      expect(result).toEqual(mockDiagnosticLinks);
+    });
+
+    it('should return empty array when no links exist', async () => {
+      mockAddressLinksRepository.getAuctionDiagnosticLinks.mockResolvedValue([]);
+
+      const result = await addressSearchService.getDiagnosticLinks(
+        'auction-456',
+        'auction',
+      );
+
+      expect(result).toEqual([]);
+    });
+  });
+
+  describe('calculateMatchScore with address matching', () => {
+    it('should reduce score based on city mismatch', async () => {
+      const input = {
+        zipCode: '75001',
+        energyClass: EnergyClass.F,
+        squareFootage: 50,
+        address: '123 Rue de Rivoli 75001 Paris',
+      };
+
+      const resultWithDifferentCity = {
+        ...mockEnergyDiagnostic,
+        address: '456 Rue de Lyon 75001 Lyon',
+        squareFootage: 50,
+      };
+
+      mockAddressSearchRepository.findAllForAddressSearch.mockResolvedValue([
+        resultWithDifferentCity,
+      ]);
+
+      const result = await addressSearchService.getPlausibleAddresses(input);
+
+      // Score should be reduced due to city mismatch
+      expect(result[0]?.matchScore).toBeLessThan(100);
+    });
+
+    it('should reduce score based on street mismatch', async () => {
+      const input = {
+        zipCode: '75001',
+        energyClass: EnergyClass.F,
+        squareFootage: 50,
+        address: '123 Rue de Rivoli 75001 Paris',
+      };
+
+      const resultWithDifferentStreet = {
+        ...mockEnergyDiagnostic,
+        address: '456 Avenue des Champs 75001 Paris',
+        squareFootage: 50,
+      };
+
+      mockAddressSearchRepository.findAllForAddressSearch.mockResolvedValue([
+        resultWithDifferentStreet,
+      ]);
+
+      const result = await addressSearchService.getPlausibleAddresses(input);
+
+      // Score should be reduced due to street mismatch
+      expect(result[0]?.matchScore).toBeLessThan(100);
+    });
+
+    it('should not penalize when addresses are similar', async () => {
+      const input = {
+        zipCode: '75001',
+        energyClass: EnergyClass.F,
+        squareFootage: 50,
+        address: '123 Rue de Rivoli 75001 Paris',
+      };
+
+      const resultWithSameAddress = {
+        ...mockEnergyDiagnostic,
+        address: '123 Rue de Rivoli 75001 Paris',
+        squareFootage: 50,
+      };
+
+      mockAddressSearchRepository.findAllForAddressSearch.mockResolvedValue([
+        resultWithSameAddress,
+      ]);
+
+      const result = await addressSearchService.getPlausibleAddresses(input);
+
+      // Score should be high for matching addresses
+      expect(result[0]?.matchScore).toBe(100);
+    });
+
+    it('should handle input without address', async () => {
+      const input = {
+        zipCode: '75001',
+        energyClass: EnergyClass.F,
+        squareFootage: 50,
+        // no address field
+      };
+
+      mockAddressSearchRepository.findAllForAddressSearch.mockResolvedValue([
+        mockEnergyDiagnostic,
+      ]);
+
+      const result = await addressSearchService.getPlausibleAddresses(input);
+
+      // Should not fail, score based only on square footage
+      expect(result[0]?.matchScore).toBe(100);
+    });
+
+    it('should handle result without address', async () => {
+      const input = {
+        zipCode: '75001',
+        energyClass: EnergyClass.F,
+        squareFootage: 50,
+        address: '123 Rue de Rivoli 75001 Paris',
+      };
+
+      const resultWithoutAddress = {
+        ...mockEnergyDiagnostic,
+        address: undefined as any,
+        squareFootage: 50,
+      };
+
+      mockAddressSearchRepository.findAllForAddressSearch.mockResolvedValue([
+        resultWithoutAddress,
+      ] as any);
+
+      const result = await addressSearchService.getPlausibleAddresses(input);
+
+      // Should not fail, skip address matching
+      expect(result[0]?.matchScore).toBe(100);
+    });
+  });
 });

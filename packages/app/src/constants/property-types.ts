@@ -1,4 +1,4 @@
-import { PropertyType } from '@/types'
+import { PropertyType } from '@linkinvests/shared'
 
 /**
  * Property type options with French labels

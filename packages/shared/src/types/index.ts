@@ -11,6 +11,9 @@ export * from './listing.types';
 // Address search types
 export * from './address-search.types';
 
+// Filter types
+export * from './filters.types';
+
 import { Auction } from './auction.types';
 import { Succession } from './succession.types';
 import { Liquidation } from './liquidation.types';

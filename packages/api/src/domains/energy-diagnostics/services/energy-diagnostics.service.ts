@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { EnergyDiagnosticsRepository } from '../lib.types';
-import type { IEnergyDiagnosticFilters } from '~/types/filters';
+import type { IEnergyDiagnosticFilters } from '~/types';
 import type { EnergyDiagnostic } from '@linkinvests/shared';
 import { OpportunityType } from '@linkinvests/shared';
 import type { OpportunitiesDataQueryResult } from '~/types/query-result';
 import { ExportService } from '~/common/export/services/export.service';
 import type { ExportFormat } from '~/common/export/export.types';
 import { getOpportunityHeaders } from '~/common/export/services/export-headers.service';
-import { DEFAULT_PAGE_SIZE } from '~/constants/filters';
+import { DEFAULT_PAGE_SIZE } from '~/constants';
 
 @Injectable()
 export class EnergyDiagnosticsService {

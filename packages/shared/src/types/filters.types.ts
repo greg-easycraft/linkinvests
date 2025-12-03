@@ -4,28 +4,19 @@ import type {
   EnergyClassType,
   OpportunityType,
   PropertyType,
-} from './opportunity.types';
+} from '../constants/opportunity';
+import type {
+  DatePeriod,
+  MapBounds,
+} from '../api/filters.schema';
 
-export interface MapBounds {
-  north: number;
-  south: number;
-  east: number;
-  west: number;
-}
+// Re-export DatePeriod and MapBounds from API schemas
+export type { DatePeriod, MapBounds };
 
 export interface DateRange {
   from: Date;
   to: Date;
 }
-
-export type DatePeriod =
-  | 'last_month'
-  | 'last_3_months'
-  | '6_months'
-  | '9_months'
-  | '12_months'
-  | '18_months'
-  | '24_months';
 
 export interface DatePeriodOption {
   value: DatePeriod;
@@ -36,15 +27,20 @@ export interface DatePeriodOption {
 export interface DepartmentOption {
   id: string;
   name: string;
-  label: string; // Formatted as "ID - Name" for display
+  label: string;
+}
+
+export interface PaginationFilters {
+  limit: number;
+  offset: number;
 }
 
 export interface IOpportunityFilters {
   view?: 'list' | 'map';
   types?: Array<OpportunityType>;
-  departments?: Array<string>;
-  zipCodes?: Array<string>;
-  dateRange?: DateRange; // Legacy support
+  departments?: string[];
+  zipCodes?: string[];
+  dateRange?: DateRange;
   datePeriod?: DatePeriod;
   bounds?: MapBounds;
   page?: number;
@@ -53,22 +49,15 @@ export interface IOpportunityFilters {
   sortOrder?: 'asc' | 'desc';
 }
 
-export interface PaginationFilters {
-  limit: number;
-  offset: number;
-}
-
-export interface IEnergyDiagnosticFilters extends IOpportunityFilters {
-  energyClasses?: Array<EnergyClass>;
-}
-
 export interface PriceRange {
   min?: number;
   max?: number;
 }
 
 export interface IAuctionFilters extends IOpportunityFilters {
-  propertyTypes?: Array<PropertyType>;
+  propertyTypes?: PropertyType[];
+  auctionVenues?: string[];
+  energyClasses?: (EnergyClass | EnergyClassType)[];
   minPrice?: number;
   maxPrice?: number;
   minReservePrice?: number;
@@ -77,17 +66,7 @@ export interface IAuctionFilters extends IOpportunityFilters {
   maxSquareFootage?: number;
   minRooms?: number;
   maxRooms?: number;
-  auctionVenues?: Array<string>;
-  energyClasses?: Array<EnergyClassType>;
-  occupationStatuses?: Array<AuctionOccupationStatus>;
-}
-
-export interface ISuccessionFilters extends IOpportunityFilters {
-  // Future: Add succession-specific filter properties here
-}
-
-export interface ILiquidationFilters extends IOpportunityFilters {
-  // Future: Add liquidation-specific filter properties here
+  occupationStatuses?: AuctionOccupationStatus[];
 }
 
 export interface ListingFeatures {
@@ -100,7 +79,10 @@ export interface ListingFeatures {
 }
 
 export interface IListingFilters extends IOpportunityFilters {
-  propertyTypes?: Array<PropertyType>;
+  propertyTypes?: PropertyType[];
+  energyClasses?: (EnergyClass | EnergyClassType)[];
+  sources?: string[];
+  sellerType?: 'individual' | 'professional';
   minPrice?: number;
   maxPrice?: number;
   minSquareFootage?: number;
@@ -113,16 +95,22 @@ export interface IListingFilters extends IOpportunityFilters {
   maxBedrooms?: number;
   minConstructionYear?: number;
   maxConstructionYear?: number;
+  isSoldRented?: boolean;
   isDivisible?: boolean;
   hasWorksRequired?: boolean;
-  energyClasses?: Array<EnergyClassType>;
   features?: ListingFeatures;
-  isSoldRented?: boolean;
-  sources?: Array<string>;
-  sellerType?: 'individual' | 'professional';
 }
 
-// Query result types
+export interface ISuccessionFilters extends IOpportunityFilters {}
+
+export interface ILiquidationFilters extends IOpportunityFilters {}
+
+export interface IEnergyDiagnosticFilters extends IOpportunityFilters {
+  energyClasses?: EnergyClass[];
+  minSquareFootage?: number;
+  maxSquareFootage?: number;
+}
+
 export interface OpportunitiesDataQueryResult<T> {
   opportunities: Array<T>;
   total?: number;

@@ -7,7 +7,7 @@ import { EnergyClass, OpportunityType } from '@linkinvests/shared';
 import type {
   IEnergyDiagnosticFilters,
   PaginationFilters,
-} from '~/types/filters';
+} from '~/types';
 
 describe('DrizzleEnergyDiagnosticsRepository Integration Tests', () => {
   const db = useTestDb();

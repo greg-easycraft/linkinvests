@@ -1,4 +1,4 @@
-import { EnergyClass } from '@/types'
+import { EnergyClass } from '@linkinvests/shared'
 
 /**
  * Energy class options with labels and colors

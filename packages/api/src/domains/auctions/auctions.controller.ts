@@ -27,6 +27,7 @@ export class AuctionsController {
   async search(
     @Body(new ZodValidationPipe(auctionFiltersSchema)) filters: AuctionFilters,
   ) {
+    console.log(this.auctionService);
     return this.auctionService.getAuctionsData(filters);
   }
 

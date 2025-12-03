@@ -7,7 +7,7 @@ import {
   PropertyType,
   UNKNOWN_ENERGY_CLASS,
 } from '@/types';
-import { DATE_PERIOD_OPTIONS } from '@/constants/date-periods';
+import { DATE_PERIOD_OPTIONS } from '@/constants';
 import {
   AUCTION_SORT_OPTIONS,
   DEFAULT_SORT_OPTIONS,

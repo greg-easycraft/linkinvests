@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { LiquidationRepository } from '../lib.types';
-import type { DatePeriod, ILiquidationFilters } from '~/types/filters';
+import type { DatePeriod, ILiquidationFilters } from '~/types';
 import type { Liquidation } from '@linkinvests/shared';
 import { OpportunityType } from '@linkinvests/shared';
 import type { OpportunitiesDataQueryResult } from '~/types/query-result';
 import { ExportService } from '~/common/export/services/export.service';
 import type { ExportFormat } from '~/common/export/export.types';
 import { getOpportunityHeaders } from '~/common/export/services/export-headers.service';
-import { DEFAULT_PAGE_SIZE } from '~/constants/filters';
+import { DEFAULT_PAGE_SIZE } from '~/constants';
 
 @Injectable()
 export class LiquidationService {

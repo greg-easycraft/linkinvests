@@ -4,7 +4,7 @@
 import { DrizzleLiquidationRepository } from './liquidation.repository';
 import { useTestDb } from '~/test-utils/use-test-db';
 import { OpportunityType } from '@linkinvests/shared';
-import type { ILiquidationFilters, PaginationFilters } from '~/types/filters';
+import type { ILiquidationFilters, PaginationFilters } from '~/types';
 
 describe('DrizzleLiquidationRepository Integration Tests', () => {
   const db = useTestDb();

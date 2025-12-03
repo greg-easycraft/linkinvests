@@ -1,17 +1,30 @@
 import { Link, useParams } from '@tanstack/react-router'
-import { ArrowLeft, Calendar, Clock, MapPin } from 'lucide-react'
+import { ArrowLeft, Calendar, Clock, Loader2, MapPin } from 'lucide-react'
 import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'
+import type { Succession } from '@/types'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Card } from '@/components/ui/card'
-import { getSuccessionById } from '@/data'
+import { useOpportunityById } from '@/hooks'
 import { SuccessionDetails } from '@/components/opportunities/OpportunityDetailsModal/SuccessionDetails'
+import { OpportunityType } from '@/types'
 
 export function SuccessionDetailPage(): React.ReactElement {
   const { successionId } = useParams({ strict: false })
-  const succession = successionId ? getSuccessionById(successionId) : undefined
+  const { data: succession, isLoading } = useOpportunityById<Succession>(
+    OpportunityType.SUCCESSION,
+    successionId,
+  )
+
+  if (isLoading) {
+    return (
+      <div className="container mx-auto px-4 py-8 flex justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    )
+  }
 
   if (!succession) {
     return (

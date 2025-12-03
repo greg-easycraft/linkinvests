@@ -6,10 +6,10 @@ import { EnergyDiagnosticsRepository } from '../lib.types';
 import type {
   IEnergyDiagnosticFilters,
   PaginationFilters,
-} from '~/types/filters';
-import { calculateStartDate } from '~/constants/date-periods';
+} from '~/types';
+import { calculateStartDate } from '~/constants';
 import type { EnergyDiagnostic } from '@linkinvests/shared';
-import { DEFAULT_PAGE_SIZE } from '~/constants/filters';
+import { DEFAULT_PAGE_SIZE } from '~/constants';
 import { DATABASE_TOKEN } from '~/common/database';
 
 @Injectable()

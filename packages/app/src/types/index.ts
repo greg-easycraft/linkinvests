@@ -1,3 +1,2 @@
-// Re-export all types from a single entry point
-export * from './opportunity.types';
-export * from './filters.types';
+// Re-export all types from shared package
+export * from '@linkinvests/shared';

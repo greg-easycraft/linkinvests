@@ -3,7 +3,7 @@
  */
 import { DrizzleListingRepository } from './listing.repository';
 import { useTestDb } from '~/test-utils/use-test-db';
-import type { IListingFilters, PaginationFilters } from '~/types/filters';
+import type { IListingFilters, PaginationFilters } from '~/types';
 import {
   EnergyClass,
   OpportunityType,

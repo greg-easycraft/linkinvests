@@ -1,4 +1,4 @@
-import { AuctionOccupationStatus } from '@/types'
+import { AuctionOccupationStatus } from '@linkinvests/shared'
 
 /**
  * Occupation status options with French labels

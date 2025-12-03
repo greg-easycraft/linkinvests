@@ -12,8 +12,8 @@ import {
 import type { DomainDbType } from '~/types/db';
 import { opportunityListings } from '@linkinvests/db';
 import { ListingRepository } from '../lib.types';
-import type { IListingFilters, PaginationFilters } from '~/types/filters';
-import { calculateStartDate } from '~/constants/date-periods';
+import type { IListingFilters, PaginationFilters } from '~/types';
+import { calculateStartDate } from '~/constants';
 import { EnergyClass, PropertyType, type Listing } from '@linkinvests/shared';
 import { DATABASE_TOKEN } from '~/common/database';
 

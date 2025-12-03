@@ -32,6 +32,8 @@ describe('EmailService', () => {
       RESEND_API_KEY: 'test-resend-api-key',
       BETTER_AUTH_SECRET: 'test-better-auth-secret-32-chars-long',
       BETTER_AUTH_URL: 'http://localhost:8080',
+      GOOGLE_CLIENT_ID: 'test-google-client-id',
+      GOOGLE_CLIENT_SECRET: 'test-google-client-secret',
     };
 
     // Create mock Resend instance

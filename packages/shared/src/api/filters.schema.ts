@@ -18,6 +18,8 @@ export const datePeriodSchema = z.enum([
   '6_months',
   '9_months',
   '12_months',
+  '18_months',
+  '24_months',
 ]);
 
 export type DatePeriod = z.infer<typeof datePeriodSchema>;

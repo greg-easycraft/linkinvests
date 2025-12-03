@@ -3,8 +3,8 @@ import { and, eq, gte, inArray, lte, sql, type SQL } from 'drizzle-orm';
 import type { DomainDbType } from '~/types/db';
 import { opportunitySuccessions } from '@linkinvests/db';
 import { SuccessionRepository } from '../lib.types';
-import type { ISuccessionFilters, PaginationFilters } from '~/types/filters';
-import { calculateStartDate } from '~/constants/date-periods';
+import type { ISuccessionFilters, PaginationFilters } from '~/types';
+import { calculateStartDate } from '~/constants';
 import type { Succession } from '@linkinvests/shared';
 import { DATABASE_TOKEN } from '~/common/database';
 

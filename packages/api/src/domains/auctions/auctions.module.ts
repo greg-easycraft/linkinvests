@@ -5,7 +5,6 @@ import { AuctionService } from './services/auction.service';
 import { AuctionsController } from './auctions.controller';
 
 @Module({
-  controllers: [AuctionsController],
   providers: [
     {
       provide: AuctionRepository,
@@ -13,6 +12,6 @@ import { AuctionsController } from './auctions.controller';
     },
     AuctionService,
   ],
-  exports: [AuctionService, AuctionRepository],
+  controllers: [AuctionsController],
 })
 export class AuctionsModule {}

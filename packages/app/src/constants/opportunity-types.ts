@@ -1,4 +1,4 @@
-import { OpportunityType } from '@/types'
+import { OpportunityType } from '@linkinvests/shared'
 
 /**
  * Display labels for opportunity types (French)

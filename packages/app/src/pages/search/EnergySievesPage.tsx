@@ -1,12 +1,11 @@
 import { useNavigate, useSearch } from '@tanstack/react-router'
 import { useCallback } from 'react'
 import type { EnergyDiagnosticFilters as EnergyDiagnosticFiltersType } from '@/schemas/filters.schema'
-import type {EnergyDiagnostic} from '@/types';
+import type { EnergyDiagnostic } from '@/types'
 import { OpportunitiesPage } from '@/components/opportunities/OpportunitiesPage'
 import { EnergyDiagnosticFilters } from '@/components/opportunities/OpportunityFilters'
 import { useOpportunityData } from '@/hooks'
-import { filterEnergySieves, generateDummyEnergySieves } from '@/data'
-import {  OpportunityType } from '@/types'
+import { OpportunityType } from '@/types'
 
 export function EnergySievesPage(): React.ReactElement {
   const filters = useSearch({ from: '/search/energy-sieves' })
@@ -16,8 +15,6 @@ export function EnergySievesPage(): React.ReactElement {
     useOpportunityData<EnergyDiagnostic>({
       opportunityType: OpportunityType.ENERGY_SIEVE,
       filters,
-      getDummyData: generateDummyEnergySieves,
-      filterFn: filterEnergySieves,
     })
 
   const handleFiltersChange = useCallback(

@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { AuctionRepository } from '../lib.types';
-import type { IAuctionFilters } from '~/types/filters';
+import type { IAuctionFilters } from '~/types';
 import type { Auction } from '@linkinvests/shared';
 import { OpportunityType } from '@linkinvests/shared';
 import type { OpportunitiesDataQueryResult } from '~/types/query-result';
 import { ExportService } from '~/common/export/services/export.service';
 import type { ExportFormat } from '~/common/export/export.types';
 import { getOpportunityHeaders } from '~/common/export/services/export-headers.service';
-import { DEFAULT_PAGE_SIZE } from '~/constants/filters';
+import { DEFAULT_PAGE_SIZE } from '~/constants';
 
 @Injectable()
 export class AuctionService {
@@ -16,7 +16,9 @@ export class AuctionService {
   constructor(
     private readonly auctionRepository: AuctionRepository,
     private readonly exportService: ExportService,
-  ) {}
+  ) {
+  console.log('INSTANTIATED', auctionRepository, exportService)
+  }
 
   async getAuctionsData(
     filters?: IAuctionFilters,

@@ -1,12 +1,11 @@
 import { useNavigate, useSearch } from '@tanstack/react-router'
 import { useCallback } from 'react'
 import type { AuctionFilters as AuctionFiltersType } from '@/schemas/filters.schema'
-import type {Auction} from '@/types';
+import type { Auction } from '@/types'
 import { OpportunitiesPage } from '@/components/opportunities/OpportunitiesPage'
 import { AuctionFilters } from '@/components/opportunities/OpportunityFilters'
 import { useOpportunityData } from '@/hooks'
-import { filterAuctions, generateDummyAuctions } from '@/data'
-import {  OpportunityType } from '@/types'
+import { OpportunityType } from '@/types'
 
 export function AuctionsPage(): React.ReactElement {
   const filters = useSearch({ from: '/search/auctions' })
@@ -16,8 +15,6 @@ export function AuctionsPage(): React.ReactElement {
     useOpportunityData<Auction>({
       opportunityType: OpportunityType.AUCTION,
       filters,
-      getDummyData: generateDummyAuctions,
-      filterFn: filterAuctions,
     })
 
   const handleFiltersChange = useCallback(

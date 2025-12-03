@@ -1,4 +1,4 @@
-import type { IListingFilters, PaginationFilters } from '~/types/filters';
+import type { IListingFilters, PaginationFilters } from '~/types';
 import type { Listing } from '@linkinvests/shared';
 
 export abstract class ListingRepository {

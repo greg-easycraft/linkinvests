@@ -3,8 +3,8 @@ import { and, eq, gte, inArray, lte, sql, type SQL } from 'drizzle-orm';
 import type { DomainDbType } from '~/types/db';
 import { opportunityLiquidations } from '@linkinvests/db';
 import { LiquidationRepository } from '../lib.types';
-import type { ILiquidationFilters, PaginationFilters } from '~/types/filters';
-import { calculateStartDate } from '~/constants/date-periods';
+import type { ILiquidationFilters, PaginationFilters } from '~/types';
+import { calculateStartDate } from '~/constants';
 import type { Liquidation } from '@linkinvests/shared';
 import { DATABASE_TOKEN } from '~/common/database';
 

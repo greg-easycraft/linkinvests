@@ -13,6 +13,5 @@ import { EnergyDiagnosticsController } from './energy-diagnostics.controller';
     },
     EnergyDiagnosticsService,
   ],
-  exports: [EnergyDiagnosticsService, EnergyDiagnosticsRepository],
 })
 export class EnergyDiagnosticsModule {}

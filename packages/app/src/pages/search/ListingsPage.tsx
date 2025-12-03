@@ -1,12 +1,11 @@
 import { useNavigate, useSearch } from '@tanstack/react-router'
 import { useCallback } from 'react'
 import type { ListingFilters as ListingFiltersType } from '@/schemas/filters.schema'
-import type {Listing} from '@/types';
+import type { Listing } from '@/types'
 import { OpportunitiesPage } from '@/components/opportunities/OpportunitiesPage'
 import { ListingFilters } from '@/components/opportunities/OpportunityFilters'
 import { useOpportunityData } from '@/hooks'
-import { filterListings, generateDummyListings } from '@/data'
-import {  OpportunityType } from '@/types'
+import { OpportunityType } from '@/types'
 
 export function ListingsPage(): React.ReactElement {
   const filters = useSearch({ from: '/search/listings' })
@@ -16,8 +15,6 @@ export function ListingsPage(): React.ReactElement {
     useOpportunityData<Listing>({
       opportunityType: OpportunityType.REAL_ESTATE_LISTING,
       filters,
-      getDummyData: generateDummyListings,
-      filterFn: filterListings,
     })
 
   const handleFiltersChange = useCallback(

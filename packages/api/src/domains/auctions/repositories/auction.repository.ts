@@ -3,8 +3,8 @@ import { and, eq, gte, inArray, lte, sql, type SQL } from 'drizzle-orm';
 import type { DomainDbType } from '~/types/db';
 import { opportunityAuctions } from '@linkinvests/db';
 import { AuctionRepository } from '../lib.types';
-import type { IAuctionFilters, PaginationFilters } from '~/types/filters';
-import { calculateStartDate } from '~/constants/date-periods';
+import type { IAuctionFilters, PaginationFilters } from '~/types';
+import { calculateStartDate } from '~/constants';
 import {
   AuctionOccupationStatus,
   AuctionSource,
@@ -15,9 +15,9 @@ import {
 import { DATABASE_TOKEN } from '~/common/database';
 
 @Injectable()
-export class DrizzleAuctionRepository extends AuctionRepository {
+export class DrizzleAuctionRepository implements AuctionRepository {
   constructor(@Inject(DATABASE_TOKEN) private readonly db: DomainDbType) {
-    super();
+    console.log('REPO')
   }
 
   /**

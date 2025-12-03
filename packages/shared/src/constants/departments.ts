@@ -1,4 +1,4 @@
-import type { DepartmentOption } from '@/types'
+import type { DepartmentOption } from '../types/filters.types';
 
 /**
  * List of French departments with their codes and names.
@@ -118,33 +118,35 @@ export const FRENCH_DEPARTMENTS: Array<DepartmentOption> = [
   { id: '973', name: 'Guyane', label: '973 - Guyane' },
   { id: '974', name: 'La Réunion', label: '974 - La Réunion' },
   { id: '976', name: 'Mayotte', label: '976 - Mayotte' },
-]
+];
 
 /**
  * Search departments by ID or name (case insensitive)
  */
 export function searchDepartments(query: string): Array<DepartmentOption> {
   if (!query.trim()) {
-    return FRENCH_DEPARTMENTS
+    return FRENCH_DEPARTMENTS;
   }
 
-  const normalizedQuery = query.toLowerCase().trim()
+  const normalizedQuery = query.toLowerCase().trim();
 
   return FRENCH_DEPARTMENTS.filter((dept) => {
-    return dept.label.toLowerCase().includes(normalizedQuery)
-  })
+    return dept.label.toLowerCase().includes(normalizedQuery);
+  });
 }
 
 /**
  * Get department by ID
  */
 export function getDepartmentById(id: string): DepartmentOption | undefined {
-  return FRENCH_DEPARTMENTS.find((dept) => dept.id === id)
+  return FRENCH_DEPARTMENTS.find((dept) => dept.id === id);
 }
 
 /**
  * Get multiple departments by their IDs
  */
-export function getDepartmentsByIds(ids: Array<string>): Array<DepartmentOption> {
-  return FRENCH_DEPARTMENTS.filter((dept) => ids.includes(dept.id))
+export function getDepartmentsByIds(
+  ids: Array<string>,
+): Array<DepartmentOption> {
+  return FRENCH_DEPARTMENTS.filter((dept) => ids.includes(dept.id));
 }
