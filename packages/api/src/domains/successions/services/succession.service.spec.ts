@@ -36,7 +36,7 @@ describe('SuccessionService', () => {
       address: {
         complement1: '',
         complement2: '',
-        numero_voie: '1 Place de l\'Hôtel de Ville',
+        numero_voie: "1 Place de l'Hôtel de Ville",
         service_distribution: '',
         code_postal: '75004',
         nom_commune: 'Paris',

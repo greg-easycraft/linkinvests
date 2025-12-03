@@ -5,7 +5,11 @@ import type {
   ExportFormat,
 } from '~/common/export/export.types';
 import type { IOpportunityFilters } from '~/types/filters';
-import { OpportunityType, EnergyClass, type Listing } from '@linkinvests/shared';
+import {
+  OpportunityType,
+  EnergyClass,
+  type Listing,
+} from '@linkinvests/shared';
 import { DEFAULT_PAGE_SIZE } from '~/constants/filters';
 import { getOpportunityHeaders } from '~/common/export/services/export-headers.service';
 
