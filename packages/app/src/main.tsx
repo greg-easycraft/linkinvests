@@ -47,7 +47,7 @@ import { ForgotPasswordForm } from '@/components/auth/ForgotPasswordForm'
 import { VerifyEmailCard } from '@/components/auth/VerifyEmailCard'
 
 // Import theme components
-import { ThemeProvider } from '@/components/providers/theme-provider'
+import { ThemeProvider, useTheme } from '@/components/providers/theme-provider'
 import { ThemeToggle } from '@/components/ui/theme-toggle'
 
 // Create Query Client
@@ -62,11 +62,22 @@ const queryClient = new QueryClient({
 
 // App Header with Navigation
 function AppHeader() {
+  const { theme } = useTheme()
+  const isDarkTheme = theme === 'dark'
+
   return (
     <header className="border-b bg-background">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <Link to="/" className="font-bold text-xl">
-          LinkInvests
+        <Link
+          to="/"
+          className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+        >
+          <img
+            src={isDarkTheme ? '/logo.svg' : '/logo-dark.svg'}
+            alt="LinkInvests Logo"
+            width={24}
+            height={24}
+          />
         </Link>
         <nav className="flex items-center gap-6">
           <Link
