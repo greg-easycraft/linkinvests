@@ -9,7 +9,6 @@ import {
   ALL_LIQUIDATIONS,
   ALL_LISTINGS,
 } from './fixtures';
-import { pushSchema } from '@linkinvests/db/push-schema';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 require('dotenv').config();
@@ -33,7 +32,7 @@ export function useTestDb(autoInjectFixtures: boolean = true): DomainDbType {
   }
 
   beforeAll(() => {
-    pushSchema(TEST_DB_URL);
+
   });
 
   beforeEach(async () => {
