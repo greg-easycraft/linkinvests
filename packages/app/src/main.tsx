@@ -46,6 +46,10 @@ import { SignUpForm } from '@/components/auth/SignUpForm'
 import { ForgotPasswordForm } from '@/components/auth/ForgotPasswordForm'
 import { VerifyEmailCard } from '@/components/auth/VerifyEmailCard'
 
+// Import theme components
+import { ThemeProvider } from '@/components/providers/theme-provider'
+import { ThemeToggle } from '@/components/ui/theme-toggle'
+
 // Create Query Client
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -76,6 +80,7 @@ function AppHeader() {
           <Link to="/auth/sign-in" className="text-sm hover:text-primary">
             Connexion
           </Link>
+          <ThemeToggle />
         </nav>
       </div>
     </header>
@@ -275,10 +280,12 @@ if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)
   root.render(
     <StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
-        <ReactQueryDevtools initialIsOpen={false} />
-      </QueryClientProvider>
+      <ThemeProvider>
+        <QueryClientProvider client={queryClient}>
+          <RouterProvider router={router} />
+          <ReactQueryDevtools initialIsOpen={false} />
+        </QueryClientProvider>
+      </ThemeProvider>
     </StrictMode>,
   )
 }
