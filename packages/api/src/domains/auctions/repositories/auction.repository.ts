@@ -16,9 +16,7 @@ import { DATABASE_TOKEN } from '~/common/database';
 
 @Injectable()
 export class DrizzleAuctionRepository implements AuctionRepository {
-  constructor(@Inject(DATABASE_TOKEN) private readonly db: DomainDbType) {
-    console.log('REPO');
-  }
+  constructor(@Inject(DATABASE_TOKEN) private readonly db: DomainDbType) {}
 
   /**
    * Builds where clause for auction filters

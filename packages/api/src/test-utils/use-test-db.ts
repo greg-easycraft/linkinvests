@@ -1,4 +1,3 @@
-import { execSync } from 'child_process';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import * as schema from '@linkinvests/db';
@@ -10,6 +9,7 @@ import {
   ALL_LIQUIDATIONS,
   ALL_LISTINGS,
 } from './fixtures';
+import { pushSchema } from '@linkinvests/db/push-schema';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 require('dotenv').config();
@@ -33,7 +33,7 @@ export function useTestDb(autoInjectFixtures: boolean = true): DomainDbType {
   }
 
   beforeAll(() => {
-    execSync(`DATABASE_URL=${TEST_DB_URL} npx drizzle-kit push --force`);
+    pushSchema(TEST_DB_URL);
   });
 
   beforeEach(async () => {
@@ -56,6 +56,6 @@ export function useTestDb(autoInjectFixtures: boolean = true): DomainDbType {
 function getDbUrl(): string {
   return (
     process.env.TEST_DATABASE_URL ??
-    'postgres://postgres:postgres@localhost:5432/test'
+    'postgres://linkinvests:linkinvests@localhost:5432/test'
   );
 }
