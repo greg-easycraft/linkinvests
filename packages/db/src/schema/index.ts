@@ -1,5 +1,5 @@
 // Export all schemas from here
-export * as authSchema from './auth.schema';
-export * as domainSchema from './domain.schema';
-export * from './domain.schema';
-export * from './auth.schema';
+export * as authSchema from './auth.schema.js';
+export * as domainSchema from './domain.schema.js';
+export * from './domain.schema.js';
+export * from './auth.schema.js';

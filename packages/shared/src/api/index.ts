@@ -1,13 +1,13 @@
 // Filter schemas
-export * from './filters.schema';
+export * from './filters.schema.js';
 
 // Response schemas
-export * from './responses.schema';
+export * from './responses.schema.js';
 
 // Domain-specific DTOs
-export * from './auctions.dto';
-export * from './listings.dto';
-export * from './successions.dto';
-export * from './liquidations.dto';
-export * from './energy-diagnostics.dto';
-export * from './addresses.dto';
+export * from './auctions.dto.js';
+export * from './listings.dto.js';
+export * from './successions.dto.js';
+export * from './liquidations.dto.js';
+export * from './energy-diagnostics.dto.js';
+export * from './addresses.dto.js';

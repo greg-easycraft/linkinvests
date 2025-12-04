@@ -1,2 +1,2 @@
 // Main entry point for @linkinvests/db
-export * from './schema';
+export * from './schema/index.js';

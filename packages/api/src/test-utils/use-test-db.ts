@@ -31,9 +31,7 @@ export function useTestDb(autoInjectFixtures: boolean = true): DomainDbType {
     await db.delete(schema.opportunityListings);
   }
 
-  beforeAll(() => {
-
-  });
+  beforeAll(() => {});
 
   beforeEach(async () => {
     await resetDb();
