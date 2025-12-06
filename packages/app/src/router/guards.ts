@@ -4,7 +4,7 @@ import type { RouterContext } from './context';
 export function requireAuth({ context }: { context: RouterContext }) {
   if (!context.auth.isAuthenticated && !context.auth.isLoading) {
     throw redirect({
-      to: '/auth/sign-in',
+      to: '/',
       search: {
         redirect: window.location.pathname,
       },
