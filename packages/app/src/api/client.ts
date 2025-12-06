@@ -27,6 +27,7 @@ export async function apiRequest<T>(
     method,
     headers: { 'Content-Type': 'application/json' },
     body: body ? JSON.stringify(body) : undefined,
+    credentials: 'include',
   })
 
   if (!response.ok) {

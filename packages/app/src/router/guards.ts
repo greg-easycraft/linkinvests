@@ -1,0 +1,21 @@
+import { redirect } from '@tanstack/react-router';
+import type { RouterContext } from './context';
+
+export function requireAuth({ context }: { context: RouterContext }) {
+  if (!context.auth.isAuthenticated && !context.auth.isLoading) {
+    throw redirect({
+      to: '/auth/sign-in',
+      search: {
+        redirect: window.location.pathname,
+      },
+    });
+  }
+}
+
+export function requireGuest({ context }: { context: RouterContext }) {
+  if (context.auth.isAuthenticated && !context.auth.isLoading) {
+    throw redirect({
+      to: '/search/auctions',
+    });
+  }
+}

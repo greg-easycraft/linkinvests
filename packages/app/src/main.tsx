@@ -4,7 +4,7 @@ import {
   Link,
   Outlet,
   RouterProvider,
-  createRootRoute,
+  createRootRouteWithContext,
   createRoute,
   createRouter,
 } from '@tanstack/react-router'
@@ -12,6 +12,7 @@ import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { zodSearchValidator } from '@tanstack/router-zod-adapter'
+import { z } from 'zod'
 
 import './styles.css'
 import reportWebVitals from './reportWebVitals.ts'
@@ -33,6 +34,7 @@ import {
   ListingDetailPage,
   SuccessionDetailPage,
 } from './pages/opportunities'
+import type { RouterContext } from '@/router'
 import {
   auctionFiltersSchema,
   baseFiltersSchema,
@@ -42,13 +44,16 @@ import {
 
 // Import auth components
 import { SignInForm } from '@/components/auth/SignInForm'
-import { SignUpForm } from '@/components/auth/SignUpForm'
-import { ForgotPasswordForm } from '@/components/auth/ForgotPasswordForm'
-import { VerifyEmailCard } from '@/components/auth/VerifyEmailCard'
+import { CheckEmailCard } from '@/components/auth/CheckEmailCard'
+import { UserMenu } from '@/components/auth/UserMenu'
 
 // Import theme components
 import { ThemeProvider, useTheme } from '@/components/providers/theme-provider'
+import { AuthProvider, useAuth } from '@/components/providers/auth-provider'
 import { ThemeToggle } from '@/components/ui/theme-toggle'
+
+// Import router utilities
+import { requireAuth, requireGuest } from '@/router'
 
 // Create Query Client
 const queryClient = new QueryClient({
@@ -88,9 +93,7 @@ function AppHeader() {
           >
             Opportunités
           </Link>
-          <Link to="/auth/sign-in" className="text-sm hover:text-primary">
-            Connexion
-          </Link>
+          <UserMenu />
           <ThemeToggle />
         </nav>
       </div>
@@ -131,8 +134,13 @@ function AuthLayout() {
   )
 }
 
-// Root route
-const rootRoute = createRootRoute({
+// Sign-in search schema for redirect parameter
+const signInSearchSchema = z.object({
+  redirect: z.string().optional(),
+})
+
+// Root route with context
+const rootRoute = createRootRouteWithContext<RouterContext>()({
   component: () => (
     <>
       <AppHeader />
@@ -142,18 +150,19 @@ const rootRoute = createRootRoute({
   ),
 })
 
-// Index route
+// Index route (public)
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
   component: HomePage,
 })
 
-// Search routes
+// Search routes (protected)
 const searchAuctionsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/search/auctions',
   validateSearch: zodSearchValidator(auctionFiltersSchema),
+  beforeLoad: requireAuth,
   component: AuctionsPage,
 })
 
@@ -161,6 +170,7 @@ const searchListingsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/search/listings',
   validateSearch: zodSearchValidator(listingFiltersSchema),
+  beforeLoad: requireAuth,
   component: ListingsPage,
 })
 
@@ -168,6 +178,7 @@ const searchSuccessionsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/search/successions',
   validateSearch: zodSearchValidator(baseFiltersSchema),
+  beforeLoad: requireAuth,
   component: SuccessionsPage,
 })
 
@@ -175,6 +186,7 @@ const searchLiquidationsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/search/liquidations',
   validateSearch: zodSearchValidator(baseFiltersSchema),
+  beforeLoad: requireAuth,
   component: LiquidationsPage,
 })
 
@@ -182,37 +194,43 @@ const searchEnergySievesRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/search/energy-sieves',
   validateSearch: zodSearchValidator(energyDiagnosticFiltersSchema),
+  beforeLoad: requireAuth,
   component: EnergySievesPage,
 })
 
-// Detail page routes
+// Detail page routes (protected)
 const auctionDetailRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/auctions/$auctionId',
+  beforeLoad: requireAuth,
   component: AuctionDetailPage,
 })
 
 const listingDetailRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/listings/$listingId',
+  beforeLoad: requireAuth,
   component: ListingDetailPage,
 })
 
 const successionDetailRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/successions/$successionId',
+  beforeLoad: requireAuth,
   component: SuccessionDetailPage,
 })
 
 const liquidationDetailRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/liquidations/$liquidationId',
+  beforeLoad: requireAuth,
   component: LiquidationDetailPage,
 })
 
 const energySieveDetailRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/energy-sieves/$energySieveId',
+  beforeLoad: requireAuth,
   component: EnergySieveDetailPage,
 })
 
@@ -226,25 +244,15 @@ const authLayoutRoute = createRoute({
 const signInRoute = createRoute({
   getParentRoute: () => authLayoutRoute,
   path: '/sign-in',
+  validateSearch: zodSearchValidator(signInSearchSchema),
+  beforeLoad: requireGuest,
   component: SignInForm,
 })
 
-const signUpRoute = createRoute({
+const checkEmailRoute = createRoute({
   getParentRoute: () => authLayoutRoute,
-  path: '/sign-up',
-  component: SignUpForm,
-})
-
-const forgotPasswordRoute = createRoute({
-  getParentRoute: () => authLayoutRoute,
-  path: '/forgot-password',
-  component: ForgotPasswordForm,
-})
-
-const verifyEmailRoute = createRoute({
-  getParentRoute: () => authLayoutRoute,
-  path: '/verify-email',
-  component: VerifyEmailCard,
+  path: '/check-email',
+  component: CheckEmailCard,
 })
 
 // Build route tree
@@ -262,26 +270,30 @@ const routeTree = rootRoute.addChildren([
   energySieveDetailRoute,
   authLayoutRoute.addChildren([
     signInRoute,
-    signUpRoute,
-    forgotPasswordRoute,
-    verifyEmailRoute,
+    checkEmailRoute,
   ]),
 ])
 
-// Create router
-const router = createRouter({
-  routeTree,
-  context: {},
-  defaultPreload: 'intent',
-  scrollRestoration: true,
-  defaultStructuralSharing: true,
-  defaultPreloadStaleTime: 0,
-})
+// Inner App component that has access to auth context
+function InnerApp() {
+  const auth = useAuth()
+
+  const router = createRouter({
+    routeTree,
+    context: { auth },
+    defaultPreload: 'intent',
+    scrollRestoration: true,
+    defaultStructuralSharing: true,
+    defaultPreloadStaleTime: 0,
+  })
+
+  return <RouterProvider router={router} />
+}
 
 // Register router types
 declare module '@tanstack/react-router' {
   interface Register {
-    router: typeof router
+    router: ReturnType<typeof createRouter<typeof routeTree, 'never', boolean>>
   }
 }
 
@@ -293,8 +305,10 @@ if (rootElement && !rootElement.innerHTML) {
     <StrictMode>
       <ThemeProvider>
         <QueryClientProvider client={queryClient}>
-          <RouterProvider router={router} />
-          <ReactQueryDevtools initialIsOpen={false} />
+          <AuthProvider>
+            <InnerApp />
+            <ReactQueryDevtools initialIsOpen={false} />
+          </AuthProvider>
         </QueryClientProvider>
       </ThemeProvider>
     </StrictMode>,

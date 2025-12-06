@@ -1,4 +1,3 @@
 export * from './SignInForm'
-export * from './SignUpForm'
-export * from './ForgotPasswordForm'
-export * from './VerifyEmailCard'
+export * from './CheckEmailCard'
+export * from './UserMenu'
