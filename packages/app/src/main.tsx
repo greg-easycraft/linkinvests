@@ -7,6 +7,7 @@ import {
   createRootRouteWithContext,
   createRoute,
   createRouter,
+  useRouterState,
 } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -43,9 +44,7 @@ import {
 } from '@/schemas/filters.schema'
 
 // Import auth components
-import { SignInForm } from '@/components/auth/SignInForm'
-import { CheckEmailCard } from '@/components/auth/CheckEmailCard'
-import { UserMenu } from '@/components/auth/UserMenu'
+import { CheckEmailCard, SignInForm, UserMenu } from '@/components/auth'
 
 // Import theme components
 import { ThemeProvider, useTheme } from '@/components/providers/theme-provider'
@@ -74,7 +73,7 @@ function AppHeader() {
     <header className="border-b bg-background">
       <div className="mx-auto px-4 h-16 flex items-center justify-between">
         <Link
-          to="/"
+          to="/search/auctions"
           className="flex items-center gap-3 hover:opacity-80 transition-opacity"
         >
           <img
@@ -101,34 +100,10 @@ function AppHeader() {
   )
 }
 
-// Home page
-function HomePage() {
-  return (
-    <div className="container mx-auto px-4 py-16 text-center">
-      <h1 className="text-4xl font-bold mb-4">Bienvenue sur LinkInvests</h1>
-      <p className="text-xl text-muted-foreground mb-8">
-        Découvrez les meilleures opportunités immobilières
-      </p>
-      <div className="flex justify-center gap-4">
-        <Link to="/search/auctions">
-          <button className="px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:opacity-90">
-            Voir les enchères
-          </button>
-        </Link>
-        <Link to="/search/listings">
-          <button className="px-6 py-3 border rounded-lg hover:bg-accent">
-            Voir les annonces
-          </button>
-        </Link>
-      </div>
-    </div>
-  )
-}
-
-// Auth layout wrapper
+// Auth layout wrapper (full height since no header)
 function AuthLayout() {
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center auth-page">
       <Outlet />
     </div>
   )
@@ -139,22 +114,32 @@ const signInSearchSchema = z.object({
   redirect: z.string().optional(),
 })
 
-// Root route with context
-const rootRoute = createRootRouteWithContext<RouterContext>()({
-  component: () => (
+// Root layout component that conditionally shows header
+function RootLayout() {
+  const location = useRouterState({ select: (s) => s.location })
+  const isAuthRoute = location.pathname === '/' || location.pathname.startsWith('/auth')
+
+  return (
     <>
-      <AppHeader />
+      {!isAuthRoute && <AppHeader />}
       <Outlet />
       <TanStackRouterDevtools />
     </>
-  ),
+  )
+}
+
+// Root route with context
+const rootRoute = createRootRouteWithContext<RouterContext>()({
+  component: RootLayout,
 })
 
-// Index route (public)
+// Index route - show sign-in (uses AuthLayout styling)
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
-  component: HomePage,
+  validateSearch: zodSearchValidator(signInSearchSchema),
+  beforeLoad: requireGuest,
+  component: SignInForm,
 })
 
 // Search routes (protected)

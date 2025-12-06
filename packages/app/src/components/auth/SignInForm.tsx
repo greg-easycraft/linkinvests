@@ -92,7 +92,7 @@ export function SignInForm(): React.ReactElement {
   return (
     <Card className="w-full max-w-md p-6">
       <div className="text-center mb-6">
-        <h1 className="text-2xl font-bold">Connexion</h1>
+        <h1 className="text-2xl font-bold">LinkInvests - Invest differently</h1>
         <p className="text-muted-foreground mt-2">
           Entrez votre email pour recevoir un lien de connexion
         </p>

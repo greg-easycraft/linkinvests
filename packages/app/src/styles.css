@@ -136,3 +136,11 @@ code {
     @apply bg-background text-foreground;
   }
 }
+
+
+.auth-page { 
+ background-color: rgb(31, 31, 31);
+ background-image: url('/background-sigle-bottom-left.svg');
+ background-position: bottom left;
+ background-repeat: no-repeat;
+}
