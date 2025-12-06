@@ -1,4 +1,5 @@
-import { Link, useParams } from '@tanstack/react-router'
+import { format } from 'date-fns'
+import { fr } from 'date-fns/locale'
 import {
   ArrowLeft,
   Calendar,
@@ -7,24 +8,68 @@ import {
   Loader2,
   MapPin,
 } from 'lucide-react'
-import { format } from 'date-fns'
-import { fr } from 'date-fns/locale'
-import type { Listing } from '@/types'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Separator } from '@/components/ui/separator'
-import { Card } from '@/components/ui/card'
-import { useOpportunityById } from '@/hooks'
-import { ListingDetails } from '@/components/opportunities/OpportunityDetailsModal/ListingDetails'
-import { ImageCarousel } from '@/components/opportunities/OpportunityDetailsModal/ImageCarousel'
+
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { Link, useParams } from '@tanstack/react-router'
+
+import type { EnergyClass, Listing } from '@/types'
 import { OpportunityType } from '@/types'
+import {
+  getDiagnosticLinks,
+  searchAndLinkDiagnostics,
+} from '@/api/addresses.api'
+import {
+  AddressRefinementButton,
+  DiagnosticLinksTable,
+} from '@/components/opportunities/AddressRefinement'
+import { ImageCarousel } from '@/components/opportunities/OpportunityDetailsModal/ImageCarousel'
+import { ListingDetails } from '@/components/opportunities/OpportunityDetailsModal/ListingDetails'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { Separator } from '@/components/ui/separator'
+import { useOpportunityById } from '@/hooks'
 
 export function ListingDetailPage(): React.ReactElement {
   const { listingId } = useParams({ strict: false })
+  const queryClient = useQueryClient()
   const { data: listing, isLoading } = useOpportunityById<Listing>(
     OpportunityType.REAL_ESTATE_LISTING,
     listingId,
   )
+
+  // Fetch existing diagnostic links
+  const { data: diagnosticLinks = [], isLoading: isLoadingLinks } = useQuery({
+    queryKey: ['diagnosticLinks', listingId, 'listing'],
+    queryFn: () => getDiagnosticLinks(listingId!, 'listing'),
+    enabled: !!listingId,
+  })
+
+  // Mutation to search and link diagnostics
+  const searchMutation = useMutation({
+    mutationFn: searchAndLinkDiagnostics,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['diagnosticLinks', listingId, 'listing'],
+      })
+    },
+  })
+
+  const handleRefineAddress = () => {
+    if (!listing || !listing.squareFootage) {
+      return
+    }
+    searchMutation.mutate({
+      opportunityId: listing.id,
+      opportunityType: 'listing',
+      input: {
+        energyClass: listing.energyClass as EnergyClass,
+        squareFootage: listing.squareFootage,
+        zipCode: listing.zipCode,
+        address: listing.address ?? undefined,
+      },
+    })
+  }
 
   if (isLoading) {
     return (
@@ -82,12 +127,21 @@ export function ListingDetailPage(): React.ReactElement {
         </div>
 
         {/* Address */}
-        <div className="flex items-start gap-2 text-muted-foreground mb-2">
-          <MapPin className="h-4 w-4 mt-1 shrink-0" />
-          <span>
-            {listing.address ?? listing.label}, {listing.zipCode}{' '}
-            {listing.department}
-          </span>
+        <div className="flex items-start justify-between gap-2 mb-2">
+          <div className="flex items-start gap-2 text-muted-foreground">
+            <MapPin className="h-4 w-4 mt-1 shrink-0" />
+            <span>
+              {listing.address ?? listing.label}, {listing.zipCode}{' '}
+              {listing.department}
+            </span>
+          </div>
+          <AddressRefinementButton
+            address={listing.address ?? null}
+            energyClass={listing.energyClass}
+            onRefine={handleRefineAddress}
+            isLoading={searchMutation.isPending}
+            hasExistingLinks={diagnosticLinks.length > 0}
+          />
         </div>
 
         {/* Date */}
@@ -103,6 +157,14 @@ export function ListingDetailPage(): React.ReactElement {
 
         {/* Listing Details */}
         <ListingDetails opportunity={listing} />
+
+        {/* Diagnostic Links */}
+        <div className="mt-6">
+          <DiagnosticLinksTable
+            links={diagnosticLinks}
+            isLoading={isLoadingLinks || searchMutation.isPending}
+          />
+        </div>
 
         <Separator className="my-6" />
 

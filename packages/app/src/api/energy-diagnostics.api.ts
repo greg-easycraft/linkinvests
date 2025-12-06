@@ -39,3 +39,18 @@ export async function getEnergyDiagnosticById(
     throw error
   }
 }
+
+export async function getEnergyDiagnosticByExternalId(
+  externalId: string,
+): Promise<EnergyDiagnostic | null> {
+  try {
+    return apiRequest<EnergyDiagnostic>(
+      `/energy-diagnostics/external/${externalId}`,
+    )
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) {
+      return null
+    }
+    throw error
+  }
+}

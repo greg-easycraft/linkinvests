@@ -114,7 +114,10 @@ export function OpportunityDetailsModal({
   const { data: diagnosticLinks = [], isLoading: isLoadingLinks } = useQuery({
     queryKey: ['diagnosticLinks', opportunity?.id, opportunityType],
     queryFn: () =>
-      getDiagnosticLinks(opportunity!.id, opportunityType as 'auction' | 'listing'),
+      getDiagnosticLinks(
+        opportunity!.id,
+        opportunityType as 'auction' | 'listing',
+      ),
     enabled: !!opportunity && !!opportunityType,
   })
 
@@ -151,7 +154,7 @@ export function OpportunityDetailsModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <div className="flex items-center justify-between gap-2">
             <Badge variant="outline">{TYPE_LABELS[type]}</Badge>

@@ -22,6 +22,7 @@ import reportWebVitals from './reportWebVitals.ts'
 // Import schemas
 
 // Import page components
+import { AddressSearchPage } from './pages/search/AddressSearchPage'
 import { AuctionsPage } from './pages/search/AuctionsPage'
 import { ListingsPage } from './pages/search/ListingsPage'
 import { SuccessionsPage } from './pages/search/SuccessionsPage'
@@ -97,6 +98,12 @@ function AppHeader() {
             activeOptions={{ includeSearch: false }}
           >
             Opportunités
+          </Link>
+          <Link
+            to="/search/address"
+            className="text-sm hover:text-primary [&.active]:text-primary [&.active]:font-medium"
+          >
+            Recherche d'Adresse
           </Link>
         </nav>
         <UserMenu />
@@ -192,6 +199,13 @@ const searchEnergySievesRoute = createRoute({
   component: EnergySievesPage,
 })
 
+const searchAddressRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/search/address',
+  beforeLoad: requireAuth,
+  component: AddressSearchPage,
+})
+
 // Detail page routes (protected)
 const auctionDetailRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -271,6 +285,7 @@ const routeTree = rootRoute.addChildren([
   searchSuccessionsRoute,
   searchLiquidationsRoute,
   searchEnergySievesRoute,
+  searchAddressRoute,
   auctionDetailRoute,
   listingDetailRoute,
   successionDetailRoute,

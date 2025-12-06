@@ -1,5 +1,5 @@
 import { apiRequest } from './client'
-import type { EnergyClass } from '@/types'
+import type { AddressSearchResult, EnergyClass } from '@/types'
 
 export interface AddressSearchInput {
   energyClass: EnergyClass
@@ -7,6 +7,8 @@ export interface AddressSearchInput {
   zipCode: string
   address?: string
 }
+
+export type { AddressSearchResult }
 
 export interface AddressLinkRequest {
   input: AddressSearchInput
@@ -45,4 +47,13 @@ export async function getDiagnosticLinks(
   return apiRequest<Array<DiagnosticLink>>(
     `/addresses/links/${opportunityId}?opportunityType=${opportunityType}`,
   )
+}
+
+export async function searchAddresses(
+  input: AddressSearchInput,
+): Promise<Array<AddressSearchResult>> {
+  return apiRequest<Array<AddressSearchResult>>('/addresses/search', {
+    method: 'POST',
+    body: input,
+  })
 }

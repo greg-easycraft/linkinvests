@@ -12,10 +12,12 @@ interface CarouselImage {
   isStreetView: boolean
 }
 
-function hasPictures(
-  opportunity: Opportunity,
-): opportunity is Auction | Listing {
-  return 'pictures' in opportunity || 'mainPicture' in opportunity
+function hasPictures(opportunity: Opportunity): boolean {
+  const opp = opportunity as Auction | Listing
+  return (
+    Boolean(opp.mainPicture) ||
+    (Array.isArray(opp.pictures) && opp.pictures.length > 0)
+  )
 }
 
 function getStreetViewUrl(opportunity: Opportunity): string {
@@ -34,12 +36,13 @@ function getAllImages(opportunity: Opportunity): Array<CarouselImage> {
 
   // Add property images if available
   if (hasPictures(opportunity)) {
-    if (opportunity.mainPicture) {
-      images.push({ url: opportunity.mainPicture, isStreetView: false })
+    const opp = opportunity as Auction | Listing
+    if (opp.mainPicture) {
+      images.push({ url: opp.mainPicture, isStreetView: false })
     }
-    if (opportunity.pictures) {
-      opportunity.pictures
-        .filter((p) => p !== opportunity.mainPicture)
+    if (opp.pictures && opp.pictures.length > 0) {
+      opp.pictures
+        .filter((p) => p !== opp.mainPicture)
         .forEach((url) => images.push({ url, isStreetView: false }))
     }
   }

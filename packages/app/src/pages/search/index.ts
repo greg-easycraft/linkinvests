@@ -1,3 +1,4 @@
+export * from './AddressSearchPage'
 export * from './AuctionsPage'
 export * from './ListingsPage'
 export * from './SuccessionsPage'

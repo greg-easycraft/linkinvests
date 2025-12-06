@@ -1,4 +1,5 @@
-import { Link, useParams } from '@tanstack/react-router'
+import { format } from 'date-fns'
+import { fr } from 'date-fns/locale'
 import {
   ArrowLeft,
   Calendar,
@@ -7,24 +8,68 @@ import {
   Loader2,
   MapPin,
 } from 'lucide-react'
-import { format } from 'date-fns'
-import { fr } from 'date-fns/locale'
-import type { Auction } from '@/types'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Separator } from '@/components/ui/separator'
-import { Card } from '@/components/ui/card'
-import { useOpportunityById } from '@/hooks'
+
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { Link, useParams } from '@tanstack/react-router'
+
+import type { Auction, EnergyClass } from '@/types'
+import { OpportunityType } from '@/types'
+import {
+  getDiagnosticLinks,
+  searchAndLinkDiagnostics,
+} from '@/api/addresses.api'
+import {
+  AddressRefinementButton,
+  DiagnosticLinksTable,
+} from '@/components/opportunities/AddressRefinement'
 import { AuctionDetails } from '@/components/opportunities/OpportunityDetailsModal/AuctionDetails'
 import { ImageCarousel } from '@/components/opportunities/OpportunityDetailsModal/ImageCarousel'
-import { OpportunityType } from '@/types'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { Separator } from '@/components/ui/separator'
+import { useOpportunityById } from '@/hooks'
 
 export function AuctionDetailPage(): React.ReactElement {
   const { auctionId } = useParams({ strict: false })
+  const queryClient = useQueryClient()
   const { data: auction, isLoading } = useOpportunityById<Auction>(
     OpportunityType.AUCTION,
     auctionId,
   )
+
+  // Fetch existing diagnostic links
+  const { data: diagnosticLinks = [], isLoading: isLoadingLinks } = useQuery({
+    queryKey: ['diagnosticLinks', auctionId, 'auction'],
+    queryFn: () => getDiagnosticLinks(auctionId!, 'auction'),
+    enabled: !!auctionId,
+  })
+
+  // Mutation to search and link diagnostics
+  const searchMutation = useMutation({
+    mutationFn: searchAndLinkDiagnostics,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['diagnosticLinks', auctionId, 'auction'],
+      })
+    },
+  })
+
+  const handleRefineAddress = () => {
+    if (!auction || !auction.squareFootage) {
+      return
+    }
+    searchMutation.mutate({
+      opportunityId: auction.id,
+      opportunityType: 'auction',
+      input: {
+        energyClass: auction.energyClass as EnergyClass,
+        squareFootage: auction.squareFootage,
+        zipCode: auction.zipCode,
+        address: auction.address ?? undefined,
+      },
+    })
+  }
 
   if (isLoading) {
     return (
@@ -82,12 +127,21 @@ export function AuctionDetailPage(): React.ReactElement {
         </div>
 
         {/* Address */}
-        <div className="flex items-start gap-2 text-muted-foreground mb-2">
-          <MapPin className="h-4 w-4 mt-1 shrink-0" />
-          <span>
-            {auction.address ?? auction.label}, {auction.zipCode}{' '}
-            {auction.department}
-          </span>
+        <div className="flex items-start justify-between gap-2 mb-2">
+          <div className="flex items-start gap-2 text-muted-foreground">
+            <MapPin className="h-4 w-4 mt-1 shrink-0" />
+            <span>
+              {auction.address ?? auction.label}, {auction.zipCode}{' '}
+              {auction.department}
+            </span>
+          </div>
+          <AddressRefinementButton
+            address={auction.address ?? null}
+            energyClass={auction.energyClass}
+            onRefine={handleRefineAddress}
+            isLoading={searchMutation.isPending}
+            hasExistingLinks={diagnosticLinks.length > 0}
+          />
         </div>
 
         {/* Date */}
@@ -103,6 +157,14 @@ export function AuctionDetailPage(): React.ReactElement {
 
         {/* Auction Details */}
         <AuctionDetails opportunity={auction} />
+
+        {/* Diagnostic Links */}
+        <div className="mt-6">
+          <DiagnosticLinksTable
+            links={diagnosticLinks}
+            isLoading={isLoadingLinks || searchMutation.isPending}
+          />
+        </div>
 
         <Separator className="my-6" />
 
