@@ -41,7 +41,7 @@ export const baseOpportunityFiltersSchema = z.object({
   datePeriod: datePeriodSchema.optional(),
   bounds: mapBoundsSchema.optional(),
   page: z.number().int().positive().optional(),
-  pageSize: z.number().int().positive().max(100).optional(),
+  pageSize: z.number().int().positive().max(200).optional(),
   sortBy: z.string().optional(),
   sortOrder: z.enum(['asc', 'desc']).optional(),
 });

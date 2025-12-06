@@ -7,6 +7,7 @@ import { EnergyDiagnosticFilters } from '@/components/opportunities/OpportunityF
 import { useOpportunityData } from '@/hooks'
 import { OpportunityType } from '@/types'
 import { DEFAULT_SORT_OPTIONS } from '@/constants/sort-options'
+import { DEFAULT_PAGE_SIZE } from '@/constants'
 
 export function EnergySievesPage(): React.ReactElement {
   const filters = useSearch({ from: '/search/energy-sieves' })
@@ -40,6 +41,20 @@ export function EnergySievesPage(): React.ReactElement {
     [filters, handleFiltersChange],
   )
 
+  const handlePageChange = useCallback(
+    (page: number) => {
+      handleFiltersChange({ ...filters, page })
+    },
+    [filters, handleFiltersChange],
+  )
+
+  const handlePageSizeChange = useCallback(
+    (pageSize: number) => {
+      handleFiltersChange({ ...filters, pageSize, page: 1 })
+    },
+    [filters, handleFiltersChange],
+  )
+
   return (
     <OpportunitiesPage<EnergyDiagnostic>
       data={data}
@@ -53,6 +68,10 @@ export function EnergySievesPage(): React.ReactElement {
       currentSortBy={filters.sortBy}
       currentSortOrder={filters.sortOrder}
       onSortChange={handleSortChange}
+      currentPage={filters.page ?? 1}
+      pageSize={filters.pageSize ?? DEFAULT_PAGE_SIZE}
+      onPageChange={handlePageChange}
+      onPageSizeChange={handlePageSizeChange}
       FiltersComponent={
         <EnergyDiagnosticFilters
           filters={filters}

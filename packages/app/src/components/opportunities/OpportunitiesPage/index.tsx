@@ -27,6 +27,10 @@ interface OpportunitiesPageProps<T extends BaseOpportunity> {
   currentSortBy?: string
   currentSortOrder?: 'asc' | 'desc'
   onSortChange?: (sortBy: string, sortOrder: 'asc' | 'desc') => void
+  currentPage?: number
+  pageSize?: number
+  onPageChange?: (page: number) => void
+  onPageSizeChange?: (pageSize: number) => void
 }
 
 export function OpportunitiesPage<T extends BaseOpportunity>({
@@ -42,6 +46,10 @@ export function OpportunitiesPage<T extends BaseOpportunity>({
   currentSortBy,
   currentSortOrder,
   onSortChange,
+  currentPage,
+  pageSize,
+  onPageChange,
+  onPageSizeChange,
 }: OpportunitiesPageProps<T>): React.ReactElement {
   // Use delayed skeleton to prevent flashing when data loads quickly
   const showSkeleton = useDelayedSkeleton(isLoading)
@@ -83,6 +91,10 @@ export function OpportunitiesPage<T extends BaseOpportunity>({
           currentSortBy={currentSortBy}
           currentSortOrder={currentSortOrder}
           onSortChange={onSortChange}
+          currentPage={currentPage}
+          pageSize={pageSize}
+          onPageChange={onPageChange}
+          onPageSizeChange={onPageSizeChange}
         />
       </div>
 

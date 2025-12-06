@@ -38,5 +38,5 @@ export async function apiRequest<T>(
     )
   }
 
-  return response.json()
+  return response.json() as Promise<T>;
 }

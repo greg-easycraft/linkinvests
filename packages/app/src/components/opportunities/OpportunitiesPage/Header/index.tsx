@@ -1,4 +1,11 @@
-import { ArrowUpDown, Check, ChevronDown, Download } from 'lucide-react'
+import {
+  ArrowUpDown,
+  Check,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  Download,
+} from 'lucide-react'
 import type { OpportunityType } from '@/types'
 import type { SortOption } from '@/constants/sort-options'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -9,9 +16,18 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { TYPE_LABELS } from '@/constants'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { DEFAULT_PAGE_SIZE } from '@/constants'
 import { formatNumber } from '@/lib/format'
 import { cn } from '@/lib/utils'
+
+const PAGE_SIZE_OPTIONS = [25, 50, 100, 200]
 
 interface OpportunityHeaderProps {
   opportunityType: OpportunityType
@@ -23,19 +39,30 @@ interface OpportunityHeaderProps {
   currentSortBy?: string
   currentSortOrder?: 'asc' | 'desc'
   onSortChange?: (sortBy: string, sortOrder: 'asc' | 'desc') => void
+  currentPage?: number
+  pageSize?: number
+  onPageChange?: (page: number) => void
+  onPageSizeChange?: (pageSize: number) => void
 }
 
 export function OpportunityHeader({
-  opportunityType,
   total,
   isCountLoading,
+  itemsOnPage = 0,
   onExport,
   sortOptions,
   currentSortBy,
   currentSortOrder,
   onSortChange,
+  currentPage = 1,
+  pageSize = DEFAULT_PAGE_SIZE,
+  onPageChange,
+  onPageSizeChange,
 }: OpportunityHeaderProps): React.ReactElement {
   const currentSortValue = `${currentSortBy ?? 'opportunityDate'}_${currentSortOrder ?? 'desc'}`
+  const totalPages = Math.ceil((total ?? 0) / pageSize)
+  const startItem = (currentPage - 1) * pageSize + 1
+  const endItem = Math.min(startItem + itemsOnPage - 1, total ?? 0)
 
   const handleSortChange = (option: SortOption): void => {
     onSortChange?.(option.sortBy, option.sortOrder)
@@ -43,19 +70,41 @@ export function OpportunityHeader({
 
   return (
     <div className="flex items-center justify-between mb-4">
-      <div className="flex items-center gap-4">
-        <h1 className="text-2xl font-bold">{TYPE_LABELS[opportunityType]}</h1>
-        <div className="text-sm text-muted-foreground">
+      {/* Left side: Results count and pagination */}
+      <div className="flex items-center gap-6">
+        <div className="text-sm">
+          Affichage de{' '}
+          <span className="font-bold">
+            {startItem}-{endItem}
+          </span>{' '}
+          sur{' '}
           {isCountLoading ? (
-            <Skeleton className="h-5 w-24 inline-block" />
+            <Skeleton className="h-5 w-16 inline-block align-middle" />
           ) : (
-            <span>
-              {formatNumber(total ?? 0)} résultat{(total ?? 0) > 1 ? 's' : ''}
-            </span>
-          )}
+            <span className="font-bold">{formatNumber(total ?? 0)}</span>
+          )}{' '}
+          opportunités
         </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && onPageChange && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={onPageChange}
+          />
+        )}
+
+        {/* Page size selector */}
+        {onPageSizeChange && (
+          <PageSizeSelector
+            pageSize={pageSize}
+            onPageSizeChange={onPageSizeChange}
+          />
+        )}
       </div>
 
+      {/* Right side: Sort and Export */}
       <div className="flex items-center gap-2">
         {/* Sort dropdown */}
         {sortOptions && sortOptions.length > 0 && onSortChange && (
@@ -106,6 +155,75 @@ export function OpportunityHeader({
           </DropdownMenu>
         )}
       </div>
+    </div>
+  )
+}
+
+function Pagination({
+  currentPage,
+  totalPages,
+  onPageChange,
+}: {
+  currentPage: number
+  totalPages: number
+  onPageChange: (page: number) => void
+}): React.ReactElement {
+  return (
+    <div className="flex items-center">
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => onPageChange(currentPage - 1)}
+        disabled={currentPage === 1}
+        className="gap-2"
+      >
+        <ChevronLeft className="h-4 w-4" />
+        Précédent
+      </Button>
+
+      <div className="text-sm px-4">
+        Page <b>{currentPage}</b> sur <b>{totalPages}</b>
+      </div>
+
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => onPageChange(currentPage + 1)}
+        disabled={currentPage === totalPages}
+        className="gap-2"
+      >
+        Suivant
+        <ChevronRight className="h-4 w-4" />
+      </Button>
+    </div>
+  )
+}
+
+function PageSizeSelector({
+  pageSize,
+  onPageSizeChange,
+}: {
+  pageSize: number
+  onPageSizeChange: (pageSize: number) => void
+}): React.ReactElement {
+  return (
+    <div className="flex items-center gap-2">
+      <span className="text-sm">Éléments par page:</span>
+      <Select
+        value={pageSize.toString()}
+        onValueChange={(value: string) => onPageSizeChange(parseInt(value, 10))}
+      >
+        <SelectTrigger className="w-20 h-8">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {PAGE_SIZE_OPTIONS.map((option) => (
+            <SelectItem key={option} value={option.toString()}>
+              {option}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </div>
   )
 }

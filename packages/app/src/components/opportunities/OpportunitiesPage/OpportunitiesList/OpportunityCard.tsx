@@ -108,7 +108,7 @@ export function OpportunityCard({
   return (
     <Card
       onClick={() => onSelect(opportunity)}
-      className="cursor-pointer transition-all border-none shadow-sm hover:shadow-xl hover:border-blue-100 duration-300 transform"
+      className="cursor-pointer transition-all border-none shadow-sm hover:shadow-xl hover:border-blue-100 duration-300 transform py-0"
     >
       <div className="flex gap-4 p-4">
         {/* Thumbnail */}

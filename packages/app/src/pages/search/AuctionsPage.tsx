@@ -7,6 +7,7 @@ import { AuctionFilters } from '@/components/opportunities/OpportunityFilters'
 import { useOpportunityData } from '@/hooks'
 import { OpportunityType } from '@/types'
 import { AUCTION_SORT_OPTIONS } from '@/constants/sort-options'
+import { DEFAULT_PAGE_SIZE } from '@/constants'
 
 export function AuctionsPage(): React.ReactElement {
   const filters = useSearch({ from: '/search/auctions' })
@@ -40,6 +41,20 @@ export function AuctionsPage(): React.ReactElement {
     [filters, handleFiltersChange],
   )
 
+  const handlePageChange = useCallback(
+    (page: number) => {
+      handleFiltersChange({ ...filters, page })
+    },
+    [filters, handleFiltersChange],
+  )
+
+  const handlePageSizeChange = useCallback(
+    (pageSize: number) => {
+      handleFiltersChange({ ...filters, pageSize, page: 1 })
+    },
+    [filters, handleFiltersChange],
+  )
+
   return (
     <OpportunitiesPage<Auction>
       data={data}
@@ -53,6 +68,10 @@ export function AuctionsPage(): React.ReactElement {
       currentSortBy={filters.sortBy}
       currentSortOrder={filters.sortOrder}
       onSortChange={handleSortChange}
+      currentPage={filters.page ?? 1}
+      pageSize={filters.pageSize ?? DEFAULT_PAGE_SIZE}
+      onPageChange={handlePageChange}
+      onPageSizeChange={handlePageSizeChange}
       FiltersComponent={
         <AuctionFilters
           filters={filters}

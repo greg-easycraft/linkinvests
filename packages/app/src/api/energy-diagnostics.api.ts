@@ -31,7 +31,7 @@ export async function getEnergyDiagnosticById(
   id: string,
 ): Promise<EnergyDiagnostic | null> {
   try {
-    return await apiRequest<EnergyDiagnostic>(`/energy-diagnostics/${id}`)
+    return apiRequest<EnergyDiagnostic>(`/energy-diagnostics/${id}`)
   } catch (error) {
     if (error instanceof ApiError && error.status === 404) {
       return null
