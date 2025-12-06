@@ -104,6 +104,29 @@ export const auth = betterAuth({
 
   trustedOrigins: [config.FRONTEND_URL],
 
+  user: {
+    additionalFields: {
+      role: {
+        type: 'string',
+        defaultValue: 'user',
+        input: false,
+      },
+      banned: {
+        type: 'boolean',
+        defaultValue: false,
+        input: false,
+      },
+      banReason: {
+        type: 'string',
+        input: false,
+      },
+      banExpires: {
+        type: 'date',
+        input: false,
+      },
+    },
+  },
+
   // Required for hook decorator support
   hooks: {},
 });
