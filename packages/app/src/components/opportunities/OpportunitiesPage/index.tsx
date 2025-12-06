@@ -10,6 +10,7 @@ import type {
   Opportunity,
   OpportunityType,
 } from '@/types'
+import type { SortOption } from '@/constants/sort-options'
 import { useDelayedSkeleton } from '@/hooks'
 import { Button } from '@/components/ui/button'
 
@@ -22,6 +23,10 @@ interface OpportunitiesPageProps<T extends BaseOpportunity> {
   FiltersComponent: React.ReactNode
   viewMode?: 'list' | 'map'
   onExport?: (format: 'csv' | 'xlsx') => void
+  sortOptions?: Array<SortOption>
+  currentSortBy?: string
+  currentSortOrder?: 'asc' | 'desc'
+  onSortChange?: (sortBy: string, sortOrder: 'asc' | 'desc') => void
 }
 
 export function OpportunitiesPage<T extends BaseOpportunity>({
@@ -33,6 +38,10 @@ export function OpportunitiesPage<T extends BaseOpportunity>({
   FiltersComponent,
   viewMode = 'list',
   onExport,
+  sortOptions,
+  currentSortBy,
+  currentSortOrder,
+  onSortChange,
 }: OpportunitiesPageProps<T>): React.ReactElement {
   // Use delayed skeleton to prevent flashing when data loads quickly
   const showSkeleton = useDelayedSkeleton(isLoading)
@@ -61,24 +70,39 @@ export function OpportunitiesPage<T extends BaseOpportunity>({
   const opportunities = data?.opportunities ?? []
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] overflow-hidden">
-      {/* Toggle Button for Filters */}
-      <Button
-        variant="outline"
-        size="icon"
-        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 rounded-r-md rounded-l-none"
-        style={{ left: isFiltersSidebarOpen ? '303px' : '0' }}
-        onClick={handleToggleSidebar}
-      >
-        {isFiltersSidebarOpen ? (
-          <ChevronLeft className="h-4 w-4" />
-        ) : (
-          <ChevronRight className="h-4 w-4" />
-        )}
-      </Button>
+    <div className="flex flex-col h-[calc(100vh-4rem)] overflow-hidden">
+      {/* Header spanning full width */}
+      <div className="flex-shrink-0 px-4 pt-4">
+        <OpportunityHeader
+          opportunityType={opportunityType}
+          total={count}
+          isCountLoading={isCountLoading}
+          itemsOnPage={opportunities.length}
+          onExport={onExport}
+          sortOptions={sortOptions}
+          currentSortBy={currentSortBy}
+          currentSortOrder={currentSortOrder}
+          onSortChange={onSortChange}
+        />
+      </div>
 
-      {/* Content Grid */}
-      <div className="flex-1 flex overflow-hidden">
+      {/* Content area with filters sidebar and main content */}
+      <div className="flex flex-1 overflow-hidden relative">
+        {/* Toggle Button for Filters */}
+        <Button
+          variant="outline"
+          size="icon"
+          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 rounded-r-md rounded-l-none"
+          style={{ left: isFiltersSidebarOpen ? '303px' : '0' }}
+          onClick={handleToggleSidebar}
+        >
+          {isFiltersSidebarOpen ? (
+            <ChevronLeft className="h-4 w-4" />
+          ) : (
+            <ChevronRight className="h-4 w-4" />
+          )}
+        </Button>
+
         {/* Collapsible Filters Sidebar */}
         <div
           className={`transition-all duration-300 ease-in-out ${
@@ -94,15 +118,6 @@ export function OpportunitiesPage<T extends BaseOpportunity>({
 
         {/* Main Content */}
         <div className="flex-1 flex flex-col overflow-hidden p-4">
-          {/* Header with count and export */}
-          <OpportunityHeader
-            opportunityType={opportunityType}
-            total={count}
-            isCountLoading={isCountLoading}
-            itemsOnPage={opportunities.length}
-            onExport={onExport}
-          />
-
           {/* Content Area */}
           <div className="flex-1 overflow-hidden">
             {viewMode === 'list' ? (

@@ -6,6 +6,7 @@ import { OpportunitiesPage } from '@/components/opportunities/OpportunitiesPage'
 import { ListingFilters } from '@/components/opportunities/OpportunityFilters'
 import { useOpportunityData } from '@/hooks'
 import { OpportunityType } from '@/types'
+import { LISTING_SORT_OPTIONS } from '@/constants/sort-options'
 
 export function ListingsPage(): React.ReactElement {
   const filters = useSearch({ from: '/search/listings' })
@@ -32,6 +33,13 @@ export function ListingsPage(): React.ReactElement {
     // TODO: Implement export functionality
   }, [])
 
+  const handleSortChange = useCallback(
+    (sortBy: string, sortOrder: 'asc' | 'desc') => {
+      handleFiltersChange({ ...filters, sortBy, sortOrder, page: 1 })
+    },
+    [filters, handleFiltersChange],
+  )
+
   return (
     <OpportunitiesPage<Listing>
       data={data}
@@ -41,6 +49,10 @@ export function ListingsPage(): React.ReactElement {
       opportunityType={OpportunityType.REAL_ESTATE_LISTING}
       viewMode={filters.view ?? 'list'}
       onExport={handleExport}
+      sortOptions={LISTING_SORT_OPTIONS}
+      currentSortBy={filters.sortBy}
+      currentSortOrder={filters.sortOrder}
+      onSortChange={handleSortChange}
       FiltersComponent={
         <ListingFilters
           filters={filters}

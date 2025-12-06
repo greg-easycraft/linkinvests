@@ -21,7 +21,7 @@ export function OpportunitiesList<T extends BaseOpportunity>({
 }: OpportunitiesListProps<T>): React.ReactElement {
   if (isLoading) {
     return (
-      <ScrollArea className="h-full pr-4">
+      <ScrollArea className="h-full">
         <OpportunitiesListSkeleton />
       </ScrollArea>
     )
@@ -32,7 +32,7 @@ export function OpportunitiesList<T extends BaseOpportunity>({
   }
 
   return (
-    <ScrollArea className="h-full pr-4">
+    <ScrollArea className="h-full">
       <div className="space-y-4 pb-4">
         {opportunities.map((opportunity) => (
           <OpportunityCard

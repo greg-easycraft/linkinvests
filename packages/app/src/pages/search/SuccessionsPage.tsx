@@ -6,6 +6,7 @@ import { OpportunitiesPage } from '@/components/opportunities/OpportunitiesPage'
 import { BaseFilters } from '@/components/opportunities/OpportunityFilters'
 import { useOpportunityData } from '@/hooks'
 import { OpportunityType } from '@/types'
+import { DEFAULT_SORT_OPTIONS } from '@/constants/sort-options'
 
 export function SuccessionsPage(): React.ReactElement {
   const filters = useSearch({ from: '/search/successions' })
@@ -32,6 +33,13 @@ export function SuccessionsPage(): React.ReactElement {
     // TODO: Implement export functionality
   }, [])
 
+  const handleSortChange = useCallback(
+    (sortBy: string, sortOrder: 'asc' | 'desc') => {
+      handleFiltersChange({ ...filters, sortBy, sortOrder, page: 1 })
+    },
+    [filters, handleFiltersChange],
+  )
+
   return (
     <OpportunitiesPage<Succession>
       data={data}
@@ -41,6 +49,10 @@ export function SuccessionsPage(): React.ReactElement {
       opportunityType={OpportunityType.SUCCESSION}
       viewMode={filters.view ?? 'list'}
       onExport={handleExport}
+      sortOptions={DEFAULT_SORT_OPTIONS}
+      currentSortBy={filters.sortBy}
+      currentSortOrder={filters.sortOrder}
+      onSortChange={handleSortChange}
       FiltersComponent={
         <BaseFilters
           filters={filters}

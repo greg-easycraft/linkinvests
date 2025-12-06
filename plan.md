@@ -1,25 +1,38 @@
-
-- [ ] espace bizarre sur tri si annonce
-- [ ] type change is not instant
-
-- [ ] land area + options + mot clés + année construction
-
+Lundi 15
+- [ ] authentification (fermée)
+- [ ] interface admin (gestion users)
+- map bounds on search
+- [ ] recherche dans un rayon autour de moi ou d'un code postal
+- [ ] periode depuis, jusqu'à
+- [ ] sauvegarde recherches
+- [ ] auto scrape deceases
+- [ ] deploy sur staging.linkinvests.com
+- [ ] CI/CD
 - [ ] addresse mairie zipcode cedex
 - [ ] classe gaz sur DPEs (GES) pour affiner scoring
+- [ ] rename address fields into streetAddress & handle as such
+- [ ] succession, mémorisation si email envoyé
+
+Later
+- [ ] favoris (notes, addresse, statut)
+- [ ] statuts : courrier envoyé, relance 1, relance 2, contacter vendeur, visite prévue, visite ok, rejeté, offre ok, offre acceptée, offre refusée, contre-offre, 
+- [ ] courrier avec La Poste (annonces, successions)
+- [ ] créer corps du msg pour email mairie
+
+
 
 https://linkinvests.easycraft.cloud/listings/62b24e4a-55b0-4513-bf46-c475b57f8928
 
-IMPROVEMENTS
-
 LATER
-- [ ] rename address fields into streetAddress & handle as such
-- [ ] auto scrape deceases
-- [ ] succession, mémorisation si email envoyé
-- map bounds on search
-- [ ] recherche dans un rayon autour de moi ou d'un code postal
 - [ ] historique des encheres avec filtre réalisées (judiciaires uniquement) vs non réalisées
-- [ ] handle land type (moteur immo)
 - [ ] extension Chrome
+
+
+
+
+
+
+
 
 --------------------------------------------
 
