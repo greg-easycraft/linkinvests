@@ -10,6 +10,8 @@ interface AuthContextValue {
   isLoading: boolean
   isAuthenticated: boolean
   isAdmin: boolean
+  isBanned: boolean
+  banReason: string | null
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined)
@@ -19,6 +21,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const user = session?.user ?? null
   const isAdmin = user !== null && user.role === 'admin'
+  const isBanned = user !== null && user.banned === true
+  const banReason = user?.banReason ?? null
 
   const value: AuthContextValue = {
     session: session ?? null,
@@ -26,6 +30,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     isLoading,
     isAuthenticated: user !== null,
     isAdmin,
+    isBanned,
+    banReason,
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

@@ -7,6 +7,11 @@ export function requireAuth({ context }: { context: RouterContext }) {
       to: '/auth/sign-in',
     })
   }
+  if (context.auth.isBanned && !context.auth.isLoading) {
+    throw redirect({
+      to: '/auth/banned',
+    })
+  }
 }
 
 export function requireGuest({ context }: { context: RouterContext }) {
@@ -21,6 +26,11 @@ export function requireAdmin({ context }: { context: RouterContext }) {
   if (!context.auth.isAuthenticated && !context.auth.isLoading) {
     throw redirect({
       to: '/auth/sign-in',
+    })
+  }
+  if (context.auth.isBanned && !context.auth.isLoading) {
+    throw redirect({
+      to: '/auth/banned',
     })
   }
   if (!context.auth.isAdmin && !context.auth.isLoading) {

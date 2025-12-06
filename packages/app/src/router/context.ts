@@ -7,5 +7,6 @@ export interface RouterContext {
     isAuthenticated: boolean
     isLoading: boolean
     isAdmin: boolean
+    isBanned: boolean
   }
 }

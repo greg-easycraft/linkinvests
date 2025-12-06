@@ -46,7 +46,12 @@ import {
 } from '@/schemas/filters.schema'
 
 // Import auth components
-import { CheckEmailCard, SignInForm, UserMenu } from '@/components/auth'
+import {
+  BannedCard,
+  CheckEmailCard,
+  SignInForm,
+  UserMenu,
+} from '@/components/auth'
 
 // Import theme components
 import { ThemeProvider, useTheme } from '@/components/providers/theme-provider'
@@ -244,6 +249,12 @@ const checkEmailRoute = createRoute({
   component: CheckEmailCard,
 })
 
+const bannedRoute = createRoute({
+  getParentRoute: () => authLayoutRoute,
+  path: '/banned',
+  component: BannedCard,
+})
+
 // Admin routes
 const adminUsersRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -266,7 +277,7 @@ const routeTree = rootRoute.addChildren([
   liquidationDetailRoute,
   energySieveDetailRoute,
   adminUsersRoute,
-  authLayoutRoute.addChildren([signInRoute, checkEmailRoute]),
+  authLayoutRoute.addChildren([signInRoute, checkEmailRoute, bannedRoute]),
 ])
 
 // Inner App component that has access to auth context

@@ -75,9 +75,7 @@ export function ListingDetails({
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
         <div className="flex items-center gap-2 text-sm">
           <Home className="h-4 w-4 text-muted-foreground" />
-          <span>
-            {PROPERTY_TYPE_LABELS[opportunity.propertyType]}
-          </span>
+          <span>{PROPERTY_TYPE_LABELS[opportunity.propertyType]}</span>
         </div>
         {opportunity.squareFootage !== undefined && (
           <div className="flex items-center gap-2 text-sm">

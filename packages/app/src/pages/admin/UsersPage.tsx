@@ -9,6 +9,7 @@ import {
 } from 'lucide-react'
 
 import { admin, signIn } from '@/lib/auth-client'
+import { useAuth } from '@/components/providers/auth-provider'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -43,6 +44,8 @@ interface AdminUser {
 
 export function UsersPage() {
   const queryClient = useQueryClient()
+  const { user: currentUser } = useAuth()
+  const [inviteName, setInviteName] = useState('')
   const [inviteEmail, setInviteEmail] = useState('')
   const [inviteDialogOpen, setInviteDialogOpen] = useState(false)
   const [banDialogUser, setBanDialogUser] = useState<AdminUser | null>(null)
@@ -65,11 +68,11 @@ export function UsersPage() {
 
   // Invite user mutation
   const inviteMutation = useMutation({
-    mutationFn: async (email: string) => {
+    mutationFn: async ({ name, email }: { name: string; email: string }) => {
       // Create user via admin plugin
       await admin.createUser({
         email,
-        name: email.split('@')[0],
+        name,
         role: 'user' as const,
         password: crypto.randomUUID(), // Temporary password, won't be used
       })
@@ -82,6 +85,7 @@ export function UsersPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin', 'users'] })
+      setInviteName('')
       setInviteEmail('')
       setInviteDialogOpen(false)
     },
@@ -137,11 +141,11 @@ export function UsersPage() {
   const handleInvite = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault()
-      if (inviteEmail) {
-        inviteMutation.mutate(inviteEmail)
+      if (inviteName && inviteEmail) {
+        inviteMutation.mutate({ name: inviteName, email: inviteEmail })
       }
     },
-    [inviteEmail, inviteMutation],
+    [inviteName, inviteEmail, inviteMutation],
   )
 
   const handleBan = useCallback(() => {
@@ -178,7 +182,14 @@ export function UsersPage() {
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleInvite}>
-              <div className="py-4">
+              <div className="py-4 space-y-4">
+                <Input
+                  type="text"
+                  placeholder="Nom complet"
+                  value={inviteName}
+                  onChange={(e) => setInviteName(e.target.value)}
+                  required
+                />
                 <Input
                   type="email"
                   placeholder="email@exemple.com"
@@ -305,7 +316,10 @@ export function UsersPage() {
                             role: user.role === 'admin' ? 'user' : 'admin',
                           })
                         }
-                        disabled={setRoleMutation.isPending}
+                        disabled={
+                          setRoleMutation.isPending ||
+                          user.id === currentUser?.id
+                        }
                       >
                         {user.role === 'admin' ? 'Rétrograder' : 'Promouvoir'}
                       </Button>
@@ -325,6 +339,7 @@ export function UsersPage() {
                           variant="destructive"
                           size="sm"
                           onClick={() => setBanDialogUser(user)}
+                          disabled={user.id === currentUser?.id}
                         >
                           Bannir
                         </Button>

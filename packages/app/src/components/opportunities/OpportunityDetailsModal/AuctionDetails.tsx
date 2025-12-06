@@ -80,9 +80,7 @@ export function AuctionDetails({
         {opportunity.propertyType && (
           <div className="flex items-center gap-2 text-sm">
             <Home className="h-4 w-4 text-muted-foreground" />
-            <span>
-              {PROPERTY_TYPE_LABELS[opportunity.propertyType]}
-            </span>
+            <span>{PROPERTY_TYPE_LABELS[opportunity.propertyType]}</span>
           </div>
         )}
         {opportunity.squareFootage !== undefined && (
@@ -108,9 +106,7 @@ export function AuctionDetails({
       {/* Occupation Status */}
       <div className="text-sm">
         <span className="text-muted-foreground">Statut d'occupation: </span>
-        <span>
-          {OCCUPATION_STATUS_LABELS[opportunity.occupationStatus]}
-        </span>
+        <span>{OCCUPATION_STATUS_LABELS[opportunity.occupationStatus]}</span>
       </div>
 
       {/* Description */}
