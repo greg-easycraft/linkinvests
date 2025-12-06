@@ -7,25 +7,15 @@ interface ImageCarouselProps {
   opportunity: Opportunity
 }
 
+interface CarouselImage {
+  url: string
+  isStreetView: boolean
+}
+
 function hasPictures(
   opportunity: Opportunity,
 ): opportunity is Auction | Listing {
   return 'pictures' in opportunity || 'mainPicture' in opportunity
-}
-
-function getImages(opportunity: Opportunity): Array<string> {
-  if (!hasPictures(opportunity)) return []
-
-  const images: Array<string> = []
-  if (opportunity.mainPicture) {
-    images.push(opportunity.mainPicture)
-  }
-  if (opportunity.pictures) {
-    images.push(
-      ...opportunity.pictures.filter((p) => p !== opportunity.mainPicture),
-    )
-  }
-  return images
 }
 
 function getStreetViewUrl(opportunity: Opportunity): string {
@@ -33,14 +23,37 @@ function getStreetViewUrl(opportunity: Opportunity): string {
   return `https://maps.googleapis.com/maps/api/streetview?size=600x400&location=${latitude},${longitude}&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8`
 }
 
+function getAllImages(opportunity: Opportunity): Array<CarouselImage> {
+  const images: Array<CarouselImage> = []
+
+  // Always add Street View as first image
+  images.push({
+    url: getStreetViewUrl(opportunity),
+    isStreetView: true,
+  })
+
+  // Add property images if available
+  if (hasPictures(opportunity)) {
+    if (opportunity.mainPicture) {
+      images.push({ url: opportunity.mainPicture, isStreetView: false })
+    }
+    if (opportunity.pictures) {
+      opportunity.pictures
+        .filter((p) => p !== opportunity.mainPicture)
+        .forEach((url) => images.push({ url, isStreetView: false }))
+    }
+  }
+
+  return images
+}
+
 export function ImageCarousel({
   opportunity,
 }: ImageCarouselProps): React.ReactElement {
-  const images = getImages(opportunity)
+  const images = getAllImages(opportunity)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [imageError, setImageError] = useState(false)
 
-  const hasImages = images.length > 0
   const showNavigation = images.length > 1
 
   const goToPrevious = () => {
@@ -53,9 +66,7 @@ export function ImageCarousel({
     setImageError(false)
   }
 
-  const currentImage = hasImages
-    ? images[currentIndex]
-    : getStreetViewUrl(opportunity)
+  const currentImage = images[currentIndex]
 
   return (
     <div className="relative w-full aspect-video bg-muted rounded-lg overflow-hidden">
@@ -66,7 +77,7 @@ export function ImageCarousel({
         </div>
       ) : (
         <img
-          src={currentImage}
+          src={currentImage.url}
           alt={opportunity.label}
           className="w-full h-full object-cover"
           onError={() => setImageError(true)}
@@ -111,7 +122,7 @@ export function ImageCarousel({
         </>
       )}
 
-      {!hasImages && !imageError && (
+      {currentImage.isStreetView && !imageError && (
         <div className="absolute bottom-2 left-2 bg-black/50 text-white text-xs px-2 py-1 rounded">
           Vue Street View
         </div>

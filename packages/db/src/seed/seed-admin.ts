@@ -1,4 +1,5 @@
 import { config } from 'dotenv';
+import { eq } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import { users } from '../schema/auth.schema.js';
@@ -23,14 +24,14 @@ async function seedAdmin() {
     const existingUsers = await db
       .select()
       .from(users)
-      .where((users) => users.email.equals(adminEmail));
+      .where(eq(users.email, adminEmail));
 
     if (existingUsers.length > 0) {
       // Update existing user to admin
       await db
         .update(users)
         .set({ role: 'admin' })
-        .where((users) => users.email.equals(adminEmail));
+        .where(eq(users.email, adminEmail));
       console.log(`Updated existing user to admin: ${adminEmail}`);
     } else {
       // Create new admin user
