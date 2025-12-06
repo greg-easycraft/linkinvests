@@ -7,6 +7,7 @@ import {
   createRootRouteWithContext,
   createRoute,
   createRouter,
+  redirect,
   useRouterState,
 } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
@@ -133,13 +134,13 @@ const rootRoute = createRootRouteWithContext<RouterContext>()({
   component: RootLayout,
 })
 
-// Index route - show sign-in (uses AuthLayout styling)
+// Index route - redirect to sign-in
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
-  validateSearch: zodSearchValidator(signInSearchSchema),
-  beforeLoad: requireGuest,
-  component: SignInForm,
+  beforeLoad: () => {
+    throw redirect({ to: '/auth/sign-in' })
+  },
 })
 
 // Search routes (protected)

@@ -25,7 +25,7 @@ export function UserMenu() {
 
   const handleSignOut = async () => {
     await signOut()
-    navigate({ to: '/' })
+    navigate({ to: '/auth/sign-in' })
   }
 
   const getInitials = () => {

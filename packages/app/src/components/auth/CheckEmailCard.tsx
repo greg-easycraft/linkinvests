@@ -21,7 +21,7 @@ export function CheckEmailCard(): React.ReactElement {
         </p>
 
         <div className="mt-6">
-          <Link to="/" className="block">
+          <Link to="/auth/sign-in" className="block">
             <Button variant="ghost" className="w-full">
               <ArrowLeft className="mr-2 h-4 w-4" />
               Retour à la connexion

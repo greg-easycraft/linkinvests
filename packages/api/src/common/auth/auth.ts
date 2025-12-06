@@ -34,6 +34,7 @@ export const auth = betterAuth({
   plugins: [
     magicLink({
       sendMagicLink: async ({ email, url }) => {
+        console.log('Sending magic link to email:', email, 'with url:', url);
         await resend.emails.send({
           from: 'LinkInvests <noreply@easycraft.cloud>',
           to: email,
@@ -97,7 +98,7 @@ export const auth = betterAuth({
     },
   },
 
-  trustedOrigins: [config.BETTER_AUTH_URL],
+  trustedOrigins: [config.FRONTEND_URL],
 
   // Required for hook decorator support
   hooks: {},
