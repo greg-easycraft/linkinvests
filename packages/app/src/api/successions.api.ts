@@ -21,7 +21,9 @@ export async function countSuccessions(
   return response.count
 }
 
-export async function getSuccessionById(id: string): Promise<Succession | null> {
+export async function getSuccessionById(
+  id: string,
+): Promise<Succession | null> {
   try {
     return await apiRequest<Succession>(`/successions/${id}`)
   } catch (error) {

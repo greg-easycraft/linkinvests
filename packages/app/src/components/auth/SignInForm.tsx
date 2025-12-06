@@ -66,7 +66,7 @@ export function SignInForm(): React.ReactElement {
 
       navigate({ to: '/auth/check-email' })
     } catch {
-      setError("Une erreur est survenue. Veuillez réessayer.")
+      setError('Une erreur est survenue. Veuillez réessayer.')
     } finally {
       setIsLoading(false)
     }
@@ -82,7 +82,7 @@ export function SignInForm(): React.ReactElement {
         callbackURL: `${import.meta.env.VITE_APP_URL}/search/auctions`,
       })
     } catch {
-      setError("Erreur lors de la connexion avec Google")
+      setError('Erreur lors de la connexion avec Google')
       setIsGoogleLoading(false)
     }
   }

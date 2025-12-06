@@ -1,40 +1,40 @@
-import { createContext, useContext } from 'react';
+import { createContext, useContext } from 'react'
 
-
-import type { ReactNode } from 'react';
-import type { Session, User } from '@/lib/auth-client';
-import { useSession } from '@/lib/auth-client';
+import type { ReactNode } from 'react'
+import type { Session, User } from '@/lib/auth-client'
+import { useSession } from '@/lib/auth-client'
 
 interface AuthContextValue {
-  session: Session | null;
-  user: User | null;
-  isLoading: boolean;
-  isAuthenticated: boolean;
+  session: Session | null
+  user: User | null
+  isLoading: boolean
+  isAuthenticated: boolean
+  isAdmin: boolean
 }
 
-const AuthContext = createContext<AuthContextValue | undefined>(undefined);
+const AuthContext = createContext<AuthContextValue | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const { data: session, isPending: isLoading } = useSession();
+  const { data: session, isPending: isLoading } = useSession()
+
+  const user = session?.user ?? null
+  const isAdmin = user !== null && user.role === 'admin'
 
   const value: AuthContextValue = {
     session: session ?? null,
-    user: session?.user ?? null,
+    user,
     isLoading,
-    isAuthenticated: !!session?.user,
-  };
+    isAuthenticated: user !== null,
+    isAdmin,
+  }
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 
 export function useAuth(): AuthContextValue {
-  const context = useContext(AuthContext);
+  const context = useContext(AuthContext)
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error('useAuth must be used within an AuthProvider')
   }
-  return context;
+  return context
 }

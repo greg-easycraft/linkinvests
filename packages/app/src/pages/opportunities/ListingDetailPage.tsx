@@ -110,8 +110,7 @@ export function ListingDetailPage(): React.ReactElement {
         <div className="flex items-center gap-4 text-xs text-muted-foreground">
           <div className="flex items-center gap-1">
             <Clock className="h-3 w-3" />
-            Créé le{' '}
-            {format(new Date(listing.createdAt), 'Pp', { locale: fr })}
+            Créé le {format(new Date(listing.createdAt), 'Pp', { locale: fr })}
           </div>
           <div>
             Mis à jour le{' '}

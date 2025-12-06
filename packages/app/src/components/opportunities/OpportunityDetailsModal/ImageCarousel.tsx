@@ -21,7 +21,9 @@ function getImages(opportunity: Opportunity): Array<string> {
     images.push(opportunity.mainPicture)
   }
   if (opportunity.pictures) {
-    images.push(...opportunity.pictures.filter((p) => p !== opportunity.mainPicture))
+    images.push(
+      ...opportunity.pictures.filter((p) => p !== opportunity.mainPicture),
+    )
   }
   return images
 }
@@ -51,7 +53,9 @@ export function ImageCarousel({
     setImageError(false)
   }
 
-  const currentImage = hasImages ? images[currentIndex] : getStreetViewUrl(opportunity)
+  const currentImage = hasImages
+    ? images[currentIndex]
+    : getStreetViewUrl(opportunity)
 
   return (
     <div className="relative w-full aspect-video bg-muted rounded-lg overflow-hidden">

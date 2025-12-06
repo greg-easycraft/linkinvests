@@ -64,7 +64,8 @@ export function LiquidationDetailPage(): React.ReactElement {
         <div className="flex items-start gap-2 text-muted-foreground mb-2">
           <MapPin className="h-4 w-4 mt-1 shrink-0" />
           <span>
-            {liquidation.address}, {liquidation.zipCode} {liquidation.department}
+            {liquidation.address}, {liquidation.zipCode}{' '}
+            {liquidation.department}
           </span>
         </div>
 

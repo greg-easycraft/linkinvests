@@ -27,7 +27,10 @@ export function DatePeriodFilter({
         }
       >
         <SelectTrigger>
-          <SelectValue placeholder="Toutes les périodes" defaultValue={value ?? 'undefined'} />
+          <SelectValue
+            placeholder="Toutes les périodes"
+            defaultValue={value ?? 'undefined'}
+          />
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="undefined">Toutes les périodes</SelectItem>

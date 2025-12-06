@@ -136,12 +136,16 @@ export function OpportunitiesMap<T extends BaseOpportunity>({
   return (
     <div className="relative w-full h-full">
       {isLoading && <MapLoadingOverlay />}
-      {mapLoaded && !isLoading && opportunities.length === 0 && <MapEmptyState />}
+      {mapLoaded && !isLoading && opportunities.length === 0 && (
+        <MapEmptyState />
+      )}
       <div ref={mapContainer} className="w-full h-full rounded-lg" />
 
       {/* Legend */}
       <div className="absolute bottom-4 right-4 bg-card text-card-foreground p-4 rounded-lg shadow-sm border">
-        <div className="text-sm font-semibold mb-2">Types d&apos;opportunités</div>
+        <div className="text-sm font-semibold mb-2">
+          Types d&apos;opportunités
+        </div>
         <div className="space-y-1">
           {Object.entries(TYPE_COLORS).map(([typeKey, color]) => (
             <div key={typeKey} className="flex items-center gap-2 text-xs">

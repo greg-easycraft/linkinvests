@@ -8,11 +8,11 @@ export {
   getDatePeriodOption,
   calculateStartDate,
   DEFAULT_PAGE_SIZE,
-} from '@linkinvests/shared';
+} from '@linkinvests/shared'
 
 // App-specific UI constants
-export * from './opportunity-types';
-export * from './sort-options';
-export * from './energy-classes';
-export * from './property-types';
-export * from './occupation-statuses';
+export * from './opportunity-types'
+export * from './sort-options'
+export * from './energy-classes'
+export * from './property-types'
+export * from './occupation-statuses'

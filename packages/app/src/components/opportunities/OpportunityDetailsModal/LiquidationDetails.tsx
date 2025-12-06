@@ -45,7 +45,9 @@ export function LiquidationDetails({
               <div className="flex items-start gap-2">
                 <User className="h-4 w-4 text-muted-foreground mt-0.5" />
                 <div>
-                  <div className="text-muted-foreground">Représentant légal</div>
+                  <div className="text-muted-foreground">
+                    Représentant légal
+                  </div>
                   <div>{opportunity.companyContact.legalRepresentative}</div>
                 </div>
               </div>
@@ -55,7 +57,9 @@ export function LiquidationDetails({
               <div className="flex items-start gap-2">
                 <Briefcase className="h-4 w-4 text-muted-foreground mt-0.5" />
                 <div>
-                  <div className="text-muted-foreground">Administrateur judiciaire</div>
+                  <div className="text-muted-foreground">
+                    Administrateur judiciaire
+                  </div>
                   <div>{opportunity.companyContact.administrateur}</div>
                 </div>
               </div>
@@ -91,9 +95,10 @@ export function LiquidationDetails({
       {/* Information Notice */}
       <div className="text-sm text-muted-foreground bg-muted p-3 rounded-lg">
         <p>
-          Les informations sur cette liquidation proviennent du BODACC (Bulletin Officiel des
-          Annonces Civiles et Commerciales). L'entreprise peut disposer de biens immobiliers
-          à vendre dans le cadre de la procédure de liquidation.
+          Les informations sur cette liquidation proviennent du BODACC (Bulletin
+          Officiel des Annonces Civiles et Commerciales). L'entreprise peut
+          disposer de biens immobiliers à vendre dans le cadre de la procédure
+          de liquidation.
         </p>
       </div>
     </div>

@@ -73,7 +73,9 @@ export function SuccessionDetailPage(): React.ReactElement {
           <Calendar className="h-4 w-4" />
           <span>
             Date de décès :{' '}
-            {format(new Date(succession.opportunityDate), 'PPP', { locale: fr })}
+            {format(new Date(succession.opportunityDate), 'PPP', {
+              locale: fr,
+            })}
           </span>
         </div>
 

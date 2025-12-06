@@ -1,5 +1,5 @@
 import { useNavigate } from '@tanstack/react-router'
-import { LogOut, Moon, Sun, User } from 'lucide-react'
+import { LogOut, Moon, Sun, User, Users } from 'lucide-react'
 import { useAuth } from '@/components/providers/auth-provider'
 import { useTheme } from '@/components/providers/theme-provider'
 import { signOut } from '@/lib/auth-client'
@@ -16,13 +16,11 @@ import { Button } from '@/components/ui/button'
 
 export function UserMenu() {
   const navigate = useNavigate()
-  const { user, isLoading } = useAuth()
+  const { user, isLoading, isAdmin } = useAuth()
   const { theme, toggleTheme } = useTheme()
 
   if (isLoading) {
-    return (
-      <div className="h-8 w-8 rounded-full bg-muted animate-pulse" />
-    )
+    return <div className="h-8 w-8 rounded-full bg-muted animate-pulse" />
   }
 
   const handleSignOut = async () => {
@@ -51,7 +49,10 @@ export function UserMenu() {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
-            <AvatarImage src={user?.image || undefined} alt={user?.name || ''} />
+            <AvatarImage
+              src={user?.image || undefined}
+              alt={user?.name || ''}
+            />
             <AvatarFallback className="text-xs">{initials}</AvatarFallback>
           </Avatar>
         </Button>
@@ -66,6 +67,12 @@ export function UserMenu() {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
+        {isAdmin && (
+          <DropdownMenuItem onClick={() => navigate({ to: '/admin/users' })}>
+            <Users className="mr-2 h-4 w-4" />
+            <span>Gestion utilisateurs</span>
+          </DropdownMenuItem>
+        )}
         <DropdownMenuItem disabled>
           <User className="mr-2 h-4 w-4" />
           <span>Mon profil</span>

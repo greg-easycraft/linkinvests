@@ -1,2 +1,2 @@
-export { requireAuth, requireGuest } from './guards';
-export type { RouterContext } from './context';
+export { requireAuth, requireGuest, requireAdmin } from './guards'
+export type { RouterContext } from './context'

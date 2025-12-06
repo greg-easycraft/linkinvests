@@ -8,7 +8,14 @@ import { SuccessionDetails } from './SuccessionDetails'
 import { LiquidationDetails } from './LiquidationDetails'
 import { EnergySieveDetails } from './EnergySieveDetails'
 import { ImageCarousel } from './ImageCarousel'
-import type {Auction, EnergyDiagnostic, Liquidation, Listing, Opportunity, Succession} from '@/types';
+import type {
+  Auction,
+  EnergyDiagnostic,
+  Liquidation,
+  Listing,
+  Opportunity,
+  Succession,
+} from '@/types'
 import {
   Dialog,
   DialogContent,
@@ -18,15 +25,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
-import {
-  
-  
-  
-  
-  
-  OpportunityType
-  
-} from '@/types'
+import { OpportunityType } from '@/types'
 import { TYPE_LABELS } from '@/constants/opportunity-types'
 
 interface OpportunityDetailsModalProps {
@@ -93,7 +92,9 @@ export function OpportunityDetailsModal({
         <div className="flex items-center gap-2 text-muted-foreground">
           <Calendar className="h-4 w-4" />
           <span>
-            {format(new Date(opportunity.opportunityDate), 'PPP', { locale: fr })}
+            {format(new Date(opportunity.opportunityDate), 'PPP', {
+              locale: fr,
+            })}
           </span>
         </div>
 
@@ -122,7 +123,8 @@ export function OpportunityDetailsModal({
         <div className="flex items-center gap-4 text-xs text-muted-foreground">
           <div className="flex items-center gap-1">
             <Clock className="h-3 w-3" />
-            Créé le {format(new Date(opportunity.createdAt), 'Pp', { locale: fr })}
+            Créé le{' '}
+            {format(new Date(opportunity.createdAt), 'Pp', { locale: fr })}
           </div>
           <div>
             Mis à jour le{' '}

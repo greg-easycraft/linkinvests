@@ -48,7 +48,9 @@ export function SuccessionDetails({
                 <div>{opportunity.mairieContact.address.complement2}</div>
               )}
               {opportunity.mairieContact.address.service_distribution && (
-                <div>{opportunity.mairieContact.address.service_distribution}</div>
+                <div>
+                  {opportunity.mairieContact.address.service_distribution}
+                </div>
               )}
               <div>
                 {opportunity.mairieContact.address.code_postal}{' '}
@@ -121,9 +123,9 @@ export function SuccessionDetails({
       {/* Information Notice */}
       <div className="text-sm text-muted-foreground bg-muted p-3 rounded-lg">
         <p>
-          Les informations sur cette succession sont publiques et proviennent des avis de décès
-          publiés par les mairies. Pour plus d'informations, veuillez contacter la mairie de
-          rattachement.
+          Les informations sur cette succession sont publiques et proviennent
+          des avis de décès publiés par les mairies. Pour plus d'informations,
+          veuillez contacter la mairie de rattachement.
         </p>
       </div>
     </div>

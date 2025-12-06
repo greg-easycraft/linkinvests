@@ -36,6 +36,7 @@ import {
   ListingDetailPage,
   SuccessionDetailPage,
 } from './pages/opportunities'
+import { UsersPage } from './pages/admin'
 import type { RouterContext } from '@/router'
 import {
   auctionFiltersSchema,
@@ -52,7 +53,7 @@ import { ThemeProvider, useTheme } from '@/components/providers/theme-provider'
 import { AuthProvider, useAuth } from '@/components/providers/auth-provider'
 
 // Import router utilities
-import { requireAuth, requireGuest } from '@/router'
+import { requireAdmin, requireAuth, requireGuest } from '@/router'
 
 // Create Query Client
 const queryClient = new QueryClient({
@@ -116,7 +117,8 @@ const signInSearchSchema = z.object({
 // Root layout component that conditionally shows header
 function RootLayout() {
   const location = useRouterState({ select: (s) => s.location })
-  const isAuthRoute = location.pathname === '/' || location.pathname.startsWith('/auth')
+  const isAuthRoute =
+    location.pathname === '/' || location.pathname.startsWith('/auth')
 
   return (
     <>
@@ -242,6 +244,14 @@ const checkEmailRoute = createRoute({
   component: CheckEmailCard,
 })
 
+// Admin routes
+const adminUsersRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/admin/users',
+  beforeLoad: requireAdmin,
+  component: UsersPage,
+})
+
 // Build route tree
 const routeTree = rootRoute.addChildren([
   indexRoute,
@@ -255,10 +265,8 @@ const routeTree = rootRoute.addChildren([
   successionDetailRoute,
   liquidationDetailRoute,
   energySieveDetailRoute,
-  authLayoutRoute.addChildren([
-    signInRoute,
-    checkEmailRoute,
-  ]),
+  adminUsersRoute,
+  authLayoutRoute.addChildren([signInRoute, checkEmailRoute]),
 ])
 
 // Inner App component that has access to auth context

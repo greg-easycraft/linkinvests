@@ -1,5 +1,12 @@
 import { Link, useParams } from '@tanstack/react-router'
-import { ArrowLeft, Calendar, Clock, ExternalLink, Loader2, MapPin } from 'lucide-react'
+import {
+  ArrowLeft,
+  Calendar,
+  Clock,
+  ExternalLink,
+  Loader2,
+  MapPin,
+} from 'lucide-react'
 import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import type { Auction } from '@/types'
@@ -103,8 +110,7 @@ export function AuctionDetailPage(): React.ReactElement {
         <div className="flex items-center gap-4 text-xs text-muted-foreground">
           <div className="flex items-center gap-1">
             <Clock className="h-3 w-3" />
-            Créé le{' '}
-            {format(new Date(auction.createdAt), 'Pp', { locale: fr })}
+            Créé le {format(new Date(auction.createdAt), 'Pp', { locale: fr })}
           </div>
           <div>
             Mis à jour le{' '}

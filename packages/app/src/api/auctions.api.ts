@@ -11,9 +11,7 @@ export async function searchAuctions(
   })
 }
 
-export async function countAuctions(
-  filters: IAuctionFilters,
-): Promise<number> {
+export async function countAuctions(filters: IAuctionFilters): Promise<number> {
   const response = await apiRequest<CountResponse>('/auctions/count', {
     method: 'POST',
     body: filters,

@@ -41,7 +41,7 @@ export function DepartmentsFilter({
   }
 
   const handleRemove = (departmentId: string) => {
-    const newValues = (value).filter((v) => v !== departmentId)
+    const newValues = value.filter((v) => v !== departmentId)
     onValueChange(newValues.length > 0 ? newValues : undefined)
   }
 

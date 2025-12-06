@@ -1,6 +1,6 @@
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
-import { magicLink } from 'better-auth/plugins';
+import { admin, magicLink } from 'better-auth/plugins';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import { Resend } from 'resend';
@@ -79,6 +79,10 @@ export const auth = betterAuth({
         });
       },
       expiresIn: 600, // 10 minutes
+    }),
+    admin({
+      defaultRole: 'user',
+      adminRoles: ['admin'],
     }),
   ],
 

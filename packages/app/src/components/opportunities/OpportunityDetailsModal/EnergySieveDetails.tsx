@@ -69,9 +69,11 @@ export function EnergySieveDetails({
             Passoire énergétique
           </div>
           <p className="text-amber-700 dark:text-amber-300">
-            Ce bien est classé {opportunity.energyClass} au DPE, ce qui correspond à une passoire
-            énergétique. Depuis 2023, les logements classés G ne peuvent plus être mis en location.
-            Les logements classés F seront concernés à partir de 2028, et les E à partir de 2034.
+            Ce bien est classé {opportunity.energyClass} au DPE, ce qui
+            correspond à une passoire énergétique. Depuis 2023, les logements
+            classés G ne peuvent plus être mis en location. Les logements
+            classés F seront concernés à partir de 2028, et les E à partir de
+            2034.
           </p>
         </div>
       </div>
@@ -82,18 +84,19 @@ export function EnergySieveDetails({
           <Badge variant="secondary">Opportunité</Badge>
         </div>
         <p className="text-sm text-muted-foreground">
-          Les passoires thermiques représentent une opportunité d'investissement : leur prix est
-          souvent décoté de 10 à 20% par rapport au marché. Après rénovation énergétique, la
-          plus-value peut être significative et le bien devient éligible à la location.
+          Les passoires thermiques représentent une opportunité d'investissement
+          : leur prix est souvent décoté de 10 à 20% par rapport au marché.
+          Après rénovation énergétique, la plus-value peut être significative et
+          le bien devient éligible à la location.
         </p>
       </Card>
 
       {/* Data Source */}
       <div className="text-sm text-muted-foreground bg-muted p-3 rounded-lg">
         <p>
-          Les données de ce DPE proviennent de la base de données de l'ADEME (Agence de
-          l'environnement et de la maîtrise de l'énergie). Consultez le diagnostic complet sur
-          l'Observatoire DPE.
+          Les données de ce DPE proviennent de la base de données de l'ADEME
+          (Agence de l'environnement et de la maîtrise de l'énergie). Consultez
+          le diagnostic complet sur l'Observatoire DPE.
         </p>
       </div>
     </div>

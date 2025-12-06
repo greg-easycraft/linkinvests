@@ -1,10 +1,11 @@
-import type { Session, User } from '@/lib/auth-client';
+import type { Session, User } from '@/lib/auth-client'
 
 export interface RouterContext {
   auth: {
-    session: Session | null;
-    user: User | null;
-    isAuthenticated: boolean;
-    isLoading: boolean;
-  };
+    session: Session | null
+    user: User | null
+    isAuthenticated: boolean
+    isLoading: boolean
+    isAdmin: boolean
+  }
 }

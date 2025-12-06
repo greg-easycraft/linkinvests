@@ -1,5 +1,4 @@
-const API_BASE_URL =
-  import.meta.env.VITE_API_URL || 'http://localhost:8080'
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080'
 
 export class ApiError extends Error {
   constructor(
@@ -39,5 +38,5 @@ export async function apiRequest<T>(
     )
   }
 
-  return response.json() as Promise<T>;
+  return response.json() as Promise<T>
 }

@@ -1,7 +1,7 @@
-import { z } from 'zod';
+import { z } from 'zod'
 
 export const magicLinkSchema = z.object({
-  email: z.string().email('Adresse email invalide'),
-});
+  email: z.email('Adresse email invalide'),
+})
 
-export type MagicLinkInput = z.infer<typeof magicLinkSchema>;
+export type MagicLinkInput = z.infer<typeof magicLinkSchema>
