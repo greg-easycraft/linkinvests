@@ -50,7 +50,6 @@ import { CheckEmailCard, SignInForm, UserMenu } from '@/components/auth'
 // Import theme components
 import { ThemeProvider, useTheme } from '@/components/providers/theme-provider'
 import { AuthProvider, useAuth } from '@/components/providers/auth-provider'
-import { ThemeToggle } from '@/components/ui/theme-toggle'
 
 // Import router utilities
 import { requireAuth, requireGuest } from '@/router'
@@ -93,9 +92,8 @@ function AppHeader() {
           >
             Opportunités
           </Link>
-          <UserMenu />
-          <ThemeToggle />
         </nav>
+        <UserMenu />
       </div>
     </header>
   )
@@ -134,11 +132,14 @@ const rootRoute = createRootRouteWithContext<RouterContext>()({
   component: RootLayout,
 })
 
-// Index route - redirect to sign-in
+// Index route - redirect based on auth status
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
-  beforeLoad: () => {
+  beforeLoad: ({ context }) => {
+    if (context.auth.isAuthenticated) {
+      throw redirect({ to: '/search/auctions' })
+    }
     throw redirect({ to: '/auth/sign-in' })
   },
 })
@@ -220,10 +221,11 @@ const energySieveDetailRoute = createRoute({
   component: EnergySieveDetailPage,
 })
 
-// Auth routes
+// Auth routes - all redirect to /search/auctions if authenticated
 const authLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/auth',
+  beforeLoad: requireGuest,
   component: AuthLayout,
 })
 
@@ -231,7 +233,6 @@ const signInRoute = createRoute({
   getParentRoute: () => authLayoutRoute,
   path: '/sign-in',
   validateSearch: zodSearchValidator(signInSearchSchema),
-  beforeLoad: requireGuest,
   component: SignInForm,
 })
 

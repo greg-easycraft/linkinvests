@@ -69,7 +69,7 @@ export function OpportunityHeader({
   }
 
   return (
-    <div className="flex items-center justify-between mb-4">
+    <div className="flex items-center justify-between">
       {/* Left side: Results count and pagination */}
       <div className="flex items-center gap-6">
         <div className="text-sm">

@@ -1,6 +1,7 @@
 import { useNavigate } from '@tanstack/react-router'
-import { LogOut, User } from 'lucide-react'
+import { LogOut, Moon, Sun, User } from 'lucide-react'
 import { useAuth } from '@/components/providers/auth-provider'
+import { useTheme } from '@/components/providers/theme-provider'
 import { signOut } from '@/lib/auth-client'
 import {
   DropdownMenu,
@@ -16,6 +17,7 @@ import { Button } from '@/components/ui/button'
 export function UserMenu() {
   const navigate = useNavigate()
   const { user, isLoading } = useAuth()
+  const { theme, toggleTheme } = useTheme()
 
   if (isLoading) {
     return (
@@ -67,6 +69,14 @@ export function UserMenu() {
         <DropdownMenuItem disabled>
           <User className="mr-2 h-4 w-4" />
           <span>Mon profil</span>
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={toggleTheme}>
+          {theme === 'light' ? (
+            <Moon className="mr-2 h-4 w-4" />
+          ) : (
+            <Sun className="mr-2 h-4 w-4" />
+          )}
+          <span>{theme === 'light' ? 'Mode sombre' : 'Mode clair'}</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleSignOut}>
