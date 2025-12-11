@@ -216,6 +216,7 @@ export class DrizzleListingRepository implements IListingRepository {
       rooms: listing.rooms ?? undefined,
       bedrooms: listing.bedrooms ?? undefined,
       energyClass: listing.energyClass as EnergyClass,
+      gazClass: listing.gazClass as any,
       constructionYear: listing.constructionYear ?? undefined,
       floor: listing.floor ?? undefined,
       totalFloors: listing.totalFloors ?? undefined,

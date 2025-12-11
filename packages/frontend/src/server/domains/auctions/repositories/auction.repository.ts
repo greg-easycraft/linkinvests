@@ -181,6 +181,7 @@ export class DrizzleAuctionRepository implements IAuctionRepository {
       squareFootage: auction.squareFootage ?? undefined,
       rooms: auction.rooms ?? undefined,
       energyClass: auction.energyClass as EnergyClass ?? undefined,
+      gazClass: auction.gazClass as any ?? undefined,
       auctionVenue: auction.auctionVenue ?? undefined,
       currentPrice: auction.currentPrice ?? undefined,
       reservePrice: auction.reservePrice ?? undefined,

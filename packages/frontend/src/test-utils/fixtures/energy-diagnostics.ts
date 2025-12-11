@@ -1,5 +1,5 @@
 import { randomUUID } from "crypto";
-import { EnergyDiagnostic } from "@linkinvests/shared";
+import { EnergyDiagnostic, EnergyClass, GazClass } from "@linkinvests/shared";
 
 
 export const ENERGY_DIAGNOSTIC_1: EnergyDiagnostic = {
@@ -12,7 +12,8 @@ export const ENERGY_DIAGNOSTIC_1: EnergyDiagnostic = {
     longitude: 5.3698,
     opportunityDate: new Date('2024-01-20').toISOString().split('T')[0] as string,
     externalId: 'DPE_001_2024',
-    energyClass: 'F',
+    energyClass: EnergyClass.F,
+    gazClass: GazClass.F,
     squareFootage: 65,
     createdAt: new Date('2024-01-15'),
     updatedAt: new Date('2024-01-18'),
@@ -28,7 +29,8 @@ export const ENERGY_DIAGNOSTIC_2: EnergyDiagnostic = {
     longitude: 4.8320,
     opportunityDate: new Date('2024-02-10').toISOString().split('T')[0] as string,
     externalId: 'DPE_002_2024',
-    energyClass: 'G',
+    energyClass: EnergyClass.G,
+    gazClass: GazClass.G,
     squareFootage: 450,
     createdAt: new Date('2024-02-05'),
     updatedAt: new Date('2024-02-08'),
@@ -44,7 +46,8 @@ export const ENERGY_DIAGNOSTIC_3: EnergyDiagnostic = {
     longitude: 3.0573,
     opportunityDate: new Date('2024-03-15').toISOString().split('T')[0] as string,
     externalId: 'DPE_003_2024',
-    energyClass: 'F',
+    energyClass: EnergyClass.F,
+    gazClass: GazClass.F,
     squareFootage: 120,
     createdAt: new Date('2024-03-10'),
     updatedAt: new Date('2024-03-13'),
@@ -60,7 +63,8 @@ export const ENERGY_DIAGNOSTIC_4: EnergyDiagnostic = {
     longitude: 7.7521,
     opportunityDate: new Date('2024-04-05').toISOString().split('T')[0] as string,
     externalId: 'DPE_004_2024',
-    energyClass: 'G',
+    energyClass: EnergyClass.G,
+    gazClass: GazClass.G,
     squareFootage: 280,
     createdAt: new Date('2024-04-01'),
     updatedAt: new Date('2024-04-03'),
@@ -76,7 +80,8 @@ export const ENERGY_DIAGNOSTIC_5: EnergyDiagnostic = {
     longitude: -1.5536,
     opportunityDate: new Date('2024-05-22').toISOString().split('T')[0] as string,
     externalId: 'DPE_005_2024',
-    energyClass: 'F',
+    energyClass: EnergyClass.F,
+    gazClass: GazClass.F,
     squareFootage: 800,
     createdAt: new Date('2024-05-18'),
     updatedAt: new Date('2024-05-20'),

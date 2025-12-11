@@ -1,5 +1,5 @@
 import { randomUUID } from "crypto";
-import { EnergyClass, Listing, PropertyType } from "@linkinvests/shared";
+import { EnergyClass, GazClass, Listing, PropertyType } from "@linkinvests/shared";
 
 
 export const LISTING_1: Listing = {
@@ -22,6 +22,7 @@ export const LISTING_1: Listing = {
     rooms: 3,
     bedrooms: 2,
     energyClass: EnergyClass.C,
+    gazClass: GazClass.C,
     isSoldRented: false,
     constructionYear: 1925,
     floor: 4,
@@ -72,6 +73,7 @@ export const LISTING_2: Listing = {
     rooms: 6,
     bedrooms: 4,
     energyClass: EnergyClass.D,
+    gazClass: GazClass.D,
     isSoldRented: false,
     constructionYear: 1890,
     floor: 0,
@@ -117,6 +119,7 @@ export const LISTING_3: Listing = {
     description: 'Buildable land with stunning view over the vineyards, all amenities nearby.',
     landArea: 800,
     energyClass: EnergyClass.A,
+    gazClass: GazClass.A,
     isSoldRented: true,
     price: 150000,
     priceType: 'FAI',
@@ -155,6 +158,7 @@ export const LISTING_4: Listing = {
     rooms: 1,
     bedrooms: 0,
     energyClass: EnergyClass.E,
+    gazClass: GazClass.E,
     isSoldRented: false,
     constructionYear: 1960,
     floor: 7,
@@ -204,6 +208,7 @@ export const LISTING_5: Listing = {
     rooms: 7,
     bedrooms: 5,
     energyClass: EnergyClass.B,
+    gazClass: GazClass.B,
     isSoldRented: false,
     constructionYear: 1850,
     floor: 0,
