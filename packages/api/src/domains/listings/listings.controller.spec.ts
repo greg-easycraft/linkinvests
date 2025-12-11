@@ -7,7 +7,12 @@ import {
   ListingServiceErrorReason,
 } from './services/listing.service';
 import { ListingsController } from './listings.controller';
-import { type Listing, EnergyClass, PropertyType } from '@linkinvests/shared';
+import {
+  type Listing,
+  EnergyClass,
+  GazClass,
+  PropertyType,
+} from '@linkinvests/shared';
 import { succeed, refuse } from '~/common/utils/operation-result';
 
 describe('ListingsController', () => {
@@ -30,6 +35,7 @@ describe('ListingsController', () => {
     propertyType: PropertyType.FLAT,
     lastChangeDate: '2024-01-15',
     energyClass: EnergyClass.D,
+    gazClass: GazClass.D,
     isSoldRented: false,
     sellerType: 'professional',
     createdAt: new Date('2024-01-01'),

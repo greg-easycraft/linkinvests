@@ -10,6 +10,7 @@ import { AuctionsController } from './auctions.controller';
 import {
   type Auction,
   EnergyClass,
+  GazClass,
   AuctionSource,
   AuctionOccupationStatus,
 } from '@linkinvests/shared';
@@ -31,6 +32,7 @@ describe('AuctionsController', () => {
     externalId: 'external-123',
     url: 'https://example.com/auction/123',
     energyClass: EnergyClass.F,
+    gazClass: GazClass.F,
     source: AuctionSource.ENCHERES_PUBLIQUES,
     occupationStatus: AuctionOccupationStatus.FREE,
     createdAt: new Date('2024-01-01'),

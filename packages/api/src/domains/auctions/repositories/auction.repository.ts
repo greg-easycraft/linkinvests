@@ -10,6 +10,7 @@ import {
   AuctionSource,
   PropertyType,
   EnergyClass,
+  GazClass,
   type Auction,
 } from '@linkinvests/shared';
 import { DATABASE_TOKEN } from '~/common/database';
@@ -225,6 +226,7 @@ export class DrizzleAuctionRepository implements AuctionRepository {
       squareFootage: auction.squareFootage ?? undefined,
       rooms: auction.rooms ?? undefined,
       energyClass: (auction.energyClass as EnergyClass) ?? undefined,
+      gazClass: (auction.gazClass as GazClass) ?? undefined,
       auctionVenue: auction.auctionVenue ?? undefined,
       currentPrice: auction.currentPrice ?? undefined,
       reservePrice: auction.reservePrice ?? undefined,

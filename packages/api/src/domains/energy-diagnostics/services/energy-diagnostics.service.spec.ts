@@ -33,6 +33,7 @@ describe('EnergyDiagnosticsService', () => {
     externalId: 'external-123',
     squareFootage: 45,
     energyClass: 'F',
+    gazClass: 'F',
     createdAt: new Date('2024-01-01'),
     updatedAt: new Date('2024-01-01'),
   };

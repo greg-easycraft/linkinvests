@@ -6,6 +6,7 @@ import type { IOpportunityFilters } from '~/types';
 import {
   OpportunityType,
   EnergyClass,
+  GazClass,
   type Listing,
 } from '@linkinvests/shared';
 import { DEFAULT_PAGE_SIZE } from '~/constants';
@@ -41,6 +42,7 @@ describe('ListingService', () => {
     squareFootage: 75,
     rooms: 3,
     energyClass: EnergyClass.D,
+    gazClass: GazClass.D,
     isSoldRented: false,
     sellerType: 'professional',
     createdAt: new Date('2024-01-01'),

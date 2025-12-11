@@ -14,7 +14,12 @@ import { opportunityListings } from '@linkinvests/db';
 import { ListingRepository } from '../lib.types';
 import type { IListingFilters, PaginationFilters } from '~/types';
 import { calculateStartDate } from '~/constants';
-import { EnergyClass, PropertyType, type Listing } from '@linkinvests/shared';
+import {
+  EnergyClass,
+  GazClass,
+  PropertyType,
+  type Listing,
+} from '@linkinvests/shared';
 import { DATABASE_TOKEN } from '~/common/database';
 
 @Injectable()
@@ -259,6 +264,7 @@ export class DrizzleListingRepository extends ListingRepository {
       rooms: listing.rooms ?? undefined,
       bedrooms: listing.bedrooms ?? undefined,
       energyClass: listing.energyClass as EnergyClass,
+      gazClass: listing.gazClass as GazClass,
       constructionYear: listing.constructionYear ?? undefined,
       floor: listing.floor ?? undefined,
       totalFloors: listing.totalFloors ?? undefined,

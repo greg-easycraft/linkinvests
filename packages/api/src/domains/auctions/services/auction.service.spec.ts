@@ -6,6 +6,7 @@ import type { IOpportunityFilters } from '~/types';
 import {
   OpportunityType,
   EnergyClass,
+  GazClass,
   type Auction,
 } from '@linkinvests/shared';
 import { DEFAULT_PAGE_SIZE } from '~/constants';
@@ -37,6 +38,7 @@ describe('AuctionService', () => {
     squareFootage: 50,
     rooms: 2,
     energyClass: EnergyClass.D,
+    gazClass: GazClass.D,
     currentPrice: 100000,
     reservePrice: 80000,
     source: 'test-source' as any,

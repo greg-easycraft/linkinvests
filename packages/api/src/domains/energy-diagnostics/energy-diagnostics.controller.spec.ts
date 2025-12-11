@@ -26,6 +26,7 @@ describe('EnergyDiagnosticsController', () => {
     externalId: 'external-123',
     squareFootage: 75,
     energyClass: 'F',
+    gazClass: 'F',
     createdAt: new Date('2024-01-01'),
     updatedAt: new Date('2024-01-01'),
   };

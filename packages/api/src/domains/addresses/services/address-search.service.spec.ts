@@ -30,6 +30,7 @@ describe('AddressSearchService', () => {
     opportunityDate: '2024-01-15',
     squareFootage: 50,
     energyClass: 'F',
+    gazClass: 'F',
     externalId: 'external-123',
     createdAt: new Date('2024-01-01'),
     updatedAt: new Date('2024-01-01'),
