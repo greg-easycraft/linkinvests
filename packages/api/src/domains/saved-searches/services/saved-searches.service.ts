@@ -25,6 +25,7 @@ export class SavedSearchService {
   async getUserSavedSearches(
     userId: string,
   ): Promise<OperationResult<SavedSearch[], SavedSearchServiceErrorReason>> {
+    console.log('getUserSavedSearches', userId);
     try {
       const searches =
         await this.savedSearchRepository.findAllByUserId(userId);

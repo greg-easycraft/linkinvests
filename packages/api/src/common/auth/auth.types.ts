@@ -1,7 +1,5 @@
 import type { auth } from './auth';
 
-export type Session = typeof auth.$Infer.Session.session & {
-  user: typeof auth.$Infer.Session.user;
-};
+export type AuthSession = typeof auth.$Infer.Session;
 
-export type User = typeof auth.$Infer.Session.user;
+export type AuthUser = typeof auth.$Infer.Session.user;

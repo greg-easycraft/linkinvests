@@ -7,7 +7,7 @@ import { auth } from './auth';
   imports: [
     BetterAuthModule.forRoot({
       auth,
-      disableGlobalAuthGuard: true,
+      // disableGlobalAuthGuard: true,
     }),
   ],
   exports: [BetterAuthModule],

@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { Session, AuthGuard } from '@thallesp/nestjs-better-auth';
-import type { Session as BetterAuthSession } from 'better-auth';
+import type { AuthSession } from '~/common/auth/auth.types';
 import {
   SavedSearchService,
   SavedSearchServiceErrorReason,
@@ -30,9 +30,9 @@ export class SavedSearchesController {
   constructor(private readonly savedSearchService: SavedSearchService) {}
 
   @Get()
-  async list(@Session() session: BetterAuthSession) {
+  async list(@Session() session: AuthSession) {
     const result = await this.savedSearchService.getUserSavedSearches(
-      session.userId,
+      session.user.id,
     );
     if (isRefusal(result)) {
       throw new InternalServerErrorException();
@@ -42,12 +42,12 @@ export class SavedSearchesController {
 
   @Post()
   async create(
-    @Session() session: BetterAuthSession,
+    @Session() session: AuthSession,
     @Body(new ZodValidationPipe(createSavedSearchRequestSchema))
     body: CreateSavedSearchRequest,
   ) {
     const result = await this.savedSearchService.createSavedSearch(
-      session.userId,
+      session.user.id,
       body,
     );
     if (isRefusal(result)) {
@@ -64,12 +64,9 @@ export class SavedSearchesController {
   }
 
   @Delete(':id')
-  async delete(
-    @Session() session: BetterAuthSession,
-    @Param('id') id: string,
-  ) {
+  async delete(@Session() session: AuthSession, @Param('id') id: string) {
     const result = await this.savedSearchService.deleteSavedSearch(
-      session.userId,
+      session.user.id,
       id,
     );
     if (isRefusal(result)) {

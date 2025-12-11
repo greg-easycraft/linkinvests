@@ -1,6 +1,5 @@
 Lundi 15
-- [ ] periode depuis, jusqu'à
-- [ ] sauvegarde recherches
+
 - map bounds on search
 - [ ] recherche dans un rayon autour de moi ou d'un code postal
 - [ ] succession, mémorisation si email envoyé
@@ -11,6 +10,8 @@ Lundi 15
 - [ ] CI/CD
 - [ ] rename address fields into streetAddress & handle as such
 
+- [X] periode depuis, jusqu'à
+- [X] sauvegarde recherches
 - [X] auto scrape deceases
 - [X] classe gaz sur DPEs (GES) pour affiner scoring
 - [X] interface admin (gestion users)
@@ -24,10 +25,12 @@ TO TEST
 - email invitation
 - email magic link
 
-
+BUGS
+- saved search array in url
 
 
 Later
+- [ ] liquidations, handles status
 - [ ] favoris (notes, addresse, statut)
 - [ ] statuts : courrier envoyé, relance 1, relance 2, contacter vendeur, visite prévue, visite ok, rejeté, offre ok, offre acceptée, offre refusée, contre-offre, 
 - [ ] courrier avec La Poste (annonces, successions)

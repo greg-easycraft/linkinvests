@@ -5,7 +5,6 @@ export * from './query-result';
 export type {
   MapBounds,
   DatePeriod,
-  DateRange,
   PaginationFilters,
   IOpportunityFilters,
   IAuctionFilters,

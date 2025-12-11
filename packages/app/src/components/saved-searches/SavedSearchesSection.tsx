@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
-import { Bookmark, ChevronDown, ChevronRight, Star, Trash2 } from 'lucide-react'
+import { Bookmark, ChevronDown, ChevronRight, Trash2 } from 'lucide-react'
 import { useSavedSearches } from '@/hooks'
 import {
   getOpportunityTypeFromUrl,
@@ -22,11 +22,7 @@ export function SavedSearchesSection({
   const [isOpen, setIsOpen] = useState(true)
 
   const handleNavigate = (url: string) => {
-    const urlObj = new URL(url, window.location.origin)
-    navigate({
-      to: urlObj.pathname,
-      search: Object.fromEntries(urlObj.searchParams),
-    })
+    navigate({ to: url })
   }
 
   const handleDelete = (id: string, e: React.MouseEvent) => {
@@ -49,7 +45,6 @@ export function SavedSearchesSection({
           ) : (
             <ChevronRight className="h-4 w-4" />
           )}
-          <Star className="h-4 w-4" />
           <span>Recherches sauvegardees ({savedSearches.length})</span>
         </button>
         <Button
