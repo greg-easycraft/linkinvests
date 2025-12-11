@@ -16,6 +16,8 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { zodSearchValidator } from '@tanstack/router-zod-adapter'
 import { z } from 'zod'
 
+import { Heart } from 'lucide-react'
+
 import './styles.css'
 import reportWebVitals from './reportWebVitals.ts'
 
@@ -28,6 +30,7 @@ import { ListingsPage } from './pages/search/ListingsPage'
 import { SuccessionsPage } from './pages/search/SuccessionsPage'
 import { LiquidationsPage } from './pages/search/LiquidationsPage'
 import { EnergySievesPage } from './pages/search/EnergySievesPage'
+import { FavoritesPage } from './pages/favorites'
 
 // Import detail page components
 import {
@@ -98,6 +101,13 @@ function AppHeader() {
             activeOptions={{ includeSearch: false }}
           >
             Opportunités
+          </Link>
+          <Link
+            to="/favorites"
+            className="text-sm hover:text-primary [&.active]:text-primary [&.active]:font-medium flex items-center gap-1"
+          >
+            <Heart className="h-4 w-4" />
+            Favoris
           </Link>
           <Link
             to="/search/address"
@@ -206,6 +216,14 @@ const searchAddressRoute = createRoute({
   component: AddressSearchPage,
 })
 
+// Favorites route (protected)
+const favoritesRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/favorites',
+  beforeLoad: requireAuth,
+  component: FavoritesPage,
+})
+
 // Detail page routes (protected)
 const auctionDetailRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -286,6 +304,7 @@ const routeTree = rootRoute.addChildren([
   searchLiquidationsRoute,
   searchEnergySievesRoute,
   searchAddressRoute,
+  favoritesRoute,
   auctionDetailRoute,
   listingDetailRoute,
   successionDetailRoute,

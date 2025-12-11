@@ -1,13 +1,13 @@
 /**
  * @jest-environment node
  */
-import { DrizzleAddressSearchRepository } from './address-search.repository';
+import { AddressSearchRepositoryImpl } from './address-search.repository';
 import { useTestDb } from '~/test-utils/use-test-db';
 import { EnergyClass } from '@linkinvests/shared';
 
 describe('DrizzleAddressSearchRepository Integration Tests', () => {
   const db = useTestDb();
-  const addressSearchRepository = new DrizzleAddressSearchRepository(db);
+  const addressSearchRepository = new AddressSearchRepositoryImpl(db);
 
   it('should find all for address search', async () => {
     const results = await addressSearchRepository.findAllForAddressSearch({

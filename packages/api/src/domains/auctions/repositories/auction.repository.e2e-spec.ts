@@ -1,7 +1,7 @@
 /**
  * @jest-environment node
  */
-import { DrizzleAuctionRepository } from './auction.repository';
+import { AuctionRepositoryImpl } from './auction.repository';
 import { useTestDb } from '~/test-utils/use-test-db';
 import type { IAuctionFilters, PaginationFilters } from '~/types';
 import {
@@ -10,9 +10,9 @@ import {
   PropertyType,
 } from '@linkinvests/shared';
 
-describe('DrizzleAuctionRepository Integration Tests', () => {
+describe('AuctionRepositoryImpl Integration Tests', () => {
   const db = useTestDb();
-  const auctionRepository = new DrizzleAuctionRepository(db);
+  const auctionRepository = new AuctionRepositoryImpl(db);
 
   describe('findAll', () => {
     it('should find all auctions without filters', async () => {

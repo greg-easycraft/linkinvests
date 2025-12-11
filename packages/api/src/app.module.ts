@@ -11,6 +11,7 @@ import { LiquidationsModule } from './domains/liquidations';
 import { EnergyDiagnosticsModule } from './domains/energy-diagnostics';
 import { AddressesModule } from './domains/addresses';
 import { SavedSearchesModule } from './domains/saved-searches';
+import { FavoritesModule } from './domains/favorites';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { SavedSearchesModule } from './domains/saved-searches';
     EnergyDiagnosticsModule,
     AddressesModule,
     SavedSearchesModule,
+    FavoritesModule,
   ],
 })
 export class AppModule {}

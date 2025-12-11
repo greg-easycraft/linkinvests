@@ -1,14 +1,14 @@
 /**
  * @jest-environment node
  */
-import { DrizzleEnergyDiagnosticsRepository } from './energy-diagnostics.repository';
+import { EnergyDiagnosticsRepositoryImpl } from './energy-diagnostics.repository';
 import { useTestDb } from '~/test-utils/use-test-db';
 import { EnergyClass, OpportunityType } from '@linkinvests/shared';
 import type { IEnergyDiagnosticFilters, PaginationFilters } from '~/types';
 
-describe('DrizzleEnergyDiagnosticsRepository Integration Tests', () => {
+describe('EnergyDiagnosticsRepositoryImpl Integration Tests', () => {
   const db = useTestDb();
-  const energyDiagnosticsRepository = new DrizzleEnergyDiagnosticsRepository(
+  const energyDiagnosticsRepository = new EnergyDiagnosticsRepositoryImpl(
     db,
   );
 

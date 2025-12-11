@@ -64,7 +64,7 @@ export const ENERGY_DIAGNOSTIC_4: EnergyDiagnostic = {
   opportunityDate: new Date('2024-04-05').toISOString().split('T')[0],
   externalId: 'DPE_004_2024',
   energyClass: EnergyClass.G,
-  gazClass: 'G',
+  gazClass: GazClass.G,
   squareFootage: 280,
   createdAt: new Date('2024-04-01'),
   updatedAt: new Date('2024-04-03'),

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { SavedSearchRepository } from './lib.types';
-import { DrizzleSavedSearchRepository } from './repositories/saved-searches.repository';
+import { SavedSearchRepositoryImpl } from './repositories/saved-searches.repository';
 import { SavedSearchService } from './services/saved-searches.service';
 import { SavedSearchesController } from './saved-searches.controller';
 
@@ -9,7 +9,7 @@ import { SavedSearchesController } from './saved-searches.controller';
   providers: [
     {
       provide: SavedSearchRepository,
-      useClass: DrizzleSavedSearchRepository,
+      useClass: SavedSearchRepositoryImpl,
     },
     SavedSearchService,
   ],

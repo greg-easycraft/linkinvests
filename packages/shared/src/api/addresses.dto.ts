@@ -9,7 +9,7 @@ export type AddressLinkOpportunityType = z.infer<
 
 // Address search input schema (validates same fields as AddressSearchInput interface, minus photo)
 export const addressSearchInputSchema = z.object({
-  energyClass: z.nativeEnum(EnergyClass),
+  energyClass: z.enum(EnergyClass),
   squareFootage: z.number().positive(),
   zipCode: z.string().min(5).max(5),
   address: z.string().optional(),
@@ -18,14 +18,14 @@ export const addressSearchInputSchema = z.object({
 // Search and link request
 export const addressLinkRequestSchema = z.object({
   input: addressSearchInputSchema,
-  opportunityId: z.string().uuid(),
+  opportunityId: z.uuid(),
   opportunityType: addressLinkOpportunityTypeSchema,
 });
 export type AddressLinkRequest = z.infer<typeof addressLinkRequestSchema>;
 
 // Get diagnostic links request
 export const getDiagnosticLinksParamsSchema = z.object({
-  opportunityId: z.string().uuid(),
+  opportunityId: z.uuid(),
 });
 export type GetDiagnosticLinksParams = z.infer<
   typeof getDiagnosticLinksParamsSchema

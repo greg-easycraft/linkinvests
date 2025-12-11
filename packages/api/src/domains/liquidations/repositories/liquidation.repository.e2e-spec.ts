@@ -1,14 +1,14 @@
 /**
  * @jest-environment node
  */
-import { DrizzleLiquidationRepository } from './liquidation.repository';
+import { LiquidationRepositoryImpl } from './liquidation.repository';
 import { useTestDb } from '~/test-utils/use-test-db';
 import { OpportunityType } from '@linkinvests/shared';
 import type { ILiquidationFilters, PaginationFilters } from '~/types';
 
-describe('DrizzleLiquidationRepository Integration Tests', () => {
+describe('LiquidationRepositoryImpl Integration Tests', () => {
   const db = useTestDb();
-  const liquidationRepository = new DrizzleLiquidationRepository(db);
+  const liquidationRepository = new LiquidationRepositoryImpl(db);
 
   describe('basic functionality', () => {
     it('should find all liquidations without filters', async () => {

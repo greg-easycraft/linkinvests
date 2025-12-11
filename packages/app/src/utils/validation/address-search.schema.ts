@@ -3,7 +3,7 @@ import { z } from 'zod'
 import { EnergyClass } from '@/types'
 
 export const addressSearchSchema = z.object({
-  energyClass: z.nativeEnum(EnergyClass),
+  energyClass: z.enum(EnergyClass),
   squareFootage: z
     .number()
     .positive('La superficie doit être un nombre positif'),

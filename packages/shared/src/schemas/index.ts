@@ -3,3 +3,13 @@ export { auctionInputSchema } from './auction.schema.js';
 export { liquidationInputSchema } from './liquidation.schema.js';
 export { listingInputSchema } from './listing.schema.js';
 export { successionInputSchema } from './succession.schema.js';
+export {
+  addFavoriteSchema,
+  removeFavoriteSchema,
+  checkFavoriteSchema,
+  checkBatchFavoritesSchema,
+  type AddFavoriteRequest,
+  type RemoveFavoriteRequest,
+  type CheckFavoriteRequest,
+  type CheckBatchFavoritesRequest,
+} from './favorite.schema.js';

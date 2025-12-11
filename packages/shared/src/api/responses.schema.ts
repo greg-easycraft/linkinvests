@@ -25,7 +25,7 @@ export interface PaginatedResponse<T> {
 
 // ID param schema
 export const idParamSchema = z.object({
-  id: z.string().uuid(),
+  id: z.uuid(),
 });
 
 export type IdParam = z.infer<typeof idParamSchema>;

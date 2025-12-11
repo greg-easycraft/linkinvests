@@ -10,10 +10,8 @@ import { DEFAULT_PAGE_SIZE } from '~/constants';
 import { DATABASE_TOKEN } from '~/common/database';
 
 @Injectable()
-export class DrizzleEnergyDiagnosticsRepository extends EnergyDiagnosticsRepository {
-  constructor(@Inject(DATABASE_TOKEN) private readonly db: DomainDbType) {
-    super();
-  }
+export class EnergyDiagnosticsRepositoryImpl implements EnergyDiagnosticsRepository {
+  constructor(@Inject(DATABASE_TOKEN) private readonly db: DomainDbType) {}
 
   /**
    * Builds where clause for energy diagnostics filters

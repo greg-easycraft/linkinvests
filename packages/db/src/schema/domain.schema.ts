@@ -12,6 +12,7 @@ import {
   numeric,
   jsonb,
   boolean,
+  pgEnum,
 } from 'drizzle-orm/pg-core';
 import { desc } from 'drizzle-orm';
 import { users } from './auth.schema';
@@ -19,7 +20,27 @@ import {
   AuctionOccupationStatus,
   UNKNOWN_ENERGY_CLASS,
   UNKNOWN_GAZ_CLASS,
+  EnergyClass,
+  GazClass,
 } from '@linkinvests/shared';
+
+export const energyClassesEnum = pgEnum(
+  'energy_classes',
+  Object.values(EnergyClass) as [string, ...string[]],
+);
+export const energyClassesOrUnknownEnum = pgEnum('energy_classes', [
+  ...(Object.values(EnergyClass) as [string, ...string[]]),
+  UNKNOWN_ENERGY_CLASS,
+]);
+
+export const gazClassesEnum = pgEnum(
+  'gaz_classes',
+  Object.values(GazClass) as [string, ...string[]],
+);
+export const gazClassesOrUnknownEnum = pgEnum('gaz_classes', [
+  ...(Object.values(GazClass) as [string, ...string[]]),
+  UNKNOWN_GAZ_CLASS,
+]);
 
 // Auction Opportunities Table
 export const opportunityAuctions = pgTable(
@@ -42,10 +63,12 @@ export const opportunityAuctions = pgTable(
     description: text('description'),
     squareFootage: numeric('square_footage', { mode: 'number' }),
     rooms: integer('rooms'),
-    energyClass: varchar('energy_class')
+    energyClass: energyClassesOrUnknownEnum('energy_class')
       .notNull()
       .default(UNKNOWN_ENERGY_CLASS),
-    gazClass: varchar('gaz_class').notNull().default(UNKNOWN_GAZ_CLASS),
+    gazClass: gazClassesOrUnknownEnum('gaz_class')
+      .notNull()
+      .default(UNKNOWN_GAZ_CLASS),
     auctionVenue: varchar('auction_venue'),
     occupationStatus: varchar('occupation_status')
       .notNull()
@@ -210,8 +233,8 @@ export const energyDiagnostics = pgTable(
     longitude: doublePrecision('longitude').notNull(),
     opportunityDate: date('opportunity_date').notNull(),
     // Energy-specific fields
-    energyClass: varchar('energy_class').notNull(),
-    gazClass: varchar('gaz_class').notNull(),
+    energyClass: energyClassesEnum('energy_class').notNull(),
+    gazClass: gazClassesEnum('gaz_class').notNull(),
     externalId: varchar('external_id').notNull().unique(),
     // Timestamps
     createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -261,10 +284,12 @@ export const opportunityListings = pgTable(
     landArea: numeric('land_area', { mode: 'number' }),
     rooms: integer('rooms'),
     bedrooms: integer('bedrooms'),
-    energyClass: varchar('energy_class')
+    energyClass: energyClassesOrUnknownEnum('energy_class')
       .notNull()
       .default(UNKNOWN_ENERGY_CLASS),
-    gazClass: varchar('gaz_class').notNull().default(UNKNOWN_GAZ_CLASS),
+    gazClass: gazClassesOrUnknownEnum('gaz_class')
+      .notNull()
+      .default(UNKNOWN_GAZ_CLASS),
     constructionYear: integer('construction_year'),
     floor: integer('floor'),
     totalFloors: integer('total_floors'),
@@ -398,5 +423,32 @@ export const savedSearches = pgTable(
   (table) => [
     index('idx_saved_search_user_id').on(table.userId),
     index('idx_saved_search_created_at').on(desc(table.createdAt)),
+  ],
+);
+
+export const favorites = pgTable(
+  'favorite',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: text('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    opportunityId: uuid('opportunity_id').notNull(),
+    opportunityType: text('opportunity_type').notNull(), // 'auction' | 'real_estate_listing' | 'succession' | 'liquidation' | 'energy_sieve'
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+  },
+  (table) => [
+    // Ensure a user can only favorite an opportunity once
+    uniqueIndex('uq_favorite_user_opportunity').on(
+      table.userId,
+      table.opportunityId,
+      table.opportunityType,
+    ),
+    // Index for fast lookups by user
+    index('idx_favorite_user_id').on(table.userId),
+    // Index for listing favorites by type for a user
+    index('idx_favorite_user_type').on(table.userId, table.opportunityType),
+    // Index for ordering by creation date
+    index('idx_favorite_created_at').on(desc(table.createdAt)),
   ],
 );

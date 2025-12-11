@@ -4,7 +4,7 @@ import type {
   AddressSearchRepository,
 } from '../lib.types';
 import type { AddressSearchInput, EnergyDiagnostic } from '@linkinvests/shared';
-import { EnergyClass } from '@linkinvests/shared';
+import { EnergyClass, GazClass } from '@linkinvests/shared';
 
 describe('AddressSearchService', () => {
   let addressSearchService: AddressSearchService;
@@ -29,8 +29,8 @@ describe('AddressSearchService', () => {
     longitude: 2.3522,
     opportunityDate: '2024-01-15',
     squareFootage: 50,
-    energyClass: 'F',
-    gazClass: 'F',
+    energyClass: EnergyClass.F,
+    gazClass: GazClass.F,
     externalId: 'external-123',
     createdAt: new Date('2024-01-01'),
     updatedAt: new Date('2024-01-01'),
@@ -64,7 +64,7 @@ describe('AddressSearchService', () => {
       const call =
         mockAddressSearchRepository.findAllForAddressSearch.mock.calls[0][0];
       expect(call.zipCode).toBe('75001');
-      expect(call.energyClass).toBe('F');
+      expect(call.energyClass).toBe(EnergyClass.F);
       expect(call.squareFootageMin).toBeCloseTo(45, 1); // 50 * 0.9
       expect(call.squareFootageMax).toBeCloseTo(55, 1); // 50 * 1.1
     });
@@ -109,7 +109,7 @@ describe('AddressSearchService', () => {
       const call =
         mockAddressSearchRepository.findAllForAddressSearch.mock.calls[0]?.[0];
       expect(call?.zipCode).toBe('75001');
-      expect(call?.energyClass).toBe('F');
+      expect(call?.energyClass).toBe(EnergyClass.F);
       // When squareFootage is undefined, the calculation results in NaN
       expect(call?.squareFootageMin).toBeNaN();
       expect(call?.squareFootageMax).toBeNaN();
@@ -151,7 +151,7 @@ describe('AddressSearchService', () => {
       const call =
         mockAddressSearchRepository.findAllForAddressSearch.mock.calls[0]?.[0];
       expect(call?.zipCode).toBe('75001');
-      expect(call?.energyClass).toBe('G');
+      expect(call?.energyClass).toBe(EnergyClass.G);
       expect(call?.squareFootageMin).toBeCloseTo(90, 1); // 100 * 0.9
       expect(call?.squareFootageMax).toBeCloseTo(110, 1); // 100 * 1.1
     });
@@ -166,19 +166,19 @@ describe('AddressSearchService', () => {
       const energyDiagnostic1 = {
         ...mockEnergyDiagnostic,
         id: 'diag-1',
-        energyClass: 'F',
+        energyClass: EnergyClass.F,
         squareFootage: 50,
       }; // Perfect match - score 100
       const energyDiagnostic2 = {
         ...mockEnergyDiagnostic,
         id: 'diag-2',
-        energyClass: 'G',
+        energyClass: EnergyClass.G,
         squareFootage: 50,
       }; // Energy class mismatch but no penalty in scoring - score 100
       const energyDiagnostic3 = {
         ...mockEnergyDiagnostic,
         id: 'diag-3',
-        energyClass: 'F',
+        energyClass: EnergyClass.F,
         squareFootage: 60,
       }; // Size difference 20% - score ~94 (100 - 0.2 * 30)
 
@@ -256,7 +256,8 @@ describe('AddressSearchService', () => {
 
       const perfectMatch = {
         ...mockEnergyDiagnostic,
-        energyClass: 'F',
+        energyClass: EnergyClass.F,
+        gazClass: GazClass.F,
         squareFootage: 50,
       };
       mockAddressSearchRepository.findAllForAddressSearch.mockResolvedValue([
@@ -280,7 +281,8 @@ describe('AddressSearchService', () => {
 
       const energyMismatch = {
         ...mockEnergyDiagnostic,
-        energyClass: 'G',
+        energyClass: EnergyClass.G,
+        gazClass: GazClass.G,
         squareFootage: 50,
       };
       mockAddressSearchRepository.findAllForAddressSearch.mockResolvedValue([
@@ -305,7 +307,8 @@ describe('AddressSearchService', () => {
 
       const sizeMismatch = {
         ...mockEnergyDiagnostic,
-        energyClass: 'F',
+        energyClass: EnergyClass.F,
+        gazClass: GazClass.F,
         squareFootage: 120,
       }; // 20% difference
       mockAddressSearchRepository.findAllForAddressSearch.mockResolvedValue([
@@ -330,7 +333,8 @@ describe('AddressSearchService', () => {
 
       const noSquareFootage = {
         ...mockEnergyDiagnostic,
-        energyClass: 'F',
+        energyClass: EnergyClass.F,
+        gazClass: GazClass.F,
         squareFootage: undefined as any,
       };
       mockAddressSearchRepository.findAllForAddressSearch.mockResolvedValue([
@@ -355,7 +359,8 @@ describe('AddressSearchService', () => {
       // Very large size difference that would result in negative score
       const hugeSizeMismatch = {
         ...mockEnergyDiagnostic,
-        energyClass: 'G',
+        energyClass: EnergyClass.G,
+        gazClass: GazClass.G,
         squareFootage: 1000,
       };
       mockAddressSearchRepository.findAllForAddressSearch.mockResolvedValue([
@@ -380,7 +385,8 @@ describe('AddressSearchService', () => {
         id: 'energy-diagnostic-1',
         address: '123 Test Street',
         zipCode: '75001',
-        energyClass: 'F',
+        energyClass: EnergyClass.F,
+        gazClass: GazClass.F,
         squareFootage: 50,
         opportunityDate: '2024-01-15',
         externalId: 'external-123',
@@ -561,7 +567,8 @@ describe('AddressSearchService', () => {
           id: 'energy-diagnostic-1',
           address: '123 Test Street',
           zipCode: '75001',
-          energyClass: 'F',
+          energyClass: EnergyClass.F,
+          gazClass: GazClass.F,
           squareFootage: 50,
           opportunityDate: '2024-01-15',
           externalId: 'external-123',

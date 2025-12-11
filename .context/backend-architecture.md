@@ -130,7 +130,7 @@ Handles all database interactions with abstract interfaces and concrete implemen
 
 #### Components:
 - **Abstract Repository** (`lib.types.ts`): Interface defining data access contract
-- **Concrete Implementation** (`*.repository.ts`): Drizzle ORM implementation
+- **Concrete Implementation** (`*.repository.ts`): Implementation with `Impl` suffix
 - **Query Builders**: Complex SQL building with filters
 
 #### Features:
@@ -138,6 +138,12 @@ Handles all database interactions with abstract interfaces and concrete implemen
 - **Type Safety**: Full TypeScript integration with Drizzle ORM
 - **Pagination**: Standardized pagination with limit/offset
 - **Filtering**: Dynamic query building with Drizzle operators
+
+#### Naming Conventions:
+- **Abstract class**: `{Entity}Repository` (e.g., `ListingRepository`)
+- **Implementation class**: `{Entity}RepositoryImpl` (e.g., `ListingRepositoryImpl`)
+- **DO NOT** use `Drizzle` prefix (e.g., ~~`DrizzleListingRepository`~~)
+- Implementations **MUST use `implements`**, not `extends`
 
 ```typescript
 // Abstract interface (lib.types.ts)
@@ -153,10 +159,8 @@ export abstract class ListingRepository {
 
 // Concrete implementation (listing.repository.ts)
 @Injectable()
-export class DrizzleListingRepository extends ListingRepository {
-  constructor(@Inject(DATABASE_TOKEN) private readonly db: DomainDbType) {
-    super();
-  }
+export class ListingRepositoryImpl implements ListingRepository {
+  constructor(@Inject(DATABASE_TOKEN) private readonly db: DomainDbType) {}
 
   async findById(id: string): Promise<Listing | null> {
     const result = await this.db
@@ -227,7 +231,7 @@ NestJS uses a built-in dependency injection system with decorators and modules.
   providers: [
     {
       provide: ListingRepository,
-      useClass: DrizzleListingRepository,
+      useClass: ListingRepositoryImpl,
     },
     ListingService,
   ],
@@ -262,10 +266,8 @@ export class DatabaseModule {}
 
 // In repository
 @Injectable()
-export class DrizzleListingRepository extends ListingRepository {
-  constructor(@Inject(DATABASE_TOKEN) private readonly db: DomainDbType) {
-    super();
-  }
+export class ListingRepositoryImpl implements ListingRepository {
+  constructor(@Inject(DATABASE_TOKEN) private readonly db: DomainDbType) {}
 }
 ```
 
@@ -302,12 +304,10 @@ export abstract class ListingRepository {
   abstract findById(id: string): Promise<Listing | null>;
 }
 
-// Concrete implementation
+// Concrete implementation (use `implements`, not `extends`)
 @Injectable()
-export class DrizzleListingRepository extends ListingRepository {
-  constructor(@Inject(DATABASE_TOKEN) private readonly db: DomainDbType) {
-    super();
-  }
+export class ListingRepositoryImpl implements ListingRepository {
+  constructor(@Inject(DATABASE_TOKEN) private readonly db: DomainDbType) {}
   // Implementation details...
 }
 ```
@@ -606,13 +606,13 @@ describe('ListingService', () => {
 
 ```typescript
 // listing.repository.e2e-spec.ts
-describe('DrizzleListingRepository (E2E)', () => {
-  let repository: DrizzleListingRepository;
+describe('ListingRepositoryImpl (E2E)', () => {
+  let repository: ListingRepositoryImpl;
   let db: DomainDbType;
 
   beforeAll(async () => {
     db = await setupTestDatabase();
-    repository = new DrizzleListingRepository(db);
+    repository = new ListingRepositoryImpl(db);
     await seedTestData(db);
   });
 
@@ -675,9 +675,11 @@ import { opportunityListings, users, sessions, accounts, verifications } from '@
 - Include comprehensive error handling and logging
 
 #### Domain Isolation
-- Domains should be self-contained with minimal cross-domain dependencies
+- **Domains MUST NOT import from other domains** - no cross-domain imports allowed
+- Each domain should be fully self-contained
 - Use shared types from `@linkinvests/shared` for common interfaces
 - Repository implementations should only access their domain's tables
+- If a domain needs data from another domain's tables, create local repository abstractions within that domain (see Favorites domain for example)
 
 #### Controller Guidelines
 - Use `ZodValidationPipe` for request body validation

@@ -23,10 +23,8 @@ import {
 import { DATABASE_TOKEN } from '~/common/database';
 
 @Injectable()
-export class DrizzleListingRepository extends ListingRepository {
-  constructor(@Inject(DATABASE_TOKEN) private readonly db: DomainDbType) {
-    super();
-  }
+export class ListingRepositoryImpl implements ListingRepository {
+  constructor(@Inject(DATABASE_TOKEN) private readonly db: DomainDbType) {}
 
   /**
    * Builds where clause for listing filters

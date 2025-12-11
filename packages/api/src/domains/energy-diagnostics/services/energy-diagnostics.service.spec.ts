@@ -6,7 +6,7 @@ import type { EnergyDiagnosticsRepository } from '../lib.types';
 import type { IExportService } from '~/common/export/export.types';
 import type { ExportService } from '~/common/export/services/export.service';
 import type { IOpportunityFilters } from '~/types';
-import { OpportunityType, type EnergyDiagnostic } from '@linkinvests/shared';
+import { EnergyClass, GazClass, OpportunityType, type EnergyDiagnostic } from '@linkinvests/shared';
 import { DEFAULT_PAGE_SIZE } from '~/constants';
 import { getOpportunityHeaders } from '~/common/export/services/export-headers.service';
 import { succeed } from '~/common/utils/operation-result';
@@ -32,8 +32,8 @@ describe('EnergyDiagnosticsService', () => {
     opportunityDate: '2024-01-15',
     externalId: 'external-123',
     squareFootage: 45,
-    energyClass: 'F',
-    gazClass: 'F',
+    energyClass: EnergyClass.F,
+    gazClass: GazClass.F,
     createdAt: new Date('2024-01-01'),
     updatedAt: new Date('2024-01-01'),
   };
@@ -124,7 +124,7 @@ describe('EnergyDiagnosticsService', () => {
         departments: ['75'],
         zipCodes: ['75001'],
         // @ts-expect-error - energyClasses property doesn't exist on IOpportunityFilters but needed for test
-        energyClasses: ['F', 'G'],
+        energyClasses: [EnergyClass.F, EnergyClass.G],
         page: 2,
         pageSize: 10,
       };
@@ -176,7 +176,7 @@ describe('EnergyDiagnosticsService', () => {
       const filters: IOpportunityFilters = {
         departments: ['75'],
         // @ts-expect-error - energyClasses property doesn't exist on IOpportunityFilters but needed for test
-        energyClasses: ['F', 'G'],
+        energyClasses: [EnergyClass.F, EnergyClass.G],
       };
       const expectedCount = 340;
       mockEnergyDiagnosticsRepository.count.mockResolvedValue(expectedCount);
@@ -272,7 +272,7 @@ describe('EnergyDiagnosticsService', () => {
     const filters: IOpportunityFilters = {
       departments: ['75'],
       // @ts-expect-error - energyClasses property doesn't exist on IOpportunityFilters but needed for test
-      energyClasses: ['F', 'G'],
+      energyClasses: [EnergyClass.F, EnergyClass.G],
     };
     const mockEnergyDiagnosticsForExport = [
       mockEnergyDiagnostic,

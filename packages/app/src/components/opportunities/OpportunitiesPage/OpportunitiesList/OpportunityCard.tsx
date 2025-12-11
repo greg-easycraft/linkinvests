@@ -15,6 +15,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { EnergyClassBadge } from '@/components/ui/energy-class-badge'
+import { FavoriteButton } from '@/components/ui/favorite-button'
 import { TYPE_COLORS, TYPE_LABELS } from '@/constants'
 import { formatPrice } from '@/lib/format'
 
@@ -134,7 +135,7 @@ export function OpportunityCard({
               <h3 className="text-lg font-semibold truncate">
                 {opportunity.label}
               </h3>
-              <div className="flex gap-2 flex-shrink-0">
+              <div className="flex gap-2 flex-shrink-0 items-center">
                 <Badge
                   variant="secondary"
                   style={{
@@ -159,6 +160,10 @@ export function OpportunityCard({
                     <ExternalLink className="h-3 w-3" />
                   </Button>
                 )}
+                <FavoriteButton
+                  opportunityId={opportunity.id}
+                  opportunityType={type}
+                />
               </div>
             </div>
 

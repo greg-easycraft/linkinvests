@@ -14,6 +14,9 @@ export * from './address-search.types.js';
 // Filter types
 export * from './filters.types.js';
 
+// Favorite types
+export * from './favorite.types.js';
+
 import { Auction } from './auction.types.js';
 import { Succession } from './succession.types.js';
 import { Liquidation } from './liquidation.types.js';

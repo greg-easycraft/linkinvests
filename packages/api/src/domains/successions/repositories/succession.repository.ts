@@ -9,10 +9,8 @@ import type { Succession } from '@linkinvests/shared';
 import { DATABASE_TOKEN } from '~/common/database';
 
 @Injectable()
-export class DrizzleSuccessionRepository extends SuccessionRepository {
-  constructor(@Inject(DATABASE_TOKEN) private readonly db: DomainDbType) {
-    super();
-  }
+export class SuccessionRepositoryImpl implements SuccessionRepository {
+  constructor(@Inject(DATABASE_TOKEN) private readonly db: DomainDbType) {}
 
   /**
    * Builds where clause for succession filters

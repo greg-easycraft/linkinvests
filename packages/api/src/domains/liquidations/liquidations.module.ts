@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { LiquidationRepository } from './lib.types';
-import { DrizzleLiquidationRepository } from './repositories/liquidation.repository';
+import { LiquidationRepositoryImpl } from './repositories/liquidation.repository';
 import { LiquidationService } from './services/liquidation.service';
 import { LiquidationsController } from './liquidations.controller';
 
@@ -9,7 +9,7 @@ import { LiquidationsController } from './liquidations.controller';
   providers: [
     {
       provide: LiquidationRepository,
-      useClass: DrizzleLiquidationRepository,
+      useClass: LiquidationRepositoryImpl,
     },
     LiquidationService,
   ],

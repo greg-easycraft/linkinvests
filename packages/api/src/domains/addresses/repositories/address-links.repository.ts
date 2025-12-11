@@ -14,10 +14,8 @@ import {
 import { DATABASE_TOKEN } from '~/common/database';
 
 @Injectable()
-export class DrizzleAddressLinksRepository extends AddressLinksRepository {
-  constructor(@Inject(DATABASE_TOKEN) private readonly db: DomainDbType) {
-    super();
-  }
+export class AddressLinksRepositoryImpl implements AddressLinksRepository {
+  constructor(@Inject(DATABASE_TOKEN) private readonly db: DomainDbType) {}
 
   async saveAuctionDiagnosticLinks(
     links: DiagnosticLinkInput[],

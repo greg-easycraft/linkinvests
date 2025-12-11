@@ -16,7 +16,7 @@ import {
 import { DATABASE_TOKEN } from '~/common/database';
 
 @Injectable()
-export class DrizzleAuctionRepository implements AuctionRepository {
+export class AuctionRepositoryImpl implements AuctionRepository {
   constructor(@Inject(DATABASE_TOKEN) private readonly db: DomainDbType) {}
 
   /**

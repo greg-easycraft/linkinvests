@@ -17,10 +17,8 @@ import type { EnergyDiagnostic } from '@linkinvests/shared';
 import { DATABASE_TOKEN } from '~/common/database';
 
 @Injectable()
-export class DrizzleAddressSearchRepository extends AddressSearchRepository {
-  constructor(@Inject(DATABASE_TOKEN) private readonly db: DomainDbType) {
-    super();
-  }
+export class AddressSearchRepositoryImpl implements AddressSearchRepository {
+  constructor(@Inject(DATABASE_TOKEN) private readonly db: DomainDbType) {}
 
   private getWhereClauseForAddressSearch(input: DiagnosticQueryInput): SQL[] {
     const conditions = [

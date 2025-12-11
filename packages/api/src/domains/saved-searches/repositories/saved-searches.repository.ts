@@ -7,7 +7,7 @@ import type { SavedSearch } from '@linkinvests/shared';
 import { DATABASE_TOKEN } from '~/common/database';
 
 @Injectable()
-export class DrizzleSavedSearchRepository implements SavedSearchRepository {
+export class SavedSearchRepositoryImpl implements SavedSearchRepository {
   constructor(@Inject(DATABASE_TOKEN) private readonly db: DomainDbType) {}
 
   async findAllByUserId(userId: string): Promise<SavedSearch[]> {

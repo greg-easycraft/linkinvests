@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AuctionRepository } from './lib.types';
-import { DrizzleAuctionRepository } from './repositories/auction.repository';
+import { AuctionRepositoryImpl } from './repositories/auction.repository';
 import { AuctionService } from './services/auction.service';
 import { AuctionsController } from './auctions.controller';
 
@@ -8,7 +8,7 @@ import { AuctionsController } from './auctions.controller';
   providers: [
     {
       provide: AuctionRepository,
-      useClass: DrizzleAuctionRepository,
+      useClass: AuctionRepositoryImpl,
     },
     AuctionService,
   ],

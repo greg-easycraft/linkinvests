@@ -7,7 +7,7 @@ import {
   EnergyDiagnosticsServiceErrorReason,
 } from './services/energy-diagnostics.service';
 import { EnergyDiagnosticsController } from './energy-diagnostics.controller';
-import type { EnergyDiagnostic } from '@linkinvests/shared';
+import { EnergyClass, GazClass, type EnergyDiagnostic } from '@linkinvests/shared';
 import { succeed, refuse } from '~/common/utils/operation-result';
 
 describe('EnergyDiagnosticsController', () => {
@@ -25,8 +25,8 @@ describe('EnergyDiagnosticsController', () => {
     opportunityDate: '2024-01-15',
     externalId: 'external-123',
     squareFootage: 75,
-    energyClass: 'F',
-    gazClass: 'F',
+    energyClass: EnergyClass.F,
+    gazClass: GazClass.F,
     createdAt: new Date('2024-01-01'),
     updatedAt: new Date('2024-01-01'),
   };

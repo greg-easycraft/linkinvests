@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { EnergyDiagnosticsRepository } from './lib.types';
-import { DrizzleEnergyDiagnosticsRepository } from './repositories/energy-diagnostics.repository';
+import { EnergyDiagnosticsRepositoryImpl } from './repositories/energy-diagnostics.repository';
 import { EnergyDiagnosticsService } from './services/energy-diagnostics.service';
 import { EnergyDiagnosticsController } from './energy-diagnostics.controller';
 
@@ -9,7 +9,7 @@ import { EnergyDiagnosticsController } from './energy-diagnostics.controller';
   providers: [
     {
       provide: EnergyDiagnosticsRepository,
-      useClass: DrizzleEnergyDiagnosticsRepository,
+      useClass: EnergyDiagnosticsRepositoryImpl,
     },
     EnergyDiagnosticsService,
   ],

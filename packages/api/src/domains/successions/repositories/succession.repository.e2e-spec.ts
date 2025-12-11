@@ -1,14 +1,14 @@
 /**
  * @jest-environment node
  */
-import { DrizzleSuccessionRepository } from './succession.repository';
+import { SuccessionRepositoryImpl } from './succession.repository';
 import { useTestDb } from '~/test-utils/use-test-db';
 import { OpportunityType } from '@linkinvests/shared';
 import type { ISuccessionFilters, PaginationFilters } from '~/types';
 
-describe('DrizzleSuccessionRepository Integration Tests', () => {
+describe('SuccessionRepositoryImpl Integration Tests', () => {
   const db = useTestDb();
-  const successionRepository = new DrizzleSuccessionRepository(db);
+  const successionRepository = new SuccessionRepositoryImpl(db);
 
   describe('basic functionality', () => {
     it('should find all successions without filters', async () => {

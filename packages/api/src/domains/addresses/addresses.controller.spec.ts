@@ -35,7 +35,7 @@ describe('AddressesController', () => {
       id: 'energy-diagnostic-123',
       address: '123 Test St',
       zipCode: '75001',
-      energyClass: 'F',
+      energyClass: EnergyClass.F,
       squareFootage: 75,
       opportunityDate: '2024-01-15',
       externalId: 'external-123',

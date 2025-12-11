@@ -71,7 +71,7 @@ const propertyTypesSchema = z
       .transform(
         (val) => val.split(',').filter(Boolean) as Array<PropertyType>,
       ),
-    z.array(z.nativeEnum(PropertyType)),
+    z.array(z.enum(PropertyType)),
   ])
   .optional()
 
@@ -94,7 +94,7 @@ const energyClassesSchema = z
       )
     }),
     z.array(
-      z.union([z.literal(UNKNOWN_ENERGY_CLASS), z.nativeEnum(EnergyClass)]),
+      z.union([z.literal(UNKNOWN_ENERGY_CLASS), z.enum(EnergyClass)]),
     ),
   ])
   .optional()
@@ -118,7 +118,7 @@ export const auctionFiltersSchema = baseFiltersSchema.extend({
           (val) =>
             val.split(',').filter(Boolean) as Array<AuctionOccupationStatus>,
         ),
-      z.array(z.nativeEnum(AuctionOccupationStatus)),
+      z.array(z.enum(AuctionOccupationStatus)),
     ])
     .optional(),
   energyClasses: energyClassesSchema,

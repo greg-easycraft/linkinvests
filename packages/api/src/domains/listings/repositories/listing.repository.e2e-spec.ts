@@ -1,7 +1,7 @@
 /**
  * @jest-environment node
  */
-import { DrizzleListingRepository } from './listing.repository';
+import { ListingRepositoryImpl } from './listing.repository';
 import { useTestDb } from '~/test-utils/use-test-db';
 import type { IListingFilters, PaginationFilters } from '~/types';
 import {
@@ -10,9 +10,9 @@ import {
   PropertyType,
 } from '@linkinvests/shared';
 
-describe('DrizzleListingRepository Integration Tests', () => {
+describe('ListingRepositoryImpl Integration Tests', () => {
   const db = useTestDb();
-  const listingRepository = new DrizzleListingRepository(db);
+  const listingRepository = new ListingRepositoryImpl(db);
 
   describe('findAll', () => {
     it('should find all listings without filters', async () => {
