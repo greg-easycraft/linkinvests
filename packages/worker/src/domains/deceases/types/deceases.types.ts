@@ -4,7 +4,6 @@ export interface InseeFileMetadata {
   url: string;
   year: number;
   month: number;
-  fileType: 'monthly' | 'yearly';
 }
 
 export interface ScrapedDeceasesFile {
@@ -131,21 +130,4 @@ export interface MairieContactInfo {
   phone?: string;
   email?: string;
   address: MairieAddress;
-}
-
-export interface DeceasesOpportunity {
-  inseeDeathId: string; // For externalId: combination of lieuDeces + dateDeces
-  label: string;
-  siret: null;
-  address: string;
-  zipCode: string;
-  department: string;
-  latitude: number;
-  longitude: number;
-  opportunityDate: string; // Format: YYYY-MM-DD
-  mairieInfo?: MairieContactInfo; // For contactData
-  extraData: {
-    firstName: string;
-    lastName: string;
-  };
 }
