@@ -1,9 +1,9 @@
+import { EnergyClass, GazClass } from '../constants';
 import { BaseOpportunity } from './base-opportunity.types';
 
 export interface EnergyDiagnostic extends BaseOpportunity {
-  // Note: siret is not included as it's always null for energy sieves
-  // Energy-specific fields (normalized from extraData)
-  energyClass: string; // A-G rating, typically F or G for energy sieves
+  energyClass: EnergyClass;
+  gazClass: GazClass;
   squareFootage: number;
   address: string;
 }

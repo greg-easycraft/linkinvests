@@ -146,7 +146,7 @@ export function getDepartmentById(id: string): DepartmentOption | undefined {
  * Get multiple departments by their IDs
  */
 export function getDepartmentsByIds(
-  ids: Array<string>,
+  ids: Array<string>
 ): Array<DepartmentOption> {
   return FRENCH_DEPARTMENTS.filter((dept) => ids.includes(dept.id));
 }

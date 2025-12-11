@@ -1,4 +1,8 @@
-import { EnergyClassType, PropertyType } from '../constants/opportunity';
+import {
+  EnergyClassType,
+  GazClassType,
+  PropertyType,
+} from '../constants/opportunity';
 import { BaseOpportunity } from './base-opportunity.types';
 
 export interface Listing extends BaseOpportunity {
@@ -13,6 +17,7 @@ export interface Listing extends BaseOpportunity {
   rooms?: number;
   bedrooms?: number;
   energyClass: EnergyClassType;
+  gazClass: GazClassType;
   constructionYear?: number;
   floor?: number;
   totalFloors?: number;

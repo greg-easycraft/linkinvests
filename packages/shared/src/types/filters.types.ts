@@ -2,13 +2,12 @@ import type {
   AuctionOccupationStatus,
   EnergyClass,
   EnergyClassType,
+  GazClass,
+  GazClassType,
   OpportunityType,
   PropertyType,
 } from '../constants/opportunity';
-import type {
-  DatePeriod,
-  MapBounds,
-} from '../api/filters.schema';
+import type { DatePeriod, MapBounds } from '../api/filters.schema';
 
 // Re-export DatePeriod and MapBounds from API schemas
 export type { DatePeriod, MapBounds };
@@ -58,6 +57,7 @@ export interface IAuctionFilters extends IOpportunityFilters {
   propertyTypes?: PropertyType[];
   auctionVenues?: string[];
   energyClasses?: (EnergyClass | EnergyClassType)[];
+  gazClasses?: (GazClass | GazClassType)[];
   minPrice?: number;
   maxPrice?: number;
   minReservePrice?: number;
@@ -81,6 +81,7 @@ export interface ListingFeatures {
 export interface IListingFilters extends IOpportunityFilters {
   propertyTypes?: PropertyType[];
   energyClasses?: (EnergyClass | EnergyClassType)[];
+  gazClasses?: (GazClass | GazClassType)[];
   sources?: string[];
   sellerType?: 'individual' | 'professional';
   minPrice?: number;
@@ -107,6 +108,7 @@ export interface ILiquidationFilters extends IOpportunityFilters {}
 
 export interface IEnergyDiagnosticFilters extends IOpportunityFilters {
   energyClasses?: EnergyClass[];
+  gazClasses?: GazClass[];
   minSquareFootage?: number;
   maxSquareFootage?: number;
 }

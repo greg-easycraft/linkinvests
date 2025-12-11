@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import {
   EnergyClass,
+  GazClass,
   PropertyType,
   AuctionOccupationStatus,
 } from '../constants';
@@ -55,6 +56,7 @@ export const auctionFiltersSchema = baseOpportunityFiltersSchema.extend({
   propertyTypes: z.array(z.enum(PropertyType)).optional(),
   auctionVenues: z.array(z.string()).optional(),
   energyClasses: z.array(z.enum(EnergyClass)).optional(),
+  gazClasses: z.array(z.enum(GazClass)).optional(),
   minPrice: z.number().nonnegative().optional(),
   maxPrice: z.number().nonnegative().optional(),
   minReservePrice: z.number().nonnegative().optional(),
@@ -72,6 +74,7 @@ export type AuctionFilters = z.infer<typeof auctionFiltersSchema>;
 export const listingFiltersSchema = baseOpportunityFiltersSchema.extend({
   propertyTypes: z.array(z.enum(PropertyType)).optional(),
   energyClasses: z.array(z.enum(EnergyClass)).optional(),
+  gazClasses: z.array(z.enum(GazClass)).optional(),
   sources: z.array(z.string()).optional(),
   sellerType: z.enum(['individual', 'professional']).optional(),
   minPrice: z.number().nonnegative().optional(),
@@ -105,6 +108,7 @@ export type LiquidationFilters = z.infer<typeof liquidationFiltersSchema>;
 export const energyDiagnosticFiltersSchema =
   baseOpportunityFiltersSchema.extend({
     energyClasses: z.array(z.enum(EnergyClass)).optional(),
+    gazClasses: z.array(z.enum(GazClass)).optional(),
     minSquareFootage: z.number().nonnegative().optional(),
     maxSquareFootage: z.number().nonnegative().optional(),
   });

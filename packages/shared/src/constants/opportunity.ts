@@ -33,6 +33,20 @@ export const UNKNOWN_ENERGY_CLASS = 'UNKNOWN' as const;
 
 export type EnergyClassType = EnergyClass | typeof UNKNOWN_ENERGY_CLASS;
 
+export enum GazClass {
+  A = 'A',
+  B = 'B',
+  C = 'C',
+  D = 'D',
+  E = 'E',
+  F = 'F',
+  G = 'G',
+}
+
+export const UNKNOWN_GAZ_CLASS = 'UNKNOWN' as const;
+
+export type GazClassType = GazClass | typeof UNKNOWN_GAZ_CLASS;
+
 export enum AuctionOccupationStatus {
   OCCUPIED_BY_OWNER = 'occupied_by_owner',
   RENTED = 'rented',

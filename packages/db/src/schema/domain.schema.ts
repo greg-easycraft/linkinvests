@@ -17,6 +17,7 @@ import { desc } from 'drizzle-orm';
 import {
   AuctionOccupationStatus,
   UNKNOWN_ENERGY_CLASS,
+  UNKNOWN_GAZ_CLASS,
 } from '@linkinvests/shared';
 
 // Auction Opportunities Table
@@ -43,6 +44,7 @@ export const opportunityAuctions = pgTable(
     energyClass: varchar('energy_class')
       .notNull()
       .default(UNKNOWN_ENERGY_CLASS),
+    gazClass: varchar('gaz_class').notNull().default(UNKNOWN_GAZ_CLASS),
     auctionVenue: varchar('auction_venue'),
     occupationStatus: varchar('occupation_status')
       .notNull()
@@ -208,6 +210,7 @@ export const energyDiagnostics = pgTable(
     opportunityDate: date('opportunity_date').notNull(),
     // Energy-specific fields
     energyClass: varchar('energy_class').notNull(),
+    gazClass: varchar('gaz_class').notNull(),
     externalId: varchar('external_id').notNull().unique(),
     // Timestamps
     createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -260,6 +263,7 @@ export const opportunityListings = pgTable(
     energyClass: varchar('energy_class')
       .notNull()
       .default(UNKNOWN_ENERGY_CLASS),
+    gazClass: varchar('gaz_class').notNull().default(UNKNOWN_GAZ_CLASS),
     constructionYear: integer('construction_year'),
     floor: integer('floor'),
     totalFloors: integer('total_floors'),

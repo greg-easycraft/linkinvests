@@ -5,7 +5,9 @@ import {
   AuctionOccupationStatus,
   AuctionSource,
   EnergyClass,
+  GazClass,
   UNKNOWN_ENERGY_CLASS,
+  UNKNOWN_GAZ_CLASS,
 } from '../constants/opportunity';
 
 // Schema for auction house contact info
@@ -29,6 +31,7 @@ export const auctionInputSchema = baseOpportunityInputSchema.extend({
   squareFootage: z.number().positive().optional(),
   rooms: z.number().int().positive().optional(),
   energyClass: z.union([z.enum(EnergyClass), z.literal(UNKNOWN_ENERGY_CLASS)]),
+  gazClass: z.union([z.enum(GazClass), z.literal(UNKNOWN_GAZ_CLASS)]),
   auctionVenue: z.string().optional(),
   currentPrice: z.number().positive().optional(),
   reservePrice: z.number().positive().optional(),

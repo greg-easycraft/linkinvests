@@ -46,7 +46,7 @@ export const DATE_PERIOD_OPTIONS: Array<DatePeriodOption> = [
  * Get date period option by value
  */
 export function getDatePeriodOption(
-  value: DatePeriod,
+  value: DatePeriod
 ): DatePeriodOption | undefined {
   return DATE_PERIOD_OPTIONS.find((option) => option.value === value);
 }
@@ -61,7 +61,7 @@ export function getDatePeriodOption(
  */
 export function calculateStartDate(
   period: DatePeriod,
-  from: Date = new Date(),
+  from: Date = new Date()
 ): Date {
   const thresholdDate = new Date(from);
 

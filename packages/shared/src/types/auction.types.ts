@@ -3,6 +3,7 @@ import {
   AuctionOccupationStatus,
   AuctionSource,
   EnergyClassType,
+  GazClassType,
   PropertyType,
 } from '../constants/opportunity';
 
@@ -14,6 +15,7 @@ export interface Auction extends BaseOpportunity {
   squareFootage?: number;
   rooms?: number;
   energyClass: EnergyClassType;
+  gazClass: GazClassType;
   auctionVenue?: string;
   // Price fields (normalized from extraData)
   currentPrice?: number;

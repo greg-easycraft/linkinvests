@@ -1,9 +1,11 @@
 import z from 'zod';
 import { baseOpportunityInputSchema } from './base-opportunity.schema';
 import { EnergyDiagnosticInput } from '../types/energy-diagnostic.types';
+import { EnergyClass, GazClass } from '../constants/opportunity';
 
 export const energyDiagnosticInputSchema = baseOpportunityInputSchema.extend({
-  energyClass: z.string(),
+  energyClass: z.enum(EnergyClass),
+  gazClass: z.enum(GazClass),
   squareFootage: z.number(),
   address: z.string(),
 });

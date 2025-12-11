@@ -12,5 +12,5 @@ export function createSuccessionExternalId({
 
 export function getDocIdFromSuccessionExternalId(externalId: string): string {
   const [, , docId] = externalId.split('_');
-  return docId as string;
+  return docId;
 }

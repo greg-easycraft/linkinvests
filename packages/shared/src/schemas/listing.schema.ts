@@ -3,8 +3,10 @@ import { baseOpportunityInputSchema } from './base-opportunity.schema';
 import { ListingInput } from '../types/listing.types';
 import {
   EnergyClass,
+  GazClass,
   PropertyType,
   UNKNOWN_ENERGY_CLASS,
+  UNKNOWN_GAZ_CLASS,
 } from '../constants/opportunity';
 
 // Schema for seller contact info
@@ -32,6 +34,7 @@ export const listingInputSchema = baseOpportunityInputSchema.extend({
   rooms: z.number().int().positive().optional(),
   bedrooms: z.number().int().positive().optional(),
   energyClass: z.union([z.enum(EnergyClass), z.literal(UNKNOWN_ENERGY_CLASS)]),
+  gazClass: z.union([z.enum(GazClass), z.literal(UNKNOWN_GAZ_CLASS)]),
   constructionYear: z.number().int().optional(),
   floor: z.number().int().optional(),
   totalFloors: z.number().int().positive().optional(),
