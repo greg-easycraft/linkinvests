@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { EnergyDiagnosticsProcessor } from './energy-diagnostics.processor';
 import { AdemeApiService } from './services';
 import { EnergyDiagnosticsRepository } from './repositories';
-import type { DpeRecord } from './types/energy-diagnostics.types';
+import type { DpeRecord } from './types';
 
 describe('EnergyDiagnosticsProcessor', () => {
   let processor: EnergyDiagnosticsProcessor;

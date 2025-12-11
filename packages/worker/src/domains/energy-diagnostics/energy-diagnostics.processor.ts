@@ -7,11 +7,11 @@ import {
   SOURCE_ENERGY_SIEVES_QUEUE,
 } from '@linkinvests/shared';
 import { AdemeApiService } from './services';
-import { EnergyDiagnosticsRepository } from './repositories';
 import type {
   EnergyDiagnosticJobData,
+  EnergyDiagnosticsRepository,
   DpeRecord,
-} from './types/energy-diagnostics.types';
+} from './types';
 
 @Processor(SOURCE_ENERGY_SIEVES_QUEUE, { concurrency: 1 })
 export class EnergyDiagnosticsProcessor extends WorkerHost {

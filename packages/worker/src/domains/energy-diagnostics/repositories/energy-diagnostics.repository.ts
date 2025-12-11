@@ -2,10 +2,11 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { DATABASE_CONNECTION, type DomainDbType } from '~/database';
 import { domainSchema } from '@linkinvests/db';
 import { EnergyDiagnosticInput } from '@linkinvests/shared';
+import { EnergyDiagnosticsRepository } from '../types';
 
 @Injectable()
-export class EnergyDiagnosticsRepository {
-  private readonly logger = new Logger(EnergyDiagnosticsRepository.name);
+export class DrizzleEnergyDiagnosticsRepository implements EnergyDiagnosticsRepository {
+  private readonly logger = new Logger(DrizzleEnergyDiagnosticsRepository.name);
 
   constructor(
     @Inject(DATABASE_CONNECTION)

@@ -4,7 +4,7 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { SOURCE_ENERGY_SIEVES_QUEUE } from '@linkinvests/shared';
 
-import type { EnergyDiagnosticJobData } from '../types/energy-diagnostics.types';
+import type { EnergyDiagnosticJobData } from '../types';
 
 @Injectable()
 export class EnergyDiagnosticsCron {

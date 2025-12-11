@@ -1,3 +1,12 @@
+import { EnergyDiagnosticInput } from '@linkinvests/shared';
+
+export abstract class EnergyDiagnosticsRepository {
+  abstract insertOpportunities(
+    opportunities: EnergyDiagnosticInput[],
+    batchSize?: number
+  ): Promise<number>;
+}
+
 export interface DpeRecord {
   numero_dpe: string; // DPE certificate number
   adresse_ban: string; // Standardized address

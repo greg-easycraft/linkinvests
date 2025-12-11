@@ -3,9 +3,10 @@ import { BullModule } from '@nestjs/bullmq';
 import { SOURCE_ENERGY_SIEVES_QUEUE } from '@linkinvests/shared';
 import { EnergyDiagnosticsProcessor } from './energy-diagnostics.processor';
 import { AdemeApiService } from './services';
-import { EnergyDiagnosticsRepository } from './repositories';
+import { DrizzleEnergyDiagnosticsRepository } from './repositories';
 import { EnergyDiagnosticsCron } from './cron/energy-sieves.cron';
 import { config } from '~/config';
+import { EnergyDiagnosticsRepository } from './types';
 
 @Module({
   imports: [
@@ -17,9 +18,12 @@ import { config } from '~/config';
     }),
   ],
   providers: [
-    EnergyDiagnosticsProcessor,
+    {
+      provide: EnergyDiagnosticsRepository,
+      useClass: DrizzleEnergyDiagnosticsRepository,
+    },
     AdemeApiService,
-    EnergyDiagnosticsRepository,
+    EnergyDiagnosticsProcessor,
     EnergyDiagnosticsCron,
   ],
   exports: [BullModule],
