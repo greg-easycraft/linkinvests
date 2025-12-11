@@ -4,6 +4,20 @@
 
 This document outlines the frontend-specific coding standards and best practices for React components, hooks, and client-side development. These guidelines complement the general coding guidelines and focus on frontend-specific patterns and optimizations.
 
+**Package**: `@packages/app` (Vite SPA)
+
+### Technology Stack
+
+- **Framework**: React 19 with TypeScript 5.7+
+- **Build Tool**: Vite 7
+- **Routing**: TanStack Router v1
+- **Server State**: TanStack Query v5 (React Query)
+- **Forms**: React Hook Form + Zod
+- **Styling**: Tailwind CSS v4
+- **UI Components**: Shadcn/ui (Radix UI primitives)
+- **Authentication**: Better Auth client
+- **Testing**: Vitest + Testing Library
+
 ## Component Organization
 
 ### Single Responsibility Principle
@@ -17,85 +31,39 @@ This document outlines the frontend-specific coding standards and best practices
 - **Main Orchestrator**: Use an `index.tsx` file to orchestrate all sub-components
 - **Consistent Naming**: Use descriptive names that clearly indicate the component's purpose
 - **Shared Logic**: Extract shared logic into custom hooks or utility functions
-- **Client Components**: Mark components with `'use client'` directive when using React hooks
 
 ```typescript
-// ✅ Good - Refactored component structure
-// /src/app/_components/agents/domain-expert-search/
+// Good - Refactored component structure
+// /src/components/opportunities/OpportunitiesPage/
 // ├── index.tsx                 (Main orchestrator)
-// ├── WelcomeSection.tsx        (Welcome message and stats)
-// ├── StatsCards.tsx           (Statistics display)
-// ├── SearchAndActions.tsx     (Search functionality)
-// ├── AgentsGrid.tsx           (Agents listing)
-// └── RecentConversations.tsx       (Recent conversations display)
+// ├── FiltersSidebar.tsx        (Filter controls)
+// ├── OpportunitiesList.tsx     (List view)
+// ├── OpportunitiesMap.tsx      (Map view)
+// └── Pagination.tsx            (Pagination controls)
 
 // Main orchestrator component
-export function DomainExpertsearch({
-    assignedAgents,
-    recentConversations,
-    user,
-}: DomainExpertsearchProps) {
-    const [searchTerm, setSearchTerm] = useState('');
-    
-    // Shared logic and state management
-    const filteredAgents = useMemo(() => {
-        return assignedAgents.filter(agent =>
-            agent.name.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-    }, [assignedAgents, searchTerm]);
+export function OpportunitiesPage<T extends BaseOpportunity>({
+  opportunityType,
+  filters,
+}: OpportunitiesPageProps<T>) {
+  const { data, count, isDataLoading } = useOpportunityData({
+    opportunityType,
+    filters,
+  })
 
-    return (
-        <div className="space-y-6">
-            <WelcomeSection
-                activeConversationsCount={activeConversations.length}
-                assignedAgentsCount={assignedAgents.length}
-                user={user}
-            />
-            <StatsCards
-                activeConversationsCount={activeConversations.length}
-                assignedAgentsCount={assignedAgents.length}
-                completedConversationsCount={completedConversations.length}
-                totalConversationsCount={conversationsWithAgentInfos.length}
-            />
-            <SearchAndActions
-                onSearchChange={setSearchTerm}
-                searchTerm={searchTerm}
-            />
-            <AgentsGrid
-                assignedAgents={assignedAgents}
-                filteredAgents={filteredAgents}
-                conversationsWithAgentInfos={conversationsWithAgentInfos}
-            />
-            <RecentConversations conversationsWithAgentInfos={conversationsWithAgentInfos} />
-        </div>
-    );
-}
-
-// ✅ Good - Focused sub-component
-interface WelcomeSectionProps {
-    activeConversationsCount: number;
-    assignedAgentsCount: number;
-    user: UserProfile;
-}
-
-export function WelcomeSection({
-    activeConversationsCount,
-    assignedAgentsCount,
-    user,
-}: WelcomeSectionProps) {
-    return (
-        <Card>
-            <CardHeader>
-                <CardTitle>Welcome back, {user.name ?? user.email}!</CardTitle>
-                <CardDescription>
-                    You have access to {assignedAgentsCount} agent
-                    {assignedAgentsCount === 1 ? '' : 's'}
-                    {activeConversationsCount > 0 &&
-                        ` and ${activeConversationsCount} active conversation${activeConversationsCount === 1 ? '' : 's'}`}
-                </CardDescription>
-            </CardHeader>
-        </Card>
-    );
+  return (
+    <div className="flex">
+      <FiltersSidebar filters={filters} />
+      <main className="flex-1">
+        {filters.view === 'list' ? (
+          <OpportunitiesList data={data} isLoading={isDataLoading} />
+        ) : (
+          <OpportunitiesMap data={data} />
+        )}
+        <Pagination count={count} filters={filters} />
+      </main>
+    </div>
+  )
 }
 ```
 
@@ -107,119 +75,34 @@ export function WelcomeSection({
 - **Props Drilling**: Avoid deep props drilling by using context or state lifting
 
 ```typescript
-// ✅ Good - Component decomposition example
-// Original large component broken into focused pieces:
-
-// HeaderSection.tsx - Navigation and actions
-export function HeaderSection({ agent }: HeaderSectionProps) {
-    const router = useRouter();
-    const [isPending, startTransition] = useTransition();
-    
-    const handleDuplicate = () => {
-        startTransition(async () => {
-            const data = await createAgentMutation.mutateAsync({
-                name: agent.name,
-                description: agent.description ?? undefined,
-                systemContext: agent.systemContext,
-            });
-            setTimeout(() => {
-                router.push(`/agents/${data.id}`);
-            }, 1500);
-        });
-    };
-
-    return (
-        <div className="flex items-center justify-between">
-            <Link href="/agents" className="flex items-center text-gray-600 hover:text-gray-900">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Agents
-            </Link>
-            <div className="flex gap-2">
-                <Link href={`/agents/${agent.id}/edit`}>
-                    <Button variant="outline">
-                        <Edit3 className="mr-2 h-4 w-4" />
-                        Edit
-                    </Button>
-                </Link>
-                <Button variant="outline" onClick={handleDuplicate} disabled={isPending}>
-                    <Copy className="mr-2 h-4 w-4" />
-                    Duplicate
-                </Button>
-            </div>
-        </div>
-    );
+// Good - Clear component with defined props
+interface OpportunityCardProps {
+  opportunity: BaseOpportunity
+  onSelect?: (opportunity: BaseOpportunity) => void
+  isSelected?: boolean
+  className?: string
 }
 
-// AgentOverview.tsx - Statistics and basic info
-export function AgentOverview({ agent }: AgentOverviewProps) {
-    const isArchived = agent.status === AgentStatus.ARCHIVED;
-
-    return (
-        <Card>
-            <CardHeader>
-                <div className="flex items-start justify-between">
-                    <div className="space-y-2">
-                        <div className="flex items-center gap-3">
-                            <CardTitle className="text-2xl">{agent.name}</CardTitle>
-                            <Badge variant={isArchived ? 'secondary' : 'default'}>
-                                {isArchived ? 'Archived' : 'Active'}
-                            </Badge>
-                        </div>
-                        {agent.description && (
-                            <CardDescription className="max-w-2xl text-base">
-                                {agent.description}
-                            </CardDescription>
-                        )}
-                    </div>
-                </div>
-            </CardHeader>
-            <CardContent>
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                    <StatCard
-                        icon={<Users className="h-5 w-5 text-blue-600" />}
-                        label="Assignments"
-                        value={agent.assignmentsCount}
-                        bgColor="bg-blue-100"
-                    />
-                    {/* More stat cards... */}
-                </div>
-            </CardContent>
-        </Card>
-    );
-}
-```
-
-```typescript
-// ✅ Good - Clear component with defined props
-interface AgentCardProps {
-    agent: AIAgent;
-    onSelect?: (agent: AIAgent) => void;
-    isSelected?: boolean;
-    className?: string;
+export function OpportunityCard({
+  opportunity,
+  onSelect,
+  isSelected = false,
+  className,
+}: OpportunityCardProps) {
+  return (
+    <div className={cn('opportunity-card', { selected: isSelected }, className)}>
+      <h3>{opportunity.label}</h3>
+      <p>{opportunity.address}</p>
+      {onSelect && (
+        <button onClick={() => onSelect(opportunity)}>View Details</button>
+      )}
+    </div>
+  )
 }
 
-export function AgentCard({ 
-    agent, 
-    onSelect, 
-    isSelected = false, 
-    className 
-}: AgentCardProps) {
-    return (
-        <div className={cn("agent-card", { selected: isSelected }, className)}>
-            <h3>{agent.name}</h3>
-            <p>{agent.description}</p>
-            {onSelect && (
-                <button onClick={() => onSelect(agent)}>
-                    Select Agent
-                </button>
-            )}
-        </div>
-    );
-}
-
-// ❌ Avoid - Unclear props and responsibilities
-export function AgentCard(props: any) {
-    return <div>{props.children}</div>;
+// Avoid - Unclear props and responsibilities
+export function OpportunityCard(props: any) {
+  return <div>{props.children}</div>
 }
 ```
 
@@ -230,31 +113,346 @@ export function AgentCard(props: any) {
 - **Conditional Rendering**: Use early returns for conditional rendering
 
 ```typescript
-// ✅ Good - Well-structured component
+// Good - Well-structured component
 interface UserProfileProps {
-    user: User;
-    onEdit?: () => void;
-    showActions?: boolean;
+  user: User
+  onEdit?: () => void
+  showActions?: boolean
 }
 
 function formatUserDisplayName(user: User): string {
-    return `${user.firstName} ${user.lastName}`.trim();
+  return `${user.name}`.trim()
 }
 
 export function UserProfile({ user, onEdit, showActions = true }: UserProfileProps) {
-    if (!user) return null;
-    
-    const displayName = formatUserDisplayName(user);
-    
-    return (
-        <div className="user-profile">
-            <h2>{displayName}</h2>
-            <p>{user.email}</p>
-            {showActions && onEdit && (
-                <button onClick={onEdit}>Edit Profile</button>
-            )}
-        </div>
-    );
+  if (!user) return null
+
+  const displayName = formatUserDisplayName(user)
+
+  return (
+    <div className="user-profile">
+      <h2>{displayName}</h2>
+      <p>{user.email}</p>
+      {showActions && onEdit && <button onClick={onEdit}>Edit Profile</button>}
+    </div>
+  )
+}
+```
+
+## Routing with TanStack Router
+
+### Route Definition
+
+```typescript
+// main.tsx
+import {
+  createRootRouteWithContext,
+  createRoute,
+  createRouter,
+  redirect,
+} from '@tanstack/react-router'
+import { zodSearchValidator } from '@tanstack/router-zod-adapter'
+import type { RouterContext } from '@/router'
+
+// Root route with context
+const rootRoute = createRootRouteWithContext<RouterContext>()({
+  component: RootLayout,
+})
+
+// Protected route with search params validation
+const searchListingsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/search/listings',
+  validateSearch: zodSearchValidator(listingFiltersSchema),
+  beforeLoad: requireAuth,
+  component: ListingsPage,
+})
+
+// Detail route with path params
+const listingDetailRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/listings/$listingId',
+  beforeLoad: requireAuth,
+  component: ListingDetailPage,
+})
+
+// Build route tree
+const routeTree = rootRoute.addChildren([
+  searchListingsRoute,
+  listingDetailRoute,
+  // ...more routes
+])
+
+// Create router with context
+const router = createRouter({
+  routeTree,
+  context: { auth },
+  defaultPreload: 'intent',
+  scrollRestoration: true,
+})
+```
+
+### Route Guards
+
+```typescript
+// router/guards.ts
+import { redirect } from '@tanstack/react-router'
+import type { RouterContext } from './context'
+
+export function requireAuth({ context }: { context: RouterContext }) {
+  if (!context.auth.isAuthenticated && !context.auth.isLoading) {
+    throw redirect({ to: '/auth/sign-in' })
+  }
+  if (context.auth.isBanned && !context.auth.isLoading) {
+    throw redirect({ to: '/auth/banned' })
+  }
+}
+
+export function requireGuest({ context }: { context: RouterContext }) {
+  if (context.auth.isAuthenticated && !context.auth.isLoading) {
+    throw redirect({ to: '/search/auctions' })
+  }
+}
+
+export function requireAdmin({ context }: { context: RouterContext }) {
+  requireAuth({ context })
+  if (!context.auth.isAdmin && !context.auth.isLoading) {
+    throw redirect({ to: '/search/auctions' })
+  }
+}
+```
+
+### Using Search Params
+
+```typescript
+// In page component
+import { useSearch, useNavigate } from '@tanstack/react-router'
+
+export function ListingsPage() {
+  // Type-safe search params from route validation
+  const filters = useSearch({ from: '/search/listings' })
+  const navigate = useNavigate()
+
+  const handleFilterChange = (newFilters: Partial<ListingFilters>) => {
+    navigate({
+      to: '/search/listings',
+      search: { ...filters, ...newFilters },
+    })
+  }
+
+  return <OpportunitiesPage filters={filters} onFilterChange={handleFilterChange} />
+}
+```
+
+## State Management
+
+### Server State with TanStack Query
+
+```typescript
+// hooks/useOpportunityData.ts
+import { useQuery } from '@tanstack/react-query'
+
+export function useOpportunityData<T extends BaseOpportunity>({
+  opportunityType,
+  filters,
+}: UseOpportunityDataOptions) {
+  // Remove view from filters for query key (it doesn't affect data)
+  const { view, ...filtersForQuery } = filters
+
+  // Data query - fetches paginated data from API
+  const dataQuery = useQuery({
+    queryKey: [opportunityType.toLowerCase(), 'search', filtersForQuery],
+    queryFn: async () => {
+      const response = await searchOpportunities(opportunityType, filtersForQuery)
+      return {
+        opportunities: response.opportunities,
+        total: response.opportunities.length,
+      }
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  })
+
+  // Count query - returns total count for pagination
+  const countQuery = useQuery({
+    queryKey: [opportunityType.toLowerCase(), 'count', filtersForQuery],
+    queryFn: () => countOpportunities(opportunityType, filtersForQuery),
+    staleTime: 5 * 60 * 1000,
+  })
+
+  return {
+    data: dataQuery.data,
+    count: countQuery.data,
+    isDataLoading: dataQuery.isLoading,
+    isCountLoading: countQuery.isLoading,
+    isError: dataQuery.isError || countQuery.isError,
+    error: dataQuery.error || countQuery.error,
+    refetch: () => {
+      dataQuery.refetch()
+      countQuery.refetch()
+    },
+  }
+}
+```
+
+### Query Client Configuration
+
+```typescript
+// main.tsx
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      refetchOnWindowFocus: false,
+    },
+  },
+})
+
+// In app
+<QueryClientProvider client={queryClient}>
+  <AuthProvider>
+    <InnerApp />
+    <ReactQueryDevtools initialIsOpen={false} />
+  </AuthProvider>
+</QueryClientProvider>
+```
+
+### Client State with React Context
+
+```typescript
+// components/providers/auth-provider.tsx
+import { createContext, useContext } from 'react'
+import { useSession } from '@/lib/auth-client'
+
+interface AuthContextValue {
+  session: Session | null
+  user: User | null
+  isLoading: boolean
+  isAuthenticated: boolean
+  isAdmin: boolean
+  isBanned: boolean
+  banReason: string | null
+}
+
+const AuthContext = createContext<AuthContextValue | undefined>(undefined)
+
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const { data: session, isPending: isLoading } = useSession()
+
+  const user = session?.user ?? null
+  const isAdmin = user !== null && user.role === 'admin'
+  const isBanned = user !== null && user.banned === true
+
+  const value: AuthContextValue = {
+    session: session ?? null,
+    user,
+    isLoading,
+    isAuthenticated: user !== null,
+    isAdmin,
+    isBanned,
+    banReason: user?.banReason ?? null,
+  }
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+}
+
+export function useAuth(): AuthContextValue {
+  const context = useContext(AuthContext)
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider')
+  }
+  return context
+}
+```
+
+## API Integration
+
+### API Client
+
+```typescript
+// api/client.ts
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080'
+
+export class ApiError extends Error {
+  constructor(
+    message: string,
+    public status: number,
+    public code?: string,
+  ) {
+    super(message)
+    this.name = 'ApiError'
+  }
+}
+
+interface RequestOptions {
+  method?: 'GET' | 'POST'
+  body?: unknown
+}
+
+export async function apiRequest<T>(
+  endpoint: string,
+  options: RequestOptions = {},
+): Promise<T> {
+  const { method = 'GET', body } = options
+
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    method,
+    headers: { 'Content-Type': 'application/json' },
+    body: body ? JSON.stringify(body) : undefined,
+    credentials: 'include',
+  })
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}))
+    throw new ApiError(
+      errorData.message || `HTTP error ${response.status}`,
+      response.status,
+      errorData.code,
+    )
+  }
+
+  return response.json() as Promise<T>
+}
+```
+
+### Domain-specific API Modules
+
+```typescript
+// api/listings.api.ts
+import { apiRequest } from './client'
+import type { Listing, ListingFilters } from '@linkinvests/shared'
+
+export interface SearchResponse<T> {
+  opportunities: T[]
+  page: number
+  pageSize: number
+}
+
+export async function searchListings(
+  filters: ListingFilters,
+): Promise<SearchResponse<Listing>> {
+  return apiRequest<SearchResponse<Listing>>('/listings/search', {
+    method: 'POST',
+    body: filters,
+  })
+}
+
+export async function countListings(filters: ListingFilters): Promise<number> {
+  const response = await apiRequest<{ count: number }>('/listings/count', {
+    method: 'POST',
+    body: filters,
+  })
+  return response.count
+}
+
+export async function getListingById(id: string): Promise<Listing | null> {
+  try {
+    return await apiRequest<Listing>(`/listings/${id}`)
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) {
+      return null
+    }
+    throw error
+  }
 }
 ```
 
@@ -267,48 +465,38 @@ export function UserProfile({ user, onEdit, showActions = true }: UserProfilePro
 - **Return Objects**: Return objects with descriptive property names
 
 ```typescript
-// ✅ Good - Custom hook with clear purpose
-export function useAgentData(agentId: string) {
-    const [agent, setAgent] = useState<AIAgent | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-
-    useEffect(() => {
-        if (!agentId) return;
-        
-        setLoading(true);
-        setError(null);
-        
-        fetchAgent(agentId)
-            .then(setAgent)
-            .catch(err => setError(err.message))
-            .finally(() => setLoading(false));
-    }, [agentId]);
-
-    return { agent, loading, error };
+// Good - Custom hook with clear purpose
+export function useOpportunityById<T extends BaseOpportunity>(
+  opportunityType: OpportunityType,
+  id: string | undefined,
+) {
+  return useQuery({
+    queryKey: [opportunityType.toLowerCase(), 'detail', id],
+    queryFn: async () => {
+      if (!id) return null
+      return getOpportunityById(opportunityType, id) as Promise<T | null>
+    },
+    enabled: !!id,
+    staleTime: 5 * 60 * 1000,
+  })
 }
 
-// ✅ Good - Composed hooks
-export function useAgentManagement(agentId: string) {
-    const { agent, loading, error } = useAgentData(agentId);
-    const [isEditing, setIsEditing] = useState(false);
-    
-    const startEditing = useCallback(() => setIsEditing(true), []);
-    const stopEditing = useCallback(() => setIsEditing(false), []);
-    
-    return {
-        agent,
-        loading,
-        error,
-        isEditing,
-        startEditing,
-        stopEditing
-    };
-}
+// Good - Composed hooks
+export function useOpportunityManagement(opportunityType: OpportunityType, id: string) {
+  const { data, isLoading, error } = useOpportunityById(opportunityType, id)
+  const [isEditing, setIsEditing] = useState(false)
 
-// ❌ Avoid - Complex hook with multiple responsibilities
-export function useAgentData(agentId: string) {
-    // Too many responsibilities in one hook
+  const startEditing = useCallback(() => setIsEditing(true), [])
+  const stopEditing = useCallback(() => setIsEditing(false), [])
+
+  return {
+    opportunity: data,
+    isLoading,
+    error,
+    isEditing,
+    startEditing,
+    stopEditing,
+  }
 }
 ```
 
@@ -318,62 +506,51 @@ export function useAgentData(agentId: string) {
 - **Dependency Analysis**: Use ESLint rules to catch missing dependencies
 
 ```typescript
-// ✅ Good - Complete dependencies
-export function useAgentConversations(agentId: string, userId: string) {
-    const [conversations, setConversations] = useState<Conversation[]>([]);
-    
-    useEffect(() => {
-        if (!agentId || !userId) return;
-        
-        fetchAgentConversations(agentId, userId)
-            .then(setConversations)
-            .catch(logger.error);
-    }, [agentId, userId]); // All dependencies included
-    
-    return conversations;
-}
+// Good - Complete dependencies
+export function useFilteredData(items: Item[], searchTerm: string) {
+  const filteredItems = useMemo(() => {
+    return items.filter((item) =>
+      item.name.toLowerCase().includes(searchTerm.toLowerCase()),
+    )
+  }, [items, searchTerm]) // All dependencies included
 
-// ❌ Avoid - Missing dependencies
-export function useAgentConversations(agentId: string, userId: string) {
-    const [conversations, setConversations] = useState<Conversation[]>([]);
-    
-    useEffect(() => {
-        fetchAgentConversations(agentId, userId)
-            .then(setConversations)
-            .catch(logger.error);
-    }, [agentId]); // Missing userId dependency
+  return filteredItems
 }
 ```
 
-## State Management
+## Local State Management
 
 ### Local State First
 - **Start Local**: Use local state when possible
 - **Lift When Needed**: Lift state up only when multiple components need it
-- **Avoid Prop Drilling**: Use context or state management libraries for deep prop drilling
+- **URL State**: Use URL search params for filterable/shareable state
 - **State Location**: Keep state as close to where it's used as possible
 
 ```typescript
-// ✅ Good - Local state for component-specific data
-export function AgentForm() {
-    const [formData, setFormData] = useState<AgentFormData>({
-        name: '',
-        description: '',
-        category: ''
-    });
-    
-    const handleInputChange = (field: keyof AgentFormData, value: string) => {
-        setFormData(prev => ({ ...prev, [field]: value }));
-    };
-    
-    return (
-        <form>
-            <input 
-                value={formData.name}
-                onChange={(e) => handleInputChange('name', e.target.value)}
-            />
-        </form>
-    );
+// Good - Local state for component-specific data
+export function FilterForm() {
+  const [formData, setFormData] = useState<FilterFormData>({
+    department: '',
+    priceRange: [0, 1000000],
+    propertyType: [],
+  })
+
+  const handleInputChange = (field: keyof FilterFormData, value: unknown) => {
+    setFormData((prev) => ({ ...prev, [field]: value }))
+  }
+
+  return (
+    <form>
+      <DepartmentSelect
+        value={formData.department}
+        onChange={(value) => handleInputChange('department', value)}
+      />
+      <PriceRangeSlider
+        value={formData.priceRange}
+        onChange={(value) => handleInputChange('priceRange', value)}
+      />
+    </form>
+  )
 }
 ```
 
@@ -381,92 +558,27 @@ export function AgentForm() {
 - **Always Immutable**: Never mutate state directly
 - **Spread Operator**: Use spread operator for object updates
 - **Array Methods**: Use immutable array methods (map, filter, concat)
-- **Deep Updates**: Use libraries like Immer for complex nested updates
 
 ```typescript
-// ✅ Good - Immutable state updates
-const [agents, setAgents] = useState<AIAgent[]>([]);
+// Good - Immutable state updates
+const [items, setItems] = useState<Item[]>([])
 
-const addAgent = (newAgent: AIAgent) => {
-    setAgents(prev => [...prev, newAgent]);
-};
-
-const updateAgent = (id: string, updates: Partial<AIAgent>) => {
-    setAgents(prev => prev.map(agent => 
-        agent.id === id ? { ...agent, ...updates } : agent
-    ));
-};
-
-const removeAgent = (id: string) => {
-    setAgents(prev => prev.filter(agent => agent.id !== id));
-};
-
-// ❌ Avoid - Mutating state directly
-const addAgent = (newAgent: AIAgent) => {
-    agents.push(newAgent); // Mutation!
-    setAgents(agents);
-};
-```
-
-### State Normalization
-- **Normalize Complex Data**: Use normalized state structure for complex data
-- **Avoid Duplication**: Store entities by ID to avoid duplication
-- **Derived State**: Compute derived state instead of storing it
-
-```typescript
-// ✅ Good - Normalized state
-interface NormalizedState {
-    agents: Record<string, AIAgent>;
-    conversations: Record<string, Conversation>;
-    agentConversations: Record<string, string[]>; // agentId -> conversationIds
+const addItem = (newItem: Item) => {
+  setItems((prev) => [...prev, newItem])
 }
 
-const [state, setState] = useState<NormalizedState>({
-    agents: {},
-    conversations: {},
-    agentConversations: {}
-});
-
-// Derived state
-const getAgentConversations = (agentId: string) => {
-    const conversationIds = state.agentConversations[agentId] || [];
-    return conversationIds.map(id => state.conversations[id]).filter(Boolean);
-};
-```
-
-## Error Boundaries and Error Handling
-
-### Error Boundaries
-- **Component-Level**: Use error boundaries for component-level error handling
-- **Graceful Fallbacks**: Provide meaningful fallback UI
-- **Error Logging**: Log errors for debugging while showing user-friendly messages
-- **Recovery Options**: Provide ways for users to recover from errors
-
-```typescript
-// ✅ Good - Error boundary with fallback
-interface ErrorBoundaryProps {
-    children: React.ReactNode;
-    fallback?: React.ComponentType<{ error: Error; retry: () => void }>;
-    onError?: (error: Error, errorInfo: ErrorInfo) => void;
+const updateItem = (id: string, updates: Partial<Item>) => {
+  setItems((prev) =>
+    prev.map((item) => (item.id === id ? { ...item, ...updates } : item)),
+  )
 }
 
-export function AgentListErrorBoundary({ children }: { children: React.ReactNode }) {
-    return (
-        <ErrorBoundary
-            fallback={({ error, retry }) => (
-                <div className="error-fallback">
-                    <h3>Something went wrong loading agents</h3>
-                    <p>Please try again or contact support if the problem persists.</p>
-                    <button onClick={retry}>Try Again</button>
-                </div>
-            )}
-            onError={(error) => logger.error('Agent list error:', error)}
-        >
-            {children}
-        </ErrorBoundary>
-    );
+const removeItem = (id: string) => {
+  setItems((prev) => prev.filter((item) => item.id !== id))
 }
 ```
+
+## Error Handling
 
 ### Component Error Handling
 - **Early Returns**: Use early returns for error states
@@ -475,21 +587,25 @@ export function AgentListErrorBoundary({ children }: { children: React.ReactNode
 - **User-Friendly Messages**: Show clear, actionable error messages
 
 ```typescript
-// ✅ Good - Component with comprehensive error handling
-export function AgentList() {
-    const { agents, loading, error } = useAgents();
-    
-    if (loading) return <LoadingSpinner />;
-    if (error) return <ErrorMessage message="Failed to load agents" />;
-    if (!agents.length) return <EmptyState message="No agents found" />;
-    
-    return (
-        <div className="agent-list">
-            {agents.map(agent => (
-                <AgentCard key={agent.id} agent={agent} />
-            ))}
-        </div>
-    );
+// Good - Component with comprehensive error handling
+export function OpportunitiesList() {
+  const { data, isDataLoading, isError, error } = useOpportunityData({
+    opportunityType: OpportunityType.LISTING,
+    filters,
+  })
+
+  if (isDataLoading) return <LoadingSpinner />
+  if (isError) return <ErrorMessage message="Failed to load opportunities" error={error} />
+  if (!data?.opportunities.length)
+    return <EmptyState message="No opportunities found" />
+
+  return (
+    <div className="opportunities-list">
+      {data.opportunities.map((opportunity) => (
+        <OpportunityCard key={opportunity.id} opportunity={opportunity} />
+      ))}
+    </div>
+  )
 }
 ```
 
@@ -502,72 +618,47 @@ export function AgentList() {
 - **Dependency Arrays**: Be careful with dependency arrays in memoized functions
 
 ```typescript
-// ✅ Good - Optimized component
-export const AgentCard = React.memo(function AgentCard({ 
-    agent, 
-    onSelect 
-}: AgentCardProps) {
-    const handleSelect = useCallback(() => {
-        onSelect?.(agent);
-    }, [agent, onSelect]);
+// Good - Optimized component
+export const OpportunityCard = React.memo(function OpportunityCard({
+  opportunity,
+  onSelect,
+}: OpportunityCardProps) {
+  const handleSelect = useCallback(() => {
+    onSelect?.(opportunity)
+  }, [opportunity, onSelect])
 
-    const formattedDate = useMemo(() => {
-        return format(new Date(agent.createdAt), 'MMM dd, yyyy');
-    }, [agent.createdAt]);
+  const formattedDate = useMemo(() => {
+    return format(new Date(opportunity.opportunityDate), 'MMM dd, yyyy')
+  }, [opportunity.opportunityDate])
 
-    return (
-        <div className="agent-card" onClick={handleSelect}>
-            <h3>{agent.name}</h3>
-            <p>{agent.description}</p>
-            <span>{formattedDate}</span>
-        </div>
-    );
-});
+  return (
+    <div className="opportunity-card" onClick={handleSelect}>
+      <h3>{opportunity.label}</h3>
+      <p>{opportunity.address}</p>
+      <span>{formattedDate}</span>
+    </div>
+  )
+})
 ```
 
 ### Code Splitting and Lazy Loading
-- **Route-Level Splitting**: Split code at route level
+- **Route-Level Splitting**: Vite handles code splitting automatically per route
 - **Component-Level Splitting**: Lazy load large components
 - **Dynamic Imports**: Use dynamic imports for conditional loading
 - **Loading States**: Provide loading states for lazy-loaded components
 
 ```typescript
-// ✅ Good - Lazy loading with loading state
-const AgentManagementsearch = lazy(() => 
-    import('./AgentManagementsearch')
-);
+// Good - Lazy loading with loading state
+import { lazy, Suspense } from 'react'
+
+const AdminDashboard = lazy(() => import('./AdminDashboard'))
 
 export function AdminPage() {
-    return (
-        <Suspense fallback={<LoadingSpinner />}>
-            <AgentManagementsearch />
-        </Suspense>
-    );
-}
-
-// ✅ Good - Conditional lazy loading
-const loadAdvancedFeatures = () => import('./AdvancedFeatures');
-
-export function FeatureToggle() {
-    const [showAdvanced, setShowAdvanced] = useState(false);
-    const [AdvancedFeatures, setAdvancedFeatures] = useState<React.ComponentType | null>(null);
-    
-    const handleToggleAdvanced = async () => {
-        if (!AdvancedFeatures) {
-            const module = await loadAdvancedFeatures();
-            setAdvancedFeatures(() => module.default);
-        }
-        setShowAdvanced(!showAdvanced);
-    };
-    
-    return (
-        <div>
-            <button onClick={handleToggleAdvanced}>
-                {showAdvanced ? 'Hide' : 'Show'} Advanced Features
-            </button>
-            {showAdvanced && AdvancedFeatures && <AdvancedFeatures />}
-        </div>
-    );
+  return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <AdminDashboard />
+    </Suspense>
+  )
 }
 ```
 
@@ -575,28 +666,69 @@ export function FeatureToggle() {
 - **Tree Shaking**: Use named imports for better tree shaking
 - **Dynamic Imports**: Use dynamic imports for large dependencies
 - **Bundle Analysis**: Regularly analyze bundle size
-- **Dead Code Elimination**: Remove unused code and dependencies
 
 ```typescript
-// ✅ Good - Tree-shakable imports
-import { format, addDays } from 'date-fns';
-import { groupBy, pick } from 'lodash';
+// Good - Tree-shakable imports
+import { format, addDays } from 'date-fns'
+import { groupBy, pick } from 'lodash-es'
 
-// ✅ Good - Dynamic imports for large libraries
-const loadChartLibrary = () => import('chart.js');
+// Avoid - Default imports (prevents tree-shaking)
+import * as dateFns from 'date-fns'
+import _ from 'lodash'
+```
 
-export function ChartComponent() {
-    const [Chart, setChart] = useState<any>(null);
-    
-    useEffect(() => {
-        loadChartLibrary().then(module => {
-            setChart(() => module.default);
-        });
-    }, []);
-    
-    if (!Chart) return <div>Loading chart...</div>;
-    
-    return <Chart data={chartData} />;
+## Form Handling
+
+### React Hook Form with Zod Validation
+
+```typescript
+// Good - Form with React Hook Form and Zod validation
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+
+const filterFormSchema = z.object({
+  department: z.string().optional(),
+  minPrice: z.number().min(0).optional(),
+  maxPrice: z.number().min(0).optional(),
+  propertyTypes: z.array(z.string()).optional(),
+})
+
+type FilterFormData = z.infer<typeof filterFormSchema>
+
+export function FilterForm({ onSubmit }: { onSubmit: (data: FilterFormData) => void }) {
+  const {
+    formState: { errors, isDirty, isSubmitting, isValid },
+    handleSubmit,
+    register,
+    reset,
+    watch,
+  } = useForm<FilterFormData>({
+    resolver: zodResolver(filterFormSchema),
+    defaultValues: {
+      department: '',
+      minPrice: undefined,
+      maxPrice: undefined,
+      propertyTypes: [],
+    },
+    mode: 'onChange',
+  })
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <div className="space-y-2">
+        <Label htmlFor="department">Department</Label>
+        <Input id="department" {...register('department')} placeholder="Enter department" />
+        {errors.department && (
+          <span className="text-sm text-red-500">{errors.department.message}</span>
+        )}
+      </div>
+
+      <Button type="submit" disabled={!isValid || isSubmitting}>
+        {isSubmitting ? 'Applying...' : 'Apply Filters'}
+      </Button>
+    </form>
+  )
 }
 ```
 
@@ -609,29 +741,29 @@ export function ChartComponent() {
 - **Form Elements**: Use proper form elements with labels
 
 ```typescript
-// ✅ Good - Semantic HTML structure
-export function AgentDetailPage({ agent }: { agent: AIAgent }) {
-    return (
-        <main>
-            <header>
-                <h1>{agent.name}</h1>
-                <nav aria-label="Agent navigation">
-                    <a href="#overview">Overview</a>
-                    <a href="#conversations">Conversations</a>
-                </nav>
-            </header>
-            
-            <section id="overview" aria-labelledby="overview-heading">
-                <h2 id="overview-heading">Overview</h2>
-                <p>{agent.description}</p>
-            </section>
-            
-            <section id="conversations" aria-labelledby="conversations-heading">
-                <h2 id="conversations-heading">Conversations</h2>
-                <AgentConversations agentId={agent.id} />
-            </section>
-        </main>
-    );
+// Good - Semantic HTML structure
+export function OpportunityDetailPage({ opportunity }: { opportunity: Opportunity }) {
+  return (
+    <main>
+      <header>
+        <h1>{opportunity.label}</h1>
+        <nav aria-label="Opportunity navigation">
+          <a href="#details">Details</a>
+          <a href="#location">Location</a>
+        </nav>
+      </header>
+
+      <section id="details" aria-labelledby="details-heading">
+        <h2 id="details-heading">Details</h2>
+        <p>{opportunity.description}</p>
+      </section>
+
+      <section id="location" aria-labelledby="location-heading">
+        <h2 id="location-heading">Location</h2>
+        <OpportunityMap opportunity={opportunity} />
+      </section>
+    </main>
+  )
 }
 ```
 
@@ -641,464 +773,18 @@ export function AgentDetailPage({ agent }: { agent: AIAgent }) {
 - **Role Attributes**: Use role attributes when semantic HTML isn't sufficient
 - **Live Regions**: Use aria-live for dynamic content updates
 
-```typescript
-// ✅ Good - Accessible interactive component
-export function AgentCard({ agent, onSelect }: AgentCardProps) {
-    return (
-        <article 
-            className="agent-card"
-            role="button"
-            tabIndex={0}
-            aria-label={`Agent ${agent.name}: ${agent.description}`}
-            aria-describedby={`agent-${agent.id}-details`}
-            onClick={() => onSelect?.(agent)}
-            onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    onSelect?.(agent);
-                }
-            }}
-        >
-            <h3>{agent.name}</h3>
-            <p id={`agent-${agent.id}-details`}>{agent.description}</p>
-        </article>
-    );
-}
-```
-
 ### Keyboard Navigation
 - **Tab Order**: Ensure logical tab order through interactive elements
 - **Focus Management**: Manage focus appropriately in dynamic content
 - **Keyboard Shortcuts**: Provide keyboard shortcuts for common actions
-- **Skip Links**: Provide skip links for main content
-
-```typescript
-// ✅ Good - Keyboard accessible component
-export function AgentSearch({ onSearch }: { onSearch: (query: string) => void }) {
-    const [query, setQuery] = useState('');
-    const inputRef = useRef<HTMLInputElement>(null);
-    
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        onSearch(query);
-    };
-    
-    const handleKeyDown = (e: React.KeyboardEvent) => {
-        if (e.key === 'Escape') {
-            setQuery('');
-            inputRef.current?.focus();
-        }
-    };
-    
-    return (
-        <form onSubmit={handleSubmit} role="search">
-            <label htmlFor="agent-search">Search agents</label>
-            <input
-                id="agent-search"
-                ref={inputRef}
-                type="search"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="Type to search agents..."
-                aria-describedby="search-help"
-            />
-            <div id="search-help" className="sr-only">
-                Press Enter to search, Escape to clear
-            </div>
-            <button type="submit">Search</button>
-        </form>
-    );
-}
-```
-
-## Form Handling
-
-### React Hook Form with Zod Validation
-- **React Hook Form**: Use React Hook Form for form state management and validation
-- **Zod Schemas**: Define validation schemas with Zod for type-safe validation
-- **Real-time Validation**: Use `mode: 'onChange'` for immediate feedback
-- **Server-Side Validation**: Always validate on the server as well
-- **Error Display**: Show validation errors clearly and accessibly
-- **Character Counters**: Display character counts for text fields with limits
-
-```typescript
-// ✅ Good - Form with React Hook Form and Zod validation
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-
-// Define Zod schema for validation
-const agentFormSchema = z.object({
-    name: z.string()
-        .min(1, 'Name is required')
-        .max(MAX_AGENT_NAME_LENGTH, `Name must be ${MAX_AGENT_NAME_LENGTH} characters or less`),
-    description: z.string()
-        .max(MAX_DESCRIPTION_LENGTH, `Description must be ${MAX_DESCRIPTION_LENGTH} characters or less`)
-        .optional(),
-    systemContext: z.string()
-        .min(1, 'System context is required')
-        .max(MAX_SYSTEM_CONTEXT_LENGTH, `System context must be ${MAX_SYSTEM_CONTEXT_LENGTH} characters or less`)
-});
-
-type AgentFormData = z.infer<typeof agentFormSchema>;
-
-export function AgentForm({ onSubmit }: { onSubmit: (data: AgentFormData) => void }) {
-    const {
-        formState: { errors, isDirty, isSubmitting, isValid },
-        handleSubmit,
-        register,
-        reset,
-        setValue,
-        watch,
-    } = useForm<AgentFormData>({
-        resolver: zodResolver(agentFormSchema),
-        defaultValues: {
-            name: '',
-            description: '',
-            systemContext: '',
-        },
-        mode: 'onChange', // Real-time validation
-    });
-
-    // Watch form values for character counts and preview
-    const watchedValues = watch();
-    const nameLength = watchedValues.name?.length ?? 0;
-    const descriptionLength = watchedValues.description?.length ?? 0;
-    const systemContextLength = watchedValues.systemContext?.length ?? 0;
-
-    const onSubmitForm = (data: AgentFormData) => {
-        startTransition(async () => {
-            await onSubmit(data);
-        });
-    };
-
-    return (
-        <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-6">
-            {/* Basic Information */}
-            <div className="space-y-4">
-                <div className="space-y-2">
-                    <Label htmlFor="name">Agent Name*</Label>
-                    <Input
-                        id="name"
-                        {...register('name')}
-                        placeholder="Enter agent name"
-                        className={errors.name ? 'border-red-500' : ''}
-                    />
-                    <div className="flex justify-between text-sm text-gray-500">
-                        <span className="text-red-500">{errors.name?.message}</span>
-                        <span
-                            className={
-                                nameLength > MAX_AGENT_NAME_LENGTH ? 'text-red-500' : ''
-                            }
-                        >
-                            {nameLength}/{MAX_AGENT_NAME_LENGTH} characters
-                        </span>
-                    </div>
-                </div>
-
-                <div className="space-y-2">
-                    <Label htmlFor="description">Description</Label>
-                    <Textarea
-                        id="description"
-                        {...register('description')}
-                        placeholder="Brief description of what this agent does"
-                        rows={3}
-                        className={errors.description ? 'border-red-500' : ''}
-                    />
-                    <div className="flex justify-between text-sm text-gray-500">
-                        <span className="text-red-500">
-                            {errors.description?.message}
-                        </span>
-                        <span
-                            className={
-                                descriptionLength > MAX_DESCRIPTION_LENGTH
-                                    ? 'text-red-500'
-                                    : ''
-                            }
-                        >
-                            {descriptionLength}/{MAX_DESCRIPTION_LENGTH} characters
-                        </span>
-                    </div>
-                </div>
-            </div>
-
-            {/* System Context with Markdown Editor */}
-            <div className="space-y-2">
-                <Label htmlFor="systemContext">System Context*</Label>
-                <div className="min-h-[500px] overflow-hidden rounded-lg border">
-                    <MarkdownEditor
-                        value={watchedValues.systemContext ?? ''}
-                        onChange={(value) => setValue('systemContext', value ?? '')}
-                        preview="live"
-                        autoFocus={false}
-                    />
-                </div>
-                <div className="flex justify-between text-sm text-gray-500">
-                    <span className="text-red-500">
-                        {errors.systemContext?.message}
-                    </span>
-                    <span
-                        className={
-                            systemContextLength > MAX_SYSTEM_CONTEXT_LENGTH
-                                ? 'text-red-500'
-                                : ''
-                        }
-                    >
-                        {systemContextLength}/{MAX_SYSTEM_CONTEXT_LENGTH.toLocaleString()} characters
-                    </span>
-                </div>
-            </div>
-
-            <Button
-                type="submit"
-                disabled={!isValid || !isDirty || isSubmitting}
-                className="min-w-[100px]"
-            >
-                {isSubmitting ? 'Saving...' : 'Create Agent'}
-            </Button>
-        </form>
-    );
-}
-```
-
-### Form State Management Patterns
-- **Form State**: Use React Hook Form's built-in state management
-- **Dirty State**: Track if form has been modified with `isDirty`
-- **Validation State**: Use `isValid` to enable/disable submit button
-- **Loading State**: Handle submission state with `isSubmitting`
-- **Reset Functionality**: Use `reset()` to clear form or load template data
-
-```typescript
-// ✅ Good - Form state management patterns
-export function AgentForm({ agent, onSubmit }: { agent?: AIAgent; onSubmit: (data: AgentFormData) => void }) {
-    const {
-        formState: { errors, isDirty, isSubmitting, isValid },
-        handleSubmit,
-        register,
-        reset,
-        setValue,
-        watch,
-    } = useForm<AgentFormData>({
-        resolver: zodResolver(agentFormSchema),
-        defaultValues: {
-            name: agent?.name ?? '',
-            description: agent?.description ?? '',
-            systemContext: agent?.systemContext ?? '',
-        },
-        mode: 'onChange',
-    });
-
-    // Template selection handler
-    const handleTemplateSelect = (templateKey: AgentTemplateName) => {
-        const template = AGENT_TEMPLATES[templateKey];
-        if (template) {
-            reset({
-                name: template.name,
-                description: template.description,
-                systemContext: template.systemContext,
-            });
-        }
-    };
-
-    // Submit handler with transition
-    const onSubmitForm = (data: AgentFormData) => {
-        startTransition(async () => {
-            await onSubmit(data);
-        });
-    };
-
-    return (
-        <form onSubmit={handleSubmit(onSubmitForm)}>
-            {/* Form fields */}
-            
-            <Button
-                type="submit"
-                disabled={!isValid || !isDirty || isSubmitting}
-            >
-                {isSubmitting ? 'Saving...' : agent ? 'Update Agent' : 'Create Agent'}
-            </Button>
-        </form>
-    );
-}
-```
-
-### Error Handling and User Feedback
-- **Mutation Errors**: Display Server Action errors with Alert components
-- **Success Messages**: Show success feedback after form submission
-- **Loading States**: Provide visual feedback during submission
-- **Accessibility**: Use proper ARIA attributes for error states
-
-```typescript
-// ✅ Good - Error handling and user feedback
-export function AgentForm({ onSubmit }: { onSubmit: (data: AgentFormData) => void }) {
-    const { createAgentMutation } = useAgentAdminCommands();
-    
-    const onSubmitForm = (data: AgentFormData) => {
-        startTransition(async () => {
-            await createAgentMutation.mutateAsync(data);
-        });
-    };
-
-    const currentError = createAgentMutation.error;
-    const isLoading = createAgentMutation.isPending;
-
-    return (
-        <form onSubmit={handleSubmit(onSubmitForm)}>
-            {/* Error Messages */}
-            {currentError && (
-                <Alert variant="destructive">
-                    <AlertDescription>{currentError.message}</AlertDescription>
-                </Alert>
-            )}
-
-            {/* Success Messages */}
-            {createAgentMutation.isSuccess && (
-                <Alert>
-                    <AlertDescription className="text-green-700">
-                        Agent created successfully!
-                    </AlertDescription>
-                </Alert>
-            )}
-
-            {/* Form fields */}
-            
-            <Button
-                type="submit"
-                disabled={!isValid || isLoading || isSubmitting}
-            >
-                {isLoading || isSubmitting ? 'Saving...' : 'Create Agent'}
-            </Button>
-        </form>
-    );
-}
-```
-
-### Form Layout and Organization
-- **Tabbed Interface**: Use tabs to organize form sections (Form, Templates, Preview)
-- **Card Layout**: Group related fields in Card components
-- **Character Counters**: Display character counts for all text fields
-- **Template Integration**: Provide template selection for common use cases
-- **Preview Mode**: Allow users to preview their form data
-
-```typescript
-// ✅ Good - Organized form layout with tabs
-export function AgentForm() {
-    const [activeTab, setActiveTab] = useState('form');
-
-    return (
-        <form onSubmit={handleSubmit(onSubmit)}>
-            <Tabs value={activeTab} onValueChange={setActiveTab}>
-                <TabsList className="grid w-full grid-cols-3">
-                    <TabsTrigger value="form">
-                        <Bot className="mr-2 h-4 w-4" />
-                        Agent Form
-                    </TabsTrigger>
-                    <TabsTrigger value="templates">
-                        <FileText className="mr-2 h-4 w-4" />
-                        Templates
-                    </TabsTrigger>
-                    <TabsTrigger value="preview">
-                        <Eye className="mr-2 h-4 w-4" />
-                        Preview
-                    </TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="form" className="mt-6 space-y-6">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Basic Information</CardTitle>
-                            <CardDescription>
-                                Configure the agent's name and description
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            {/* Form fields */}
-                        </CardContent>
-                    </Card>
-                </TabsContent>
-
-                <TabsContent value="templates" className="mt-6 space-y-6">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Agent Templates</CardTitle>
-                            <CardDescription>
-                                Start with a pre-configured template for common agent types
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            {/* Template selection */}
-                        </CardContent>
-                    </Card>
-                </TabsContent>
-
-                <TabsContent value="preview" className="mt-6 space-y-6">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Agent Preview</CardTitle>
-                            <CardDescription>
-                                Preview how your agent will appear to users
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            {/* Preview content */}
-                        </CardContent>
-                    </Card>
-                </TabsContent>
-            </Tabs>
-        </form>
-    );
-}
-```
-
-### Form Validation Best Practices
-- **Zod Schemas**: Define comprehensive validation schemas with clear error messages
-- **Character Limits**: Enforce character limits with visual feedback
-- **Required Fields**: Clearly mark required fields with asterisks
-- **Real-time Validation**: Provide immediate feedback as users type
-- **Server Validation**: Always validate on the server for security
-
-```typescript
-// ✅ Good - Comprehensive validation schema
-const agentFormSchema = z.object({
-    name: z.string()
-        .min(1, 'Name is required')
-        .max(MAX_AGENT_NAME_LENGTH, `Name must be ${MAX_AGENT_NAME_LENGTH} characters or less`)
-        .regex(/^[a-zA-Z0-9\s\-_]+$/, 'Name can only contain letters, numbers, spaces, hyphens, and underscores'),
-    description: z.string()
-        .max(MAX_DESCRIPTION_LENGTH, `Description must be ${MAX_DESCRIPTION_LENGTH} characters or less`)
-        .optional(),
-    systemContext: z.string()
-        .min(1, 'System context is required')
-        .max(MAX_SYSTEM_CONTEXT_LENGTH, `System context must be ${MAX_SYSTEM_CONTEXT_LENGTH} characters or less`)
-        .refine(
-            (value) => value.trim().length > 0,
-            'System context cannot be empty or only whitespace'
-        ),
-});
-
-// Export the inferred type for use in components
-export type AgentFormData = z.infer<typeof agentFormSchema>;
-```
 
 ## UI Component Library Guidelines
 
-### Preferred Library: ShadCN UI
+### Shadcn/ui with Radix UI
 
-**ShadCN UI** is the standard for building UI components in this project. ShadCN is not a traditional component library - it's a collection of reusable components built on top of **Radix UI** and styled with **Tailwind CSS**.
-
-#### What is ShadCN?
-- **Component Collection**: Copy-paste components that you own and control
-- **Built on Radix UI**: Uses Radix UI primitives for accessibility and behavior
-- **Styled with Tailwind**: Fully customizable with Tailwind CSS
-- **TypeScript First**: Full TypeScript support with proper type definitions
-- **No Package Dependency**: Components are copied to your codebase, not installed as npm package
-
-#### Theme Configuration
-This project uses **Blue** as the primary theme color. All ShadCN components use CSS variables for theming, configured in `src/app/globals.css`.
+**ShadCN UI** is the standard for building UI components in this project. Components are located in `src/components/ui/`.
 
 #### Adding New Components
-Use the ShadCN CLI to add new components:
 
 ```bash
 # Add a new component
@@ -1108,192 +794,12 @@ npx shadcn@latest add button
 npx shadcn@latest add card dialog tabs
 ```
 
-Components are installed to `src/app/_components/ui/` and automatically configured to use the project's theme.
-
-### Preferred Library: Radix UI (via ShadCN)
-
-**Radix UI** primitives are used through ShadCN components for building accessible, unstyled UI component behavior in this project.
-
-#### Why Radix UI?
-- **Accessibility First**: Built with accessibility as a core principle, following WAI-ARIA guidelines
-- **Unstyled**: Provides behavior and accessibility without imposing visual design
-- **Composable**: Flexible component architecture that allows for custom implementations
-- **TypeScript Support**: Excellent TypeScript integration with proper type definitions
-- **Performance**: Optimized for performance with minimal bundle impact
-- **Customizable**: Easy to style with Tailwind CSS or any styling solution
-
-#### Component Usage Patterns
+#### Component Usage
 
 ```typescript
-// ✅ Good - Using Radix UI components with proper styling
-import * as Select from '@radix-ui/react-select';
-import { ChevronDownIcon } from 'lucide-react';
-
-export function RoleSelect({ value, onValueChange }: RoleSelectProps) {
-  return (
-    <Select.Root value={value} onValueChange={onValueChange}>
-      <Select.Trigger className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
-        <Select.Value placeholder="Select a role..." />
-        <Select.Icon asChild>
-          <ChevronDownIcon className="h-4 w-4 opacity-50" />
-        </Select.Icon>
-      </Select.Trigger>
-      <Select.Portal>
-        <Select.Content className="relative z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md">
-          <Select.Viewport className="p-1">
-            <Select.Item value="USER" className="relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground">
-              <Select.ItemText>Domain Expert</Select.ItemText>
-            </Select.Item>
-            <Select.Item value="ADMIN" className="relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground">
-              <Select.ItemText>Administrator</Select.ItemText>
-            </Select.Item>
-          </Select.Viewport>
-        </Select.Content>
-      </Select.Portal>
-    </Select.Root>
-  );
-}
-
-// ✅ Good - Dialog component with Radix UI
-import * as Dialog from '@radix-ui/react-dialog';
-import { X } from 'lucide-react';
-
-export function ConfirmDialog({ children, title, description, onConfirm }: ConfirmDialogProps) {
-  return (
-    <Dialog.Root>
-      <Dialog.Trigger asChild>
-        {children}
-      </Dialog.Trigger>
-      <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm" />
-        <Dialog.Content className="fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 sm:rounded-lg">
-          <div className="flex flex-col space-y-1.5 text-center sm:text-left">
-            <Dialog.Title className="text-lg font-semibold leading-none tracking-tight">
-              {title}
-            </Dialog.Title>
-            <Dialog.Description className="text-sm text-muted-foreground">
-              {description}
-            </Dialog.Description>
-          </div>
-          <div className="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2">
-            <Dialog.Close asChild>
-              <button className="inline-flex h-10 items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
-                Cancel
-              </button>
-            </Dialog.Close>
-            <button 
-              onClick={onConfirm}
-              className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-            >
-              Confirm
-            </button>
-          </div>
-          <Dialog.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
-            <X className="h-4 w-4" />
-            <span className="sr-only">Close</span>
-          </Dialog.Close>
-        </Dialog.Content>
-      </Dialog.Portal>
-    </Dialog.Root>
-  );
-}
-```
-
-#### Integration with React Hook Form
-
-Radix UI components integrate seamlessly with React Hook Form:
-
-```typescript
-// ✅ Good - Radix Select with React Hook Form
-import { Controller } from 'react-hook-form';
-import * as Select from '@radix-ui/react-select';
-
-export function FormSelect({ control, name, options, placeholder }: FormSelectProps) {
-  return (
-    <Controller
-      control={control}
-      name={name}
-      render={({ field, fieldState }) => (
-        <div className="space-y-2">
-          <Select.Root value={field.value} onValueChange={field.onChange}>
-            <Select.Trigger 
-              className={`flex h-10 w-full items-center justify-between rounded-md border px-3 py-2 text-sm ${
-                fieldState.error ? 'border-red-500' : 'border-input'
-              }`}
-            >
-              <Select.Value placeholder={placeholder} />
-              <Select.Icon asChild>
-                <ChevronDownIcon className="h-4 w-4 opacity-50" />
-              </Select.Icon>
-            </Select.Trigger>
-            <Select.Portal>
-              <Select.Content className="relative z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md">
-                <Select.Viewport className="p-1">
-                  {options.map((option) => (
-                    <Select.Item 
-                      key={option.value} 
-                      value={option.value}
-                      className="relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground"
-                    >
-                      <Select.ItemText>{option.label}</Select.ItemText>
-                    </Select.Item>
-                  ))}
-                </Select.Viewport>
-              </Select.Content>
-            </Select.Portal>
-          </Select.Root>
-          {fieldState.error && (
-            <p className="text-sm text-red-500">{fieldState.error.message}</p>
-          )}
-        </div>
-      )}
-    />
-  );
-}
-```
-
-#### Styling Guidelines
-
-- **Use Tailwind CSS**: Style Radix components with Tailwind utility classes
-- **Consistent Design Tokens**: Use design system tokens for colors, spacing, and typography
-- **Focus States**: Ensure proper focus indicators for keyboard navigation
-- **Dark Mode Support**: Include dark mode variants in styling
-
-#### Common Radix Components to Use
-
-- **Select**: For dropdown selections (preferred over native `<select>`)
-- **Dialog**: For modals and confirmations
-- **Dropdown Menu**: For action menus and context menus
-- **Tooltip**: For helpful hints and additional information
-- **Tabs**: For organizing content into sections
-- **Accordion**: For collapsible content sections
-- **Checkbox/Radio**: For form inputs with better styling control
-- **Switch**: For boolean toggles
-- **Slider**: For range inputs
-- **Progress**: For loading and progress indicators
-
-#### Accessibility Benefits
-
-Radix UI components come with built-in accessibility features:
-- **Keyboard Navigation**: Full keyboard support out of the box
-- **Screen Reader Support**: Proper ARIA attributes and roles
-- **Focus Management**: Automatic focus handling for complex interactions
-- **High Contrast**: Respects user's high contrast preferences
-- **Reduced Motion**: Respects user's motion preferences
-
-#### ShadCN Component Guidelines
-
-**Component Structure**:
-- All ShadCN components are located in `src/app/_components/ui/`
-- Components use the `cn()` utility from `~/app/_utils` for className merging
-- Components are built with Radix UI primitives and styled with Tailwind CSS
-- Use `class-variance-authority` (CVA) for variant-based styling
-
-**Usage Pattern**:
-```typescript
-// ✅ Correct: Import from ui components
-import { Button } from '~/app/_components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '~/app/_components/ui/card';
+// Good - Import from ui components
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 export function MyComponent() {
   return (
@@ -1302,156 +808,141 @@ export function MyComponent() {
         <CardTitle>Welcome</CardTitle>
       </CardHeader>
       <CardContent>
-        <Button variant="default" size="lg">Click me</Button>
+        <Button variant="default" size="lg">
+          Click me
+        </Button>
       </CardContent>
     </Card>
-  );
+  )
 }
 ```
 
-**Customization**:
-```typescript
-// ✅ Correct: Extend components with custom classes
-<Button className="w-full mt-4" variant="outline">
-  Custom Styled Button
-</Button>
-
-// ✅ Correct: Use variant props for predefined styles
-<Button variant="destructive" size="sm">
-  Delete
-</Button>
-```
-
-**Available Components**:
+#### Available Components
 - Form elements: `button`, `input`, `textarea`, `select`, `checkbox`, `label`
 - Layout: `card`, `tabs`, `accordion`, `table`
-- Overlays: `dialog`, `alert-dialog`, `dropdown-menu`
-- Feedback: `alert`, `badge`, `progress`
-
-#### Migration from Native Elements
-
-When replacing native HTML elements with ShadCN components:
-
-```typescript
-// ❌ Avoid - Native select with limited styling options
-<select className="form-select">
-  <option value="USER">Domain Expert</option>
-  <option value="ADMIN">Administrator</option>
-</select>
-
-// ✅ Good - Radix Select with full customization
-<Select.Root>
-  <Select.Trigger className="custom-select-trigger">
-    <Select.Value placeholder="Select role..." />
-    <Select.Icon />
-  </Select.Trigger>
-  <Select.Portal>
-    <Select.Content>
-      <Select.Viewport>
-        <Select.Item value="USER">
-          <Select.ItemText>Domain Expert</Select.ItemText>
-        </Select.Item>
-        <Select.Item value="ADMIN">
-          <Select.ItemText>Administrator</Select.ItemText>
-        </Select.Item>
-      </Select.Viewport>
-    </Select.Content>
-  </Select.Portal>
-</Select.Root>
-```
+- Overlays: `dialog`, `alert-dialog`, `dropdown-menu`, `popover`
+- Feedback: `alert`, `badge`, `progress`, `tooltip`
 
 ## Testing Guidelines
 
-### Component Testing
-- **Render Testing**: Test that components render without errors
-- **Props Testing**: Test components with different prop combinations
-- **User Interaction**: Test user interactions and event handlers
-- **Accessibility Testing**: Test accessibility features
+### Component Testing with Vitest
 
 ```typescript
-// ✅ Good - Comprehensive component test
-import { render, screen, fireEvent } from '@testing-library/react';
-import { AgentCard } from './AgentCard';
+// Good - Comprehensive component test
+import { render, screen, fireEvent } from '@testing-library/react'
+import { describe, it, expect, vi } from 'vitest'
+import { OpportunityCard } from './OpportunityCard'
 
-describe('AgentCard', () => {
-    const mockAgent = {
-        id: '1',
-        name: 'Test Agent',
-        description: 'A test agent',
-        createdAt: '2024-01-01T00:00:00Z'
-    };
-    
-    it('renders agent information correctly', () => {
-        render(<AgentCard agent={mockAgent} />);
-        
-        expect(screen.getByText('Test Agent')).toBeInTheDocument();
-        expect(screen.getByText('A test agent')).toBeInTheDocument();
-    });
-    
-    it('calls onSelect when clicked', () => {
-        const onSelect = jest.fn();
-        render(<AgentCard agent={mockAgent} onSelect={onSelect} />);
-        
-        fireEvent.click(screen.getByRole('button'));
-        expect(onSelect).toHaveBeenCalledWith(mockAgent);
-    });
-    
-    it('is keyboard accessible', () => {
-        const onSelect = jest.fn();
-        render(<AgentCard agent={mockAgent} onSelect={onSelect} />);
-        
-        const card = screen.getByRole('button');
-        fireEvent.keyDown(card, { key: 'Enter' });
-        expect(onSelect).toHaveBeenCalledWith(mockAgent);
-    });
-});
+describe('OpportunityCard', () => {
+  const mockOpportunity = {
+    id: '1',
+    label: 'Test Property',
+    address: '123 Test Street',
+    opportunityDate: '2024-01-01',
+  }
+
+  it('renders opportunity information correctly', () => {
+    render(<OpportunityCard opportunity={mockOpportunity} />)
+
+    expect(screen.getByText('Test Property')).toBeInTheDocument()
+    expect(screen.getByText('123 Test Street')).toBeInTheDocument()
+  })
+
+  it('calls onSelect when clicked', () => {
+    const onSelect = vi.fn()
+    render(<OpportunityCard opportunity={mockOpportunity} onSelect={onSelect} />)
+
+    fireEvent.click(screen.getByRole('button'))
+    expect(onSelect).toHaveBeenCalledWith(mockOpportunity)
+  })
+})
 ```
 
 ### Hook Testing
-- **Hook Isolation**: Test hooks in isolation using renderHook
-- **State Changes**: Test state changes and side effects
-- **Error Handling**: Test error scenarios
-- **Dependencies**: Test hook behavior with different dependencies
 
 ```typescript
-// ✅ Good - Hook testing
-import { renderHook, act } from '@testing-library/react';
-import { useAgentData } from './useAgentData';
+// Good - Hook testing with renderHook
+import { renderHook, waitFor } from '@testing-library/react'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { describe, it, expect, vi } from 'vitest'
+import { useOpportunityData } from './useOpportunityData'
 
-describe('useAgentData', () => {
-    it('fetches agent data successfully', async () => {
-        const mockAgent = { id: '1', name: 'Test Agent' };
-        jest.spyOn(global, 'fetch').mockResolvedValue({
-            json: () => Promise.resolve(mockAgent)
-        } as Response);
-        
-        const { result } = renderHook(() => useAgentData('1'));
-        
-        expect(result.current.loading).toBe(true);
-        
-        await act(async () => {
-            await new Promise(resolve => setTimeout(resolve, 0));
-        });
-        
-        expect(result.current.loading).toBe(false);
-        expect(result.current.agent).toEqual(mockAgent);
-        expect(result.current.error).toBeNull();
-    });
-    
-    it('handles fetch errors', async () => {
-        jest.spyOn(global, 'fetch').mockRejectedValue(new Error('Fetch failed'));
-        
-        const { result } = renderHook(() => useAgentData('1'));
-        
-        await act(async () => {
-            await new Promise(resolve => setTimeout(resolve, 0));
-        });
-        
-        expect(result.current.loading).toBe(false);
-        expect(result.current.agent).toBeNull();
-        expect(result.current.error).toBe('Fetch failed');
-    });
-});
+describe('useOpportunityData', () => {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  })
+
+  const wrapper = ({ children }: { children: React.ReactNode }) => (
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  )
+
+  it('fetches opportunity data successfully', async () => {
+    const { result } = renderHook(
+      () =>
+        useOpportunityData({
+          opportunityType: OpportunityType.LISTING,
+          filters: {},
+        }),
+      { wrapper },
+    )
+
+    expect(result.current.isDataLoading).toBe(true)
+
+    await waitFor(() => {
+      expect(result.current.isDataLoading).toBe(false)
+    })
+
+    expect(result.current.data).toBeDefined()
+  })
+})
+```
+
+## Project Structure
+
+```
+src/
+├── api/              # API client and domain-specific API modules
+│   ├── client.ts
+│   ├── auctions.api.ts
+│   ├── listings.api.ts
+│   └── index.ts
+├── components/
+│   ├── auth/         # Authentication components
+│   ├── filters/      # Filter components
+│   ├── opportunities/ # Opportunity-related components
+│   ├── providers/    # React context providers
+│   └── ui/           # Shadcn/ui base components
+├── hooks/            # Custom React hooks
+├── lib/              # Utilities (auth-client, utils)
+├── pages/            # Page components
+│   ├── search/       # Search pages
+│   ├── opportunities/ # Detail pages
+│   └── admin/        # Admin pages
+├── router/           # Routing configuration and guards
+├── schemas/          # Zod schemas for validation
+├── types/            # TypeScript types
+├── constants/        # Constants
+├── main.tsx          # App entry point
+└── styles.css        # Global styles
+```
+
+## Scripts
+
+```bash
+# Development
+pnpm dev              # Start dev server on port 3000
+
+# Production
+pnpm build            # Build for production
+pnpm serve            # Preview production build
+
+# Testing
+pnpm test             # Run tests with Vitest
+
+# Code Quality
+pnpm lint             # ESLint
+pnpm format           # Prettier
+pnpm check            # Prettier + ESLint fix
 ```
 
 ## Conclusion
@@ -1459,9 +950,8 @@ describe('useAgentData', () => {
 These frontend guidelines ensure our React components are maintainable, accessible, and performant. When developing frontend components, prioritize:
 
 1. **Component Clarity** over complexity
-2. **Accessibility** over visual appeal (when they conflict)
-3. **Performance** over premature optimization
-4. **User Experience** over developer convenience
-5. **Testing** over assuming correctness
-
-Always consider the end user's experience and ensure your components work across different devices, browsers, and accessibility tools.
+2. **Type Safety** with TypeScript and Zod
+3. **Performance** with proper memoization and code splitting
+4. **Accessibility** for all users
+5. **Testing** for reliability
+6. **URL State** for shareable, bookmarkable pages
