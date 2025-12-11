@@ -10,6 +10,7 @@ import { SuccessionsModule } from './domains/successions';
 import { LiquidationsModule } from './domains/liquidations';
 import { EnergyDiagnosticsModule } from './domains/energy-diagnostics';
 import { AddressesModule } from './domains/addresses';
+import { SavedSearchesModule } from './domains/saved-searches';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { AddressesModule } from './domains/addresses';
     LiquidationsModule,
     EnergyDiagnosticsModule,
     AddressesModule,
+    SavedSearchesModule,
   ],
 })
 export class AppModule {}

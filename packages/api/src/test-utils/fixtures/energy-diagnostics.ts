@@ -30,7 +30,7 @@ export const ENERGY_DIAGNOSTIC_2: EnergyDiagnostic = {
   opportunityDate: new Date('2024-02-10').toISOString().split('T')[0],
   externalId: 'DPE_002_2024',
   energyClass: EnergyClass.G,
-  gazClass: 'G',
+  gazClass: GazClass.G,
   squareFootage: 450,
   createdAt: new Date('2024-02-05'),
   updatedAt: new Date('2024-02-08'),

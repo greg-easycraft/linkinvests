@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useLocation } from '@tanstack/react-router'
 import type { EnergyDiagnosticFilters as EnergyDiagnosticFiltersType } from '@/schemas/filters.schema'
 import type { EnergyClassType } from '@/types'
@@ -11,6 +12,10 @@ import {
   ViewToggle,
   ZipCodeInput,
 } from '@/components/filters'
+import {
+  SaveSearchModal,
+  SavedSearchesSection,
+} from '@/components/saved-searches'
 
 interface EnergyDiagnosticFiltersProps {
   filters: EnergyDiagnosticFiltersType
@@ -22,6 +27,9 @@ export function EnergyDiagnosticFilters({
   onFiltersChange,
 }: EnergyDiagnosticFiltersProps): React.ReactElement {
   const location = useLocation()
+  const [isSaveModalOpen, setIsSaveModalOpen] = useState(false)
+
+  const currentUrl = location.pathname + location.search
 
   const handleChange = <TKey extends keyof EnergyDiagnosticFiltersType>(
     key: TKey,
@@ -34,6 +42,13 @@ export function EnergyDiagnosticFilters({
     <Card className="p-4 space-y-4 h-full overflow-y-auto">
       {/* Type Selector */}
       <OpportunityTypeFilter currentPath={location.pathname} />
+
+      <Separator />
+
+      {/* Saved Searches */}
+      <SavedSearchesSection
+        onSaveCurrentSearch={() => setIsSaveModalOpen(true)}
+      />
 
       <Separator />
 
@@ -57,8 +72,16 @@ export function EnergyDiagnosticFilters({
       />
 
       <DatePeriodFilter
-        value={filters.datePeriod}
-        onValueChange={(v) => handleChange('datePeriod', v)}
+        value={filters.dateAfter}
+        onValueChange={(v) => handleChange('dateAfter', v)}
+        label="Période depuis"
+      />
+
+      <DatePeriodFilter
+        value={filters.dateBefore}
+        onValueChange={(v) => handleChange('dateBefore', v)}
+        label="Période jusqu'à"
+        placeholder="Jusqu'à maintenant"
       />
 
       <Separator />
@@ -70,6 +93,13 @@ export function EnergyDiagnosticFilters({
           handleChange('energyClasses', v as typeof filters.energyClasses)
         }
         energySievesOnly
+      />
+
+      {/* Save Search Modal */}
+      <SaveSearchModal
+        isOpen={isSaveModalOpen}
+        onClose={() => setIsSaveModalOpen(false)}
+        currentUrl={currentUrl}
       />
     </Card>
   )

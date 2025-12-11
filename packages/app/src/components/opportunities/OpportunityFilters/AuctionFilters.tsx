@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useLocation } from '@tanstack/react-router'
 import type { AuctionFilters as AuctionFiltersType } from '@/schemas/filters.schema'
 import type { EnergyClassType } from '@/types'
@@ -16,6 +17,10 @@ import {
   ViewToggle,
   ZipCodeInput,
 } from '@/components/filters'
+import {
+  SaveSearchModal,
+  SavedSearchesSection,
+} from '@/components/saved-searches'
 
 interface AuctionFiltersProps {
   filters: AuctionFiltersType
@@ -27,6 +32,8 @@ export function AuctionFilters({
   onFiltersChange,
 }: AuctionFiltersProps): React.ReactElement {
   const location = useLocation()
+  const [isSaveModalOpen, setIsSaveModalOpen] = useState(false)
+  const currentUrl = location.href
 
   const handleChange = <TKey extends keyof AuctionFiltersType>(
     key: TKey,
@@ -39,6 +46,13 @@ export function AuctionFilters({
     <Card className="p-4 space-y-4 h-full overflow-y-auto">
       {/* Type Selector */}
       <OpportunityTypeFilter currentPath={location.pathname} />
+
+      <Separator />
+
+      {/* Saved Searches */}
+      <SavedSearchesSection
+        onSaveCurrentSearch={() => setIsSaveModalOpen(true)}
+      />
 
       <Separator />
 
@@ -62,8 +76,16 @@ export function AuctionFilters({
       />
 
       <DatePeriodFilter
-        value={filters.datePeriod}
-        onValueChange={(v) => handleChange('datePeriod', v)}
+        value={filters.dateAfter}
+        onValueChange={(v) => handleChange('dateAfter', v)}
+        label="Période depuis"
+      />
+
+      <DatePeriodFilter
+        value={filters.dateBefore}
+        onValueChange={(v) => handleChange('dateBefore', v)}
+        label="Période jusqu'à"
+        placeholder="Jusqu'à maintenant"
       />
 
       <Separator />
@@ -115,6 +137,13 @@ export function AuctionFilters({
       <EnergyClassFilter
         value={filters.energyClasses as Array<EnergyClassType> | undefined}
         onValueChange={(v) => handleChange('energyClasses', v)}
+      />
+
+      {/* Save Search Modal */}
+      <SaveSearchModal
+        isOpen={isSaveModalOpen}
+        onClose={() => setIsSaveModalOpen(false)}
+        currentUrl={currentUrl}
       />
     </Card>
   )

@@ -14,6 +14,7 @@ import {
   boolean,
 } from 'drizzle-orm/pg-core';
 import { desc } from 'drizzle-orm';
+import { users } from './auth.schema';
 import {
   AuctionOccupationStatus,
   UNKNOWN_ENERGY_CLASS,
@@ -375,5 +376,27 @@ export const listingEnergyDiagnosticLinks = pgTable(
       table.energyDiagnosticId,
     ),
     index('idx_listing_energy_diagnostic_listing').on(table.listingId),
+  ],
+);
+
+// Saved Searches Table
+export const savedSearches = pgTable(
+  'saved_search',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: text('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    name: varchar('name', { length: 256 }).notNull(),
+    url: text('url').notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at')
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
+  },
+  (table) => [
+    index('idx_saved_search_user_id').on(table.userId),
+    index('idx_saved_search_created_at').on(desc(table.createdAt)),
   ],
 );
