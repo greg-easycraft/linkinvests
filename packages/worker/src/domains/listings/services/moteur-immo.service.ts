@@ -1,9 +1,11 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import {
   EnergyClass,
+  GazClass,
   ListingInput,
   PropertyType,
   UNKNOWN_ENERGY_CLASS,
+  UNKNOWN_GAZ_CLASS,
 } from '@linkinvests/shared';
 import type { ConfigType } from '~/config';
 import { CONFIG_TOKEN } from '~/config';
@@ -64,7 +66,7 @@ export interface MoteurImmoListing {
   energyValue?: number;
   energyGrade?: EnergyClass;
   gasValue?: number;
-  gasGrade?: string;
+  gasGrade?: GazClass;
   diagnosticDate?: string;
   priceStats?: {
     rent?: number;
@@ -286,6 +288,7 @@ export class MoteurImmoService {
         rooms: apiListing.rooms ?? undefined,
         bedrooms: apiListing.bedrooms ?? undefined,
         energyClass: apiListing.energyGrade ?? UNKNOWN_ENERGY_CLASS,
+        gazClass: apiListing.gasGrade ?? UNKNOWN_GAZ_CLASS,
         price: apiListing.price,
         pictures: apiListing.pictureUrls || [],
         sellerType: apiListing.publisher.type,

@@ -13,8 +13,10 @@ import { DEPARTMENT_IDS_MAP } from '../constants/departments';
 import {
   AuctionOccupationStatus,
   AuctionSource,
+  GazClass,
   PropertyType,
   UNKNOWN_ENERGY_CLASS,
+  UNKNOWN_GAZ_CLASS,
 } from '@linkinvests/shared';
 
 interface DetailScraperResult {
@@ -183,6 +185,7 @@ export class DetailScraperService {
       description: lotData.description || undefined,
       energyClass:
         lotData.critere_consommation_energetique ?? UNKNOWN_ENERGY_CLASS,
+      gazClass: (lotData.critere_emissions_de_gaz as GazClass) ?? UNKNOWN_GAZ_CLASS,
       squareFootage: Number(lotData.critere_surface_habitable) || undefined,
       rooms: Number(lotData.critere_nombre_de_pieces) || undefined,
       auctionVenue: lotData.organisateur?.nom || undefined,

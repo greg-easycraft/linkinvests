@@ -18,14 +18,14 @@ export class ScrapingController {
 
   constructor(
     @InjectQueue(SCRAPING_QUEUE)
-    private readonly scrapingQueue: Queue,
+    private readonly scrapingQueue: Queue
   ) {}
 
   @Post('jobs/auctions')
   @HttpCode(HttpStatus.ACCEPTED)
   async enqueueAuctionJob(
     @Body('departmentId') departmentId: number,
-    @Body('sinceDate') sinceDate?: string,
+    @Body('sinceDate') sinceDate?: string
   ) {
     try {
       // Validation
@@ -72,7 +72,7 @@ export class ScrapingController {
             type: 'exponential',
             delay: 5000, // Start with 5 seconds
           },
-        },
+        }
       );
 
       this.logger.log({

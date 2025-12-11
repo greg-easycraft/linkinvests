@@ -64,7 +64,7 @@ const connection = {
       {
         name: SOURCE_LISTINGS_QUEUE,
         connection,
-      },
+      }
     ),
 
     // Register all queues with BullBoard for dashboard visibility
@@ -92,7 +92,7 @@ const connection = {
       {
         name: SOURCE_LISTINGS_QUEUE,
         adapter: BullMQAdapter,
-      },
+      }
     ),
   ],
   controllers: [ScrapingController, SourcingController],

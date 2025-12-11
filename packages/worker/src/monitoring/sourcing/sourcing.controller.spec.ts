@@ -97,7 +97,7 @@ describe('SourcingController', () => {
         {
           removeOnComplete: 100,
           removeOnFail: 100,
-        },
+        }
       );
 
       expect(controller['logger'].log).toHaveBeenCalledWith({
@@ -116,7 +116,7 @@ describe('SourcingController', () => {
       const result = await controller.enqueueFailingCompanies(
         75,
         '2024-01-01',
-        '2024-01-31',
+        '2024-01-31'
       );
 
       expect(result).toEqual({
@@ -135,7 +135,7 @@ describe('SourcingController', () => {
         {
           removeOnComplete: 100,
           removeOnFail: 100,
-        },
+        }
       );
 
       expect(controller['logger'].log).toHaveBeenCalledWith({
@@ -150,7 +150,7 @@ describe('SourcingController', () => {
     it('should return error when departmentId is missing', async () => {
       const result = await controller.enqueueFailingCompanies(
         undefined as any,
-        '2024-01-01',
+        '2024-01-01'
       );
 
       expect(result).toEqual({
@@ -211,7 +211,7 @@ describe('SourcingController', () => {
         {
           removeOnComplete: 100,
           removeOnFail: 100,
-        },
+        }
       );
 
       expect(controller['logger'].log).toHaveBeenCalledWith({
@@ -271,7 +271,7 @@ describe('SourcingController', () => {
         {
           removeOnComplete: 100,
           removeOnFail: 100,
-        },
+        }
       );
 
       expect(controller['logger'].log).toHaveBeenCalledWith({
@@ -321,7 +321,7 @@ describe('SourcingController', () => {
         75,
         '2024-01-01',
         undefined,
-        undefined,
+        undefined
       );
 
       expect(result).toEqual({
@@ -341,7 +341,7 @@ describe('SourcingController', () => {
         {
           removeOnComplete: 100,
           removeOnFail: 100,
-        },
+        }
       );
 
       expect(controller['logger'].log).toHaveBeenCalledWith({
@@ -364,7 +364,7 @@ describe('SourcingController', () => {
         75,
         '2024-01-01',
         '2024-12-31',
-        ['E', 'F', 'G'],
+        ['E', 'F', 'G']
       );
 
       expect(result).toEqual({
@@ -384,7 +384,7 @@ describe('SourcingController', () => {
         {
           removeOnComplete: 100,
           removeOnFail: 100,
-        },
+        }
       );
 
       expect(controller['logger'].log).toHaveBeenCalledWith({
@@ -407,7 +407,7 @@ describe('SourcingController', () => {
         75,
         '2024-01-01',
         undefined,
-        ['D', 'E'],
+        ['D', 'E']
       );
 
       expect(result).toEqual({
@@ -427,7 +427,7 @@ describe('SourcingController', () => {
         {
           removeOnComplete: 100,
           removeOnFail: 100,
-        },
+        }
       );
     });
 
@@ -436,7 +436,7 @@ describe('SourcingController', () => {
         undefined as any,
         '2024-01-01',
         undefined,
-        undefined,
+        undefined
       );
 
       expect(result).toEqual({
@@ -452,7 +452,7 @@ describe('SourcingController', () => {
         75,
         '',
         undefined,
-        undefined,
+        undefined
       );
 
       expect(result).toEqual({
@@ -471,7 +471,7 @@ describe('SourcingController', () => {
         75,
         '2024-01-01',
         undefined,
-        undefined,
+        undefined
       );
 
       expect(result).toEqual({
@@ -572,7 +572,7 @@ describe('SourcingController', () => {
         {
           removeOnComplete: 100,
           removeOnFail: 100,
-        },
+        }
       );
 
       expect(controller['logger'].log).toHaveBeenCalledWith({
@@ -601,7 +601,7 @@ describe('SourcingController', () => {
         'C',
         'A',
         ['apartment', 'house'],
-        '75',
+        '75'
       );
 
       expect(result).toEqual({
@@ -624,7 +624,7 @@ describe('SourcingController', () => {
         {
           removeOnComplete: 100,
           removeOnFail: 100,
-        },
+        }
       );
 
       expect(controller['logger'].log).toHaveBeenCalledWith({
@@ -653,7 +653,7 @@ describe('SourcingController', () => {
         'F',
         undefined,
         ['house'],
-        undefined,
+        undefined
       );
 
       expect(result).toEqual({
@@ -676,7 +676,7 @@ describe('SourcingController', () => {
         {
           removeOnComplete: 100,
           removeOnFail: 100,
-        },
+        }
       );
     });
 
@@ -717,7 +717,7 @@ describe('SourcingController', () => {
         '',
         '',
         [],
-        '',
+        ''
       );
 
       expect(result.success).toBe(true);
@@ -736,7 +736,7 @@ describe('SourcingController', () => {
         {
           removeOnComplete: 100,
           removeOnFail: 100,
-        },
+        }
       );
     });
 
@@ -751,7 +751,7 @@ describe('SourcingController', () => {
         'E',
         'B',
         ['studio', 'duplex'],
-        '69',
+        '69'
       );
 
       expect(controller['logger'].log).toHaveBeenCalledWith({

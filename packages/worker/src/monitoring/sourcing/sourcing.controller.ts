@@ -30,7 +30,7 @@ export class SourcingController {
     @InjectQueue(SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE)
     private readonly failingCompaniesQueue: Queue,
     @InjectQueue(SOURCE_LISTINGS_QUEUE)
-    private readonly listingsQueue: Queue,
+    private readonly listingsQueue: Queue
   ) {}
 
   @Post('jobs/failing-companies')
@@ -38,7 +38,7 @@ export class SourcingController {
   async enqueueFailingCompanies(
     @Body('departmentId') departmentId: number,
     @Body('sinceDate') sinceDate: string,
-    @Body('beforeDate') beforeDate?: string,
+    @Body('beforeDate') beforeDate?: string
   ) {
     try {
       if (!departmentId) {
@@ -65,7 +65,7 @@ export class SourcingController {
         {
           removeOnComplete: 100,
           removeOnFail: 100,
-        },
+        }
       );
 
       this.logger.log({
@@ -114,7 +114,7 @@ export class SourcingController {
         {
           removeOnComplete: 100,
           removeOnFail: 100,
-        },
+        }
       );
 
       this.logger.log({
@@ -161,7 +161,7 @@ export class SourcingController {
         {
           removeOnComplete: 100,
           removeOnFail: 100,
-        },
+        }
       );
 
       this.logger.log({
@@ -195,7 +195,7 @@ export class SourcingController {
     @Body('departmentId') departmentId: number,
     @Body('sinceDate') sinceDate: string,
     @Body('beforeDate') beforeDate?: string,
-    @Body('energyClasses') energyClasses?: string[],
+    @Body('energyClasses') energyClasses?: string[]
   ) {
     try {
       if (!departmentId) {
@@ -223,7 +223,7 @@ export class SourcingController {
         {
           removeOnComplete: 100,
           removeOnFail: 100,
-        },
+        }
       );
 
       this.logger.log({
@@ -264,7 +264,7 @@ export class SourcingController {
     @Body('energyGradeMin') energyGradeMin?: string,
     @Body('propertyTypes') propertyTypes?: string[],
     @Body('departmentCode') departmentCode?: string,
-    @Body('usePublicationDate') usePublicationDate?: boolean,
+    @Body('usePublicationDate') usePublicationDate?: boolean
   ) {
     try {
       const { id: jobId } = await this.listingsQueue.add(
@@ -282,7 +282,7 @@ export class SourcingController {
         {
           removeOnComplete: 100,
           removeOnFail: 100,
-        },
+        }
       );
 
       this.logger.log({

@@ -1,4 +1,4 @@
-import { AuctionInput, EnergyClass } from '@linkinvests/shared';
+import { AuctionInput, EnergyClass, GazClass } from '@linkinvests/shared';
 
 export interface AuctionListing {
   url: string;
@@ -55,6 +55,7 @@ export interface LotData {
   encheres_fermeture_date?: number | string;
   fermeture_date?: number | string;
   critere_consommation_energetique?: EnergyClass;
+  critere_emissions_de_gaz?: GazClass;
   critere_surface_habitable?: number | string;
   critere_nombre_de_pieces?: number | string;
   critere_occupation_du_bien?: LotOccupationStatus;

@@ -68,7 +68,7 @@ describe('ScrapingController', () => {
             type: 'exponential',
             delay: 5000,
           },
-        },
+        }
       );
 
       expect(controller['logger'].log).toHaveBeenCalledWith({
@@ -110,7 +110,7 @@ describe('ScrapingController', () => {
             type: 'exponential',
             delay: 5000,
           },
-        },
+        }
       );
 
       expect(controller['logger'].log).toHaveBeenCalledWith({
@@ -219,7 +219,7 @@ describe('ScrapingController', () => {
           const result = await controller.enqueueAuctionJob(75, date);
           expect(result.success).toBe(false);
           expect(result.error).toBe(
-            'sinceDate must be in ISO format YYYY-MM-DD',
+            'sinceDate must be in ISO format YYYY-MM-DD'
           );
         }
 
@@ -273,7 +273,7 @@ describe('ScrapingController', () => {
 
         // This should throw an error because the controller tries to access .message on undefined
         await expect(
-          controller.enqueueAuctionJob(75, '2024-01-01'),
+          controller.enqueueAuctionJob(75, '2024-01-01')
         ).rejects.toThrow();
       });
     });
@@ -295,7 +295,7 @@ describe('ScrapingController', () => {
               type: 'exponential',
               delay: 5000,
             },
-          },
+          }
         );
       });
 
@@ -312,7 +312,7 @@ describe('ScrapingController', () => {
             departmentId: 75,
             sinceDate: currentDate,
           },
-          expect.any(Object),
+          expect.any(Object)
         );
       });
     });
@@ -366,7 +366,7 @@ describe('ScrapingController', () => {
       expect(result).toHaveProperty('jobId', 'test-job');
       expect(result).toHaveProperty(
         'message',
-        'Auction scraping job enqueued successfully',
+        'Auction scraping job enqueued successfully'
       );
       expect(result).toHaveProperty('data');
       expect(result.data).toEqual({

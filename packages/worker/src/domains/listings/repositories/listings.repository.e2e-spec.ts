@@ -1,7 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ListingsRepository } from './listings.repository';
 import { DATABASE_CONNECTION } from '~/database';
-import { EnergyClass, ListingInput, PropertyType } from '@linkinvests/shared';
+import {
+  EnergyClass,
+  GazClass,
+  ListingInput,
+  PropertyType,
+} from '@linkinvests/shared';
 
 describe('ListingsRepository (Integration)', () => {
   let repository: ListingsRepository;
@@ -28,6 +33,7 @@ describe('ListingsRepository (Integration)', () => {
     rooms: 3,
     bedrooms: 2,
     energyClass: EnergyClass.C,
+    gazClass: GazClass.C,
     price: 500000,
     pictures: ['image1.jpg', 'image2.jpg'],
     mainPicture: 'image1.jpg',

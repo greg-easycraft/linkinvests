@@ -92,6 +92,7 @@ describe('EnergyDiagnosticsRepository', () => {
           opportunityDate: new Date('2024-01-15').toISOString().split('T')[0],
           squareFootage: 100,
           energyClass: 'A',
+          gazClass: 'A',
         })
       );
 
@@ -117,6 +118,7 @@ describe('EnergyDiagnosticsRepository', () => {
           opportunityDate: new Date('2024-01-15').toISOString().split('T')[0],
           squareFootage: 100,
           energyClass: 'A',
+          gazClass: 'A',
         })
       );
 
@@ -141,6 +143,7 @@ describe('EnergyDiagnosticsRepository', () => {
             .split('T')[0],
           squareFootage: 100,
           energyClass: 'A',
+          gazClass: 'A',
         },
       ];
 
@@ -178,6 +181,7 @@ describe('EnergyDiagnosticsRepository', () => {
           opportunityDate: new Date('2024-01-15').toISOString().split('T')[0],
           squareFootage: 100,
           energyClass: 'A',
+          gazClass: 'A',
         },
       ];
 
@@ -200,6 +204,7 @@ describe('EnergyDiagnosticsRepository', () => {
           opportunityDate: new Date('2024-01-15').toISOString().split('T')[0],
           squareFootage: 100,
           energyClass: 'A',
+          gazClass: 'A',
         },
       ];
 
@@ -222,6 +227,7 @@ describe('EnergyDiagnosticsRepository', () => {
           opportunityDate: new Date('2024-01-15').toISOString().split('T')[0],
           squareFootage: 100,
           energyClass: 'A',
+          gazClass: 'A',
         },
       ];
 
@@ -239,6 +245,7 @@ describe('EnergyDiagnosticsRepository', () => {
           externalId: 'DPE123456',
           squareFootage: 100,
           energyClass: 'A',
+          gazClass: 'A',
           label: 'Test Building',
           address: '123 Rue de Test',
           zipCode: '75001',

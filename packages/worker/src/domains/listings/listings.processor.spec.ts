@@ -3,7 +3,12 @@ import { Job } from 'bullmq';
 import { ListingsProcessor } from './listings.processor';
 import { MoteurImmoService } from './services/moteur-immo.service';
 import { ListingsRepository } from './repositories/listings.repository';
-import { EnergyClass, ListingInput, PropertyType } from '@linkinvests/shared';
+import {
+  EnergyClass,
+  GazClass,
+  ListingInput,
+  PropertyType,
+} from '@linkinvests/shared';
 
 // Mock data
 const mockValidListing: ListingInput = {
@@ -26,6 +31,7 @@ const mockValidListing: ListingInput = {
   rooms: 3,
   bedrooms: 2,
   energyClass: EnergyClass.C,
+  gazClass: GazClass.C,
   price: 500000,
   pictures: ['image1.jpg', 'image2.jpg'],
   mainPicture: 'image1.jpg',
