@@ -4,6 +4,7 @@ import type {
   InseeFileMetadata,
   ScrapedDeceasesFile,
 } from '../types/deceases.types';
+import { subMonths } from 'date-fns';
 
 @Injectable()
 export class InseeScraperService {
@@ -29,13 +30,10 @@ export class InseeScraperService {
 
       const html = await this.fetchPageWithRetry(this.inseeUrl);
       const allFiles = this.extractFileMetadataFromHtml(html);
-      const monthlyFiles = allFiles.filter(
-        (file) => file.fileType === 'monthly'
-      );
-      const newFiles = this.filterNewFiles(monthlyFiles, existingFiles);
+      const newFiles = this.filterNewFiles(allFiles, existingFiles);
 
       this.logger.log(
-        `Found ${allFiles.length} total files, ${monthlyFiles.length} monthly files, ${newFiles.length} new files`
+        `Found ${allFiles.length} total files, ${newFiles.length} new files`
       );
 
       return newFiles;
@@ -47,125 +45,75 @@ export class InseeScraperService {
 
   /**
    * Extract file metadata from HTML content
+   * Only matches <a class="fichier" href="...zip"> tags
+   * Filters out files older than 1 year
    * @param html - The HTML content of the INSEE page
    * @returns Array of file metadata
    */
   private extractFileMetadataFromHtml(html: string): InseeFileMetadata[] {
     const files: InseeFileMetadata[] = [];
+    const today = new Date();
+    const oneYearAgo = subMonths(today, 12);
 
     try {
-      // Extract all anchor tags with href attributes
-      const anchorRegex = /<a[^>]+href\s*=\s*["']([^"']+)["'][^>]*>/gi;
+      // Match only <a class="fichier" href="...zip"> tags
+      const anchorRegex = /<a\s+class="fichier"\s+href="([^"]+\.zip)"/gi;
+      const yearMonthRegex = /(\d{4})[-_]M?(\d{1,2})\.zip$/i;
+
       let match: RegExpExecArray | null;
 
       while ((match = anchorRegex.exec(html)) !== null) {
         const href = match[1];
+        if (!href) continue;
 
-        // Check if this is a ZIP file link containing deceases data
-        if (href && this.isDeceasesZipFile(href)) {
-          const metadata = this.parseFileMetadata(href);
-          if (metadata) {
-            files.push(metadata);
-          }
+        // Extract filename from href path
+        const fileName = href.split('/').pop();
+        if (!fileName) continue;
+
+        // Parse year and month from filename
+        const yearMonthMatch = fileName.match(yearMonthRegex);
+        if (!yearMonthMatch || !yearMonthMatch[1] || !yearMonthMatch[2]) {
+          this.logger.warn(
+            { fileName },
+            'Could not parse year/month from filename'
+          );
+          continue;
         }
+
+        const year = parseInt(yearMonthMatch[1], 10);
+        const month = parseInt(yearMonthMatch[2], 10);
+
+        // Validate month
+        if (month < 1 || month > 12) {
+          this.logger.warn({ fileName, month }, 'Invalid month in filename');
+          continue;
+        }
+
+        // Skip files older than 1 year
+        const fileDate = new Date(year, month - 1, 1);
+        if (fileDate < oneYearAgo) {
+          this.logger.debug(
+            { fileName, year, month },
+            'Skipping file older than 1 year'
+          );
+          continue;
+        }
+
+        files.push({
+          fileName,
+          url: href,
+          year,
+          month,
+        });
       }
 
-      this.logger.log(`Extracted ${files.length} deceases files from HTML`);
+      this.logger.log(
+        `Extracted ${files.length} deceases files from HTML (within last year)`
+      );
       return files;
     } catch (error: unknown) {
       this.logger.error({ error }, 'Failed to extract file metadata from HTML');
       throw error;
-    }
-  }
-
-  /**
-   * Check if a URL points to a deceases ZIP file
-   * @param url - The URL to check
-   * @returns True if it's a deceases ZIP file
-   */
-  private isDeceasesZipFile(url: string): boolean {
-    // Look for ZIP files containing "deces" or similar patterns
-    const deceasesPatterns = [
-      /deces.*\.zip$/i,
-      /deceases.*\.zip$/i,
-      /mortality.*\.zip$/i,
-      /death.*\.zip$/i,
-    ];
-
-    return deceasesPatterns.some((pattern) => pattern.test(url));
-  }
-
-  /**
-   * Parse file metadata from URL
-   * @param url - The file URL
-   * @returns File metadata or null if parsing fails
-   */
-  private parseFileMetadata(url: string): InseeFileMetadata | null {
-    try {
-      // Extract filename from URL
-      const fileName = url.split('/').pop() || '';
-
-      // Extract year and month from filename
-      // Expected formats: deces-2024-01.zip, deces_2024_01.zip, etc.
-      const yearMonthPattern = /(\d{4})[-_](\d{2})/;
-      const yearOnlyPattern = /(\d{4})(?![-_]\d{2})/;
-
-      let year: number;
-      let month: number;
-      let fileType: 'monthly' | 'yearly';
-
-      const yearMonthMatch = fileName.match(yearMonthPattern);
-      if (yearMonthMatch && yearMonthMatch[1] && yearMonthMatch[2]) {
-        year = parseInt(yearMonthMatch[1], 10);
-        month = parseInt(yearMonthMatch[2], 10);
-        fileType = 'monthly';
-      } else {
-        const yearOnlyMatch = fileName.match(yearOnlyPattern);
-        if (yearOnlyMatch && yearOnlyMatch[1]) {
-          year = parseInt(yearOnlyMatch[1], 10);
-          month = 0; // No specific month for yearly files
-          fileType = 'yearly';
-        } else {
-          this.logger.warn(
-            { fileName, url },
-            'Could not parse year/month from filename'
-          );
-          return null;
-        }
-      }
-
-      // Validate extracted data
-      if (year < 2000 || year > new Date().getFullYear() + 1) {
-        this.logger.warn(
-          { fileName, year },
-          'Invalid year extracted from filename'
-        );
-        return null;
-      }
-
-      if (fileType === 'monthly' && (month < 1 || month > 12)) {
-        this.logger.warn(
-          { fileName, month },
-          'Invalid month extracted from filename'
-        );
-        return null;
-      }
-
-      // Ensure URL is absolute
-      const absoluteUrl = url.startsWith('http')
-        ? url
-        : `https://www.insee.fr${url}`;
-
-      return {
-        fileName,
-        url: absoluteUrl,
-        year,
-        month,
-        fileType,
-      };
-    } catch (error: unknown) {
-      this.logger.error({ error, url }, 'Failed to parse file metadata');
-      return null;
     }
   }
 

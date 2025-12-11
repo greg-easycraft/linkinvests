@@ -1,25 +1,31 @@
 import { Module } from '@nestjs/common';
-
-import { S3Service } from '~/storage/s3.service';
 import {
   InseeScraperService,
   FileDownloadService,
   DeceasesScrapingService,
-  AbstractDeceasesRepository,
 } from './services';
-import { ScrapedDeceasesFilesRepository } from './repositories/scraped-deceases-files.repository';
+import {
+  ScrapedDeceasesFilesRepositoryImpl,
+  DeceasesOpportunityRepositoryImpl,
+} from './repositories';
+import {
+  DeceasesOpportunityRepository,
+  ScrapedDeceasesFilesRepository,
+} from './types';
 
 @Module({
   providers: [
     {
-      provide: AbstractDeceasesRepository,
-      useClass: ScrapedDeceasesFilesRepository,
+      provide: ScrapedDeceasesFilesRepository,
+      useClass: ScrapedDeceasesFilesRepositoryImpl,
+    },
+    {
+      provide: DeceasesOpportunityRepository,
+      useClass: DeceasesOpportunityRepositoryImpl,
     },
     DeceasesScrapingService,
     InseeScraperService,
     FileDownloadService,
-    ScrapedDeceasesFilesRepository,
-    S3Service,
   ],
   exports: [DeceasesScrapingService],
 })

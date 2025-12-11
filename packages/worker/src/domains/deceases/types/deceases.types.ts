@@ -1,3 +1,17 @@
+import { SuccessionInput } from '@linkinvests/shared';
+
+export abstract class ScrapedDeceasesFilesRepository {
+  abstract getMonthlyFiles(): Promise<ScrapedDeceasesFile[]>;
+  abstract insertFile(fileName: string): Promise<void>;
+}
+
+export abstract class DeceasesOpportunityRepository {
+  abstract insertOpportunities(
+    opportunities: SuccessionInput[],
+    batchSize?: number
+  ): Promise<number>;
+}
+
 // INSEE Scraper related types
 export interface InseeFileMetadata {
   fileName: string;

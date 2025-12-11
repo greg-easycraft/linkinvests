@@ -4,10 +4,10 @@ import { Injectable, Logger } from '@nestjs/common';
 import { S3Service } from '~/storage/s3.service';
 import { InseeScraperService } from './insee-scraper.service';
 import { FileDownloadService } from './file-download.service';
-import type {
-  InseeFileMetadata,
-  ScrapedDeceasesFile,
-} from '../types/deceases.types';
+import {
+  ScrapedDeceasesFilesRepository,
+  type InseeFileMetadata,
+} from '../types';
 
 interface ScraperStats {
   filesFound: number;
@@ -20,11 +20,6 @@ interface ScraperStats {
   }>;
 }
 
-export abstract class AbstractDeceasesRepository {
-  abstract getMonthlyFiles(): Promise<ScrapedDeceasesFile[]>;
-  abstract insertFile(fileName: string): Promise<void>;
-}
-
 @Injectable()
 export class DeceasesScrapingService {
   private readonly logger = new Logger(DeceasesScrapingService.name);
@@ -33,7 +28,7 @@ export class DeceasesScrapingService {
     private readonly inseeScraperService: InseeScraperService,
     private readonly fileDownloadService: FileDownloadService,
     private readonly s3Service: S3Service,
-    private readonly repository: AbstractDeceasesRepository
+    private readonly repository: ScrapedDeceasesFilesRepository
   ) {}
 
   async scrapeDeceases(job: Job): Promise<void> {
@@ -89,9 +84,6 @@ export class DeceasesScrapingService {
             },
             'Failed to process file'
           );
-
-          // Continue with other files even if one fails
-          continue;
         }
       }
 
@@ -200,23 +192,5 @@ export class DeceasesScrapingService {
     // Format: deces-YYYY-MM.csv
     const monthStr = month.toString().padStart(2, '0');
     return `deces-${year}-${monthStr}.csv`;
-  }
-
-  /**
-   * Check if a file should be processed (useful for force rescrape logic)
-   */
-  private shouldProcessFile(
-    fileMetadata: InseeFileMetadata,
-    existingFiles: ScrapedDeceasesFile[],
-    forceRescrape: boolean
-  ): boolean {
-    if (forceRescrape) {
-      return true;
-    }
-
-    const existingFileNames = new Set(existingFiles.map((f) => f.fileName));
-    const csvFileName = this.generateCsvFileName(fileMetadata);
-
-    return !existingFileNames.has(csvFileName);
   }
 }

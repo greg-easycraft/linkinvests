@@ -4,10 +4,11 @@ import { domainSchema } from '@linkinvests/db';
 import { DATABASE_CONNECTION, type DomainDbType } from '~/database';
 
 import { SuccessionInput } from '@linkinvests/shared';
+import type { DeceasesOpportunityRepository } from '../types';
 
 @Injectable()
-export class DeceasesOpportunityRepository {
-  private readonly logger = new Logger(DeceasesOpportunityRepository.name);
+export class DeceasesOpportunityRepositoryImpl implements DeceasesOpportunityRepository {
+  private readonly logger = new Logger(DeceasesOpportunityRepositoryImpl.name);
 
   constructor(
     @Inject(DATABASE_CONNECTION)

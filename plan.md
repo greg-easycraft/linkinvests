@@ -1,17 +1,31 @@
 Lundi 15
-- [ ] authentification (fermée)
-- [ ] interface admin (gestion users)
-- map bounds on search
-- [ ] recherche dans un rayon autour de moi ou d'un code postal
 - [ ] periode depuis, jusqu'à
 - [ ] sauvegarde recherches
-- [ ] auto scrape deceases
+- map bounds on search
+- [ ] recherche dans un rayon autour de moi ou d'un code postal
+- [ ] succession, mémorisation si email envoyé
+
+- [ ] authentification (fermée)
+- [ ] addresse mairie zipcode cedex
 - [ ] deploy sur staging.linkinvests.com
 - [ ] CI/CD
-- [ ] addresse mairie zipcode cedex
-- [ ] classe gaz sur DPEs (GES) pour affiner scoring
 - [ ] rename address fields into streetAddress & handle as such
-- [ ] succession, mémorisation si email envoyé
+
+- [X] auto scrape deceases
+- [X] classe gaz sur DPEs (GES) pour affiner scoring
+- [X] interface admin (gestion users)
+
+TO TEST
+ - class gaz 
+    - dpe
+    - auctions
+    - listings
+- deceases scraping
+- email invitation
+- email magic link
+
+
+
 
 Later
 - [ ] favoris (notes, addresse, statut)

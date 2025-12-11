@@ -5,16 +5,19 @@ import { randomUUID } from 'crypto';
 
 import { DATABASE_CONNECTION, type DomainDbType } from '~/database';
 
-import type { ScrapedDeceasesFile } from '../types/deceases.types';
+import type {
+  ScrapedDeceasesFile,
+  ScrapedDeceasesFilesRepository,
+} from '../types';
 
 @Injectable()
-export class ScrapedDeceasesFilesRepository {
-  private readonly logger = new Logger(ScrapedDeceasesFilesRepository.name);
+export class ScrapedDeceasesFilesRepositoryImpl implements ScrapedDeceasesFilesRepository {
+  private readonly logger = new Logger(ScrapedDeceasesFilesRepositoryImpl.name);
 
   constructor(
     @Inject(DATABASE_CONNECTION)
     private readonly db: DomainDbType
-  ) {}
+  ) { }
 
   /**
    * Get all monthly files (excluding yearly aggregates) from the database
@@ -75,20 +78,13 @@ export class ScrapedDeceasesFilesRepository {
    * @param fileName - The name of the file to insert
    * @returns The created file record
    */
-  async insertFile(fileName: string): Promise<ScrapedDeceasesFile> {
+  async insertFile(fileName: string): Promise<void> {
     try {
-      const records = await this.db
+      await this.db
         .insert(domainSchema.scrapedDeceasesFiles)
-        .values({
-          id: randomUUID(),
-          fileName,
-        })
-        .returning();
+        .values({ id: randomUUID(), fileName });
 
-      const insertedFile = records[0];
       this.logger.log(`Successfully inserted file: ${fileName}`);
-
-      return insertedFile;
     } catch (error: unknown) {
       this.logger.error({ error, fileName }, 'Failed to insert file');
       throw error;
