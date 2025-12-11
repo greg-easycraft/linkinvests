@@ -153,13 +153,13 @@ export class LiquidationService {
   ): ILiquidationFilters {
     const filtersToUse = { ...filters };
     if (
-      filtersToUse.datePeriod &&
-      this.allowedDatePeriodsSet.has(filtersToUse.datePeriod)
+      filtersToUse.dateAfter &&
+      this.allowedDatePeriodsSet.has(filtersToUse.dateAfter)
     )
       return filtersToUse;
     return {
       ...filtersToUse,
-      datePeriod: '12_months',
+      dateAfter: '12_months',
     };
   }
 }

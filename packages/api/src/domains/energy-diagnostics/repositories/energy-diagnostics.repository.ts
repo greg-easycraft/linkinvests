@@ -39,12 +39,22 @@ export class DrizzleEnergyDiagnosticsRepository extends EnergyDiagnosticsReposit
       conditions.push(inArray(energyDiagnostics.zipCode, filters.zipCodes));
     }
 
-    if (filters.datePeriod) {
-      const dateThreshold = calculateStartDate(filters.datePeriod);
+    if (filters.dateAfter) {
+      const dateThreshold = calculateStartDate(filters.dateAfter);
       conditions.push(
         gte(
           energyDiagnostics.opportunityDate,
           dateThreshold.toISOString().split('T')[0] ?? '',
+        ),
+      );
+    }
+
+    if (filters.dateBefore) {
+      const dateUntil = calculateStartDate(filters.dateBefore);
+      conditions.push(
+        lte(
+          energyDiagnostics.opportunityDate,
+          dateUntil.toISOString().split('T')[0] ?? '',
         ),
       );
     }

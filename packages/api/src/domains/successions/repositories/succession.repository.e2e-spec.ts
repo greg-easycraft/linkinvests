@@ -164,10 +164,10 @@ describe('DrizzleSuccessionRepository Integration Tests', () => {
       });
     });
 
-    describe('datePeriod filter', () => {
+    describe('dateAfter filter', () => {
       it('should filter by last month', async () => {
         const filters: ISuccessionFilters = {
-          datePeriod: 'last_month',
+          dateAfter: 'last_month',
         };
 
         const successions = await successionRepository.findAll(filters);
@@ -180,7 +180,7 @@ describe('DrizzleSuccessionRepository Integration Tests', () => {
 
       it('should filter by last 3 months', async () => {
         const filters: ISuccessionFilters = {
-          datePeriod: 'last_3_months',
+          dateAfter: 'last_3_months',
         };
 
         const successions = await successionRepository.findAll(filters);
@@ -192,7 +192,7 @@ describe('DrizzleSuccessionRepository Integration Tests', () => {
 
       it('should filter by last 12 months', async () => {
         const filters: ISuccessionFilters = {
-          datePeriod: '12_months',
+          dateAfter: '12_months',
         };
 
         const successions = await successionRepository.findAll(filters);
@@ -306,7 +306,7 @@ describe('DrizzleSuccessionRepository Integration Tests', () => {
 
         const filters: ISuccessionFilters = {
           departments: [existingDepartment],
-          datePeriod: '12_months',
+          dateAfter: '12_months',
         };
 
         const successions = await successionRepository.findAll(filters);

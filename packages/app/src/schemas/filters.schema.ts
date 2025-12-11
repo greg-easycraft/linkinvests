@@ -36,7 +36,15 @@ export const baseFiltersSchema = z.object({
   view: z.enum(['list', 'map']).optional(),
   departments: z.union([commaSeparatedToArray, z.array(z.string())]).optional(),
   zipCodes: z.union([commaSeparatedToArray, z.array(z.string())]).optional(),
-  datePeriod: z
+  dateAfter: z
+    .enum(
+      DATE_PERIOD_OPTIONS.map((option) => option.value) as [
+        DatePeriod,
+        ...Array<DatePeriod>,
+      ],
+    )
+    .optional(),
+  dateBefore: z
     .enum(
       DATE_PERIOD_OPTIONS.map((option) => option.value) as [
         DatePeriod,

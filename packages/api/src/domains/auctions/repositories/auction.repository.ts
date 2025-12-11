@@ -42,12 +42,22 @@ export class DrizzleAuctionRepository implements AuctionRepository {
       conditions.push(inArray(opportunityAuctions.zipCode, filters.zipCodes));
     }
 
-    if (filters.datePeriod) {
-      const dateThreshold = calculateStartDate(filters.datePeriod);
+    if (filters.dateAfter) {
+      const dateThreshold = calculateStartDate(filters.dateAfter);
       conditions.push(
         gte(
           opportunityAuctions.opportunityDate,
           dateThreshold.toISOString().split('T')[0] ?? '',
+        ),
+      );
+    }
+
+    if (filters.dateBefore) {
+      const dateUntil = calculateStartDate(filters.dateBefore);
+      conditions.push(
+        lte(
+          opportunityAuctions.opportunityDate,
+          dateUntil.toISOString().split('T')[0] ?? '',
         ),
       );
     }

@@ -12,11 +12,6 @@ import type { DatePeriod, MapBounds } from '../api/filters.schema';
 // Re-export DatePeriod and MapBounds from API schemas
 export type { DatePeriod, MapBounds };
 
-export interface DateRange {
-  from: Date;
-  to: Date;
-}
-
 export interface DatePeriodOption {
   value: DatePeriod;
   label: string;
@@ -39,8 +34,8 @@ export interface IOpportunityFilters {
   types?: Array<OpportunityType>;
   departments?: string[];
   zipCodes?: string[];
-  dateRange?: DateRange;
-  datePeriod?: DatePeriod;
+  dateAfter?: DatePeriod;
+  dateBefore?: DatePeriod;
   bounds?: MapBounds;
   page?: number;
   pageSize?: number;

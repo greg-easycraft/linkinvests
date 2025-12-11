@@ -39,7 +39,8 @@ export type MapBounds = z.infer<typeof mapBoundsSchema>;
 export const baseOpportunityFiltersSchema = z.object({
   departments: z.array(z.string()).optional(),
   zipCodes: z.array(z.string()).optional(),
-  datePeriod: datePeriodSchema.optional(),
+  dateAfter: datePeriodSchema.optional(),
+  dateBefore: datePeriodSchema.optional(),
   bounds: mapBoundsSchema.optional(),
   page: z.number().int().positive().optional(),
   pageSize: z.number().int().positive().max(200).optional(),

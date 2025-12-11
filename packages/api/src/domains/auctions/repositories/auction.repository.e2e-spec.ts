@@ -77,7 +77,7 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
 
     it('should filter by date period', async () => {
       const filters: IAuctionFilters = {
-        datePeriod: 'last_month',
+        dateAfter: 'last_month',
       };
 
       const auctions = await auctionRepository.findAll(filters);
@@ -238,7 +238,7 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
       const filters: IAuctionFilters = {
         departments: ['06'],
         zipCodes: ['90210'],
-        datePeriod: 'last_3_months',
+        dateAfter: 'last_3_months',
       };
 
       const auctions = await auctionRepository.findAll(filters);
@@ -447,7 +447,7 @@ describe('DrizzleAuctionRepository Integration Tests', () => {
     it('should count auctions with multiple filters', async () => {
       const filters: IAuctionFilters = {
         departments: ['06', '10'],
-        datePeriod: 'last_3_months',
+        dateAfter: 'last_3_months',
       };
 
       const count = await auctionRepository.count(filters);

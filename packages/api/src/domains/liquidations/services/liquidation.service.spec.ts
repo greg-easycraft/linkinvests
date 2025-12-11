@@ -83,9 +83,9 @@ describe('LiquidationService', () => {
           pageSize: DEFAULT_PAGE_SIZE,
         });
       }
-      // Service adds default datePeriod: '12_months' when no valid datePeriod provided
+      // Service adds default dateAfter: '12_months' when no valid dateAfter provided
       expect(mockLiquidationRepository.findAll).toHaveBeenCalledWith(
-        { datePeriod: '12_months' },
+        { dateAfter: '12_months' },
         { limit: DEFAULT_PAGE_SIZE, offset: 0 },
       );
     });
@@ -105,9 +105,9 @@ describe('LiquidationService', () => {
           pageSize: 25,
         });
       }
-      // Service adds default datePeriod: '12_months' when no valid datePeriod provided
+      // Service adds default dateAfter: '12_months' when no valid dateAfter provided
       expect(mockLiquidationRepository.findAll).toHaveBeenCalledWith(
-        { ...filters, datePeriod: '12_months' },
+        { ...filters, dateAfter: '12_months' },
         { limit: 25, offset: 50 }, // (3-1) * 25
       );
     });
@@ -124,9 +124,9 @@ describe('LiquidationService', () => {
 
       await liquidationService.getLiquidationsData(filters);
 
-      // Service adds default datePeriod: '12_months' when no valid datePeriod provided
+      // Service adds default dateAfter: '12_months' when no valid dateAfter provided
       expect(mockLiquidationRepository.findAll).toHaveBeenCalledWith(
-        { ...filters, datePeriod: '12_months' },
+        { ...filters, dateAfter: '12_months' },
         { limit: 10, offset: 10 },
       );
     });
@@ -155,9 +155,9 @@ describe('LiquidationService', () => {
       if (result.success) {
         expect(result.data).toBe(expectedCount);
       }
-      // Service adds default datePeriod: '12_months' when no valid datePeriod provided
+      // Service adds default dateAfter: '12_months' when no valid dateAfter provided
       expect(mockLiquidationRepository.count).toHaveBeenCalledWith({
-        datePeriod: '12_months',
+        dateAfter: '12_months',
       });
     });
 
@@ -172,10 +172,10 @@ describe('LiquidationService', () => {
       if (result.success) {
         expect(result.data).toBe(expectedCount);
       }
-      // Service adds default datePeriod: '12_months' when no valid datePeriod provided
+      // Service adds default dateAfter: '12_months' when no valid dateAfter provided
       expect(mockLiquidationRepository.count).toHaveBeenCalledWith({
         ...filters,
-        datePeriod: '12_months',
+        dateAfter: '12_months',
       });
     });
 
@@ -261,8 +261,8 @@ describe('LiquidationService', () => {
       if (result.success) {
         expect(result.data).toBe(mockBlob);
       }
-      // Service adds default datePeriod: '12_months' when no valid datePeriod provided
-      const filtersWithDatePeriod = { ...filters, datePeriod: '12_months' };
+      // Service adds default dateAfter: '12_months' when no valid dateAfter provided
+      const filtersWithDatePeriod = { ...filters, dateAfter: '12_months' };
       expect(mockLiquidationRepository.count).toHaveBeenCalledWith(
         filtersWithDatePeriod,
       );

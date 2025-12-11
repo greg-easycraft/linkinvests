@@ -1,4 +1,4 @@
-# Qualiop'Easy Project - Always reference these documentation files:
+# LinkInvests Project - Always reference these documentation files:
 
 ## Required Context Files
 Please always reference and follow the guidelines from these files:

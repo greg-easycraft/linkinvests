@@ -63,12 +63,22 @@ export class DrizzleListingRepository extends ListingRepository {
       );
     }
 
-    if (filters.datePeriod) {
-      const dateThreshold = calculateStartDate(filters.datePeriod);
+    if (filters.dateAfter) {
+      const dateThreshold = calculateStartDate(filters.dateAfter);
       conditions.push(
         gte(
           opportunityListings.opportunityDate,
           dateThreshold.toISOString().split('T')[0] ?? '',
+        ),
+      );
+    }
+
+    if (filters.dateBefore) {
+      const dateUntil = calculateStartDate(filters.dateBefore);
+      conditions.push(
+        lte(
+          opportunityListings.opportunityDate,
+          dateUntil.toISOString().split('T')[0] ?? '',
         ),
       );
     }

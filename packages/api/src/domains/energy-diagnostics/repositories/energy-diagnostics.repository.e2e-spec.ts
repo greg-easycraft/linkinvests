@@ -181,10 +181,10 @@ describe('DrizzleEnergyDiagnosticsRepository Integration Tests', () => {
       });
     });
 
-    describe('datePeriod filter', () => {
+    describe('dateAfter filter', () => {
       it('should filter by last month', async () => {
         const filters: IEnergyDiagnosticFilters = {
-          datePeriod: 'last_month',
+          dateAfter: 'last_month',
         };
 
         const diagnostics = await energyDiagnosticsRepository.findAll(filters);
@@ -199,7 +199,7 @@ describe('DrizzleEnergyDiagnosticsRepository Integration Tests', () => {
 
       it('should filter by last 3 months', async () => {
         const filters: IEnergyDiagnosticFilters = {
-          datePeriod: 'last_3_months',
+          dateAfter: 'last_3_months',
         };
 
         const diagnostics = await energyDiagnosticsRepository.findAll(filters);
@@ -214,7 +214,7 @@ describe('DrizzleEnergyDiagnosticsRepository Integration Tests', () => {
 
       it('should filter by last 12 months', async () => {
         const filters: IEnergyDiagnosticFilters = {
-          datePeriod: '12_months',
+          dateAfter: '12_months',
         };
 
         const diagnostics = await energyDiagnosticsRepository.findAll(filters);
@@ -423,7 +423,7 @@ describe('DrizzleEnergyDiagnosticsRepository Integration Tests', () => {
           departments: [existingDepartment],
           zipCodes: [existingZipCode],
           energyClasses: [EnergyClass.E, EnergyClass.F, EnergyClass.G],
-          datePeriod: '12_months',
+          dateAfter: '12_months',
         };
 
         const diagnostics = await energyDiagnosticsRepository.findAll(filters);

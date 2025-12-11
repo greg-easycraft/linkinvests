@@ -38,12 +38,22 @@ export class DrizzleSuccessionRepository extends SuccessionRepository {
       );
     }
 
-    if (filters.datePeriod) {
-      const dateThreshold = calculateStartDate(filters.datePeriod);
+    if (filters.dateAfter) {
+      const dateThreshold = calculateStartDate(filters.dateAfter);
       conditions.push(
         gte(
           opportunitySuccessions.opportunityDate,
           dateThreshold.toISOString().split('T')[0] ?? '',
+        ),
+      );
+    }
+
+    if (filters.dateBefore) {
+      const dateUntil = calculateStartDate(filters.dateBefore);
+      conditions.push(
+        lte(
+          opportunitySuccessions.opportunityDate,
+          dateUntil.toISOString().split('T')[0] ?? '',
         ),
       );
     }

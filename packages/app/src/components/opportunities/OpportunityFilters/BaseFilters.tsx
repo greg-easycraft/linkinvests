@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useLocation } from '@tanstack/react-router'
 import type { BaseFilters as BaseFiltersType } from '@/schemas/filters.schema'
 import { Card } from '@/components/ui/card'
@@ -9,6 +10,10 @@ import {
   ViewToggle,
   ZipCodeInput,
 } from '@/components/filters'
+import {
+  SaveSearchModal,
+  SavedSearchesSection,
+} from '@/components/saved-searches'
 
 interface BaseFiltersProps {
   filters: BaseFiltersType
@@ -26,6 +31,9 @@ export function BaseFilters({
   title,
 }: BaseFiltersProps): React.ReactElement {
   const location = useLocation()
+  const [isSaveModalOpen, setIsSaveModalOpen] = useState(false)
+
+  const currentUrl = location.pathname + location.search
 
   const handleChange = <TKey extends keyof BaseFiltersType>(
     key: TKey,
@@ -38,6 +46,13 @@ export function BaseFilters({
     <Card className="p-4 space-y-4 h-full overflow-y-auto">
       {/* Type Selector */}
       <OpportunityTypeFilter currentPath={location.pathname} />
+
+      <Separator />
+
+      {/* Saved Searches */}
+      <SavedSearchesSection
+        onSaveCurrentSearch={() => setIsSaveModalOpen(true)}
+      />
 
       <Separator />
 
@@ -68,8 +83,23 @@ export function BaseFilters({
       />
 
       <DatePeriodFilter
-        value={filters.datePeriod}
-        onValueChange={(v) => handleChange('datePeriod', v)}
+        value={filters.dateAfter}
+        onValueChange={(v) => handleChange('dateAfter', v)}
+        label="Période depuis"
+      />
+
+      <DatePeriodFilter
+        value={filters.dateBefore}
+        onValueChange={(v) => handleChange('dateBefore', v)}
+        label="Période jusqu'à"
+        placeholder="Jusqu'à maintenant"
+      />
+
+      {/* Save Search Modal */}
+      <SaveSearchModal
+        isOpen={isSaveModalOpen}
+        onClose={() => setIsSaveModalOpen(false)}
+        currentUrl={currentUrl}
       />
     </Card>
   )

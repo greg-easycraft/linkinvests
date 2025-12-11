@@ -11,15 +11,19 @@ import { DATE_PERIOD_OPTIONS } from '@/constants'
 interface DatePeriodFilterProps {
   value?: DatePeriod
   onValueChange: (value: DatePeriod | undefined) => void
+  label?: string
+  placeholder?: string
 }
 
 export function DatePeriodFilter({
   value,
   onValueChange,
+  label = 'Période',
+  placeholder = 'Toutes les périodes',
 }: DatePeriodFilterProps): React.ReactElement {
   return (
     <div>
-      <label className="text-sm font-medium mb-2 block">Période</label>
+      <label className="text-sm font-medium mb-2 block">{label}</label>
       <Select
         value={value ?? 'undefined'}
         onValueChange={(v) =>
@@ -28,12 +32,12 @@ export function DatePeriodFilter({
       >
         <SelectTrigger>
           <SelectValue
-            placeholder="Toutes les périodes"
+            placeholder={placeholder}
             defaultValue={value ?? 'undefined'}
           />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="undefined">Toutes les périodes</SelectItem>
+          <SelectItem value="undefined">{placeholder}</SelectItem>
           {DATE_PERIOD_OPTIONS.map((option) => (
             <SelectItem key={option.value} value={option.value}>
               {option.label}
