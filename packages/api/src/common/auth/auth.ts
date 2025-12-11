@@ -1,4 +1,5 @@
 import { betterAuth } from 'better-auth';
+import { createAuthMiddleware } from 'better-auth/api';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { admin, magicLink } from 'better-auth/plugins';
 import { drizzle } from 'drizzle-orm/postgres-js';
@@ -79,6 +80,7 @@ export const auth = betterAuth({
         });
       },
       expiresIn: 600, // 10 minutes
+      disableSignUp: true,
     }),
     admin({
       defaultRole: 'user',
@@ -128,5 +130,10 @@ export const auth = betterAuth({
   },
 
   // Required for hook decorator support
-  hooks: {},
+  hooks: {
+    before: createAuthMiddleware(async (ctx) => {
+      console.log('Before middleware', ctx.path, ctx.body);
+      return Promise.resolve();
+    }),
+  },
 });
