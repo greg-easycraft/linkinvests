@@ -158,6 +158,7 @@ export class EnergyDiagnosticsProcessor extends WorkerHost {
       longitude: parseFloat(lonStr || ''),
       opportunityDate,
       energyClass: record.etiquette_dpe,
+      gazClass: record.etiquette_ges,
       squareFootage: record.surface_habitable_logement,
     };
 
