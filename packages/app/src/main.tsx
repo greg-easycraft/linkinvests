@@ -25,11 +25,7 @@ import reportWebVitals from './reportWebVitals.ts'
 
 // Import page components
 import { AddressSearchPage } from './pages/search/AddressSearchPage'
-import { AuctionsPage } from './pages/search/AuctionsPage'
-import { ListingsPage } from './pages/search/ListingsPage'
-import { SuccessionsPage } from './pages/search/SuccessionsPage'
-import { LiquidationsPage } from './pages/search/LiquidationsPage'
-import { EnergySievesPage } from './pages/search/EnergySievesPage'
+import { UnifiedSearchPage } from './pages/search/UnifiedSearchPage'
 import { FavoritesPage } from './pages/favorites'
 
 // Import detail page components
@@ -42,12 +38,7 @@ import {
 } from './pages/opportunities'
 import { UsersPage } from './pages/admin'
 import type { RouterContext } from '@/router'
-import {
-  auctionFiltersSchema,
-  baseFiltersSchema,
-  energyDiagnosticFiltersSchema,
-  listingFiltersSchema,
-} from '@/schemas/filters.schema'
+import { unifiedSearchFiltersSchema } from '@/schemas/filters.schema'
 
 // Import auth components
 import {
@@ -83,7 +74,7 @@ function AppHeader() {
     <header className="border-b bg-background">
       <div className="mx-auto px-4 h-16 flex items-center justify-between">
         <Link
-          to="/search/auctions"
+          to="/search"
           className="flex items-center gap-3 hover:opacity-80 transition-opacity"
         >
           <img
@@ -95,7 +86,7 @@ function AppHeader() {
         </Link>
         <nav className="flex items-center gap-6">
           <Link
-            to="/search/auctions"
+            to="/search"
             search={{}}
             className="text-sm hover:text-primary [&.active]:text-primary [&.active]:font-medium"
             activeOptions={{ includeSearch: false }}
@@ -162,51 +153,19 @@ const indexRoute = createRoute({
   path: '/',
   beforeLoad: ({ context }) => {
     if (context.auth.isAuthenticated) {
-      throw redirect({ to: '/search/auctions' })
+      throw redirect({ to: '/search' })
     }
     throw redirect({ to: '/auth/sign-in' })
   },
 })
 
 // Search routes (protected)
-const searchAuctionsRoute = createRoute({
+const searchRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/search/auctions',
-  validateSearch: zodSearchValidator(auctionFiltersSchema),
+  path: '/search',
+  validateSearch: zodSearchValidator(unifiedSearchFiltersSchema),
   beforeLoad: requireAuth,
-  component: AuctionsPage,
-})
-
-const searchListingsRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/search/listings',
-  validateSearch: zodSearchValidator(listingFiltersSchema),
-  beforeLoad: requireAuth,
-  component: ListingsPage,
-})
-
-const searchSuccessionsRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/search/successions',
-  validateSearch: zodSearchValidator(baseFiltersSchema),
-  beforeLoad: requireAuth,
-  component: SuccessionsPage,
-})
-
-const searchLiquidationsRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/search/liquidations',
-  validateSearch: zodSearchValidator(baseFiltersSchema),
-  beforeLoad: requireAuth,
-  component: LiquidationsPage,
-})
-
-const searchEnergySievesRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/search/energy-sieves',
-  validateSearch: zodSearchValidator(energyDiagnosticFiltersSchema),
-  beforeLoad: requireAuth,
-  component: EnergySievesPage,
+  component: UnifiedSearchPage,
 })
 
 const searchAddressRoute = createRoute({
@@ -298,11 +257,7 @@ const adminUsersRoute = createRoute({
 // Build route tree
 const routeTree = rootRoute.addChildren([
   indexRoute,
-  searchAuctionsRoute,
-  searchListingsRoute,
-  searchSuccessionsRoute,
-  searchLiquidationsRoute,
-  searchEnergySievesRoute,
+  searchRoute,
   searchAddressRoute,
   favoritesRoute,
   auctionDetailRoute,

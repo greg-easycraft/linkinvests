@@ -7,6 +7,7 @@ export * from './succession.types.js';
 export * from './liquidation.types.js';
 export * from './energy-diagnostic.types.js';
 export * from './listing.types.js';
+export * from './all-opportunity.types.js';
 
 // Address search types
 export * from './address-search.types.js';

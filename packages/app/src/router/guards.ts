@@ -17,7 +17,7 @@ export function requireAuth({ context }: { context: RouterContext }) {
 export function requireGuest({ context }: { context: RouterContext }) {
   if (context.auth.isAuthenticated && !context.auth.isLoading) {
     throw redirect({
-      to: '/search/auctions',
+      to: '/search',
     })
   }
 }
@@ -35,7 +35,7 @@ export function requireAdmin({ context }: { context: RouterContext }) {
   }
   if (!context.auth.isAdmin && !context.auth.isLoading) {
     throw redirect({
-      to: '/search/auctions',
+      to: '/search',
     })
   }
 }

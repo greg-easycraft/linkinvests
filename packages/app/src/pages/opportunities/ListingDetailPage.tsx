@@ -88,7 +88,7 @@ export function ListingDetailPage(): React.ReactElement {
             L'annonce que vous recherchez n'existe pas ou a été supprimée.
           </p>
           <Button asChild>
-            <Link to="/search/listings">Retour aux annonces</Link>
+            <Link to="/search">Retour aux annonces</Link>
           </Button>
         </Card>
       </div>
@@ -99,7 +99,7 @@ export function ListingDetailPage(): React.ReactElement {
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       {/* Back button */}
       <Button variant="ghost" size="sm" className="mb-4" asChild>
-        <Link to="/search/listings">
+        <Link to="/search">
           <ArrowLeft className="h-4 w-4 mr-2" />
           Retour aux annonces
         </Link>

@@ -44,7 +44,7 @@ interface OpportunityDetailsModalProps {
   opportunity: Opportunity | null
   isOpen: boolean
   onClose: () => void
-  type: OpportunityType
+  type?: OpportunityType
 }
 
 const getDetailPageUrl = (
@@ -102,9 +102,15 @@ export function OpportunityDetailsModal({
   opportunity,
   isOpen,
   onClose,
-  type,
+  type: propType,
 }: OpportunityDetailsModalProps): React.ReactElement | null {
   const queryClient = useQueryClient()
+
+  // Get type from opportunity (AllOpportunity) or fall back to prop
+  const type =
+    opportunity && 'type' in opportunity && opportunity.type
+      ? (opportunity.type as OpportunityType)
+      : propType!
 
   const opportunityType = getOpportunityTypeForApi(type)
   const energyClass = opportunity ? getEnergyClass(opportunity, type) : null

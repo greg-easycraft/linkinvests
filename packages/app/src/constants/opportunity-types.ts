@@ -26,13 +26,6 @@ export const TYPE_COLORS: Record<OpportunityType, string> = {
 }
 
 /**
- * URL paths for each opportunity type
+ * Unified search path - all opportunity types use the same route with types query param
  */
-export const OPPORTUNITY_TYPE_PATHS: Record<OpportunityType, string> = {
-  [OpportunityType.AUCTION]: '/search/auctions',
-  [OpportunityType.REAL_ESTATE_LISTING]: '/search/listings',
-  [OpportunityType.SUCCESSION]: '/search/successions',
-  [OpportunityType.LIQUIDATION]: '/search/liquidations',
-  [OpportunityType.ENERGY_SIEVE]: '/search/energy-sieves',
-  [OpportunityType.DIVORCE]: '/search/divorces',
-}
+export const UNIFIED_SEARCH_PATH = '/search'

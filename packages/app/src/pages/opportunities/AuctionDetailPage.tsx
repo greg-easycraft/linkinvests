@@ -88,7 +88,7 @@ export function AuctionDetailPage(): React.ReactElement {
             L'enchère que vous recherchez n'existe pas ou a été supprimée.
           </p>
           <Button asChild>
-            <Link to="/search/auctions">Retour aux enchères</Link>
+            <Link to="/search">Retour aux opportunités</Link>
           </Button>
         </Card>
       </div>
@@ -99,7 +99,7 @@ export function AuctionDetailPage(): React.ReactElement {
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       {/* Back button */}
       <Button variant="ghost" size="sm" className="mb-4" asChild>
-        <Link to="/search/auctions">
+        <Link to="/search">
           <ArrowLeft className="h-4 w-4 mr-2" />
           Retour aux enchères
         </Link>

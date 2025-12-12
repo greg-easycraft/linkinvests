@@ -8,9 +8,7 @@ import type { IEnergyDiagnosticFilters, PaginationFilters } from '~/types';
 
 describe('EnergyDiagnosticsRepositoryImpl Integration Tests', () => {
   const db = useTestDb();
-  const energyDiagnosticsRepository = new EnergyDiagnosticsRepositoryImpl(
-    db,
-  );
+  const energyDiagnosticsRepository = new EnergyDiagnosticsRepositoryImpl(db);
 
   describe('basic functionality', () => {
     it('should find all energy diagnostics without filters', async () => {

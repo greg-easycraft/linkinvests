@@ -35,12 +35,9 @@ export class SavedSearchRepositoryImpl implements SavedSearchRepository {
     name: string;
     url: string;
   }): Promise<SavedSearch> {
-    const result = await this.db
-      .insert(savedSearches)
-      .values(data)
-      .returning();
+    const result = await this.db.insert(savedSearches).values(data).returning();
 
-    return this.mapSavedSearch(result[0]!);
+    return this.mapSavedSearch(result[0]);
   }
 
   async delete(id: string): Promise<boolean> {
@@ -61,9 +58,7 @@ export class SavedSearchRepositoryImpl implements SavedSearchRepository {
     return result[0]?.count ?? 0;
   }
 
-  private mapSavedSearch(
-    row: typeof savedSearches.$inferSelect,
-  ): SavedSearch {
+  private mapSavedSearch(row: typeof savedSearches.$inferSelect): SavedSearch {
     return {
       id: row.id,
       userId: row.userId,

@@ -6,7 +6,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 
 interface OpportunitiesListProps<T extends BaseOpportunity> {
   opportunities: Array<T>
-  type: OpportunityType
+  type?: OpportunityType
   isLoading: boolean
   selectedId?: string
   onSelect: (opportunity: T) => void

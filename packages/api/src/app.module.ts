@@ -12,6 +12,7 @@ import { EnergyDiagnosticsModule } from './domains/energy-diagnostics';
 import { AddressesModule } from './domains/addresses';
 import { SavedSearchesModule } from './domains/saved-searches';
 import { FavoritesModule } from './domains/favorites';
+import { AllOpportunitiesModule } from './domains/all-opportunities';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { FavoritesModule } from './domains/favorites';
     SuccessionsModule,
     LiquidationsModule,
     EnergyDiagnosticsModule,
+    AllOpportunitiesModule,
     AddressesModule,
     SavedSearchesModule,
     FavoritesModule,

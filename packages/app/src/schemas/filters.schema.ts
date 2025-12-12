@@ -197,6 +197,66 @@ export const energyDiagnosticFiltersSchema = baseFiltersSchema.extend({
 export const successionFiltersSchema = baseFiltersSchema
 export const liquidationFiltersSchema = baseFiltersSchema
 
+// Opportunity types schema helper
+const opportunityTypesSchema = z
+  .union([
+    z
+      .string()
+      .transform(
+        (val) => val.split(',').filter(Boolean) as Array<OpportunityType>,
+      ),
+    z.array(z.nativeEnum(OpportunityType)),
+  ])
+  .optional()
+
+// Unified search filters schema (for /search route with multi-type selection)
+export const unifiedSearchFiltersSchema = baseFiltersSchema.extend({
+  types: opportunityTypesSchema,
+  // Extended filters (shown based on type intersection)
+  propertyTypes: propertyTypesSchema,
+  energyClasses: energyClassesSchema,
+  minSquareFootage: optionalNumberFromString,
+  maxSquareFootage: optionalNumberFromString,
+  minPrice: optionalNumberFromString,
+  maxPrice: optionalNumberFromString,
+  minRooms: optionalNumberFromString,
+  maxRooms: optionalNumberFromString,
+  // Auction-specific
+  minReservePrice: optionalNumberFromString,
+  maxReservePrice: optionalNumberFromString,
+  occupationStatuses: z
+    .union([
+      z
+        .string()
+        .transform(
+          (val) =>
+            val.split(',').filter(Boolean) as Array<AuctionOccupationStatus>,
+        ),
+      z.array(z.enum(AuctionOccupationStatus)),
+    ])
+    .optional(),
+  // Listing-specific
+  minLandArea: optionalNumberFromString,
+  maxLandArea: optionalNumberFromString,
+  minBedrooms: optionalNumberFromString,
+  maxBedrooms: optionalNumberFromString,
+  minConstructionYear: optionalNumberFromString,
+  maxConstructionYear: optionalNumberFromString,
+  isSoldRented: optionalBooleanFromString,
+  isDivisible: optionalBooleanFromString,
+  hasWorksRequired: optionalBooleanFromString,
+  sources: z.union([commaSeparatedToArray, z.array(z.string())]).optional(),
+  sellerType: z
+    .union([
+      z
+        .string()
+        .refine((val) => ['individual', 'professional'].includes(val))
+        .transform((val) => val as 'individual' | 'professional'),
+      z.enum(['individual', 'professional']),
+    ])
+    .optional(),
+})
+
 // Schema map by opportunity type
 export const filtersSchemaByType: Record<OpportunityType, z.ZodSchema> = {
   [OpportunityType.AUCTION]: auctionFiltersSchema,
@@ -216,3 +276,4 @@ export type EnergyDiagnosticFilters = z.infer<
 >
 export type SuccessionFilters = z.infer<typeof successionFiltersSchema>
 export type LiquidationFilters = z.infer<typeof liquidationFiltersSchema>
+export type UnifiedSearchFilters = z.infer<typeof unifiedSearchFiltersSchema>

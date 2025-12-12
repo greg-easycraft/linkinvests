@@ -27,8 +27,7 @@ export class SavedSearchService {
   ): Promise<OperationResult<SavedSearch[], SavedSearchServiceErrorReason>> {
     console.log('getUserSavedSearches', userId);
     try {
-      const searches =
-        await this.savedSearchRepository.findAllByUserId(userId);
+      const searches = await this.savedSearchRepository.findAllByUserId(userId);
       return succeed(searches);
     } catch (error) {
       this.logger.error('Failed to get saved searches', error);

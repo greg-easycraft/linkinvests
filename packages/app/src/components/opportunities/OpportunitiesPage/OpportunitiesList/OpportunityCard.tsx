@@ -96,14 +96,19 @@ interface OpportunityCardProps {
   opportunity: Opportunity
   onSelect: (opportunity: Opportunity) => void
   selectedId?: string
-  type: OpportunityType
+  type?: OpportunityType
 }
 
 export function OpportunityCard({
   opportunity,
   onSelect,
-  type,
+  type: propType,
 }: OpportunityCardProps): React.ReactElement {
+  // Get type from opportunity (AllOpportunity) or fall back to prop
+  const type =
+    'type' in opportunity && opportunity.type
+      ? (opportunity.type as OpportunityType)
+      : propType!
   const externalUrl = getExternalUrl(opportunity)
 
   return (

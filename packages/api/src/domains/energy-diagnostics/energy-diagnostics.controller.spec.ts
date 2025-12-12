@@ -7,7 +7,11 @@ import {
   EnergyDiagnosticsServiceErrorReason,
 } from './services/energy-diagnostics.service';
 import { EnergyDiagnosticsController } from './energy-diagnostics.controller';
-import { EnergyClass, GazClass, type EnergyDiagnostic } from '@linkinvests/shared';
+import {
+  EnergyClass,
+  GazClass,
+  type EnergyDiagnostic,
+} from '@linkinvests/shared';
 import { succeed, refuse } from '~/common/utils/operation-result';
 
 describe('EnergyDiagnosticsController', () => {

@@ -4,6 +4,7 @@ import {
   GazClass,
   PropertyType,
   AuctionOccupationStatus,
+  OpportunityType,
 } from '../constants';
 
 // Date period enum
@@ -116,4 +117,19 @@ export const energyDiagnosticFiltersSchema =
 
 export type EnergyDiagnosticFilters = z.infer<
   typeof energyDiagnosticFiltersSchema
+>;
+
+// All opportunities filters (unified search)
+export const allOpportunitiesFiltersSchema =
+  baseOpportunityFiltersSchema.extend({
+    types: z.array(z.enum(OpportunityType)).optional(),
+    energyClasses: z.array(z.enum(EnergyClass)).optional(),
+    minSquareFootage: z.number().nonnegative().optional(),
+    maxSquareFootage: z.number().nonnegative().optional(),
+    minPrice: z.number().nonnegative().optional(),
+    maxPrice: z.number().nonnegative().optional(),
+  });
+
+export type AllOpportunitiesFilters = z.infer<
+  typeof allOpportunitiesFiltersSchema
 >;

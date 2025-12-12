@@ -38,7 +38,7 @@ export function EnergySieveDetailPage(): React.ReactElement {
             supprimée.
           </p>
           <Button asChild>
-            <Link to="/search/energy-sieves">
+            <Link to="/search">
               Retour aux passoires énergétiques
             </Link>
           </Button>
@@ -51,7 +51,7 @@ export function EnergySieveDetailPage(): React.ReactElement {
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       {/* Back button */}
       <Button variant="ghost" size="sm" className="mb-4" asChild>
-        <Link to="/search/energy-sieves">
+        <Link to="/search">
           <ArrowLeft className="h-4 w-4 mr-2" />
           Retour aux passoires énergétiques
         </Link>

@@ -35,7 +35,7 @@ export function LiquidationDetailPage(): React.ReactElement {
             La liquidation que vous recherchez n'existe pas ou a été supprimée.
           </p>
           <Button asChild>
-            <Link to="/search/liquidations">Retour aux liquidations</Link>
+            <Link to="/search">Retour aux liquidations</Link>
           </Button>
         </Card>
       </div>
@@ -46,7 +46,7 @@ export function LiquidationDetailPage(): React.ReactElement {
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       {/* Back button */}
       <Button variant="ghost" size="sm" className="mb-4" asChild>
-        <Link to="/search/liquidations">
+        <Link to="/search">
           <ArrowLeft className="h-4 w-4 mr-2" />
           Retour aux liquidations
         </Link>

@@ -12,4 +12,5 @@ export type {
   ISuccessionFilters,
   ILiquidationFilters,
   IEnergyDiagnosticFilters,
+  IAllOpportunitiesFilters,
 } from '@linkinvests/shared';

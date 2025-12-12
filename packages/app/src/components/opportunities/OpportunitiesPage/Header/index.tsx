@@ -30,7 +30,7 @@ import { cn } from '@/lib/utils'
 const PAGE_SIZE_OPTIONS = [25, 50, 100, 200]
 
 interface OpportunityHeaderProps {
-  opportunityType: OpportunityType
+  opportunityType?: OpportunityType
   total?: number
   isCountLoading?: boolean
   itemsOnPage?: number

@@ -56,7 +56,7 @@ export function SignInForm(): React.ReactElement {
     try {
       const { error: authError } = await signIn.magicLink({
         email,
-        callbackURL: `${import.meta.env.VITE_APP_URL}/search/auctions`,
+        callbackURL: `${import.meta.env.VITE_APP_URL}/search`,
       })
 
       if (authError) {
@@ -79,7 +79,7 @@ export function SignInForm(): React.ReactElement {
     try {
       await signIn.social({
         provider: 'google',
-        callbackURL: `${import.meta.env.VITE_APP_URL}/search/auctions`,
+        callbackURL: `${import.meta.env.VITE_APP_URL}/search`,
       })
     } catch {
       setError('Erreur lors de la connexion avec Google')

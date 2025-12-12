@@ -1,5 +1,6 @@
 export * from './useRouteFilters'
 export * from './useOpportunityData'
+export * from './useUnifiedOpportunityData'
 export * from './useDelayedSkeleton'
 export * from './useSavedSearches'
 export * from './useFavorites'

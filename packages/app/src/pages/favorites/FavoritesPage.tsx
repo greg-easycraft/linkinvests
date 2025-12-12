@@ -71,7 +71,7 @@ function EmptyFavoritesState() {
           Vous n'avez pas encore ajouté d'opportunités à vos favoris.
         </p>
         <Button asChild>
-          <Link to="/search/auctions">Découvrir les opportunités</Link>
+          <Link to="/search">Découvrir les opportunités</Link>
         </Button>
       </div>
     </div>

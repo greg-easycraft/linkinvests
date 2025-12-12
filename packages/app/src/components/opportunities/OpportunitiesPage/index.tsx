@@ -19,7 +19,7 @@ interface OpportunitiesPageProps<T extends BaseOpportunity> {
   count?: number
   isCountLoading?: boolean
   isLoading: boolean
-  opportunityType: OpportunityType
+  opportunityType?: OpportunityType
   FiltersComponent: React.ReactNode
   viewMode?: 'list' | 'map'
   onExport?: (format: 'csv' | 'xlsx') => void

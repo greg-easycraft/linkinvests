@@ -6,7 +6,12 @@ import type { EnergyDiagnosticsRepository } from '../lib.types';
 import type { IExportService } from '~/common/export/export.types';
 import type { ExportService } from '~/common/export/services/export.service';
 import type { IOpportunityFilters } from '~/types';
-import { EnergyClass, GazClass, OpportunityType, type EnergyDiagnostic } from '@linkinvests/shared';
+import {
+  EnergyClass,
+  GazClass,
+  OpportunityType,
+  type EnergyDiagnostic,
+} from '@linkinvests/shared';
 import { DEFAULT_PAGE_SIZE } from '~/constants';
 import { getOpportunityHeaders } from '~/common/export/services/export-headers.service';
 import { succeed } from '~/common/utils/operation-result';

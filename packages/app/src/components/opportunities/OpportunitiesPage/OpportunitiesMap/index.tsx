@@ -7,15 +7,26 @@ import { TYPE_COLORS, TYPE_LABELS } from '@/constants/opportunity-types'
 
 interface OpportunitiesMapProps<T extends BaseOpportunity> {
   opportunities: Array<T>
-  type: OpportunityType
+  type?: OpportunityType
   isLoading: boolean
   selectedId?: string
   onSelect: (opportunity: T) => void
 }
 
+// Helper to get type from opportunity or fallback
+const getOpportunityType = <T extends BaseOpportunity>(
+  opportunity: T,
+  fallbackType?: OpportunityType,
+): OpportunityType => {
+  if ('type' in opportunity && opportunity.type) {
+    return opportunity.type as OpportunityType
+  }
+  return fallbackType!
+}
+
 export function OpportunitiesMap<T extends BaseOpportunity>({
   opportunities,
-  type,
+  type: fallbackType,
   isLoading,
   selectedId,
   onSelect,
@@ -81,6 +92,7 @@ export function OpportunitiesMap<T extends BaseOpportunity>({
 
     // Add new markers
     opportunities.forEach((opportunity) => {
+      const type = getOpportunityType(opportunity, fallbackType)
       const color = TYPE_COLORS[type]
 
       const el = document.createElement('div')
@@ -131,7 +143,7 @@ export function OpportunitiesMap<T extends BaseOpportunity>({
       })
       map.current.fitBounds(bounds, { padding: 50, maxZoom: 12 })
     }
-  }, [opportunities, selectedId, onSelect, mapLoaded, type])
+  }, [opportunities, selectedId, onSelect, mapLoaded, fallbackType])
 
   return (
     <div className="relative w-full h-full">

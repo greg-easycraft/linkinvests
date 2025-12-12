@@ -80,7 +80,7 @@ export function UsersPage() {
       // Send magic link to the new user
       await signIn.magicLink({
         email,
-        callbackURL: `${import.meta.env.VITE_APP_URL}/search/auctions`,
+        callbackURL: `${import.meta.env.VITE_APP_URL}/search`,
       })
     },
     onSuccess: () => {

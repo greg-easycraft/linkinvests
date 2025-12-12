@@ -35,7 +35,7 @@ export function SuccessionDetailPage(): React.ReactElement {
             La succession que vous recherchez n'existe pas ou a été supprimée.
           </p>
           <Button asChild>
-            <Link to="/search/successions">Retour aux successions</Link>
+            <Link to="/search">Retour aux successions</Link>
           </Button>
         </Card>
       </div>
@@ -46,7 +46,7 @@ export function SuccessionDetailPage(): React.ReactElement {
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       {/* Back button */}
       <Button variant="ghost" size="sm" className="mb-4" asChild>
-        <Link to="/search/successions">
+        <Link to="/search">
           <ArrowLeft className="h-4 w-4 mr-2" />
           Retour aux successions
         </Link>

@@ -108,6 +108,15 @@ export interface IEnergyDiagnosticFilters extends IOpportunityFilters {
   maxSquareFootage?: number;
 }
 
+export interface IAllOpportunitiesFilters extends IOpportunityFilters {
+  types?: OpportunityType[];
+  energyClasses?: (EnergyClass | EnergyClassType)[];
+  minSquareFootage?: number;
+  maxSquareFootage?: number;
+  minPrice?: number;
+  maxPrice?: number;
+}
+
 export interface OpportunitiesDataQueryResult<T> {
   opportunities: Array<T>;
   total?: number;

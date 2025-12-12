@@ -5,7 +5,11 @@ import { energyDiagnostics } from '@linkinvests/db';
 import { EnergyDiagnosticsRepository } from '../lib.types';
 import type { IEnergyDiagnosticFilters, PaginationFilters } from '~/types';
 import { calculateStartDate } from '~/constants';
-import type { EnergyDiagnostic } from '@linkinvests/shared';
+import {
+  type EnergyDiagnostic,
+  EnergyClass,
+  GazClass,
+} from '@linkinvests/shared';
 import { DEFAULT_PAGE_SIZE } from '~/constants';
 import { DATABASE_TOKEN } from '~/common/database';
 
@@ -123,7 +127,7 @@ export class EnergyDiagnosticsRepositoryImpl implements EnergyDiagnosticsReposit
     }
 
     const results = await query;
-    return results;
+    return results.map(this.mapDiagnostic);
   }
 
   async findById(id: string): Promise<EnergyDiagnostic | null> {
@@ -133,7 +137,7 @@ export class EnergyDiagnosticsRepositoryImpl implements EnergyDiagnosticsReposit
       .where(and(eq(energyDiagnostics.id, id)))
       .limit(1);
 
-    return result[0] ?? null;
+    return result[0] ? this.mapDiagnostic(result[0]) : null;
   }
 
   async findByExternalId(externalId: string): Promise<EnergyDiagnostic | null> {
@@ -143,8 +147,16 @@ export class EnergyDiagnosticsRepositoryImpl implements EnergyDiagnosticsReposit
       .where(and(eq(energyDiagnostics.externalId, externalId)))
       .limit(1);
 
-    return result[0] ?? null;
+    return result[0] ? this.mapDiagnostic(result[0]) : null;
   }
+
+  private mapDiagnostic = (
+    row: typeof energyDiagnostics.$inferSelect,
+  ): EnergyDiagnostic => ({
+    ...row,
+    energyClass: row.energyClass as EnergyClass,
+    gazClass: row.gazClass as GazClass,
+  });
 
   async count(filters?: IEnergyDiagnosticFilters): Promise<number> {
     const conditions = this.buildWhereClause(filters);

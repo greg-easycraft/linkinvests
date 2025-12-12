@@ -13,7 +13,11 @@ import {
   type DiagnosticLink,
 } from '../lib.types';
 import type { DiagnosticQueryInput } from '../lib.types';
-import type { EnergyDiagnostic } from '@linkinvests/shared';
+import {
+  type EnergyDiagnostic,
+  EnergyClass,
+  GazClass,
+} from '@linkinvests/shared';
 import { DATABASE_TOKEN } from '~/common/database';
 
 @Injectable()
@@ -46,7 +50,7 @@ export class AddressSearchRepositoryImpl implements AddressSearchRepository {
       .where(and(...this.getWhereClauseForAddressSearch(input)))
       .limit(MAX_NUMBER_OF_RESULTS);
     const results = await query;
-    return results;
+    return results.map(this.mapDiagnostic);
   }
 
   async findById(id: string): Promise<EnergyDiagnostic | null> {
@@ -62,8 +66,16 @@ export class AddressSearchRepositoryImpl implements AddressSearchRepository {
       )
       .limit(1);
 
-    return result[0] ?? null;
+    return result[0] ? this.mapDiagnostic(result[0]) : null;
   }
+
+  private mapDiagnostic = (
+    row: typeof energyDiagnostics.$inferSelect,
+  ): EnergyDiagnostic => ({
+    ...row,
+    energyClass: row.energyClass as EnergyClass,
+    gazClass: row.gazClass as GazClass,
+  });
 
   async saveAuctionDiagnosticLinks(
     links: DiagnosticLinkInput[],
