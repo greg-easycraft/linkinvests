@@ -9,4 +9,5 @@ export interface AllOpportunity extends BaseOpportunity {
   squareFootage?: number;
   price?: number;
   mainPicture?: string;
+  pictures?: string[];
 }

@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
 import { EnergyClassBadge } from '@/components/ui/energy-class-badge'
 import { FavoriteButton } from '@/components/ui/favorite-button'
+import { ImageCarouselMini } from '@/components/ui/image-carousel-mini'
 import { TYPE_COLORS, TYPE_LABELS } from '@/constants'
 import { formatPrice } from '@/lib/format'
 
@@ -17,6 +18,21 @@ const hasPictureFields = (
   { mainPicture?: string; pictures?: Array<string> }
 > => {
   return 'mainPicture' in opportunity
+}
+
+// Check if opportunity has multiple pictures for carousel
+const hasMultiplePictures = (opportunity: Opportunity): boolean => {
+  if (!hasPictureFields(opportunity)) return false
+  const picturesCount = opportunity.pictures?.length ?? 0
+  const mainPictureCount = opportunity.mainPicture ? 1 : 0
+  // Count unique pictures (main picture may be in pictures array)
+  const mainInPictures = opportunity.pictures?.includes(
+    opportunity.mainPicture ?? '',
+  )
+  const totalUnique = mainInPictures
+    ? picturesCount
+    : picturesCount + mainPictureCount
+  return totalUnique > 1
 }
 
 // Type guard to check if opportunity has property details
@@ -62,6 +78,15 @@ export function OpportunityGridCard({
 
   const price = getPriceValue(opportunity)
   const hasImage = hasPictureFields(opportunity) && opportunity.mainPicture
+  const showCarousel = hasMultiplePictures(opportunity)
+
+  // Get pictures for carousel
+  const mainPicture = hasPictureFields(opportunity)
+    ? opportunity.mainPicture
+    : undefined
+  const pictures = hasPictureFields(opportunity)
+    ? opportunity.pictures
+    : undefined
 
   return (
     <Card
@@ -70,7 +95,13 @@ export function OpportunityGridCard({
     >
       {/* Image Section */}
       <div className="relative aspect-[4/3] bg-muted">
-        {hasImage ? (
+        {showCarousel ? (
+          <ImageCarouselMini
+            mainPicture={mainPicture}
+            pictures={pictures}
+            alt={opportunity.label}
+          />
+        ) : hasImage ? (
           <img
             src={opportunity.mainPicture}
             alt={opportunity.label}

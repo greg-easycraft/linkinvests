@@ -474,6 +474,7 @@ export const allOpportunities = pgMaterializedView('all_opportunities', {
   squareFootage: numeric('square_footage', { mode: 'number' }),
   price: numeric('price', { mode: 'number' }),
   mainPicture: text('main_picture'),
+  pictures: text('pictures').array(),
 }).as(sql`
   SELECT
     id AS opportunity_id,
@@ -491,7 +492,8 @@ export const allOpportunities = pgMaterializedView('all_opportunities', {
     energy_class::varchar AS energy_class,
     square_footage,
     COALESCE(current_price, reserve_price) AS price,
-    main_picture
+    main_picture,
+    pictures
   FROM auction
 
   UNION ALL
@@ -512,7 +514,8 @@ export const allOpportunities = pgMaterializedView('all_opportunities', {
     NULL::varchar AS energy_class,
     NULL::numeric AS square_footage,
     NULL::numeric AS price,
-    NULL::text AS main_picture
+    NULL::text AS main_picture,
+    NULL::text[] AS pictures
   FROM succession
 
   UNION ALL
@@ -533,7 +536,8 @@ export const allOpportunities = pgMaterializedView('all_opportunities', {
     NULL::varchar AS energy_class,
     NULL::numeric AS square_footage,
     NULL::numeric AS price,
-    NULL::text AS main_picture
+    NULL::text AS main_picture,
+    NULL::text[] AS pictures
   FROM liquidation
 
   UNION ALL
@@ -554,7 +558,8 @@ export const allOpportunities = pgMaterializedView('all_opportunities', {
     energy_class::varchar AS energy_class,
     square_footage,
     NULL::numeric AS price,
-    NULL::text AS main_picture
+    NULL::text AS main_picture,
+    NULL::text[] AS pictures
   FROM energy_diagnostic
   WHERE energy_class IN ('E', 'F', 'G')
 
@@ -576,6 +581,7 @@ export const allOpportunities = pgMaterializedView('all_opportunities', {
     energy_class::varchar AS energy_class,
     square_footage,
     price,
-    main_picture
+    main_picture,
+    pictures
   FROM listing
 `);
