@@ -5,6 +5,7 @@ import { ListingsProcessor } from './listings.processor';
 import { MoteurImmoService } from './services/moteur-immo.service';
 import { ListingsRepository } from './repositories/listings.repository';
 import { ListingsCron } from './cron/listings.cron';
+import { RefreshTriggerService } from '../materialized-views';
 import { config } from '~/config';
 
 @Module({
@@ -21,6 +22,7 @@ import { config } from '~/config';
     MoteurImmoService,
     ListingsRepository,
     ListingsCron,
+    RefreshTriggerService,
   ],
   exports: [BullModule],
 })

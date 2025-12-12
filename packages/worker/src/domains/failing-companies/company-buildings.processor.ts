@@ -14,6 +14,7 @@ import type {
 } from './types/failing-companies.types';
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import type { Job } from 'bullmq';
+import { RefreshTriggerService } from '../materialized-views';
 
 interface CompanyBuildingsJobData {
   sourceFile: string;
@@ -38,7 +39,8 @@ export class CompanyBuildingsProcessor extends WorkerHost {
     private readonly csvParserService: CsvParserService,
     private readonly rechercheEntreprisesApi: RechercheEntreprisesApiService,
     private readonly geocodingApi: GeocodingApiService,
-    private readonly opportunityRepository: FailingCompaniesOpportunityRepository
+    private readonly opportunityRepository: FailingCompaniesOpportunityRepository,
+    private readonly refreshTriggerService: RefreshTriggerService
   ) {
     super();
   }
@@ -176,6 +178,9 @@ export class CompanyBuildingsProcessor extends WorkerHost {
         - Errors: ${stats.errors}
         - Failed rows: ${failedRows.length}
       `);
+
+      // Trigger materialized view refresh (debounced)
+      await this.refreshTriggerService.triggerRefresh();
     } catch (error) {
       this.logger.error(
         `Failed to process company buildings from ${sourceFile}: ${(error as Error).message}`,

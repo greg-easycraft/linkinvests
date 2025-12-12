@@ -12,6 +12,7 @@ import {
   EnergyDiagnosticsRepository,
   type DpeRecord,
 } from './types';
+import { RefreshTriggerService } from '../materialized-views';
 
 @Processor(SOURCE_ENERGY_SIEVES_QUEUE, { concurrency: 1 })
 export class EnergyDiagnosticsProcessor extends WorkerHost {
@@ -19,7 +20,8 @@ export class EnergyDiagnosticsProcessor extends WorkerHost {
 
   constructor(
     private readonly ademeApi: AdemeApiService,
-    private readonly opportunityRepository: EnergyDiagnosticsRepository
+    private readonly opportunityRepository: EnergyDiagnosticsRepository,
+    private readonly refreshTriggerService: RefreshTriggerService
   ) {
     super();
   }
@@ -114,6 +116,9 @@ export class EnergyDiagnosticsProcessor extends WorkerHost {
         - Opportunities inserted: ${stats.opportunitiesInserted}
         - Errors: ${stats.errors}
       `);
+
+      // Trigger materialized view refresh (debounced)
+      await this.refreshTriggerService.triggerRefresh();
     } catch (error) {
       this.logger.error(
         `Failed to process energy sieves for department ${departmentId}: ${(error as Error).message}`,

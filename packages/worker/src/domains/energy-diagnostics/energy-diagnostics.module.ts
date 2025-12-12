@@ -5,6 +5,7 @@ import { EnergyDiagnosticsProcessor } from './energy-diagnostics.processor';
 import { AdemeApiService } from './services';
 import { DrizzleEnergyDiagnosticsRepository } from './repositories';
 import { EnergyDiagnosticsCron } from './cron/energy-sieves.cron';
+import { RefreshTriggerService } from '../materialized-views';
 import { config } from '~/config';
 import { EnergyDiagnosticsRepository } from './types';
 
@@ -25,6 +26,7 @@ import { EnergyDiagnosticsRepository } from './types';
     AdemeApiService,
     EnergyDiagnosticsProcessor,
     EnergyDiagnosticsCron,
+    RefreshTriggerService,
   ],
   exports: [BullModule],
 })

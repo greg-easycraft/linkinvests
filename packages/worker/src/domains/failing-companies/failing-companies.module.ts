@@ -11,6 +11,7 @@ import {
   SOURCE_FAILING_COMPANIES_REQUESTED_QUEUE,
   SOURCE_COMPANY_BUILDINGS_QUEUE,
 } from '@linkinvests/shared';
+import { RefreshTriggerService } from '../materialized-views';
 import { config } from '~/config';
 
 @Module({
@@ -36,6 +37,7 @@ import { config } from '~/config';
     RechercheEntreprisesApiService,
     GeocodingApiService,
     FailingCompaniesOpportunityRepository,
+    RefreshTriggerService,
   ],
   exports: [BullModule],
 })

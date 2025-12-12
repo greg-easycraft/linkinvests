@@ -9,6 +9,7 @@ import {
 import { MoteurImmoService } from './services/moteur-immo.service';
 import { ListingsRepository } from './repositories/listings.repository';
 import { ListingJobData, ListingsJobFilters } from './types';
+import { RefreshTriggerService } from '../materialized-views';
 
 @Processor(SOURCE_LISTINGS_QUEUE, { concurrency: 1 })
 export class ListingsProcessor extends WorkerHost {
@@ -16,7 +17,8 @@ export class ListingsProcessor extends WorkerHost {
 
   constructor(
     private readonly moteurImmoService: MoteurImmoService,
-    private readonly listingsRepository: ListingsRepository
+    private readonly listingsRepository: ListingsRepository,
+    private readonly refreshTriggerService: RefreshTriggerService
   ) {
     super();
   }
@@ -109,6 +111,9 @@ export class ListingsProcessor extends WorkerHost {
         duplicatesSkipped: stats.duplicatesSkipped,
         errors: stats.errors,
       });
+
+      // Trigger materialized view refresh (debounced)
+      await this.refreshTriggerService.triggerRefresh();
     } catch (error) {
       const duration = Date.now() - startTime;
       this.logger.error(

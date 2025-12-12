@@ -9,6 +9,7 @@ import { DeceasesModule } from './domains/deceases';
 import { EnergyDiagnosticsModule } from './domains/energy-diagnostics';
 import { FailingCompaniesModule } from './domains/failing-companies';
 import { ListingsModule } from './domains/listings';
+import { MaterializedViewsModule } from './domains/materialized-views';
 import { config, ConfigModule } from './config';
 import { SCRAPING_QUEUE } from '@linkinvests/shared';
 import { ScrapingProcessor } from './scraping.processor';
@@ -37,6 +38,7 @@ import { S3Module } from './storage';
     EnergyDiagnosticsModule,
     FailingCompaniesModule,
     ListingsModule,
+    MaterializedViewsModule,
   ],
   controllers: [AppController],
   providers: [ScrapingProcessor],

@@ -6,6 +6,7 @@ import type { Job } from 'bullmq';
 import type { ScrapingJobData } from '~/types/scraping-job.types';
 import { AuctionsScrapingService } from './domains/auctions';
 import { DeceasesScrapingService } from './domains/deceases';
+import { RefreshTriggerService } from './domains/materialized-views';
 
 @Processor(SCRAPING_QUEUE, {
   concurrency: 1, // Process ONE job at a time
@@ -15,7 +16,8 @@ export class ScrapingProcessor extends WorkerHost {
 
   constructor(
     private readonly auctionsScrapingService: AuctionsScrapingService,
-    private readonly deceasesScrapingService: DeceasesScrapingService
+    private readonly deceasesScrapingService: DeceasesScrapingService,
+    private readonly refreshTriggerService: RefreshTriggerService
   ) {
     super();
   }
@@ -32,11 +34,13 @@ export class ScrapingProcessor extends WorkerHost {
     try {
       if (jobName === 'auctions') {
         await this.auctionsScrapingService.scrapeAuctions(job);
+        await this.refreshTriggerService.triggerRefresh();
         return;
       }
 
       if (jobName === 'deceases') {
         await this.deceasesScrapingService.scrapeDeceases(job);
+        await this.refreshTriggerService.triggerRefresh();
         return;
       }
 
