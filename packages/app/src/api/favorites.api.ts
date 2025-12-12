@@ -29,10 +29,13 @@ export async function checkFavorite(
   opportunityId: string,
   opportunityType: OpportunityType,
 ): Promise<boolean> {
-  const response = await apiRequest<{ isFavorite: boolean }>('/favorites/check', {
-    method: 'POST',
-    body: { opportunityId, opportunityType },
-  })
+  const response = await apiRequest<{ isFavorite: boolean }>(
+    '/favorites/check',
+    {
+      method: 'POST',
+      body: { opportunityId, opportunityType },
+    },
+  )
   return response.isFavorite
 }
 

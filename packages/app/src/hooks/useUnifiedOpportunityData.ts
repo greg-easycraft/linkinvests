@@ -99,16 +99,26 @@ export function useUnifiedOpportunityData({
   // Build query key
   const queryKey = isSingleType
     ? [singleType?.toLowerCase(), 'search', baseFiltersForQuery]
-    : ['all-opportunities', 'search', { types: selectedTypes, ...baseFiltersForQuery }]
+    : [
+        'all-opportunities',
+        'search',
+        { types: selectedTypes, ...baseFiltersForQuery },
+      ]
 
   const countQueryKey = isSingleType
     ? [singleType?.toLowerCase(), 'count', baseFiltersForQuery]
-    : ['all-opportunities', 'count', { types: selectedTypes, ...baseFiltersForQuery }]
+    : [
+        'all-opportunities',
+        'count',
+        { types: selectedTypes, ...baseFiltersForQuery },
+      ]
 
   // Data query - fetches paginated data from appropriate API
   const dataQuery = useQuery({
     queryKey,
-    queryFn: async (): Promise<OpportunitiesDataQueryResult<BaseOpportunity | AllOpportunity>> => {
+    queryFn: async (): Promise<
+      OpportunitiesDataQueryResult<BaseOpportunity | AllOpportunity>
+    > => {
       if (isSingleType && singleType) {
         // Query single type API
         const apiFunctions = SINGLE_TYPE_API[singleType]

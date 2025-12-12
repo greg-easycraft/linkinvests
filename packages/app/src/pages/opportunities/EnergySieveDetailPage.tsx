@@ -38,9 +38,7 @@ export function EnergySieveDetailPage(): React.ReactElement {
             supprimée.
           </p>
           <Button asChild>
-            <Link to="/search">
-              Retour aux passoires énergétiques
-            </Link>
+            <Link to="/search">Retour aux passoires énergétiques</Link>
           </Button>
         </Card>
       </div>

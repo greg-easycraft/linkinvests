@@ -1,10 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import type { CreateSavedSearchRequest } from '@linkinvests/shared'
-import {
-  createSavedSearch,
-  deleteSavedSearch,
-  getSavedSearches,
-} from '@/api'
+import { createSavedSearch, deleteSavedSearch, getSavedSearches } from '@/api'
 
 export function useSavedSearches() {
   const queryClient = useQueryClient()

@@ -42,7 +42,10 @@ export function OpportunityTypeMultiSelect({
       if (newTypes.length === 0) {
         // If trying to unselect the last one, select all instead
         onTypesChange(undefined)
-      } else if (newTypes.length === OPPORTUNITY_TYPE_DISPLAY_ORDER.length - 1) {
+      } else if (
+        newTypes.length ===
+        OPPORTUNITY_TYPE_DISPLAY_ORDER.length - 1
+      ) {
         // If unselecting brings us to all but one, just return to "all"
         onTypesChange(undefined)
       } else {

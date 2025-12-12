@@ -2,7 +2,7 @@ import { useNavigate, useSearch } from '@tanstack/react-router'
 import { useCallback, useMemo } from 'react'
 import type { UnifiedSearchFilters } from '@/schemas/filters.schema'
 import type { AllOpportunity, BaseOpportunity } from '@/types'
-import type {SortOption} from '@/constants/sort-options';
+import type { SortOption } from '@/constants/sort-options'
 import { OpportunitiesPage } from '@/components/opportunities/OpportunitiesPage'
 import { UnifiedFilters } from '@/components/opportunities/OpportunityFilters'
 import { useUnifiedOpportunityData } from '@/hooks'
@@ -10,13 +10,14 @@ import { OpportunityType } from '@/types'
 import {
   AUCTION_SORT_OPTIONS,
   DEFAULT_SORT_OPTIONS,
-  LISTING_SORT_OPTIONS
-  
+  LISTING_SORT_OPTIONS,
 } from '@/constants/sort-options'
 import { DEFAULT_PAGE_SIZE } from '@/constants'
 
 // Get sort options based on selected types
-function getSortOptions(selectedTypes: Array<OpportunityType>): Array<SortOption> {
+function getSortOptions(
+  selectedTypes: Array<OpportunityType>,
+): Array<SortOption> {
   // If all types or no specific type, use default sort options
   if (selectedTypes.length === 0 || selectedTypes.length > 1) {
     return DEFAULT_SORT_OPTIONS
@@ -38,10 +39,16 @@ export function UnifiedSearchPage(): React.ReactElement {
   const filters = useSearch({ from: '/search' })
   const navigate = useNavigate({ from: '/search' })
 
-  const { data, count, isDataLoading, isCountLoading, isSingleType, selectedTypes } =
-    useUnifiedOpportunityData({
-      filters,
-    })
+  const {
+    data,
+    count,
+    isDataLoading,
+    isCountLoading,
+    isSingleType,
+    selectedTypes,
+  } = useUnifiedOpportunityData({
+    filters,
+  })
 
   const sortOptions = useMemo(
     () => getSortOptions(selectedTypes),

@@ -1,8 +1,5 @@
 import type { DatePeriod } from '@linkinvests/shared'
-import {
-  getDatePeriodOption,
-  getDepartmentsByIds,
-} from '@/constants'
+import { getDatePeriodOption, getDepartmentsByIds } from '@/constants'
 
 interface FilterRecapItem {
   label: string

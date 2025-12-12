@@ -93,9 +93,7 @@ const energyClassesSchema = z
         ].includes(cls as EnergyClass | typeof UNKNOWN_ENERGY_CLASS),
       )
     }),
-    z.array(
-      z.union([z.literal(UNKNOWN_ENERGY_CLASS), z.enum(EnergyClass)]),
-    ),
+    z.array(z.union([z.literal(UNKNOWN_ENERGY_CLASS), z.enum(EnergyClass)])),
   ])
   .optional()
 

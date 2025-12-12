@@ -2,11 +2,16 @@ import { useCallback, useState } from 'react'
 import { Heart } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 
+import {
+  FavoritesDataTable,
+  FavoritesSectionAccordion,
+  getColumnsForType,
+} from './components'
 import type { Opportunity } from '@/types'
 import { OpportunityType } from '@/types'
 import { useFavorites } from '@/hooks'
-import { OpportunityCard } from '@/components/opportunities/OpportunitiesPage/OpportunitiesList/OpportunityCard'
 import { OpportunityDetailsModal } from '@/components/opportunities/OpportunityDetailsModal'
+import { Accordion } from '@/components/ui/accordion'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
 
@@ -45,14 +50,12 @@ function FavoritesPageSkeleton() {
         <Skeleton className="h-8 w-48 mb-2" />
         <Skeleton className="h-5 w-32" />
       </div>
-      <div className="space-y-10">
+      <div className="space-y-4">
         {[1, 2, 3].map((i) => (
-          <div key={i}>
-            <Skeleton className="h-7 w-40 mb-4" />
-            <div className="grid gap-4">
-              {[1, 2].map((j) => (
-                <Skeleton key={j} className="h-32 w-full" />
-              ))}
+          <div key={i} className="border rounded-lg">
+            <Skeleton className="h-14 w-full rounded-b-none" />
+            <div className="p-4">
+              <Skeleton className="h-32 w-full" />
             </div>
           </div>
         ))}
@@ -120,9 +123,14 @@ export function FavoritesPage(): React.ReactElement {
     ? Object.values(data).reduce((sum, arr) => sum + arr.length, 0)
     : 0
 
-  if (totalFavorites === 0) {
+  if (!data || totalFavorites === 0) {
     return <EmptyFavoritesState />
   }
+
+  // All sections with data, expanded by default
+  const defaultOpenSections = SECTIONS.filter(
+    ({ key }) => data[key].length > 0,
+  ).map(({ key }) => key)
 
   return (
     <div className="container mx-auto py-6 px-4">
@@ -137,30 +145,36 @@ export function FavoritesPage(): React.ReactElement {
         </p>
       </header>
 
-      <div className="space-y-10">
+      <Accordion
+        type="multiple"
+        defaultValue={defaultOpenSections}
+        className="space-y-4"
+      >
         {SECTIONS.map(({ key, label, type }) => {
-          const items = data?.[key] ?? []
+          const items = data[key]
           if (items.length === 0) return null
 
+          const columns = getColumnsForType(type)
+
           return (
-            <section key={key}>
-              <h2 className="text-xl font-semibold mb-4 border-b pb-2">
-                {label} ({items.length})
-              </h2>
-              <div className="grid gap-4">
-                {items.map((opportunity) => (
-                  <OpportunityCard
-                    key={opportunity.id}
-                    opportunity={opportunity as Opportunity}
-                    type={type}
-                    onSelect={(opp) => handleSelectOpportunity(opp, type)}
-                  />
-                ))}
-              </div>
-            </section>
+            <FavoritesSectionAccordion
+              key={key}
+              sectionKey={key}
+              label={label}
+              count={items.length}
+              type={type}
+            >
+              <FavoritesDataTable
+                data={items}
+                columns={columns}
+                onRowClick={(item) =>
+                  handleSelectOpportunity(item as Opportunity, type)
+                }
+              />
+            </FavoritesSectionAccordion>
           )
         })}
-      </div>
+      </Accordion>
 
       {selectedOpportunity && selectedType && (
         <OpportunityDetailsModal

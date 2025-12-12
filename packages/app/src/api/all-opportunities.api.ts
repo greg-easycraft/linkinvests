@@ -5,10 +5,13 @@ import type { CountResponse, SearchResponse } from './types'
 export async function searchAllOpportunities(
   filters: IAllOpportunitiesFilters,
 ): Promise<SearchResponse<AllOpportunity>> {
-  return apiRequest<SearchResponse<AllOpportunity>>('/all-opportunities/search', {
-    method: 'POST',
-    body: filters,
-  })
+  return apiRequest<SearchResponse<AllOpportunity>>(
+    '/all-opportunities/search',
+    {
+      method: 'POST',
+      body: filters,
+    },
+  )
 }
 
 export async function countAllOpportunities(

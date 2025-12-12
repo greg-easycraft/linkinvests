@@ -2,19 +2,27 @@ Lundi 15
 
 - map bounds on search
 - [ ] recherche dans un rayon autour de moi ou d'un code postal
-- [ ] succession, mémorisation si email envoyé
+- [ ] search UI refactor
+    - filters as aside w/ backdrop, triggered by btn in header
+    - map/list/cards from header
+- [ ] succession, mémorisation si email envoyé (handle via status)
 
+- [ ] remove re-exporting types file
+    - api
+    - app
 - [ ] authentification (fermée)
 - [ ] addresse mairie zipcode cedex
 - [ ] deploy sur staging.linkinvests.com
 - [ ] CI/CD
 - [ ] rename address fields into streetAddress & handle as such
 
+- [ ] recherche sur plusieurs types d'opportunités
 - [X] periode depuis, jusqu'à
 - [X] sauvegarde recherches
 - [X] auto scrape deceases
 - [X] classe gaz sur DPEs (GES) pour affiner scoring
 - [X] interface admin (gestion users)
+- [X] favoris
 
 TO TEST
  - class gaz 
@@ -32,6 +40,7 @@ BUGS
 Later
 - [ ] liquidations, handles status
 - [ ] favoris (notes, addresse, statut)
+- [ ] handle "viewed" status on opportunities
 - [ ] statuts : courrier envoyé, relance 1, relance 2, contacter vendeur, visite prévue, visite ok, rejeté, offre ok, offre acceptée, offre refusée, contre-offre, 
 - [ ] courrier avec La Poste (annonces, successions)
 - [ ] créer corps du msg pour email mairie
