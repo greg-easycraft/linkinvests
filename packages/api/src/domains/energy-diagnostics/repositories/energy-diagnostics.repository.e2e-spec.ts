@@ -4,7 +4,10 @@
 import { EnergyDiagnosticsRepositoryImpl } from './energy-diagnostics.repository';
 import { useTestDb } from '~/test-utils/use-test-db';
 import { EnergyClass, OpportunityType } from '@linkinvests/shared';
-import type { IEnergyDiagnosticFilters, PaginationFilters } from '@linkinvests/shared';
+import type {
+  IEnergyDiagnosticFilters,
+  PaginationFilters,
+} from '@linkinvests/shared';
 
 describe('EnergyDiagnosticsRepositoryImpl Integration Tests', () => {
   const db = useTestDb();

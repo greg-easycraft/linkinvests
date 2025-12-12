@@ -4,7 +4,10 @@
 import { LiquidationRepositoryImpl } from './liquidation.repository';
 import { useTestDb } from '~/test-utils/use-test-db';
 import { OpportunityType } from '@linkinvests/shared';
-import type { ILiquidationFilters, PaginationFilters } from '@linkinvests/shared';
+import type {
+  ILiquidationFilters,
+  PaginationFilters,
+} from '@linkinvests/shared';
 
 describe('LiquidationRepositoryImpl Integration Tests', () => {
   const db = useTestDb();

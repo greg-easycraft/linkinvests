@@ -3,7 +3,10 @@ import { and, eq, gte, inArray, lte, sql, type SQL } from 'drizzle-orm';
 import type { DomainDbType } from '~/types/db';
 import { energyDiagnostics } from '@linkinvests/db';
 import { EnergyDiagnosticsRepository } from '../lib.types';
-import type { IEnergyDiagnosticFilters, PaginationFilters } from '@linkinvests/shared';
+import type {
+  IEnergyDiagnosticFilters,
+  PaginationFilters,
+} from '@linkinvests/shared';
 import { calculateStartDate } from '~/constants';
 import {
   type EnergyDiagnostic,

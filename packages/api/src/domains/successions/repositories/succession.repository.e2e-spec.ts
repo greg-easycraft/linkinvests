@@ -4,7 +4,10 @@
 import { SuccessionRepositoryImpl } from './succession.repository';
 import { useTestDb } from '~/test-utils/use-test-db';
 import { OpportunityType } from '@linkinvests/shared';
-import type { ISuccessionFilters, PaginationFilters } from '@linkinvests/shared';
+import type {
+  ISuccessionFilters,
+  PaginationFilters,
+} from '@linkinvests/shared';
 
 describe('SuccessionRepositoryImpl Integration Tests', () => {
   const db = useTestDb();
