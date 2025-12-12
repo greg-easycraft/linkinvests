@@ -5,8 +5,8 @@ import { EnergyDiagnosticInput } from '@linkinvests/shared';
 import { EnergyDiagnosticsRepository } from '../types';
 
 @Injectable()
-export class DrizzleEnergyDiagnosticsRepository implements EnergyDiagnosticsRepository {
-  private readonly logger = new Logger(DrizzleEnergyDiagnosticsRepository.name);
+export class EnergyDiagnosticsRepositoryImpl implements EnergyDiagnosticsRepository {
+  private readonly logger = new Logger(EnergyDiagnosticsRepositoryImpl.name);
 
   constructor(
     @Inject(DATABASE_CONNECTION)

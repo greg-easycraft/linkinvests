@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { EnergyDiagnosticsRepository } from './energy-diagnostics.repository';
+import { EnergyDiagnosticsRepositoryImpl } from './energy-diagnostics.repository';
 import { DATABASE_CONNECTION } from '~/database';
-import { OpportunityType } from '@linkinvests/shared';
+import { EnergyClass, GazClass, OpportunityType } from '@linkinvests/shared';
 import { EnergyDiagnosticInput } from '@linkinvests/shared';
 
-describe('EnergyDiagnosticsRepository', () => {
-  let repository: EnergyDiagnosticsRepository;
+describe('EnergyDiagnosticsRepositoryImpl', () => {
+  let repository: EnergyDiagnosticsRepositoryImpl;
   let mockDb: any;
 
   beforeEach(async () => {
@@ -17,7 +17,7 @@ describe('EnergyDiagnosticsRepository', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        EnergyDiagnosticsRepository,
+        EnergyDiagnosticsRepositoryImpl,
         {
           provide: DATABASE_CONNECTION,
           useValue: mockDb,
@@ -25,8 +25,8 @@ describe('EnergyDiagnosticsRepository', () => {
       ],
     }).compile();
 
-    repository = module.get<EnergyDiagnosticsRepository>(
-      EnergyDiagnosticsRepository
+    repository = module.get<EnergyDiagnosticsRepositoryImpl>(
+      EnergyDiagnosticsRepositoryImpl
     );
 
     // Suppress logger output during tests
@@ -91,8 +91,8 @@ describe('EnergyDiagnosticsRepository', () => {
           longitude: 2.3522,
           opportunityDate: new Date('2024-01-15').toISOString().split('T')[0],
           squareFootage: 100,
-          energyClass: 'A',
-          gazClass: 'A',
+          energyClass: EnergyClass.A,
+          gazClass: GazClass.A,
         })
       );
 
@@ -117,8 +117,8 @@ describe('EnergyDiagnosticsRepository', () => {
           longitude: 2.3522,
           opportunityDate: new Date('2024-01-15').toISOString().split('T')[0],
           squareFootage: 100,
-          energyClass: 'A',
-          gazClass: 'A',
+          energyClass: EnergyClass.A,
+          gazClass: GazClass.A,
         })
       );
 
@@ -142,8 +142,8 @@ describe('EnergyDiagnosticsRepository', () => {
             .toISOString()
             .split('T')[0],
           squareFootage: 100,
-          energyClass: 'A',
-          gazClass: 'A',
+          energyClass: EnergyClass.A,
+          gazClass: GazClass.A,
         },
       ];
 
@@ -180,8 +180,8 @@ describe('EnergyDiagnosticsRepository', () => {
           longitude: 2.3522,
           opportunityDate: new Date('2024-01-15').toISOString().split('T')[0],
           squareFootage: 100,
-          energyClass: 'A',
-          gazClass: 'A',
+          energyClass: EnergyClass.A,
+          gazClass: GazClass.A,
         },
       ];
 
@@ -203,8 +203,8 @@ describe('EnergyDiagnosticsRepository', () => {
           longitude: 2.3522,
           opportunityDate: new Date('2024-01-15').toISOString().split('T')[0],
           squareFootage: 100,
-          energyClass: 'A',
-          gazClass: 'A',
+          energyClass: EnergyClass.A,
+          gazClass: GazClass.A,
         },
       ];
 
@@ -226,8 +226,8 @@ describe('EnergyDiagnosticsRepository', () => {
           longitude: 2.3522,
           opportunityDate: new Date('2024-01-15').toISOString().split('T')[0],
           squareFootage: 100,
-          energyClass: 'A',
-          gazClass: 'A',
+          energyClass: EnergyClass.A,
+          gazClass: GazClass.A,
         },
       ];
 
@@ -244,8 +244,8 @@ describe('EnergyDiagnosticsRepository', () => {
         {
           externalId: 'DPE123456',
           squareFootage: 100,
-          energyClass: 'A',
-          gazClass: 'A',
+          energyClass: EnergyClass.A,
+          gazClass: GazClass.A,
           label: 'Test Building',
           address: '123 Rue de Test',
           zipCode: '75001',

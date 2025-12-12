@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CONFIG_TOKEN } from '../../../config';
 import { MoteurImmoListing, MoteurImmoService } from './moteur-immo.service';
-import { EnergyClass, PropertyType } from '@linkinvests/shared';
+import { EnergyClass, GazClass, PropertyType } from '@linkinvests/shared';
 
 // Mock global fetch
 global.fetch = jest.fn();
@@ -147,7 +147,7 @@ describe('MoteurImmoService', () => {
       energyValue: 120,
       energyGrade: EnergyClass.C,
       gasValue: 25,
-      gasGrade: 'C',
+      gasGrade: GazClass.C,
       diagnosticDate: '2024-01-10',
       priceStats: {
         rent: 2500,
@@ -182,7 +182,7 @@ describe('MoteurImmoService', () => {
         squareFootage: 75,
         rooms: 3,
         bedrooms: 2,
-        energyClass: 'C',
+        energyClass: EnergyClass.C,
         price: 500000,
         pictures: ['image1.jpg', 'image2.jpg'],
         mainPicture: 'image1.jpg',

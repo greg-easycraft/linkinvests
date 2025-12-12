@@ -3,11 +3,11 @@ import { OpportunityType, SuccessionInput } from '@linkinvests/shared';
 
 import { DATABASE_CONNECTION } from '~/database';
 
-import { DeceasesOpportunityRepository } from './deceases-opportunity.repository';
+import { DeceasesOpportunityRepositoryImpl } from './deceases-opportunity.repository';
 import type { MairieContactInfo } from '../types/deceases.types';
 
-describe('DeceasesOpportunityRepository', () => {
-  let repository: DeceasesOpportunityRepository;
+describe('DeceasesOpportunityRepositoryImpl', () => {
+  let repository: DeceasesOpportunityRepositoryImpl;
   let mockDb: jest.Mocked<{
     insert: jest.Mock;
     values: jest.Mock;
@@ -23,7 +23,7 @@ describe('DeceasesOpportunityRepository', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        DeceasesOpportunityRepository,
+        DeceasesOpportunityRepositoryImpl,
         {
           provide: DATABASE_CONNECTION,
           useValue: mockDb,
@@ -31,8 +31,8 @@ describe('DeceasesOpportunityRepository', () => {
       ],
     }).compile();
 
-    repository = module.get<DeceasesOpportunityRepository>(
-      DeceasesOpportunityRepository
+    repository = module.get<DeceasesOpportunityRepositoryImpl>(
+      DeceasesOpportunityRepositoryImpl
     );
 
     // Suppress logger output during tests
