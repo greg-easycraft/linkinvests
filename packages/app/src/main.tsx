@@ -16,8 +16,6 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { zodSearchValidator } from '@tanstack/router-zod-adapter'
 import { z } from 'zod'
 
-import { Heart } from 'lucide-react'
-
 import './styles.css'
 import reportWebVitals from './reportWebVitals.ts'
 
@@ -91,20 +89,19 @@ function AppHeader() {
             className="text-sm hover:text-primary [&.active]:text-primary [&.active]:font-medium"
             activeOptions={{ includeSearch: false }}
           >
-            Opportunités
+            Recherche
           </Link>
           <Link
             to="/favorites"
             className="text-sm hover:text-primary [&.active]:text-primary [&.active]:font-medium flex items-center gap-1"
           >
-            <Heart className="h-4 w-4" />
-            Favoris
+            Mes Opportunités
           </Link>
           <Link
             to="/search/address"
             className="text-sm hover:text-primary [&.active]:text-primary [&.active]:font-medium"
           >
-            Recherche d'Adresse
+            Adresses
           </Link>
         </nav>
         <UserMenu />

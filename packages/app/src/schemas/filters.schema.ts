@@ -33,7 +33,7 @@ const optionalBooleanFromString = z
 export const baseFiltersSchema = z.object({
   page: optionalNumberFromString,
   pageSize: optionalNumberFromString,
-  view: z.enum(['list', 'map']).optional(),
+  view: z.enum(['list', 'cards', 'map']).optional(),
   departments: z.union([commaSeparatedToArray, z.array(z.string())]).optional(),
   zipCodes: z.union([commaSeparatedToArray, z.array(z.string())]).optional(),
   dateAfter: z

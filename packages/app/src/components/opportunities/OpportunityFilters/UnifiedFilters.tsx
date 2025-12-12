@@ -15,7 +15,6 @@ import {
   PropertyTypeFilter,
   RoomsRangeFilter,
   SquareFootageRangeFilter,
-  ViewToggle,
   ZipCodeInput,
 } from '@/components/filters'
 import {
@@ -150,14 +149,6 @@ export function UnifiedFilters({
       {/* Saved Searches */}
       <SavedSearchesSection
         onSaveCurrentSearch={() => setIsSaveModalOpen(true)}
-      />
-
-      <Separator />
-
-      {/* View Toggle */}
-      <ViewToggle
-        value={filters.view ?? 'list'}
-        onValueChange={(v) => handleChange('view', v)}
       />
 
       <Separator />

@@ -181,5 +181,6 @@ export class AllOpportunitiesRepositoryImpl implements AllOpportunitiesRepositor
     energyClass: row.energyClass ?? undefined,
     squareFootage: row.squareFootage ?? undefined,
     price: row.price ?? undefined,
+    mainPicture: row.mainPicture ?? undefined,
   });
 }

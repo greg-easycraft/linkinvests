@@ -3,6 +3,7 @@ import { useCallback, useMemo } from 'react'
 import type { UnifiedSearchFilters } from '@/schemas/filters.schema'
 import type { AllOpportunity, BaseOpportunity } from '@/types'
 import type { SortOption } from '@/constants/sort-options'
+import type { ViewMode } from '@/components/filters/ViewToggleGroup'
 import { OpportunitiesPage } from '@/components/opportunities/OpportunitiesPage'
 import { UnifiedFilters } from '@/components/opportunities/OpportunityFilters'
 import { useUnifiedOpportunityData } from '@/hooks'
@@ -94,6 +95,13 @@ export function UnifiedSearchPage(): React.ReactElement {
     [filters, handleFiltersChange],
   )
 
+  const handleViewChange = useCallback(
+    (view: ViewMode) => {
+      handleFiltersChange({ ...filters, view })
+    },
+    [filters, handleFiltersChange],
+  )
+
   return (
     <OpportunitiesPage<BaseOpportunity | AllOpportunity>
       data={data}
@@ -102,6 +110,7 @@ export function UnifiedSearchPage(): React.ReactElement {
       isLoading={isDataLoading}
       opportunityType={displayType}
       viewMode={filters.view ?? 'list'}
+      onViewChange={handleViewChange}
       onExport={handleExport}
       sortOptions={sortOptions}
       currentSortBy={filters.sortBy}

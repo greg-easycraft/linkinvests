@@ -5,10 +5,12 @@ import {
   ChevronLeft,
   ChevronRight,
   Download,
+  SlidersHorizontal,
 } from 'lucide-react'
-import type { OpportunityType } from '@/types'
+import type { ViewMode } from '@/components/filters/ViewToggleGroup'
 import type { SortOption } from '@/constants/sort-options'
-import { Skeleton } from '@/components/ui/skeleton'
+import type { OpportunityType } from '@/types'
+import { ViewToggleGroup } from '@/components/filters/ViewToggleGroup'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -23,6 +25,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { Skeleton } from '@/components/ui/skeleton'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 import { DEFAULT_PAGE_SIZE } from '@/constants'
 import { formatNumber } from '@/lib/format'
 import { cn } from '@/lib/utils'
@@ -43,6 +51,9 @@ interface OpportunityHeaderProps {
   pageSize?: number
   onPageChange?: (page: number) => void
   onPageSizeChange?: (pageSize: number) => void
+  viewMode?: ViewMode
+  onViewChange?: (view: ViewMode) => void
+  onOpenFilters?: () => void
 }
 
 export function OpportunityHeader({
@@ -58,6 +69,9 @@ export function OpportunityHeader({
   pageSize = DEFAULT_PAGE_SIZE,
   onPageChange,
   onPageSizeChange,
+  viewMode = 'list',
+  onViewChange,
+  onOpenFilters,
 }: OpportunityHeaderProps): React.ReactElement {
   const currentSortValue = `${currentSortBy ?? 'opportunityDate'}_${currentSortOrder ?? 'desc'}`
   const totalPages = Math.ceil((total ?? 0) / pageSize)
@@ -104,16 +118,43 @@ export function OpportunityHeader({
         )}
       </div>
 
-      {/* Right side: Sort and Export */}
+      {/* Right side: View toggle, Filter, Sort, Export */}
       <div className="flex items-center gap-2">
+        {/* View toggle */}
+        {onViewChange && (
+          <ViewToggleGroup value={viewMode} onChange={onViewChange} />
+        )}
+
+        {/* Filter button */}
+        {onOpenFilters && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onOpenFilters}
+                className="cursor-pointer"
+              >
+                <SlidersHorizontal className="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Ouvrir les filtres</TooltipContent>
+          </Tooltip>
+        )}
+
         {/* Sort dropdown */}
         {sortOptions && sortOptions.length > 0 && onSortChange && (
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <ArrowUpDown className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="cursor-pointer">
+                    <ArrowUpDown className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+              </TooltipTrigger>
+              <TooltipContent>Trier les résultats</TooltipContent>
+            </Tooltip>
             <DropdownMenuContent align="end">
               {sortOptions.map((option) => (
                 <DropdownMenuItem
@@ -137,13 +178,18 @@ export function OpportunityHeader({
         {/* Export dropdown */}
         {onExport && (
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
-                <Download className="h-4 w-4 mr-2" />
-                Exporter
-                <ChevronDown className="h-4 w-4 ml-2" />
-              </Button>
-            </DropdownMenuTrigger>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="cursor-pointer">
+                    <Download className="h-4 w-4 mr-2" />
+                    Exporter
+                    <ChevronDown className="h-4 w-4 ml-2" />
+                  </Button>
+                </DropdownMenuTrigger>
+              </TooltipTrigger>
+              <TooltipContent>Exporter les opportunités</TooltipContent>
+            </Tooltip>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => onExport('csv')}>
                 Exporter en CSV
@@ -170,31 +216,41 @@ function Pagination({
 }): React.ReactElement {
   return (
     <div className="flex items-center">
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => onPageChange(currentPage - 1)}
-        disabled={currentPage === 1}
-        className="gap-2"
-      >
-        <ChevronLeft className="h-4 w-4" />
-        Précédent
-      </Button>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onPageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="gap-2 cursor-pointer"
+          >
+            <ChevronLeft className="h-4 w-4" />
+            Précédent
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>Aller à la page précédente</TooltipContent>
+      </Tooltip>
 
       <div className="text-sm px-4">
         Page <b>{currentPage}</b> sur <b>{totalPages}</b>
       </div>
 
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => onPageChange(currentPage + 1)}
-        disabled={currentPage === totalPages}
-        className="gap-2"
-      >
-        Suivant
-        <ChevronRight className="h-4 w-4" />
-      </Button>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onPageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="gap-2 cursor-pointer"
+          >
+            Suivant
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>Aller à la page suivante</TooltipContent>
+      </Tooltip>
     </div>
   )
 }

@@ -1,9 +1,9 @@
 import { useCallback, useState } from 'react'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { OpportunityDetailsModal } from '../OpportunityDetailsModal'
 import { OpportunityHeader } from './Header'
 import { OpportunitiesList } from './OpportunitiesList'
 import { OpportunitiesMap } from './OpportunitiesMap'
+import { OpportunitiesCardGrid } from './OpportunitiesCardGrid'
 import type {
   BaseOpportunity,
   OpportunitiesDataQueryResult,
@@ -11,8 +11,15 @@ import type {
   OpportunityType,
 } from '@/types'
 import type { SortOption } from '@/constants/sort-options'
+import type { ViewMode } from '@/components/filters/ViewToggleGroup'
 import { useDelayedSkeleton } from '@/hooks'
-import { Button } from '@/components/ui/button'
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 interface OpportunitiesPageProps<T extends BaseOpportunity> {
   data?: OpportunitiesDataQueryResult<T>
@@ -21,7 +28,8 @@ interface OpportunitiesPageProps<T extends BaseOpportunity> {
   isLoading: boolean
   opportunityType?: OpportunityType
   FiltersComponent: React.ReactNode
-  viewMode?: 'list' | 'map'
+  viewMode?: ViewMode
+  onViewChange?: (view: ViewMode) => void
   onExport?: (format: 'csv' | 'xlsx') => void
   sortOptions?: Array<SortOption>
   currentSortBy?: string
@@ -41,6 +49,7 @@ export function OpportunitiesPage<T extends BaseOpportunity>({
   opportunityType,
   FiltersComponent,
   viewMode = 'list',
+  onViewChange,
   onExport,
   sortOptions,
   currentSortBy,
@@ -56,7 +65,7 @@ export function OpportunitiesPage<T extends BaseOpportunity>({
   const [selectedOpportunity, setSelectedOpportunity] =
     useState<Opportunity | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [isFiltersSidebarOpen, setIsFiltersSidebarOpen] = useState(true)
+  const [isFiltersOpen, setIsFiltersOpen] = useState(false)
 
   const handleSelectOpportunity = useCallback(
     (opportunity: Opportunity): void => {
@@ -71,11 +80,42 @@ export function OpportunitiesPage<T extends BaseOpportunity>({
     setSelectedOpportunity(null)
   }, [])
 
-  const handleToggleSidebar = useCallback((): void => {
-    setIsFiltersSidebarOpen((prev) => !prev)
-  }, [])
-
   const opportunities = data?.opportunities ?? []
+
+  const renderContent = (): React.ReactElement => {
+    switch (viewMode) {
+      case 'cards':
+        return (
+          <OpportunitiesCardGrid
+            opportunities={opportunities as unknown as Array<Opportunity>}
+            type={opportunityType}
+            isLoading={showSkeleton}
+            selectedId={selectedOpportunity?.id}
+            onSelect={handleSelectOpportunity}
+          />
+        )
+      case 'map':
+        return (
+          <OpportunitiesMap
+            opportunities={opportunities as unknown as Array<Opportunity>}
+            type={opportunityType}
+            isLoading={showSkeleton}
+            selectedId={selectedOpportunity?.id}
+            onSelect={handleSelectOpportunity}
+          />
+        )
+      default:
+        return (
+          <OpportunitiesList
+            opportunities={opportunities as unknown as Array<Opportunity>}
+            type={opportunityType}
+            isLoading={showSkeleton}
+            selectedId={selectedOpportunity?.id}
+            onSelect={handleSelectOpportunity}
+          />
+        )
+    }
+  }
 
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)] overflow-hidden">
@@ -95,63 +135,26 @@ export function OpportunitiesPage<T extends BaseOpportunity>({
           pageSize={pageSize}
           onPageChange={onPageChange}
           onPageSizeChange={onPageSizeChange}
+          viewMode={viewMode}
+          onViewChange={onViewChange}
+          onOpenFilters={() => setIsFiltersOpen(true)}
         />
       </div>
 
-      {/* Content area with filters sidebar and main content */}
-      <div className="flex flex-1 overflow-hidden relative">
-        {/* Toggle Button for Filters */}
-        <Button
-          variant="outline"
-          size="icon"
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 rounded-r-md rounded-l-none"
-          style={{ left: isFiltersSidebarOpen ? '303px' : '0' }}
-          onClick={handleToggleSidebar}
-        >
-          {isFiltersSidebarOpen ? (
-            <ChevronLeft className="h-4 w-4" />
-          ) : (
-            <ChevronRight className="h-4 w-4" />
-          )}
-        </Button>
+      {/* Main Content - full width */}
+      <div className="flex-1 overflow-hidden p-4">{renderContent()}</div>
 
-        {/* Collapsible Filters Sidebar */}
-        <div
-          className={`transition-all duration-300 ease-in-out ${
-            isFiltersSidebarOpen ? 'w-80' : 'w-0'
-          }`}
-        >
-          {isFiltersSidebarOpen && (
-            <div className="p-4 pr-0 h-full overflow-y-auto">
-              {FiltersComponent}
-            </div>
-          )}
-        </div>
-
-        {/* Main Content */}
-        <div className="flex-1 flex flex-col overflow-hidden p-4">
-          {/* Content Area */}
-          <div className="flex-1 overflow-hidden">
-            {viewMode === 'list' ? (
-              <OpportunitiesList
-                opportunities={opportunities as unknown as Array<Opportunity>}
-                type={opportunityType}
-                isLoading={showSkeleton}
-                selectedId={selectedOpportunity?.id}
-                onSelect={handleSelectOpportunity}
-              />
-            ) : (
-              <OpportunitiesMap
-                opportunities={opportunities as unknown as Array<Opportunity>}
-                type={opportunityType}
-                isLoading={showSkeleton}
-                selectedId={selectedOpportunity?.id}
-                onSelect={handleSelectOpportunity}
-              />
-            )}
-          </div>
-        </div>
-      </div>
+      {/* Filters Sheet */}
+      <Sheet open={isFiltersOpen} onOpenChange={setIsFiltersOpen}>
+        <SheetContent side="left" className="w-screen max-w-[40rem] p-0">
+          <SheetHeader className="p-4 border-b">
+            <SheetTitle>Filtres</SheetTitle>
+          </SheetHeader>
+          <ScrollArea className="h-[calc(100vh-4rem)]">
+            <div className="p-4">{FiltersComponent}</div>
+          </ScrollArea>
+        </SheetContent>
+      </Sheet>
 
       {/* Details Modal */}
       <OpportunityDetailsModal
