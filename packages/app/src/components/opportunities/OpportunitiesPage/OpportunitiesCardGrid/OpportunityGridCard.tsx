@@ -126,14 +126,22 @@ export function OpportunityGridCard({
         </Badge>
 
         {/* Favorite Button - Top Right */}
-        <div className="absolute top-2 right-2" onClick={(e) => e.stopPropagation()}>
-          <FavoriteButton opportunityId={opportunity.id} opportunityType={type} />
+        <div
+          className="absolute top-2 right-2"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <FavoriteButton
+            opportunityId={opportunity.id}
+            opportunityType={type}
+          />
         </div>
 
         {/* Price Badge - Bottom Right */}
         {price && (
           <div className="absolute bottom-2 right-2 bg-background/90 backdrop-blur-sm px-2 py-1 rounded-md">
-            <span className="font-bold text-green-600">{formatPrice(price)}</span>
+            <span className="font-bold text-green-600">
+              {formatPrice(price)}
+            </span>
           </div>
         )}
       </div>
@@ -164,13 +172,12 @@ export function OpportunityGridCard({
           )}
 
           {/* Energy Class */}
-          {'energyClass' in opportunity &&
-            Boolean(opportunity.energyClass) && (
-              <EnergyClassBadge
-                energyClass={opportunity.energyClass as EnergyClass}
-                size="sm"
-              />
-            )}
+          {'energyClass' in opportunity && Boolean(opportunity.energyClass) && (
+            <EnergyClassBadge
+              energyClass={opportunity.energyClass as EnergyClass}
+              size="sm"
+            />
+          )}
         </div>
 
         {/* Date */}

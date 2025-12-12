@@ -148,7 +148,11 @@ export function OpportunityHeader({
             <Tooltip>
               <TooltipTrigger asChild>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="cursor-pointer">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="cursor-pointer"
+                  >
                     <ArrowUpDown className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -181,7 +185,11 @@ export function OpportunityHeader({
             <Tooltip>
               <TooltipTrigger asChild>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="cursor-pointer">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="cursor-pointer"
+                  >
                     <Download className="h-4 w-4 mr-2" />
                     Exporter
                     <ChevronDown className="h-4 w-4 ml-2" />

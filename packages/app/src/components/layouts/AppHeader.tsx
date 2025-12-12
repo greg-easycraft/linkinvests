@@ -11,7 +11,7 @@ export function AppHeader() {
     <header className="border-b bg-background">
       <div className="mx-auto px-4 h-16 flex items-center justify-between">
         <Link
-          to="/search"
+          to="/"
           className="flex items-center gap-3 hover:opacity-80 transition-opacity"
         >
           <img
@@ -22,6 +22,12 @@ export function AppHeader() {
           />
         </Link>
         <nav className="flex items-center gap-6">
+          <Link
+            to="/"
+            className="text-sm hover:text-primary [&.active]:text-primary [&.active]:font-medium"
+          >
+            Tableau de bord
+          </Link>
           <Link
             to="/search"
             search={{}}

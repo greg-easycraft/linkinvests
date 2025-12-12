@@ -5,8 +5,7 @@ import { AppHeader } from './AppHeader'
 
 export function RootLayout() {
   const location = useRouterState({ select: (s) => s.location })
-  const isAuthRoute =
-    location.pathname === '/' || location.pathname.startsWith('/auth')
+  const isAuthRoute = location.pathname.startsWith('/auth')
 
   return (
     <>

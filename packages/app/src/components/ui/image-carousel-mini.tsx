@@ -23,9 +23,7 @@ function getAllImages(
 
   // Add additional pictures (excluding duplicates of mainPicture)
   if (pictures && pictures.length > 0) {
-    pictures
-      .filter((p) => p !== mainPicture)
-      .forEach((url) => images.push(url))
+    pictures.filter((p) => p !== mainPicture).forEach((url) => images.push(url))
   }
 
   return images

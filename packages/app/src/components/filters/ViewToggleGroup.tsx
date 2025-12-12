@@ -14,7 +14,11 @@ interface ViewToggleGroupProps {
   onChange: (view: ViewMode) => void
 }
 
-const VIEW_OPTIONS: Array<{ value: ViewMode; icon: typeof List; label: string }> = [
+const VIEW_OPTIONS: Array<{
+  value: ViewMode
+  icon: typeof List
+  label: string
+}> = [
   { value: 'list', icon: List, label: 'Vue liste' },
   { value: 'cards', icon: LayoutGrid, label: 'Vue cartes' },
   { value: 'map', icon: Map, label: 'Vue carte' },
