@@ -455,6 +455,28 @@ export const favorites = pgTable(
   ],
 );
 
+// User Quick Actions Preferences
+export const userQuickActions = pgTable(
+  'user_quick_actions',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: text('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' })
+      .unique(),
+    actions: text('actions')
+      .array()
+      .notNull()
+      .default(sql`ARRAY['new_search', 'auctions', 'address_search']`),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at')
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
+  },
+  (table) => [index('idx_user_quick_actions_user_id').on(table.userId)],
+);
+
 // All Opportunities Materialized View
 // Unions all opportunity types with common fields
 export const allOpportunities = pgMaterializedView('all_opportunities', {

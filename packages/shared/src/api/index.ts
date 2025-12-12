@@ -12,3 +12,4 @@ export * from './liquidations.dto.js';
 export * from './energy-diagnostics.dto.js';
 export * from './addresses.dto.js';
 export * from './saved-searches.dto.js';
+export * from './user-preferences.dto.js';

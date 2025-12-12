@@ -13,6 +13,7 @@ import { AddressesModule } from './domains/addresses';
 import { SavedSearchesModule } from './domains/saved-searches';
 import { FavoritesModule } from './domains/favorites';
 import { AllOpportunitiesModule } from './domains/all-opportunities';
+import { UserPreferencesModule } from './domains/user-preferences';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { AllOpportunitiesModule } from './domains/all-opportunities';
     AddressesModule,
     SavedSearchesModule,
     FavoritesModule,
+    UserPreferencesModule,
   ],
 })
 export class AppModule {}

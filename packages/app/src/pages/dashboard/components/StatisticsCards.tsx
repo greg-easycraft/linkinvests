@@ -2,11 +2,13 @@ import { Heart, Search } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 import type { GroupedFavorites } from '@linkinvests/shared'
 
+import { cn } from '@/lib/utils'
 import { Card, CardContent } from '@/components/ui/card'
 
 interface StatisticsCardsProps {
   favorites: GroupedFavorites | undefined
   savedSearchesCount: number
+  className?: string
 }
 
 interface StatCardProps {
@@ -43,13 +45,14 @@ function StatCard({ title, value, icon, href }: StatCardProps) {
 export function StatisticsCards({
   favorites,
   savedSearchesCount,
+  className,
 }: StatisticsCardsProps) {
   const totalFavorites = favorites
     ? Object.values(favorites).reduce((sum, arr) => sum + arr.length, 0)
     : 0
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div className={cn('grid gap-4 sm:grid-cols-2', className)}>
       <StatCard
         title="Favoris"
         value={totalFavorites}
