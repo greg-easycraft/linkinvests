@@ -1,5 +1,6 @@
 import {
   pgTable,
+  pgMaterializedView,
   text,
   timestamp,
   integer,
@@ -14,6 +15,7 @@ import {
   boolean,
   pgEnum,
 } from 'drizzle-orm/pg-core';
+import { sql } from 'drizzle-orm';
 import { desc } from 'drizzle-orm';
 import { users } from './auth.schema';
 import {
@@ -452,3 +454,122 @@ export const favorites = pgTable(
     index('idx_favorite_created_at').on(desc(table.createdAt)),
   ],
 );
+
+// All Opportunities Materialized View
+// Unions all opportunity types with common fields
+export const allOpportunities = pgMaterializedView('all_opportunities', {
+  opportunityId: uuid('opportunity_id').notNull(),
+  type: varchar('type').notNull(),
+  label: varchar('label').notNull(),
+  address: text('address'),
+  zipCode: varchar('zip_code').notNull(),
+  department: varchar('department').notNull(),
+  latitude: doublePrecision('latitude').notNull(),
+  longitude: doublePrecision('longitude').notNull(),
+  opportunityDate: date('opportunity_date').notNull(),
+  externalId: varchar('external_id').notNull(),
+  createdAt: timestamp('created_at').notNull(),
+  updatedAt: timestamp('updated_at').notNull(),
+  energyClass: varchar('energy_class'),
+  squareFootage: numeric('square_footage', { mode: 'number' }),
+  price: numeric('price', { mode: 'number' }),
+}).as(sql`
+  SELECT
+    id AS opportunity_id,
+    'auction'::varchar AS type,
+    label,
+    address,
+    zip_code,
+    department,
+    latitude,
+    longitude,
+    opportunity_date,
+    external_id,
+    created_at,
+    updated_at,
+    energy_class::varchar AS energy_class,
+    square_footage,
+    COALESCE(current_price, reserve_price) AS price
+  FROM auction
+
+  UNION ALL
+
+  SELECT
+    id AS opportunity_id,
+    'succession'::varchar AS type,
+    label,
+    address,
+    zip_code,
+    department,
+    latitude,
+    longitude,
+    opportunity_date,
+    external_id,
+    created_at,
+    updated_at,
+    NULL::varchar AS energy_class,
+    NULL::numeric AS square_footage,
+    NULL::numeric AS price
+  FROM succession
+
+  UNION ALL
+
+  SELECT
+    id AS opportunity_id,
+    'liquidation'::varchar AS type,
+    label,
+    address,
+    zip_code,
+    department,
+    latitude,
+    longitude,
+    opportunity_date,
+    siret AS external_id,
+    created_at,
+    updated_at,
+    NULL::varchar AS energy_class,
+    NULL::numeric AS square_footage,
+    NULL::numeric AS price
+  FROM liquidation
+
+  UNION ALL
+
+  SELECT
+    id AS opportunity_id,
+    'energy_sieve'::varchar AS type,
+    label,
+    address,
+    zip_code,
+    department,
+    latitude,
+    longitude,
+    opportunity_date,
+    external_id,
+    created_at,
+    updated_at,
+    energy_class::varchar AS energy_class,
+    square_footage,
+    NULL::numeric AS price
+  FROM energy_diagnostic
+  WHERE energy_class IN ('E', 'F', 'G')
+
+  UNION ALL
+
+  SELECT
+    id AS opportunity_id,
+    'real_estate_listing'::varchar AS type,
+    label,
+    address,
+    zip_code,
+    department,
+    latitude,
+    longitude,
+    opportunity_date,
+    external_id,
+    created_at,
+    updated_at,
+    energy_class::varchar AS energy_class,
+    square_footage,
+    price
+  FROM listing
+`);
