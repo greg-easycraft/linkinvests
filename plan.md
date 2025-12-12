@@ -16,7 +16,7 @@ Lundi 15
 - [ ] CI/CD
 - [ ] rename address fields into streetAddress & handle as such
 
-- [ ] recherche sur plusieurs types d'opportunités
+- [X] recherche sur plusieurs types d'opportunités
 - [X] periode depuis, jusqu'à
 - [X] sauvegarde recherches
 - [X] auto scrape deceases

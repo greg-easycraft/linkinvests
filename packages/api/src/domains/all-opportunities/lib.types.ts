@@ -1,4 +1,4 @@
-import type { IAllOpportunitiesFilters, PaginationFilters } from '~/types';
+import type { IAllOpportunitiesFilters, PaginationFilters } from '@linkinvests/shared';
 import type { AllOpportunity } from '@linkinvests/shared';
 
 export abstract class AllOpportunitiesRepository {

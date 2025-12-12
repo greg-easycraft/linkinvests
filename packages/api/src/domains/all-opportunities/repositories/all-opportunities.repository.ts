@@ -3,7 +3,7 @@ import { and, gte, inArray, lte, sql, type SQL } from 'drizzle-orm';
 import type { DomainDbType } from '~/types/db';
 import { allOpportunities } from '@linkinvests/db';
 import { AllOpportunitiesRepository } from '../lib.types';
-import type { IAllOpportunitiesFilters, PaginationFilters } from '~/types';
+import type { IAllOpportunitiesFilters, PaginationFilters } from '@linkinvests/shared';
 import { calculateStartDate } from '~/constants';
 import { type AllOpportunity, OpportunityType } from '@linkinvests/shared';
 import { DATABASE_TOKEN } from '~/common/database';

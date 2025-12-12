@@ -5,8 +5,11 @@ import {
 import type { SuccessionRepository } from '../lib.types';
 import type { IExportService } from '~/common/export/export.types';
 import type { ExportService } from '~/common/export/services/export.service';
-import type { IOpportunityFilters } from '~/types';
-import { OpportunityType, type Succession } from '@linkinvests/shared';
+import {
+  OpportunityType,
+  type IOpportunityFilters,
+  type Succession,
+} from '@linkinvests/shared';
 import { DEFAULT_PAGE_SIZE } from '~/constants';
 import { getOpportunityHeaders } from '~/common/export/services/export-headers.service';
 import { succeed } from '~/common/utils/operation-result';

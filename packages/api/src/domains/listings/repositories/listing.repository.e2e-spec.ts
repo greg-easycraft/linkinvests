@@ -3,7 +3,7 @@
  */
 import { ListingRepositoryImpl } from './listing.repository';
 import { useTestDb } from '~/test-utils/use-test-db';
-import type { IListingFilters, PaginationFilters } from '~/types';
+import type { IListingFilters, PaginationFilters } from '@linkinvests/shared';
 import {
   EnergyClass,
   OpportunityType,

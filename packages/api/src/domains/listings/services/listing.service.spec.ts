@@ -2,9 +2,10 @@ import { ListingService, ListingServiceErrorReason } from './listing.service';
 import type { ListingRepository } from '../lib.types';
 import type { IExportService } from '~/common/export/export.types';
 import type { ExportService } from '~/common/export/services/export.service';
-import type { IOpportunityFilters } from '~/types';
+import type { IOpportunityFilters } from '@linkinvests/shared';
 import {
   OpportunityType,
+  PropertyType,
   EnergyClass,
   GazClass,
   type Listing,
@@ -36,7 +37,7 @@ describe('ListingService', () => {
     externalId: 'external-123',
     url: 'https://example.com/listing/1',
     source: 'test-agency',
-    propertyType: 'FLAT' as any,
+    propertyType: PropertyType.FLAT,
     lastChangeDate: '2024-01-10',
     price: 250000,
     squareFootage: 75,

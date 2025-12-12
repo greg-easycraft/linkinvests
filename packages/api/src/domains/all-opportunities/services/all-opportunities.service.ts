@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { AllOpportunitiesRepository } from '../lib.types';
-import type { IAllOpportunitiesFilters } from '~/types';
+import type { IAllOpportunitiesFilters } from '@linkinvests/shared';
 import type { AllOpportunity } from '@linkinvests/shared';
 import type { OpportunitiesDataQueryResult } from '~/types/query-result';
 import { DEFAULT_PAGE_SIZE } from '~/constants';

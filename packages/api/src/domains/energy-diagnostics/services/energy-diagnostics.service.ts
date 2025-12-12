@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { EnergyDiagnosticsRepository } from '../lib.types';
-import type { IEnergyDiagnosticFilters } from '~/types';
+import type { IEnergyDiagnosticFilters } from '@linkinvests/shared';
 import type { EnergyDiagnostic } from '@linkinvests/shared';
 import { OpportunityType } from '@linkinvests/shared';
 import type { OpportunitiesDataQueryResult } from '~/types/query-result';

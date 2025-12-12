@@ -1,4 +1,4 @@
-import type { ILiquidationFilters, PaginationFilters } from '~/types';
+import type { ILiquidationFilters, PaginationFilters } from '@linkinvests/shared';
 import type { Liquidation } from '@linkinvests/shared';
 
 export abstract class LiquidationRepository {

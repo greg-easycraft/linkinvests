@@ -1,4 +1,4 @@
-import type { IAuctionFilters, PaginationFilters } from '~/types';
+import type { IAuctionFilters, PaginationFilters } from '@linkinvests/shared';
 import type { Auction } from '@linkinvests/shared';
 
 export abstract class AuctionRepository {

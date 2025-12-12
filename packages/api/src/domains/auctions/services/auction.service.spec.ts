@@ -2,7 +2,7 @@ import { AuctionService, AuctionServiceErrorReason } from './auction.service';
 import type { AuctionRepository } from '../lib.types';
 import type { IExportService } from '~/common/export/export.types';
 import type { ExportService } from '~/common/export/services/export.service';
-import type { IOpportunityFilters } from '~/types';
+import type { IOpportunityFilters } from '@linkinvests/shared';
 import {
   OpportunityType,
   EnergyClass,

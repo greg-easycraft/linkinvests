@@ -3,7 +3,7 @@ import { and, eq, gte, inArray, lte, sql, type SQL } from 'drizzle-orm';
 import type { DomainDbType } from '~/types/db';
 import { opportunityAuctions } from '@linkinvests/db';
 import { AuctionRepository } from '../lib.types';
-import type { IAuctionFilters, PaginationFilters } from '~/types';
+import type { IAuctionFilters, PaginationFilters } from '@linkinvests/shared';
 import { calculateStartDate } from '~/constants';
 import {
   AuctionOccupationStatus,

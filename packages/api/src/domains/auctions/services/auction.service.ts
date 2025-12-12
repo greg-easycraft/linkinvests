@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { AuctionRepository } from '../lib.types';
-import type { IAuctionFilters } from '~/types';
+import type { IAuctionFilters } from '@linkinvests/shared';
 import type { Auction } from '@linkinvests/shared';
 import { OpportunityType } from '@linkinvests/shared';
 import type { OpportunitiesDataQueryResult } from '~/types/query-result';

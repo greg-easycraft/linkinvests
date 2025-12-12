@@ -3,7 +3,7 @@
  */
 import { AuctionRepositoryImpl } from './auction.repository';
 import { useTestDb } from '~/test-utils/use-test-db';
-import type { IAuctionFilters, PaginationFilters } from '~/types';
+import type { IAuctionFilters, PaginationFilters } from '@linkinvests/shared';
 import {
   EnergyClass,
   OpportunityType,

@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { SuccessionRepository } from '../lib.types';
-import type { ISuccessionFilters } from '~/types';
-import type { Succession } from '@linkinvests/shared';
+import type { ISuccessionFilters, Succession } from '@linkinvests/shared';
 import { OpportunityType } from '@linkinvests/shared';
 import type { OpportunitiesDataQueryResult } from '~/types/query-result';
 import { ExportService } from '~/common/export/services/export.service';

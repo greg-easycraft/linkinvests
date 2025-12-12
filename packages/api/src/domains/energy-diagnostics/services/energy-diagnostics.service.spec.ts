@@ -5,7 +5,7 @@ import {
 import type { EnergyDiagnosticsRepository } from '../lib.types';
 import type { IExportService } from '~/common/export/export.types';
 import type { ExportService } from '~/common/export/services/export.service';
-import type { IOpportunityFilters } from '~/types';
+import type { IOpportunityFilters } from '@linkinvests/shared';
 import {
   EnergyClass,
   GazClass,

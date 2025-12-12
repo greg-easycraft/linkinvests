@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ListingRepository } from '../lib.types';
-import type { IListingFilters } from '~/types';
+import type { IListingFilters } from '@linkinvests/shared';
 import type { Listing } from '@linkinvests/shared';
 import { OpportunityType } from '@linkinvests/shared';
 import type { OpportunitiesDataQueryResult } from '~/types/query-result';

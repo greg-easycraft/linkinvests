@@ -5,7 +5,7 @@ import {
 import type { LiquidationRepository } from '../lib.types';
 import type { IExportService } from '~/common/export/export.types';
 import type { ExportService } from '~/common/export/services/export.service';
-import type { IOpportunityFilters } from '~/types';
+import type { IOpportunityFilters } from '@linkinvests/shared';
 import { OpportunityType, type Liquidation } from '@linkinvests/shared';
 import { DEFAULT_PAGE_SIZE } from '~/constants';
 import { getOpportunityHeaders } from '~/common/export/services/export-headers.service';

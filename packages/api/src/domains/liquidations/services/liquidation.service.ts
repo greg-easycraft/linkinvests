@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { LiquidationRepository } from '../lib.types';
-import type { DatePeriod, ILiquidationFilters } from '~/types';
+import type { DatePeriod, ILiquidationFilters } from '@linkinvests/shared';
 import type { Liquidation } from '@linkinvests/shared';
 import { OpportunityType } from '@linkinvests/shared';
 import type { OpportunitiesDataQueryResult } from '~/types/query-result';
