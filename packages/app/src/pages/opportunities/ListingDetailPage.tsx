@@ -12,8 +12,8 @@ import {
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link, useParams } from '@tanstack/react-router'
 
-import type { EnergyClass, Listing } from '@/types'
-import { OpportunityType } from '@/types'
+import type { EnergyClass, Listing } from '@linkinvests/shared'
+import { OpportunityType } from '@linkinvests/shared'
 import {
   getDiagnosticLinks,
   searchAndLinkDiagnostics,

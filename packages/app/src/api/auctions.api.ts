@@ -1,5 +1,5 @@
 import { ApiError, apiRequest } from './client'
-import type { Auction, IAuctionFilters } from '@/types'
+import type { Auction, IAuctionFilters } from '@linkinvests/shared'
 import type { CountResponse, SearchResponse } from './types'
 
 export async function searchAuctions(

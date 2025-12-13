@@ -5,13 +5,13 @@ import type {
   AddressSearchInput,
   AddressSearchResult,
 } from '@/api/addresses.api'
-import type { EnergyDiagnostic } from '@/types'
+import type { EnergyDiagnostic } from '@linkinvests/shared'
 import { searchAddresses } from '@/api/addresses.api'
 import { getEnergyDiagnosticByExternalId } from '@/api/energy-diagnostics.api'
 import { AddressSearchForm, SearchResults } from '@/components/address-search'
 import { OpportunityDetailsModal } from '@/components/opportunities/OpportunityDetailsModal'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { OpportunityType } from '@/types'
+import { OpportunityType } from '@linkinvests/shared'
 
 export function AddressSearchPage(): React.ReactElement {
   const [results, setResults] = useState<Array<AddressSearchResult>>([])

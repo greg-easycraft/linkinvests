@@ -1,4 +1,4 @@
-import type { PropertyType } from '@/types'
+import type { PropertyType } from '@linkinvests/shared'
 import { Checkbox } from '@/components/ui/checkbox'
 import { PROPERTY_TYPE_OPTIONS } from '@/constants'
 

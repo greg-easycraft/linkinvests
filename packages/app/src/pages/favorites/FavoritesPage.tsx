@@ -7,8 +7,8 @@ import {
   FavoritesSectionAccordion,
   getColumnsForType,
 } from './components'
-import type { Opportunity } from '@/types'
-import { OpportunityType } from '@/types'
+import type { Opportunity } from '@linkinvests/shared'
+import { OpportunityType } from '@linkinvests/shared'
 import { useFavorites } from '@/hooks'
 import { OpportunityDetailsModal } from '@/components/opportunities/OpportunityDetailsModal'
 import { Accordion } from '@/components/ui/accordion'

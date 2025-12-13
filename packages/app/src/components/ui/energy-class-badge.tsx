@@ -1,4 +1,4 @@
-import type { EnergyClassType } from '@/types'
+import type { EnergyClassType } from '@linkinvests/shared'
 import { getEnergyClassBgColor, getEnergyClassColor } from '@/constants'
 
 interface EnergyClassBadgeProps {

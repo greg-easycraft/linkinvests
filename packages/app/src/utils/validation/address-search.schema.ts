@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-import { EnergyClass } from '@/types'
+import { EnergyClass } from '@linkinvests/shared'
 
 export const addressSearchSchema = z.object({
   energyClass: z.enum(EnergyClass),

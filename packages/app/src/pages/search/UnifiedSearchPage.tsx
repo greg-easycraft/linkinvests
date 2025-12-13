@@ -1,13 +1,13 @@
 import { useNavigate, useSearch } from '@tanstack/react-router'
 import { useCallback, useMemo } from 'react'
 import type { UnifiedSearchFilters } from '@/schemas/filters.schema'
-import type { AllOpportunity, BaseOpportunity } from '@/types'
+import type { AllOpportunity, BaseOpportunity } from '@linkinvests/shared'
 import type { SortOption } from '@/constants/sort-options'
 import type { ViewMode } from '@/components/filters/ViewToggleGroup'
 import { OpportunitiesPage } from '@/components/opportunities/OpportunitiesPage'
 import { UnifiedFilters } from '@/components/opportunities/OpportunityFilters'
 import { useUnifiedOpportunityData } from '@/hooks'
-import { OpportunityType } from '@/types'
+import { OpportunityType } from '@linkinvests/shared'
 import {
   AUCTION_SORT_OPTIONS,
   DEFAULT_SORT_OPTIONS,

@@ -1,5 +1,5 @@
 import { ApiError, apiRequest } from './client'
-import type { ISuccessionFilters, Succession } from '@/types'
+import type { ISuccessionFilters, Succession } from '@linkinvests/shared'
 import type { CountResponse, SearchResponse } from './types'
 
 export async function searchSuccessions(

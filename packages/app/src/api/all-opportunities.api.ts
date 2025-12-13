@@ -1,5 +1,5 @@
 import { apiRequest } from './client'
-import type { AllOpportunity, IAllOpportunitiesFilters } from '@/types'
+import type { AllOpportunity, IAllOpportunitiesFilters } from '@linkinvests/shared'
 import type { CountResponse, SearchResponse } from './types'
 
 export async function searchAllOpportunities(

@@ -1,4 +1,4 @@
-import type { DatePeriod } from '@/types'
+import type { DatePeriod } from '@linkinvests/shared'
 import {
   Select,
   SelectContent,

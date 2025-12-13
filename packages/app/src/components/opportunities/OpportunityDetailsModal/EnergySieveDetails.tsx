@@ -1,5 +1,5 @@
 import { AlertTriangle, FileText, Ruler, Zap } from 'lucide-react'
-import type { EnergyDiagnostic } from '@/types'
+import type { EnergyDiagnostic } from '@linkinvests/shared'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 

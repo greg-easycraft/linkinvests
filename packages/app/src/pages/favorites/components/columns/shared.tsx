@@ -2,7 +2,7 @@ import { Calendar, ExternalLink, MapPin } from 'lucide-react'
 
 import type { OpportunityType } from '@linkinvests/shared'
 
-import type { EnergyClassType } from '@/types'
+import type { EnergyClassType } from '@linkinvests/shared'
 import { Button } from '@/components/ui/button'
 import { EnergyClassBadge } from '@/components/ui/energy-class-badge'
 import { FavoriteButton } from '@/components/ui/favorite-button'

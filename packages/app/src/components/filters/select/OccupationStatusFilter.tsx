@@ -1,4 +1,4 @@
-import type { AuctionOccupationStatus } from '@/types'
+import type { AuctionOccupationStatus } from '@linkinvests/shared'
 import { Checkbox } from '@/components/ui/checkbox'
 import { OCCUPATION_STATUS_OPTIONS } from '@/constants'
 

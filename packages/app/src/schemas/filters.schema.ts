@@ -1,12 +1,12 @@
 import { z } from 'zod'
-import type { DatePeriod } from '@/types'
+import type { DatePeriod } from '@linkinvests/shared'
 import {
   AuctionOccupationStatus,
   EnergyClass,
   OpportunityType,
   PropertyType,
   UNKNOWN_ENERGY_CLASS,
-} from '@/types'
+} from '@linkinvests/shared'
 import { DATE_PERIOD_OPTIONS } from '@/constants'
 import {
   AUCTION_SORT_OPTIONS,

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import mapboxgl from 'mapbox-gl'
 import { Loader2, Map as MapIcon } from 'lucide-react'
 import 'mapbox-gl/dist/mapbox-gl.css'
-import type { BaseOpportunity, OpportunityType } from '@/types'
+import type { BaseOpportunity, OpportunityType } from '@linkinvests/shared'
 import { TYPE_COLORS, TYPE_LABELS } from '@/constants/opportunity-types'
 
 interface OpportunitiesMapProps<T extends BaseOpportunity> {

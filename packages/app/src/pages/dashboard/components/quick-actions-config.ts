@@ -11,7 +11,7 @@ import {
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import type { QuickActionId } from '@linkinvests/shared'
-import { OpportunityType } from '@/types'
+import { OpportunityType } from '@linkinvests/shared'
 
 export interface QuickAction {
   id: QuickActionId

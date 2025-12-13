@@ -4,7 +4,7 @@ import type {
   BaseOpportunity,
   IOpportunityFilters,
   OpportunitiesDataQueryResult,
-} from '@/types'
+} from '@linkinvests/shared'
 import {
   countAuctions,
   countEnergyDiagnostics,
@@ -22,7 +22,7 @@ import {
   searchListings,
   searchSuccessions,
 } from '@/api'
-import { OpportunityType } from '@/types'
+import { OpportunityType } from '@linkinvests/shared'
 
 // Opportunity types that have API support
 type SupportedOpportunityType =

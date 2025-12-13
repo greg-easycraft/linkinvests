@@ -1,5 +1,5 @@
 import { apiRequest } from './client'
-import type { AddressSearchResult, EnergyClass } from '@/types'
+import type { AddressSearchResult, EnergyClass } from '@linkinvests/shared'
 
 export interface AddressSearchInput {
   energyClass: EnergyClass

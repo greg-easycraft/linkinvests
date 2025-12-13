@@ -1,7 +1,7 @@
 import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Button } from '@/components/ui/button'
-import { OpportunityType } from '@/types'
+import { OpportunityType } from '@linkinvests/shared'
 import { TYPE_LABELS } from '@/constants/opportunity-types'
 
 const OPPORTUNITY_TYPE_DISPLAY_ORDER: Array<OpportunityType> = [

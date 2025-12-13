@@ -1,5 +1,5 @@
 import { ApiError, apiRequest } from './client'
-import type { IListingFilters, Listing } from '@/types'
+import type { IListingFilters, Listing } from '@linkinvests/shared'
 import type { CountResponse, SearchResponse } from './types'
 
 export async function searchListings(

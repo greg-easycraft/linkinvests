@@ -9,7 +9,7 @@ import {
   User,
   Zap,
 } from 'lucide-react'
-import type { Auction } from '@/types'
+import type { Auction } from '@linkinvests/shared'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { formatPrice } from '@/lib/format'

@@ -1,5 +1,5 @@
 import { ApiError, apiRequest } from './client'
-import type { ILiquidationFilters, Liquidation } from '@/types'
+import type { ILiquidationFilters, Liquidation } from '@linkinvests/shared'
 import type { CountResponse, SearchResponse } from './types'
 
 export async function searchLiquidations(

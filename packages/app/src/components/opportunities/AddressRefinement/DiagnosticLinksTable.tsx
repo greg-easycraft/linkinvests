@@ -1,7 +1,7 @@
 import { Loader2, MapPin, Zap } from 'lucide-react'
 
 import type { DiagnosticLink } from '@/api/addresses.api'
-import type { EnergyClass } from '@/types'
+import type { EnergyClass } from '@linkinvests/shared'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { EnergyClassBadge } from '@/components/ui/energy-class-badge'

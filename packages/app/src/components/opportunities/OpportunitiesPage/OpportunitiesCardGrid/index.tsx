@@ -1,5 +1,5 @@
 import { OpportunityGridCard } from './OpportunityGridCard'
-import type { BaseOpportunity, Opportunity, OpportunityType } from '@/types'
+import type { BaseOpportunity, Opportunity, OpportunityType } from '@linkinvests/shared'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Card } from '@/components/ui/card'

@@ -19,8 +19,8 @@ import type {
   Listing,
   Opportunity,
   Succession,
-} from '@/types'
-import { OpportunityType } from '@/types'
+} from '@linkinvests/shared'
+import { OpportunityType } from '@linkinvests/shared'
 import {
   getDiagnosticLinks,
   searchAndLinkDiagnostics,

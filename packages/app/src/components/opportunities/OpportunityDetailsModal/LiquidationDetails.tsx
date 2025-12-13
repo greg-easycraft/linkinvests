@@ -1,5 +1,5 @@
 import { Briefcase, Building2, FileText, Mail, Phone, User } from 'lucide-react'
-import type { Liquidation } from '@/types'
+import type { Liquidation } from '@linkinvests/shared'
 import { Card } from '@/components/ui/card'
 
 interface LiquidationDetailsProps {

@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
 
 import type { AddressSearchInput } from '@/api/addresses.api'
-import type { EnergyClass } from '@/types'
+import type { EnergyClass } from '@linkinvests/shared'
 import type { AddressSearchFormData } from '@/utils/validation/address-search.schema'
 import { Button } from '@/components/ui/button'
 import {

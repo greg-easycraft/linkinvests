@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react'
 import { useLocation } from '@tanstack/react-router'
 import type { UnifiedSearchFilters } from '@/schemas/filters.schema'
-import type { EnergyClassType } from '@/types'
-import { OpportunityType } from '@/types'
+import type { EnergyClassType } from '@linkinvests/shared'
+import { OpportunityType } from '@linkinvests/shared'
 import { Card } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import {

@@ -5,9 +5,9 @@ import type {
   BaseOpportunity,
   IAllOpportunitiesFilters,
   OpportunitiesDataQueryResult,
-} from '@/types'
+} from '@linkinvests/shared'
 import type { UnifiedSearchFilters } from '@/schemas/filters.schema'
-import { OpportunityType } from '@/types'
+import { OpportunityType } from '@linkinvests/shared'
 import {
   countAllOpportunities,
   countAuctions,

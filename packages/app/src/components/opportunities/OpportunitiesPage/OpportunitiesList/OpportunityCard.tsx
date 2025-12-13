@@ -10,7 +10,7 @@ import {
   RefreshCcw,
   Zap,
 } from 'lucide-react'
-import type { EnergyClass, Opportunity, OpportunityType } from '@/types'
+import type { EnergyClass, Opportunity, OpportunityType } from '@linkinvests/shared'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'

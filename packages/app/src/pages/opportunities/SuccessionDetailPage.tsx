@@ -2,14 +2,14 @@ import { Link, useParams } from '@tanstack/react-router'
 import { ArrowLeft, Calendar, Clock, Loader2, MapPin } from 'lucide-react'
 import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'
-import type { Succession } from '@/types'
+import type { Succession } from '@linkinvests/shared'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Card } from '@/components/ui/card'
 import { useOpportunityById } from '@/hooks'
 import { SuccessionDetails } from '@/components/opportunities/OpportunityDetailsModal/SuccessionDetails'
-import { OpportunityType } from '@/types'
+import { OpportunityType } from '@linkinvests/shared'
 
 export function SuccessionDetailPage(): React.ReactElement {
   const { successionId } = useParams({ strict: false })

@@ -1,5 +1,5 @@
-import type { EnergyClassType } from '@/types'
-import { UNKNOWN_ENERGY_CLASS } from '@/types'
+import type { EnergyClassType } from '@linkinvests/shared'
+import { UNKNOWN_ENERGY_CLASS } from '@linkinvests/shared'
 import { ENERGY_CLASS_OPTIONS } from '@/constants'
 
 interface EnergyClassFilterProps {

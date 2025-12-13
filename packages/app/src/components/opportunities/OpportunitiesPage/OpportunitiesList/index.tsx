@@ -1,7 +1,7 @@
 import { OpportunityCard } from './OpportunityCard'
 import { OpportunitiesListSkeleton } from './OpportunitiesListSkeleton'
 import { OpportunitiesListEmptyState } from './OpportunitiesListEmptyState'
-import type { BaseOpportunity, Opportunity, OpportunityType } from '@/types'
+import type { BaseOpportunity, Opportunity, OpportunityType } from '@linkinvests/shared'
 import { ScrollArea } from '@/components/ui/scroll-area'
 
 interface OpportunitiesListProps<T extends BaseOpportunity> {

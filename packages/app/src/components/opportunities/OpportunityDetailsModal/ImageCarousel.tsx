@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { ChevronLeft, ChevronRight, ImageOff } from 'lucide-react'
-import type { Auction, Listing, Opportunity } from '@/types'
+import type { Auction, Listing, Opportunity } from '@linkinvests/shared'
 import { Button } from '@/components/ui/button'
 
 interface ImageCarouselProps {

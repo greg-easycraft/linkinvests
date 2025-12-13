@@ -1,7 +1,7 @@
 import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import { Building2, MapPin, Ruler } from 'lucide-react'
-import type { EnergyClass, Opportunity, OpportunityType } from '@/types'
+import type { EnergyClass, Opportunity, OpportunityType } from '@linkinvests/shared'
 import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
 import { EnergyClassBadge } from '@/components/ui/energy-class-badge'

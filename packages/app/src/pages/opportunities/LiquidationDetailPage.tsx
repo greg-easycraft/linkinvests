@@ -2,14 +2,14 @@ import { Link, useParams } from '@tanstack/react-router'
 import { ArrowLeft, Calendar, Clock, Loader2, MapPin } from 'lucide-react'
 import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'
-import type { Liquidation } from '@/types'
+import type { Liquidation } from '@linkinvests/shared'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Card } from '@/components/ui/card'
 import { useOpportunityById } from '@/hooks'
 import { LiquidationDetails } from '@/components/opportunities/OpportunityDetailsModal/LiquidationDetails'
-import { OpportunityType } from '@/types'
+import { OpportunityType } from '@linkinvests/shared'
 
 export function LiquidationDetailPage(): React.ReactElement {
   const { liquidationId } = useParams({ strict: false })

@@ -9,7 +9,7 @@ import type {
   OpportunitiesDataQueryResult,
   Opportunity,
   OpportunityType,
-} from '@/types'
+} from '@linkinvests/shared'
 import type { SortOption } from '@/constants/sort-options'
 import type { ViewMode } from '@/components/filters/ViewToggleGroup'
 import { useDelayedSkeleton } from '@/hooks'

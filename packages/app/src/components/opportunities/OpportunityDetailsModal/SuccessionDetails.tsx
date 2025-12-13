@@ -1,5 +1,5 @@
 import { Building, Clock, Globe, Mail, MapPin, Phone, User } from 'lucide-react'
-import type { Succession } from '@/types'
+import type { Succession } from '@linkinvests/shared'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 

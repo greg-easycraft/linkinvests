@@ -9,7 +9,7 @@ import {
 } from 'lucide-react'
 import type { ViewMode } from '@/components/filters/ViewToggleGroup'
 import type { SortOption } from '@/constants/sort-options'
-import type { OpportunityType } from '@/types'
+import type { OpportunityType } from '@linkinvests/shared'
 import { ViewToggleGroup } from '@/components/filters/ViewToggleGroup'
 import { Button } from '@/components/ui/button'
 import {
@@ -85,46 +85,11 @@ export function OpportunityHeader({
   return (
     <div className="flex items-center justify-between">
       {/* Left side: Results count and pagination */}
-      <div className="flex items-center gap-6">
-        <div className="text-sm">
-          Affichage de{' '}
-          <span className="font-bold">
-            {startItem}-{endItem}
-          </span>{' '}
-          sur{' '}
-          {isCountLoading ? (
-            <Skeleton className="h-5 w-16 inline-block align-middle" />
-          ) : (
-            <span className="font-bold">{formatNumber(total ?? 0)}</span>
-          )}{' '}
-          opportunités
-        </div>
-
-        {/* Pagination */}
-        {totalPages > 1 && onPageChange && (
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={onPageChange}
-          />
-        )}
-
-        {/* Page size selector */}
-        {onPageSizeChange && (
-          <PageSizeSelector
-            pageSize={pageSize}
-            onPageSizeChange={onPageSizeChange}
-          />
-        )}
-      </div>
-
-      {/* Right side: View toggle, Filter, Sort, Export */}
       <div className="flex items-center gap-2">
         {/* View toggle */}
         {onViewChange && (
           <ViewToggleGroup value={viewMode} onChange={onViewChange} />
         )}
-
         {/* Filter button */}
         {onOpenFilters && (
           <Tooltip>
@@ -178,7 +143,43 @@ export function OpportunityHeader({
             </DropdownMenuContent>
           </DropdownMenu>
         )}
+      </div>
+      <div className="flex items-center gap-2">
+        <div className="text-sm">
+          Affichage de{' '}
+          <span className="font-bold">
+            {startItem}-{endItem}
+          </span>{' '}
+          sur{' '}
+          {isCountLoading ? (
+            <Skeleton className="h-5 w-16 inline-block align-middle" />
+          ) : (
+            <span className="font-bold">{formatNumber(total ?? 0)}</span>
+          )}{' '}
+          opportunités
+        </div>
 
+        {/* Pagination */}
+        {totalPages > 1 && onPageChange && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={onPageChange}
+          />
+        )}
+
+
+      </div>
+
+      {/* Right side: View toggle, Filter, Sort, Export */}
+      <div className="flex items-center gap-2">
+        {/* Page size selector */}
+        {onPageSizeChange && (
+          <PageSizeSelector
+            pageSize={pageSize}
+            onPageSizeChange={onPageSizeChange}
+          />
+        )}
         {/* Export dropdown */}
         {onExport && (
           <DropdownMenu>

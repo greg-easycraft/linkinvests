@@ -1,5 +1,5 @@
 import { ApiError, apiRequest } from './client'
-import type { EnergyDiagnostic, IEnergyDiagnosticFilters } from '@/types'
+import type { EnergyDiagnostic, IEnergyDiagnosticFilters } from '@linkinvests/shared'
 import type { CountResponse, SearchResponse } from './types'
 
 export async function searchEnergyDiagnostics(
