@@ -25,7 +25,7 @@ const mairieContactSchema = z
 
 // Schema for succession input extending base opportunity
 export const successionInputSchema = baseOpportunityInputSchema.extend({
-  address: z.string(),
+  streetAddress: z.string(), // Required for successions (override optional from base)
   firstName: z.string().min(1),
   lastName: z.string().min(1),
   mairieContact: mairieContactSchema,

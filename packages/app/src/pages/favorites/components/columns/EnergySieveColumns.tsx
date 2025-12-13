@@ -27,7 +27,12 @@ export function getEnergySieveColumns(
     {
       key: 'address',
       header: 'Adresse',
-      cell: (diagnostic) => <AddressCell address={diagnostic.address} />,
+      cell: (diagnostic) => (
+        <AddressCell
+          streetAddress={diagnostic.streetAddress}
+          city={diagnostic.city}
+        />
+      ),
     },
     {
       key: 'diagnosticDate',

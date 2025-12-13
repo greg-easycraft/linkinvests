@@ -396,8 +396,8 @@ describe('LiquidationRepositoryImpl Integration Tests', () => {
         // Test that results are properly ordered (basic sanity check)
         if (liquidations.length > 1) {
           for (let i = 1; i < liquidations.length; i++) {
-            const current = liquidations[i]?.address || '';
-            const previous = liquidations[i - 1]?.address || '';
+            const current = liquidations[i]?.streetAddress || '';
+            const previous = liquidations[i - 1]?.streetAddress || '';
             expect(current.localeCompare(previous)).toBeGreaterThanOrEqual(0);
           }
         }
@@ -405,7 +405,7 @@ describe('LiquidationRepositoryImpl Integration Tests', () => {
 
       it('should sort by specified field descending', async () => {
         const filters: ILiquidationFilters = {
-          sortBy: 'address',
+          sortBy: 'streetAddress',
           sortOrder: 'desc',
         };
 
@@ -415,8 +415,8 @@ describe('LiquidationRepositoryImpl Integration Tests', () => {
         // Test that results are properly ordered (basic sanity check)
         if (liquidations.length > 1) {
           for (let i = 1; i < liquidations.length; i++) {
-            const current = liquidations[i]?.address || '';
-            const previous = liquidations[i - 1]?.address || '';
+            const current = liquidations[i]?.streetAddress || '';
+            const previous = liquidations[i - 1]?.streetAddress || '';
             expect(current.localeCompare(previous)).toBeLessThanOrEqual(0);
           }
         }

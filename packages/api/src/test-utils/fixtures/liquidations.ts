@@ -4,7 +4,8 @@ import { Liquidation } from '@linkinvests/shared';
 export const LIQUIDATION_1: Liquidation = {
   id: randomUUID(),
   label: 'Liquidation - Restaurant "Le Petit Bistro"',
-  address: '23 Rue de Rivoli, Paris',
+  streetAddress: '23 Rue de Rivoli',
+  city: 'Paris',
   zipCode: '75001',
   department: '75',
   latitude: 48.8606,
@@ -26,7 +27,8 @@ export const LIQUIDATION_1: Liquidation = {
 export const LIQUIDATION_2: Liquidation = {
   id: randomUUID(),
   label: 'Liquidation - Tech Startup "InnovateTech"',
-  address: '45 Avenue de la Grande Armée, Paris',
+  streetAddress: '45 Avenue de la Grande Armée',
+  city: 'Paris',
   zipCode: '75016',
   department: '75',
   latitude: 48.8738,
@@ -48,7 +50,8 @@ export const LIQUIDATION_2: Liquidation = {
 export const LIQUIDATION_3: Liquidation = {
   id: randomUUID(),
   label: 'Liquidation - Manufacturing "MetalWorks"',
-  address: '18 Zone Industrielle Nord, Lyon',
+  streetAddress: '18 Zone Industrielle Nord',
+  city: 'Lyon',
   zipCode: '69120',
   department: '69',
   latitude: 45.7797,
@@ -70,7 +73,8 @@ export const LIQUIDATION_3: Liquidation = {
 export const LIQUIDATION_4: Liquidation = {
   id: randomUUID(),
   label: 'Liquidation - Retail Store "Fashion Plus"',
-  address: '67 Cours Mirabeau, Aix-en-Provence',
+  streetAddress: '67 Cours Mirabeau',
+  city: 'Aix-en-Provence',
   zipCode: '13100',
   department: '13',
   latitude: 43.5263,
@@ -92,7 +96,8 @@ export const LIQUIDATION_4: Liquidation = {
 export const LIQUIDATION_5: Liquidation = {
   id: randomUUID(),
   label: 'Liquidation - Transport Company "LogiTrans"',
-  address: '92 Route de Toulouse, Montpellier',
+  streetAddress: '92 Route de Toulouse',
+  city: 'Montpellier',
   zipCode: '34000',
   department: '34',
   latitude: 43.6108,

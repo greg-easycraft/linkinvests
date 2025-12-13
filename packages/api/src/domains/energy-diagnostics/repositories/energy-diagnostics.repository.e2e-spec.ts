@@ -513,8 +513,8 @@ describe('EnergyDiagnosticsRepositoryImpl Integration Tests', () => {
         expect(diagnostics).toBeInstanceOf(Array);
         if (diagnostics.length > 1) {
           for (let i = 1; i < diagnostics.length; i++) {
-            const current = diagnostics[i]?.address || '';
-            const previous = diagnostics[i - 1]?.address || '';
+            const current = diagnostics[i]?.streetAddress || '';
+            const previous = diagnostics[i - 1]?.streetAddress || '';
             expect(current.localeCompare(previous)).toBeGreaterThanOrEqual(0);
           }
         }
@@ -525,7 +525,7 @@ describe('EnergyDiagnosticsRepositoryImpl Integration Tests', () => {
 
       it('should sort by specified field descending', async () => {
         const filters: IEnergyDiagnosticFilters = {
-          sortBy: 'address',
+          sortBy: 'streetAddress',
           sortOrder: 'desc',
         };
 
@@ -534,8 +534,8 @@ describe('EnergyDiagnosticsRepositoryImpl Integration Tests', () => {
         expect(diagnostics).toBeInstanceOf(Array);
         if (diagnostics.length > 1) {
           for (let i = 1; i < diagnostics.length; i++) {
-            const current = diagnostics[i]?.address || '';
-            const previous = diagnostics[i - 1]?.address || '';
+            const current = diagnostics[i]?.streetAddress || '';
+            const previous = diagnostics[i - 1]?.streetAddress || '';
             expect(current.localeCompare(previous)).toBeLessThanOrEqual(0);
           }
         }

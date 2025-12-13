@@ -2,7 +2,8 @@
 export interface BaseOpportunity {
   id: string; // UUID
   label: string;
-  address?: string;
+  streetAddress?: string;
+  city: string;
   zipCode: string;
   department: string;
   latitude: number;

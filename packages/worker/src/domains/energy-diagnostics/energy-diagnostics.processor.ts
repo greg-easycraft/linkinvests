@@ -156,7 +156,8 @@ export class EnergyDiagnosticsProcessor extends WorkerHost {
     const energyClassInput = {
       externalId: record.numero_dpe,
       label: record.adresse_ban || record.nom_commune_ban || 'Unknown',
-      address: record.adresse_ban,
+      streetAddress: record.adresse_ban,
+      city: record.nom_commune_ban,
       zipCode: record.code_postal_ban,
       department: record.code_departement_ban,
       latitude: parseFloat(latStr || ''),

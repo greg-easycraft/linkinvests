@@ -38,14 +38,19 @@ export function StatusCell({ status }: StatusCellProps): React.ReactElement {
 }
 
 interface AddressCellProps {
-  address?: string
+  streetAddress?: string
+  city: string
 }
 
-export function AddressCell({ address }: AddressCellProps): React.ReactElement {
+export function AddressCell({
+  streetAddress,
+  city,
+}: AddressCellProps): React.ReactElement {
+  const displayAddress = streetAddress ? `${streetAddress}, ${city}` : city
   return (
     <div className="flex items-center gap-2 max-w-[200px]">
       <MapPin className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
-      <span className="truncate">{address ?? 'Non disponible'}</span>
+      <span className="truncate">{displayAddress}</span>
     </div>
   )
 }

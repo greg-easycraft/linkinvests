@@ -261,7 +261,7 @@ export class ListingRepositoryImpl implements ListingRepository {
       ...listing,
       lastChangeDate:
         listing.lastChangeDate ?? new Date().toISOString().split('T')[0],
-      address: listing.address ?? undefined,
+      streetAddress: listing.streetAddress ?? undefined,
       mainPicture: listing.mainPicture ?? undefined,
       pictures: listing.pictures ?? undefined,
       sellerContact: listing.sellerContact ?? undefined,

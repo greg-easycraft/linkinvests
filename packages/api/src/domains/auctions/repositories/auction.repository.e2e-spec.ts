@@ -506,7 +506,6 @@ describe('AuctionRepositoryImpl Integration Tests', () => {
         expect(auction.type).toBe(OpportunityType.AUCTION);
         // @ts-expect-error - title property may not exist on Auction type in tests
         expect(typeof auction.title).toBe('string');
-        // @ts-expect-error - city property may not exist on Auction type in tests
         expect(typeof auction.city).toBe('string');
         expect(typeof auction.department).toBe('string');
         expect(typeof auction.zipCode).toBe('string');
@@ -522,8 +521,8 @@ describe('AuctionRepositoryImpl Integration Tests', () => {
 
       auctions.forEach((auction) => {
         // These fields can be undefined but not null after mapping
-        if (auction.address !== undefined) {
-          expect(typeof auction.address).toBe('string');
+        if (auction.streetAddress !== undefined) {
+          expect(typeof auction.streetAddress).toBe('string');
         }
         if (auction.description !== undefined) {
           expect(typeof auction.description).toBe('string');

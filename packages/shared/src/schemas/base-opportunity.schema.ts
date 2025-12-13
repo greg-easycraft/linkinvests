@@ -8,7 +8,8 @@ type BaseOpportunityInput = Omit<
 
 export const baseOpportunityInputSchema = z.object({
   label: z.string(),
-  address: z.string().optional(),
+  streetAddress: z.string().optional(),
+  city: z.string(),
   zipCode: z.string().min(5).max(5),
   department: z.string().min(2).max(3),
   latitude: z.number(),

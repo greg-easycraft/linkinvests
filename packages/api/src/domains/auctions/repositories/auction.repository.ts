@@ -227,7 +227,7 @@ export class AuctionRepositoryImpl implements AuctionRepository {
   ): Auction {
     return {
       ...auction,
-      address: auction.address ?? undefined,
+      streetAddress: auction.streetAddress ?? undefined,
       source: auction.source as AuctionSource,
       propertyType: (auction.propertyType ?? undefined) as
         | PropertyType

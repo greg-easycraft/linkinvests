@@ -162,7 +162,7 @@ export function OpportunitiesMap<T extends BaseOpportunity>({
             <div style="padding: 8px;">
               <div style="font-weight: 600; margin-bottom: 4px;">${opportunity.label}</div>
               <div style="font-size: 12px; color: #666;">${TYPE_LABELS[type]}</div>
-              <div style="font-size: 12px; color: #666;">${opportunity.address ?? 'Non disponible'}</div>
+              <div style="font-size: 12px; color: #666;">${opportunity.streetAddress ? `${opportunity.streetAddress}, ${opportunity.city}` : opportunity.city}</div>
             </div>
           `,
           ),

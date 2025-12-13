@@ -22,7 +22,8 @@ describe('AddressSearchService', () => {
   const mockEnergyDiagnostic: EnergyDiagnostic = {
     id: 'energy-diagnostic-1',
     label: 'Test Energy Diagnostic',
-    address: '123 Test Street',
+    streetAddress: '123 Test Street',
+    city: 'Paris',
     zipCode: '75001',
     department: '75',
     latitude: 48.8566,
@@ -383,10 +384,10 @@ describe('AddressSearchService', () => {
       matchScore: 95,
       energyDiagnostic: {
         id: 'energy-diagnostic-1',
-        address: '123 Test Street',
+        streetAddress: '123 Test Street',
+        city: 'Paris',
         zipCode: '75001',
         energyClass: EnergyClass.F,
-        gazClass: GazClass.F,
         squareFootage: 50,
         opportunityDate: '2024-01-15',
         externalId: 'external-123',
@@ -565,10 +566,10 @@ describe('AddressSearchService', () => {
         matchScore: 95,
         energyDiagnostic: {
           id: 'energy-diagnostic-1',
-          address: '123 Test Street',
+          streetAddress: '123 Test Street',
+          city: 'Paris',
           zipCode: '75001',
           energyClass: EnergyClass.F,
-          gazClass: GazClass.F,
           squareFootage: 50,
           opportunityDate: '2024-01-15',
           externalId: 'external-123',
@@ -642,7 +643,8 @@ describe('AddressSearchService', () => {
 
       const resultWithDifferentCity = {
         ...mockEnergyDiagnostic,
-        address: '456 Rue de Lyon 75001 Lyon',
+        streetAddress: '456 Rue de Lyon',
+        city: 'Lyon',
         squareFootage: 50,
       };
 
@@ -669,7 +671,8 @@ describe('AddressSearchService', () => {
 
       const resultWithDifferentStreet = {
         ...mockEnergyDiagnostic,
-        address: '456 Avenue des Champs 75001 Paris',
+        streetAddress: '456 Avenue des Champs',
+        city: 'Paris',
         squareFootage: 50,
       };
 
@@ -696,7 +699,8 @@ describe('AddressSearchService', () => {
 
       const resultWithSameAddress = {
         ...mockEnergyDiagnostic,
-        address: '123 Rue de Rivoli 75001 Paris',
+        streetAddress: '123 Rue de Rivoli',
+        city: 'Paris',
         squareFootage: 50,
       };
 
@@ -744,7 +748,7 @@ describe('AddressSearchService', () => {
 
       const resultWithoutAddress = {
         ...mockEnergyDiagnostic,
-        address: undefined as any,
+        streetAddress: undefined as any,
         squareFootage: 50,
       };
 

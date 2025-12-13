@@ -2,7 +2,7 @@ import { BaseOpportunity } from './base-opportunity.types';
 
 export interface Liquidation extends BaseOpportunity {
   siret: string; // Required for liquidations
-  address: string;
+  streetAddress: string; // Required for liquidations (override optional from base)
   // Company contact info as JSONB
   companyContact?: {
     name?: string;

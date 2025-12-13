@@ -19,8 +19,10 @@ export interface AddressSearchResult {
   id: string;
   // Confidence score from 0-100 indicating match quality
   matchScore: number;
-  // Full property address
-  address: string;
+  // Street address (without city)
+  streetAddress: string;
+  // City name
+  city: string;
   // Postal code
   zipCode: string;
   // Department number

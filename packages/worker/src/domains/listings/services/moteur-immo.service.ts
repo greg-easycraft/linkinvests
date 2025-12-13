@@ -267,7 +267,8 @@ export class MoteurImmoService {
     try {
       return {
         label: apiListing.title || 'Unknown Property',
-        address: `${apiListing.location.city}, ${apiListing.location.postalCode}`,
+        streetAddress: undefined, // Street address not provided by API
+        city: apiListing.location.city,
         zipCode: apiListing.location.postalCode,
         department: apiListing.location.departmentCode
           .toString()

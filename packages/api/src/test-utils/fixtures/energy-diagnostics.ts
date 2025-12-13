@@ -5,7 +5,8 @@ import { EnergyClass, GazClass } from '@linkinvests/shared';
 export const ENERGY_DIAGNOSTIC_1: EnergyDiagnostic = {
   id: randomUUID(),
   label: 'Energy Diagnostic - Marseille Apartment',
-  address: '45 Rue de la République, Marseille',
+  streetAddress: '45 Rue de la République',
+  city: 'Marseille',
   zipCode: '13001',
   department: '13',
   latitude: 43.2965,
@@ -22,7 +23,8 @@ export const ENERGY_DIAGNOSTIC_1: EnergyDiagnostic = {
 export const ENERGY_DIAGNOSTIC_2: EnergyDiagnostic = {
   id: randomUUID(),
   label: 'Energy Diagnostic - Lyon Office Building',
-  address: '28 Cours Lafayette, Lyon',
+  streetAddress: '28 Cours Lafayette',
+  city: 'Lyon',
   zipCode: '69003',
   department: '69',
   latitude: 45.7578,
@@ -39,7 +41,8 @@ export const ENERGY_DIAGNOSTIC_2: EnergyDiagnostic = {
 export const ENERGY_DIAGNOSTIC_3: EnergyDiagnostic = {
   id: randomUUID(),
   label: 'Energy Diagnostic - Lille House',
-  address: '12 Rue Nationale, Lille',
+  streetAddress: '12 Rue Nationale',
+  city: 'Lille',
   zipCode: '59000',
   department: '59',
   latitude: 50.6292,
@@ -56,7 +59,8 @@ export const ENERGY_DIAGNOSTIC_3: EnergyDiagnostic = {
 export const ENERGY_DIAGNOSTIC_4: EnergyDiagnostic = {
   id: randomUUID(),
   label: 'Energy Diagnostic - Strasbourg Commercial Space',
-  address: '8 Place Kléber, Strasbourg',
+  streetAddress: '8 Place Kléber',
+  city: 'Strasbourg',
   zipCode: '67000',
   department: '67',
   latitude: 48.5734,
@@ -73,7 +77,8 @@ export const ENERGY_DIAGNOSTIC_4: EnergyDiagnostic = {
 export const ENERGY_DIAGNOSTIC_5: EnergyDiagnostic = {
   id: randomUUID(),
   label: 'Energy Diagnostic - Nantes Warehouse',
-  address: '15 Quai de la Fosse, Nantes',
+  streetAddress: '15 Quai de la Fosse',
+  city: 'Nantes',
   zipCode: '44000',
   department: '44',
   latitude: 47.2184,

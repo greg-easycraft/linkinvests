@@ -54,7 +54,7 @@ export class ListingsRepository {
             target: [domainSchema.opportunityListings.externalId],
             set: {
               label: sql`excluded.label`,
-              address: sql`excluded.address`,
+              city: sql`excluded.city`,
               zipCode: sql`excluded.zip_code`,
               department: sql`excluded.department`,
               latitude: sql`excluded.latitude`,

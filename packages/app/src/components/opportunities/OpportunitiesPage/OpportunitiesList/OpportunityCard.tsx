@@ -180,7 +180,9 @@ export function OpportunityCard({
                 <div className="min-w-0">
                   <div className="text-xs opacity-70">Adresse</div>
                   <div className="truncate">
-                    {opportunity.address ?? 'Non disponible'}
+                    {opportunity.streetAddress
+                      ? `${opportunity.streetAddress}, ${opportunity.city}`
+                      : opportunity.city}
                   </div>
                 </div>
               </div>

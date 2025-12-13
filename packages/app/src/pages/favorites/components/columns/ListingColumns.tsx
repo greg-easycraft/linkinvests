@@ -34,7 +34,9 @@ export function getListingColumns(
     {
       key: 'address',
       header: 'Adresse',
-      cell: (listing) => <AddressCell address={listing.address} />,
+      cell: (listing) => (
+        <AddressCell streetAddress={listing.streetAddress} city={listing.city} />
+      ),
     },
     {
       key: 'publicationDate',

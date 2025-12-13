@@ -67,8 +67,10 @@ export function EnergySieveDetailPage(): React.ReactElement {
         <div className="flex items-start gap-2 text-muted-foreground mb-2">
           <MapPin className="h-4 w-4 mt-1 shrink-0" />
           <span>
-            {energySieve.address}, {energySieve.zipCode}{' '}
-            {energySieve.department}
+            {energySieve.streetAddress
+              ? `${energySieve.streetAddress}, ${energySieve.city}`
+              : energySieve.city}
+            , {energySieve.zipCode} {energySieve.department}
           </span>
         </div>
 

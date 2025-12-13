@@ -172,19 +172,15 @@ export class AddressSearchService {
       score -= percentageDiff * 30; // Up to 30 points penalty
     }
 
-    // Extract street and city from addresses using zipCode
+    // Use streetAddress and city fields directly
     const inputStreet = input.address
       ? extractStreetFromAddress(input.address, input.zipCode)
       : null;
-    const resultStreet = result.address
-      ? extractStreetFromAddress(result.address, result.zipCode)
-      : null;
+    const resultStreet = result.streetAddress ?? null;
     const inputCity = input.address
       ? extractCityFromAddress(input.address, input.zipCode)
       : null;
-    const resultCity = result.address
-      ? extractCityFromAddress(result.address, result.zipCode)
-      : null;
+    const resultCity = result.city;
 
     // City matching: up to 40 points penalty (highest weight)
     if (inputCity && resultCity) {

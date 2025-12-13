@@ -24,7 +24,8 @@ export type DiagnosticLink = {
   matchScore: number;
   energyDiagnostic: {
     id: string;
-    address: string;
+    streetAddress: string;
+    city: string;
     zipCode: string;
     energyClass: string;
     squareFootage: number;

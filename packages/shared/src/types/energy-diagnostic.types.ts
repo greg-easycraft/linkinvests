@@ -5,7 +5,7 @@ export interface EnergyDiagnostic extends BaseOpportunity {
   energyClass: EnergyClass;
   gazClass: GazClass;
   squareFootage: number;
-  address: string;
+  streetAddress: string; // Required for energy diagnostics (override optional from base)
 }
 
 export type EnergyDiagnosticInput = Omit<

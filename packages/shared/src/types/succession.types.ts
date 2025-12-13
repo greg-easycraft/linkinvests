@@ -1,7 +1,7 @@
 import { BaseOpportunity } from './base-opportunity.types';
 
 export interface Succession extends BaseOpportunity {
-  address: string;
+  streetAddress: string; // Required for successions (override optional from base)
   firstName: string;
   lastName: string;
   // Mairie contact info as JSONB

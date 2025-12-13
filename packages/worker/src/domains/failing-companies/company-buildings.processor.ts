@@ -265,7 +265,7 @@ export class CompanyBuildingsProcessor extends WorkerHost {
       return {
         siret: etablissement.siret,
         companyName: etablissement.commune || 'Unknown Company',
-        address: etablissement.adresse,
+        streetAddress: etablissement.adresse,
         zipCode: etablissement.code_postal,
         city: etablissement.libelle_commune,
         department: etablissement.code_postal.substring(0, 2),

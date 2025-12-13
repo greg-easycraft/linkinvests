@@ -21,7 +21,8 @@ describe('EnergyDiagnosticsController', () => {
   const mockEnergyDiagnostic: EnergyDiagnostic = {
     id: 'energy-diagnostic-123',
     label: 'Test Energy Diagnostic',
-    address: '123 Test St',
+    streetAddress: '123 Test St',
+    city: 'Paris',
     zipCode: '75001',
     department: '75',
     latitude: 48.8566,

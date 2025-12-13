@@ -66,7 +66,7 @@ export function AuctionDetailPage(): React.ReactElement {
         energyClass: auction.energyClass as EnergyClass,
         squareFootage: auction.squareFootage,
         zipCode: auction.zipCode,
-        address: auction.address ?? undefined,
+        address: auction.streetAddress ?? undefined,
       },
     })
   }
@@ -131,12 +131,14 @@ export function AuctionDetailPage(): React.ReactElement {
           <div className="flex items-start gap-2 text-muted-foreground">
             <MapPin className="h-4 w-4 mt-1 shrink-0" />
             <span>
-              {auction.address ?? auction.label}, {auction.zipCode}{' '}
-              {auction.department}
+              {auction.streetAddress
+                ? `${auction.streetAddress}, ${auction.city}`
+                : auction.city}
+              , {auction.zipCode} {auction.department}
             </span>
           </div>
           <AddressRefinementButton
-            address={auction.address ?? null}
+            address={auction.streetAddress ?? null}
             energyClass={auction.energyClass}
             onRefine={handleRefineAddress}
             isLoading={searchMutation.isPending}

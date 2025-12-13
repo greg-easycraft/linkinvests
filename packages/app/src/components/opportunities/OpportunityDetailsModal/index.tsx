@@ -148,7 +148,7 @@ export function OpportunityDetailsModal({
         energyClass: energyClass as EnergyClass,
         squareFootage,
         zipCode: opportunity.zipCode,
-        address: opportunity.address ?? undefined,
+        address: opportunity.streetAddress ?? undefined,
       },
     })
   }
@@ -182,13 +182,15 @@ export function OpportunityDetailsModal({
           <div className="flex items-start gap-2 text-muted-foreground">
             <MapPin className="h-4 w-4 mt-1 shrink-0" />
             <span>
-              {opportunity.address ?? opportunity.label}, {opportunity.zipCode}{' '}
-              {opportunity.department}
+              {opportunity.streetAddress
+                ? `${opportunity.streetAddress}, ${opportunity.city}`
+                : opportunity.city}
+              , {opportunity.zipCode} {opportunity.department}
             </span>
           </div>
           {supportsAddressRefinement && (
             <AddressRefinementButton
-              address={opportunity.address ?? null}
+              address={opportunity.streetAddress ?? null}
               energyClass={energyClass}
               onRefine={handleRefineAddress}
               isLoading={searchMutation.isPending}

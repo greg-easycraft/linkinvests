@@ -16,7 +16,8 @@ describe('AddressesController', () => {
 
   const mockAddressSearchResult: AddressSearchResult = {
     id: 'energy-diagnostic-123',
-    address: '123 Test St',
+    streetAddress: '123 Test St',
+    city: 'Paris',
     zipCode: '75001',
     department: '75',
     latitude: 48.8566,
@@ -33,7 +34,8 @@ describe('AddressesController', () => {
     matchScore: 95,
     energyDiagnostic: {
       id: 'energy-diagnostic-123',
-      address: '123 Test St',
+      streetAddress: '123 Test St',
+      city: 'Paris',
       zipCode: '75001',
       energyClass: EnergyClass.F,
       squareFootage: 75,

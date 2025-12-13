@@ -97,7 +97,11 @@ function AddressResultCard({ result, onViewDetails }: AddressResultCardProps) {
             <div className="flex items-start gap-2 mb-2">
               <MapPin className="h-4 w-4 mt-1 flex-shrink-0 text-muted-foreground" />
               <div>
-                <p className="font-medium text-lg">{result.address}</p>
+                <p className="font-medium text-lg">
+                  {result.streetAddress
+                    ? `${result.streetAddress}, ${result.city}`
+                    : result.city}
+                </p>
                 <p className="text-sm text-muted-foreground">
                   {result.zipCode} • Département {result.department}
                 </p>

@@ -34,7 +34,9 @@ export function getAuctionColumns(
     {
       key: 'address',
       header: 'Adresse',
-      cell: (auction) => <AddressCell address={auction.address} />,
+      cell: (auction) => (
+        <AddressCell streetAddress={auction.streetAddress} city={auction.city} />
+      ),
     },
     {
       key: 'auctionDate',

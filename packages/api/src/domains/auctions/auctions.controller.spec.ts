@@ -23,7 +23,8 @@ describe('AuctionsController', () => {
   const mockAuction: Auction = {
     id: 'auction-123',
     label: 'Test Auction',
-    address: '123 Test St',
+    streetAddress: '123 Test St',
+    city: 'Paris',
     zipCode: '75001',
     department: '75',
     latitude: 48.8566,

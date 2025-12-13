@@ -32,7 +32,12 @@ export function getLiquidationColumns(
     {
       key: 'address',
       header: 'Adresse',
-      cell: (liquidation) => <AddressCell address={liquidation.address} />,
+      cell: (liquidation) => (
+        <AddressCell
+          streetAddress={liquidation.streetAddress}
+          city={liquidation.city}
+        />
+      ),
     },
     {
       key: 'publicationDate',

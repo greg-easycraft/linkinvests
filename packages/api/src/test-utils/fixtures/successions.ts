@@ -4,7 +4,8 @@ import { randomUUID } from 'crypto';
 export const SUCCESSION_1: Succession = {
   id: randomUUID(),
   label: 'Succession - Henri Dubois',
-  address: '42 Rue Victor Hugo, Bordeaux',
+  streetAddress: '42 Rue Victor Hugo',
+  city: 'Bordeaux',
   zipCode: '33000',
   department: '33',
   latitude: 44.8378,
@@ -35,7 +36,8 @@ export const SUCCESSION_1: Succession = {
 export const SUCCESSION_2: Succession = {
   id: randomUUID(),
   label: 'Succession - Marie-Claire Petit',
-  address: '15 Boulevard Saint-Germain, Paris',
+  streetAddress: '15 Boulevard Saint-Germain',
+  city: 'Paris',
   zipCode: '75005',
   department: '75',
   latitude: 48.8534,
@@ -66,7 +68,8 @@ export const SUCCESSION_2: Succession = {
 export const SUCCESSION_3: Succession = {
   id: randomUUID(),
   label: 'Succession - Robert Lemoine',
-  address: '28 Rue de la Liberté, Strasbourg',
+  streetAddress: '28 Rue de la Liberté',
+  city: 'Strasbourg',
   zipCode: '67000',
   department: '67',
   latitude: 48.5734,
@@ -97,7 +100,8 @@ export const SUCCESSION_3: Succession = {
 export const SUCCESSION_4: Succession = {
   id: randomUUID(),
   label: 'Succession - Françoise Moreau',
-  address: '9 Place Bellecour, Lyon',
+  streetAddress: '9 Place Bellecour',
+  city: 'Lyon',
   zipCode: '69002',
   department: '69',
   latitude: 45.7578,
@@ -128,7 +132,8 @@ export const SUCCESSION_4: Succession = {
 export const SUCCESSION_5: Succession = {
   id: randomUUID(),
   label: 'Succession - Pierre Garnier',
-  address: '33 Cours Saleya, Nice',
+  streetAddress: '33 Cours Saleya',
+  city: 'Nice',
   zipCode: '06300',
   department: '06',
   latitude: 43.6947,

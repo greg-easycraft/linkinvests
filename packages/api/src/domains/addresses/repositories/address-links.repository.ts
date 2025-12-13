@@ -61,7 +61,8 @@ export class AddressLinksRepositoryImpl implements AddressLinksRepository {
         matchScore: auctionEnergyDiagnosticLinks.matchScore,
         energyDiagnostic: {
           id: energyDiagnostics.id,
-          address: energyDiagnostics.address,
+          streetAddress: energyDiagnostics.streetAddress,
+          city: energyDiagnostics.city,
           zipCode: energyDiagnostics.zipCode,
           energyClass: energyDiagnostics.energyClass,
           squareFootage: energyDiagnostics.squareFootage,
@@ -93,7 +94,8 @@ export class AddressLinksRepositoryImpl implements AddressLinksRepository {
         matchScore: listingEnergyDiagnosticLinks.matchScore,
         energyDiagnostic: {
           id: energyDiagnostics.id,
-          address: energyDiagnostics.address,
+          streetAddress: energyDiagnostics.streetAddress,
+          city: energyDiagnostics.city,
           zipCode: energyDiagnostics.zipCode,
           energyClass: energyDiagnostics.energyClass,
           squareFootage: energyDiagnostics.squareFootage,

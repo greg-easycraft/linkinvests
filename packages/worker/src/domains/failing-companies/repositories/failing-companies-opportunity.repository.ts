@@ -46,7 +46,8 @@ export class FailingCompaniesOpportunityRepository {
         // Base opportunity fields
         label: est.companyName,
         siret: est.siret, // Required for liquidations
-        address: est.address,
+        streetAddress: est.streetAddress,
+        city: est.city,
         zipCode: est.zipCode,
         department: est.department.toString().padStart(2, '0'),
         latitude: est.latitude,

@@ -7,7 +7,7 @@ export const energyDiagnosticInputSchema = baseOpportunityInputSchema.extend({
   energyClass: z.enum(EnergyClass),
   gazClass: z.enum(GazClass),
   squareFootage: z.number(),
-  address: z.string(),
+  streetAddress: z.string(), // Required for energy diagnostics (override optional from base)
 });
 
 // Necessary to ensure coherent typing

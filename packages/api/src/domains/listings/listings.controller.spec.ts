@@ -22,7 +22,8 @@ describe('ListingsController', () => {
   const mockListing: Listing = {
     id: 'listing-123',
     label: 'Test Listing',
-    address: '123 Test St',
+    streetAddress: '123 Test St',
+    city: 'Paris',
     zipCode: '75001',
     department: '75',
     latitude: 48.8566,

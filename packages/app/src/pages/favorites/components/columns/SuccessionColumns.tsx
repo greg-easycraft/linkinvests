@@ -27,7 +27,12 @@ export function getSuccessionColumns(
     {
       key: 'address',
       header: 'Adresse',
-      cell: (succession) => <AddressCell address={succession.address} />,
+      cell: (succession) => (
+        <AddressCell
+          streetAddress={succession.streetAddress}
+          city={succession.city}
+        />
+      ),
     },
     {
       key: 'publicationDate',

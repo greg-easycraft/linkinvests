@@ -36,7 +36,8 @@ export class FavoriteAuctionRepositoryImpl implements FavoriteAuctionRepository 
   ): Auction {
     return {
       ...auction,
-      address: auction.address ?? undefined,
+      streetAddress: auction.streetAddress ?? undefined,
+      city: auction.city,
       source: auction.source as AuctionSource,
       propertyType: (auction.propertyType ?? undefined) as
         | PropertyType

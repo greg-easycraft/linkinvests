@@ -32,11 +32,13 @@ export class AddressSearchRepositoryImpl implements AddressSearchRepository {
       lte(energyDiagnostics.squareFootage, input.squareFootageMax),
     ];
     if (input.address) {
-      conditions.push(ilike(energyDiagnostics.address, `%${input.address}%`));
+      conditions.push(
+        ilike(energyDiagnostics.streetAddress, `%${input.address}%`),
+      );
       return conditions;
     }
     if (input.city) {
-      conditions.push(eq(energyDiagnostics.address, `%${input.city}%`));
+      conditions.push(eq(energyDiagnostics.city, input.city));
     }
     return conditions;
   }
@@ -121,7 +123,8 @@ export class AddressSearchRepositoryImpl implements AddressSearchRepository {
         matchScore: auctionEnergyDiagnosticLinks.matchScore,
         energyDiagnostic: {
           id: energyDiagnostics.id,
-          address: energyDiagnostics.address,
+          streetAddress: energyDiagnostics.streetAddress,
+          city: energyDiagnostics.city,
           zipCode: energyDiagnostics.zipCode,
           energyClass: energyDiagnostics.energyClass,
           squareFootage: energyDiagnostics.squareFootage,
@@ -153,7 +156,8 @@ export class AddressSearchRepositoryImpl implements AddressSearchRepository {
         matchScore: listingEnergyDiagnosticLinks.matchScore,
         energyDiagnostic: {
           id: energyDiagnostics.id,
-          address: energyDiagnostics.address,
+          streetAddress: energyDiagnostics.streetAddress,
+          city: energyDiagnostics.city,
           zipCode: energyDiagnostics.zipCode,
           energyClass: energyDiagnostics.energyClass,
           squareFootage: energyDiagnostics.squareFootage,

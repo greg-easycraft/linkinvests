@@ -66,7 +66,7 @@ export function ListingDetailPage(): React.ReactElement {
         energyClass: listing.energyClass as EnergyClass,
         squareFootage: listing.squareFootage,
         zipCode: listing.zipCode,
-        address: listing.address ?? undefined,
+        address: listing.streetAddress ?? undefined,
       },
     })
   }
@@ -131,12 +131,14 @@ export function ListingDetailPage(): React.ReactElement {
           <div className="flex items-start gap-2 text-muted-foreground">
             <MapPin className="h-4 w-4 mt-1 shrink-0" />
             <span>
-              {listing.address ?? listing.label}, {listing.zipCode}{' '}
-              {listing.department}
+              {listing.streetAddress
+                ? `${listing.streetAddress}, ${listing.city}`
+                : listing.city}
+              , {listing.zipCode} {listing.department}
             </span>
           </div>
           <AddressRefinementButton
-            address={listing.address ?? null}
+            address={listing.streetAddress ?? null}
             energyClass={listing.energyClass}
             onRefine={handleRefineAddress}
             isLoading={searchMutation.isPending}

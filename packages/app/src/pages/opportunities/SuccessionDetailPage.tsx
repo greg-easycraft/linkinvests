@@ -64,7 +64,10 @@ export function SuccessionDetailPage(): React.ReactElement {
         <div className="flex items-start gap-2 text-muted-foreground mb-2">
           <MapPin className="h-4 w-4 mt-1 shrink-0" />
           <span>
-            {succession.address}, {succession.zipCode} {succession.department}
+            {succession.streetAddress
+              ? `${succession.streetAddress}, ${succession.city}`
+              : succession.city}
+            , {succession.zipCode} {succession.department}
           </span>
         </div>
 

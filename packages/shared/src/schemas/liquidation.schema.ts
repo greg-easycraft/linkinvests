@@ -16,6 +16,7 @@ const companyContactSchema = z
 // Schema for liquidation input extending base opportunity
 export const liquidationInputSchema = baseOpportunityInputSchema.extend({
   siret: z.string().min(14).max(14), // SIRET is always 14 digits
+  streetAddress: z.string(), // Required for liquidations (override optional from base)
   companyContact: companyContactSchema,
 });
 

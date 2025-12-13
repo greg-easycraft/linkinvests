@@ -32,7 +32,7 @@ export interface ListePersonnesData {
 export interface CompanyEstablishment {
   siret: string;
   companyName: string;
-  address: string;
+  streetAddress: string;
   zipCode: string;
   city: string;
   department: string;
