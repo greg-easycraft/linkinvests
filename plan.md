@@ -1,6 +1,5 @@
 Lundi 15
 Samedi
-- [ ] rename address fields into streetAddress & handle as such
 
 Dimanche
 - map bounds on search
@@ -13,6 +12,7 @@ Lundi
 - [ ] deploy sur staging.linkinvests.com
 - [ ] CI/CD
 
+- [X] rename address fields into streetAddress & handle as such
 - [X] succession, mémorisation si email envoyé (handle via status)
 - [X] search UI refactor
     - filters as aside w/ backdrop, triggered by btn in header
@@ -30,6 +30,13 @@ TO TEST
     - dpe
     - auctions
     - listings
+- addresses
+    - dpe
+    - listings
+    - auctions
+    - succesions
+    - liquidations
+
 - deceases scraping
 - email invitation
 - email magic link
