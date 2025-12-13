@@ -1,10 +1,23 @@
-import { OpportunityType } from '@linkinvests/shared'
-import { ActionsCell, AddressCell, DateCell, LabelCell } from './shared'
-import type { Succession } from '@linkinvests/shared'
+import { OpportunityType, type Succession } from '@linkinvests/shared'
+import { AddressCell, DateCell, LabelCell, StatusCell } from './shared'
+import { QuickActionsDropdown } from './QuickActionsDropdown'
 
 import type { Column } from './types'
 
-export function getSuccessionColumns(): Array<Column<Succession>> {
+// Extended type for succession with favorite info
+type SuccessionWithFavorite = Succession & {
+  favoriteId: string
+  status: string
+}
+
+export interface SuccessionColumnsOptions {
+  onViewDetails?: (item: SuccessionWithFavorite) => void
+  onEmailClick?: (favoriteId: string) => void
+}
+
+export function getSuccessionColumns(
+  options?: SuccessionColumnsOptions,
+): Array<Column<SuccessionWithFavorite>> {
   return [
     {
       key: 'label',
@@ -31,12 +44,21 @@ export function getSuccessionColumns(): Array<Column<Succession>> {
       ),
     },
     {
+      key: 'status',
+      header: 'Statut',
+      cell: (succession) => <StatusCell status={succession.status} />,
+    },
+    {
       key: 'actions',
       header: '',
       cell: (succession) => (
-        <ActionsCell
-          opportunityId={succession.id}
+        <QuickActionsDropdown
           opportunityType={OpportunityType.SUCCESSION}
+          onViewDetails={() => options?.onViewDetails?.(succession)}
+          favoriteId={succession.favoriteId}
+          status={succession.status}
+          mairieEmail={succession.mairieContact?.email}
+          onEmailClick={options?.onEmailClick}
         />
       ),
       className: 'text-right',

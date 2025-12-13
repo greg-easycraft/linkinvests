@@ -117,12 +117,37 @@ export class FavoriteRepositoryImpl implements FavoriteRepository {
     return new Set(results.map((r) => r.opportunityId));
   }
 
+  async findById(id: string): Promise<Favorite | null> {
+    const result = await this.db
+      .select()
+      .from(favorites)
+      .where(eq(favorites.id, id))
+      .limit(1);
+
+    return result[0] ? this.mapFavorite(result[0]) : null;
+  }
+
+  async updateStatus(id: string, status: string): Promise<Favorite | null> {
+    const result = await this.db
+      .update(favorites)
+      .set({
+        status,
+        statusUpdatedAt: new Date(),
+      })
+      .where(eq(favorites.id, id))
+      .returning();
+
+    return result[0] ? this.mapFavorite(result[0]) : null;
+  }
+
   private mapFavorite(favorite: typeof favorites.$inferSelect): Favorite {
     return {
       id: favorite.id,
       userId: favorite.userId,
       opportunityId: favorite.opportunityId,
       opportunityType: favorite.opportunityType as OpportunityType,
+      status: favorite.status,
+      statusUpdatedAt: favorite.statusUpdatedAt,
       createdAt: favorite.createdAt,
     };
   }

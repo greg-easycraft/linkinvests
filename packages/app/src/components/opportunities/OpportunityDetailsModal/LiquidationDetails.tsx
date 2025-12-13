@@ -80,12 +80,9 @@ export function LiquidationDetails({
             {opportunity.companyContact.email && (
               <div className="flex items-center gap-2">
                 <Mail className="h-4 w-4 text-muted-foreground" />
-                <a
-                  href={`mailto:${opportunity.companyContact.email}`}
-                  className="text-primary hover:underline"
-                >
+                <span className="text-muted-foreground">
                   {opportunity.companyContact.email}
-                </a>
+                </span>
               </div>
             )}
           </div>

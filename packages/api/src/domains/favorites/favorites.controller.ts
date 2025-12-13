@@ -5,6 +5,7 @@ import {
   Body,
   ConflictException,
   NotFoundException,
+  BadRequestException,
   InternalServerErrorException,
   UseGuards,
 } from '@nestjs/common';
@@ -20,10 +21,12 @@ import {
   removeFavoriteSchema,
   checkFavoriteSchema,
   checkBatchFavoritesSchema,
+  markEmailSentSchema,
   type AddFavoriteRequest,
   type RemoveFavoriteRequest,
   type CheckFavoriteRequest,
   type CheckBatchFavoritesRequest,
+  type MarkEmailSentRequest,
 } from '@linkinvests/shared';
 import { isRefusal } from '~/common/utils/operation-result';
 
@@ -118,5 +121,34 @@ export class FavoritesController {
       throw new InternalServerErrorException();
     }
     return { favoriteIds: result.data };
+  }
+
+  @Post('mark-email-sent')
+  async markEmailSent(
+    @Session() session: AuthSession,
+    @Body(new ZodValidationPipe(markEmailSentSchema))
+    body: MarkEmailSentRequest,
+  ) {
+    const result = await this.favoriteService.markEmailSent(
+      session.user.id,
+      body.favoriteId,
+    );
+
+    if (isRefusal(result)) {
+      switch (result.reason) {
+        case FavoriteServiceErrorReason.NOT_FOUND:
+          throw new NotFoundException('Favorite not found');
+        case FavoriteServiceErrorReason.EMAIL_ALREADY_SENT:
+          throw new ConflictException('Email already sent');
+        case FavoriteServiceErrorReason.NOT_SUCCESSION_TYPE:
+          throw new BadRequestException(
+            'Only succession favorites support email status',
+          );
+        default:
+          throw new InternalServerErrorException();
+      }
+    }
+
+    return { success: true };
   }
 }

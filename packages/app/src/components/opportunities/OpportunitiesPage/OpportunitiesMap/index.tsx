@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import mapboxgl from 'mapbox-gl'
 import { Loader2, Map as MapIcon } from 'lucide-react'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import type { BaseOpportunity, OpportunityType } from '@linkinvests/shared'
+import type { MapBounds } from '@/schemas/filters.schema'
 import { TYPE_COLORS, TYPE_LABELS } from '@/constants/opportunity-types'
 
 interface OpportunitiesMapProps<T extends BaseOpportunity> {
@@ -11,6 +12,7 @@ interface OpportunitiesMapProps<T extends BaseOpportunity> {
   isLoading: boolean
   selectedId?: string
   onSelect: (opportunity: T) => void
+  onBoundsChange?: (bounds: MapBounds) => void
 }
 
 // Helper to get type from opportunity or fallback
@@ -30,11 +32,37 @@ export function OpportunitiesMap<T extends BaseOpportunity>({
   isLoading,
   selectedId,
   onSelect,
+  onBoundsChange,
 }: OpportunitiesMapProps<T>): React.ReactElement {
   const mapContainer = useRef<HTMLDivElement>(null)
   const map = useRef<mapboxgl.Map | null>(null)
   const markersRef = useRef<Array<mapboxgl.Marker>>([])
+  const markerElementsRef = useRef<Map<string, HTMLDivElement>>(new Map())
   const [mapLoaded, setMapLoaded] = useState(false)
+  const userInteractedRef = useRef(false)
+  const debounceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const previousOpportunitiesRef = useRef<Array<T>>([])
+
+  // Debounced bounds change handler
+  const handleBoundsChange = useCallback(() => {
+    if (!map.current || !onBoundsChange || !userInteractedRef.current) return
+
+    if (debounceTimeoutRef.current) {
+      clearTimeout(debounceTimeoutRef.current)
+    }
+
+    debounceTimeoutRef.current = setTimeout(() => {
+      if (!map.current) return
+      const bounds = map.current.getBounds()
+      if (!bounds) return
+      onBoundsChange({
+        north: bounds.getNorth(),
+        south: bounds.getSouth(),
+        east: bounds.getEast(),
+        west: bounds.getWest(),
+      })
+    }, 400)
+  }, [onBoundsChange])
 
   // Initialize map
   useEffect(() => {
@@ -60,11 +88,25 @@ export function OpportunitiesMap<T extends BaseOpportunity>({
       setMapLoaded(true)
     })
 
+    // Track user interaction (drag or zoom)
+    map.current.on('dragstart', () => {
+      userInteractedRef.current = true
+    })
+    map.current.on('zoomstart', () => {
+      userInteractedRef.current = true
+    })
+
+    // Emit bounds change after user interaction
+    map.current.on('moveend', handleBoundsChange)
+
     return () => {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current)
+      }
       map.current?.remove()
       map.current = null
     }
-  }, [])
+  }, [handleBoundsChange])
 
   // Handle window resize events (e.g., when sidebar toggles)
   useEffect(() => {
@@ -80,13 +122,14 @@ export function OpportunitiesMap<T extends BaseOpportunity>({
     }
   }, [])
 
-  // Update markers
+  // Create/update markers when opportunities change
   useEffect(() => {
     if (!map.current || !mapLoaded) return
 
     // Clear existing markers
     markersRef.current.forEach((marker) => marker.remove())
     markersRef.current = []
+    markerElementsRef.current.clear()
 
     if (opportunities.length === 0) return
 
@@ -104,12 +147,10 @@ export function OpportunitiesMap<T extends BaseOpportunity>({
       el.style.border = '2px solid white'
       el.style.cursor = 'pointer'
       el.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)'
+      el.style.transition = 'width 0.15s, height 0.15s, border 0.15s'
 
-      if (selectedId === opportunity.id) {
-        el.style.width = '16px'
-        el.style.height = '16px'
-        el.style.border = '3px solid white'
-      }
+      // Store reference to element for selection styling
+      markerElementsRef.current.set(opportunity.id, el)
 
       if (!map.current) return
 
@@ -134,16 +175,40 @@ export function OpportunitiesMap<T extends BaseOpportunity>({
 
       markersRef.current.push(marker)
     })
+  }, [opportunities, onSelect, mapLoaded, fallbackType])
 
-    // Fit bounds to show all markers
-    if (opportunities.length > 0) {
+  // Fit bounds only when opportunities actually change (not on selection)
+  useEffect(() => {
+    if (!map.current || !mapLoaded || opportunities.length === 0) return
+
+    // Check if opportunities actually changed (not just a re-render)
+    const prevIds = previousOpportunitiesRef.current.map((o) => o.id).join(',')
+    const currIds = opportunities.map((o) => o.id).join(',')
+
+    if (prevIds !== currIds) {
       const bounds = new mapboxgl.LngLatBounds()
       opportunities.forEach((opp) => {
         bounds.extend([opp.longitude, opp.latitude])
       })
       map.current.fitBounds(bounds, { padding: 50, maxZoom: 12 })
+      previousOpportunitiesRef.current = opportunities
     }
-  }, [opportunities, selectedId, onSelect, mapLoaded, fallbackType])
+  }, [opportunities, mapLoaded])
+
+  // Update marker styling when selection changes (without moving the map)
+  useEffect(() => {
+    markerElementsRef.current.forEach((el, id) => {
+      if (id === selectedId) {
+        el.style.width = '16px'
+        el.style.height = '16px'
+        el.style.border = '3px solid white'
+      } else {
+        el.style.width = '12px'
+        el.style.height = '12px'
+        el.style.border = '2px solid white'
+      }
+    })
+  }, [selectedId])
 
   return (
     <div className="relative w-full h-full">

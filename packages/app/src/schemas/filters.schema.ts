@@ -1,5 +1,4 @@
 import { z } from 'zod'
-import type { DatePeriod } from '@linkinvests/shared'
 import {
   AuctionOccupationStatus,
   EnergyClass,
@@ -7,6 +6,7 @@ import {
   PropertyType,
   UNKNOWN_ENERGY_CLASS,
 } from '@linkinvests/shared'
+import type { DatePeriod } from '@linkinvests/shared'
 import { DATE_PERIOD_OPTIONS } from '@/constants'
 import {
   AUCTION_SORT_OPTIONS,
@@ -28,6 +28,14 @@ const optionalNumberFromString = z
 const optionalBooleanFromString = z
   .union([z.string().transform((val) => val === 'true'), z.boolean()])
   .optional()
+
+// Map bounds schema for geographic filtering
+export const mapBoundsSchema = z.object({
+  north: z.number(),
+  south: z.number(),
+  east: z.number(),
+  west: z.number(),
+})
 
 // Base filters schema - common to all opportunity types
 export const baseFiltersSchema = z.object({
@@ -210,6 +218,8 @@ const opportunityTypesSchema = z
 // Unified search filters schema (for /search route with multi-type selection)
 export const unifiedSearchFiltersSchema = baseFiltersSchema.extend({
   types: opportunityTypesSchema,
+  // Map bounds for geographic filtering
+  bounds: mapBoundsSchema.optional(),
   // Extended filters (shown based on type intersection)
   propertyTypes: propertyTypesSchema,
   energyClasses: energyClassesSchema,
@@ -275,3 +285,4 @@ export type EnergyDiagnosticFilters = z.infer<
 export type SuccessionFilters = z.infer<typeof successionFiltersSchema>
 export type LiquidationFilters = z.infer<typeof liquidationFiltersSchema>
 export type UnifiedSearchFilters = z.infer<typeof unifiedSearchFiltersSchema>
+export type MapBounds = z.infer<typeof mapBoundsSchema>

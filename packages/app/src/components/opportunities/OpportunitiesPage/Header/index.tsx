@@ -1,4 +1,5 @@
 import {
+  AlertTriangle,
   ArrowUpDown,
   Check,
   ChevronDown,
@@ -54,6 +55,7 @@ interface OpportunityHeaderProps {
   viewMode?: ViewMode
   onViewChange?: (view: ViewMode) => void
   onOpenFilters?: () => void
+  mapViewLimit?: number
 }
 
 export function OpportunityHeader({
@@ -72,11 +74,16 @@ export function OpportunityHeader({
   viewMode = 'list',
   onViewChange,
   onOpenFilters,
+  mapViewLimit,
 }: OpportunityHeaderProps): React.ReactElement {
+  const isMapView = viewMode === 'map'
   const currentSortValue = `${currentSortBy ?? 'opportunityDate'}_${currentSortOrder ?? 'desc'}`
   const totalPages = Math.ceil((total ?? 0) / pageSize)
   const startItem = (currentPage - 1) * pageSize + 1
   const endItem = Math.min(startItem + itemsOnPage - 1, total ?? 0)
+
+  // In map view, check if results exceed limit
+  const exceedsMapLimit = isMapView && mapViewLimit && (total ?? 0) > mapViewLimit
 
   const handleSortChange = (option: SortOption): void => {
     onSortChange?.(option.sortBy, option.sortOrder)
@@ -145,36 +152,60 @@ export function OpportunityHeader({
         )}
       </div>
       <div className="flex items-center gap-2">
-        <div className="text-sm">
-          Affichage de{' '}
-          <span className="font-bold">
-            {startItem}-{endItem}
-          </span>{' '}
-          sur{' '}
-          {isCountLoading ? (
-            <Skeleton className="h-5 w-16 inline-block align-middle" />
-          ) : (
-            <span className="font-bold">{formatNumber(total ?? 0)}</span>
-          )}{' '}
-          opportunités
-        </div>
+        {isMapView ? (
+          // Map view: show count and disclaimer if needed
+          <div className="flex items-center gap-2">
+            <div className="text-sm">
+              {isCountLoading ? (
+                <Skeleton className="h-5 w-32 inline-block align-middle" />
+              ) : exceedsMapLimit ? (
+                <span className="flex items-center gap-2 text-amber-600 dark:text-amber-500">
+                  <AlertTriangle className="h-4 w-4" />
+                  <span>
+                    Affichage limité à <b>{formatNumber(mapViewLimit ?? 0)}</b> sur{' '}
+                    <b>{formatNumber(total ?? 0)}</b> opportunités
+                  </span>
+                </span>
+              ) : (
+                <span>
+                  <b>{formatNumber(total ?? 0)}</b> opportunités
+                </span>
+              )}
+            </div>
+          </div>
+        ) : (
+          // List/Cards view: show pagination info
+          <>
+            <div className="text-sm">
+              Affichage de{' '}
+              <span className="font-bold">
+                {startItem}-{endItem}
+              </span>{' '}
+              sur{' '}
+              {isCountLoading ? (
+                <Skeleton className="h-5 w-16 inline-block align-middle" />
+              ) : (
+                <span className="font-bold">{formatNumber(total ?? 0)}</span>
+              )}{' '}
+              opportunités
+            </div>
 
-        {/* Pagination */}
-        {totalPages > 1 && onPageChange && (
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={onPageChange}
-          />
+            {/* Pagination - only in list/cards view */}
+            {totalPages > 1 && onPageChange && (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={onPageChange}
+              />
+            )}
+          </>
         )}
-
-
       </div>
 
       {/* Right side: View toggle, Filter, Sort, Export */}
       <div className="flex items-center gap-2">
-        {/* Page size selector */}
-        {onPageSizeChange && (
+        {/* Page size selector - hidden in map view */}
+        {!isMapView && onPageSizeChange && (
           <PageSizeSelector
             pageSize={pageSize}
             onPageSizeChange={onPageSizeChange}

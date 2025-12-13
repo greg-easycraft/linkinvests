@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { Heart } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 
@@ -6,10 +6,11 @@ import {
   FavoritesDataTable,
   FavoritesSectionAccordion,
   getColumnsForType,
+  type ColumnsOptions,
 } from './components'
 import type { Opportunity } from '@linkinvests/shared'
 import { OpportunityType } from '@linkinvests/shared'
-import { useFavorites } from '@/hooks'
+import { useFavorites, useMarkEmailSent } from '@/hooks'
 import { OpportunityDetailsModal } from '@/components/opportunities/OpportunityDetailsModal'
 import { Accordion } from '@/components/ui/accordion'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -83,6 +84,7 @@ function EmptyFavoritesState() {
 
 export function FavoritesPage(): React.ReactElement {
   const { data, isLoading, isError } = useFavorites()
+  const markEmailSentMutation = useMarkEmailSent()
   const [selectedOpportunity, setSelectedOpportunity] =
     useState<Opportunity | null>(null)
   const [selectedType, setSelectedType] = useState<OpportunityType | null>(null)
@@ -102,6 +104,23 @@ export function FavoritesPage(): React.ReactElement {
     setSelectedOpportunity(null)
     setSelectedType(null)
   }, [])
+
+  const handleEmailClick = useCallback(
+    (favoriteId: string) => {
+      markEmailSentMutation.mutate(favoriteId)
+    },
+    [markEmailSentMutation],
+  )
+
+  const columnsOptions: ColumnsOptions = useMemo(
+    () => ({
+      onViewDetails: handleSelectOpportunity,
+      succession: {
+        onEmailClick: handleEmailClick,
+      },
+    }),
+    [handleSelectOpportunity, handleEmailClick],
+  )
 
   if (isLoading) {
     return <FavoritesPageSkeleton />
@@ -137,7 +156,7 @@ export function FavoritesPage(): React.ReactElement {
       <header className="mb-8">
         <h1 className="text-2xl font-bold flex items-center gap-2">
           <Heart className="h-6 w-6 text-red-500 fill-red-500" />
-          Mes Favoris
+          Mes Opportunités
         </h1>
         <p className="text-muted-foreground mt-1">
           {totalFavorites} opportunité{totalFavorites > 1 ? 's' : ''}{' '}
@@ -154,7 +173,7 @@ export function FavoritesPage(): React.ReactElement {
           const items = data[key]
           if (items.length === 0) return null
 
-          const columns = getColumnsForType(type)
+          const columns = getColumnsForType(type, columnsOptions)
 
           return (
             <FavoritesSectionAccordion
@@ -164,13 +183,7 @@ export function FavoritesPage(): React.ReactElement {
               count={items.length}
               type={type}
             >
-              <FavoritesDataTable
-                data={items}
-                columns={columns}
-                onRowClick={(item) =>
-                  handleSelectOpportunity(item as Opportunity, type)
-                }
-              />
+              <FavoritesDataTable data={items} columns={columns} />
             </FavoritesSectionAccordion>
           )
         })}

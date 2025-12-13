@@ -5,8 +5,10 @@ import {
   checkBatchFavorites,
   checkFavorite,
   getFavorites,
+  markEmailSent,
   removeFavorite,
 } from '@/api'
+import { toast } from 'sonner'
 
 /**
  * Hook to manage a single favorite
@@ -113,5 +115,22 @@ export function useBatchFavoriteCheck(
     enabled: opportunityIds.length > 0,
     staleTime: 5 * 60 * 1000,
     select: (data) => new Set(data),
+  })
+}
+
+/**
+ * Hook to mark succession email as sent
+ */
+export function useMarkEmailSent() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: markEmailSent,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['favorites'] })
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Erreur lors de la mise à jour du statut')
+    },
   })
 }

@@ -1,16 +1,28 @@
-import { OpportunityType } from '@linkinvests/shared'
+import { OpportunityType, type Liquidation } from '@linkinvests/shared'
 import {
-  ActionsCell,
   AddressCell,
   DateCell,
   LabelCell,
   SiretCell,
+  StatusCell,
 } from './shared'
-import type { Liquidation } from '@linkinvests/shared'
+import { QuickActionsDropdown } from './QuickActionsDropdown'
 
 import type { Column } from './types'
 
-export function getLiquidationColumns(): Array<Column<Liquidation>> {
+// Extended type for liquidation with favorite info
+type LiquidationWithFavorite = Liquidation & {
+  favoriteId: string
+  status: string
+}
+
+export interface LiquidationColumnsOptions {
+  onViewDetails?: (item: LiquidationWithFavorite) => void
+}
+
+export function getLiquidationColumns(
+  options?: LiquidationColumnsOptions,
+): Array<Column<LiquidationWithFavorite>> {
   return [
     {
       key: 'label',
@@ -33,12 +45,17 @@ export function getLiquidationColumns(): Array<Column<Liquidation>> {
       cell: (liquidation) => <SiretCell siret={liquidation.siret} />,
     },
     {
+      key: 'status',
+      header: 'Statut',
+      cell: (liquidation) => <StatusCell status={liquidation.status} />,
+    },
+    {
       key: 'actions',
       header: '',
       cell: (liquidation) => (
-        <ActionsCell
-          opportunityId={liquidation.id}
+        <QuickActionsDropdown
           opportunityType={OpportunityType.LIQUIDATION}
+          onViewDetails={() => options?.onViewDetails?.(liquidation)}
         />
       ),
       className: 'text-right',

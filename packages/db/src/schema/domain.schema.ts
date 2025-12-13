@@ -437,6 +437,8 @@ export const favorites = pgTable(
       .references(() => users.id, { onDelete: 'cascade' }),
     opportunityId: uuid('opportunity_id').notNull(),
     opportunityType: text('opportunity_type').notNull(), // 'auction' | 'real_estate_listing' | 'succession' | 'liquidation' | 'energy_sieve'
+    status: text('status').notNull().default('added_to_favorites'),
+    statusUpdatedAt: timestamp('status_updated_at'),
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
   (table) => [
@@ -452,6 +454,27 @@ export const favorites = pgTable(
     index('idx_favorite_user_type').on(table.userId, table.opportunityType),
     // Index for ordering by creation date
     index('idx_favorite_created_at').on(desc(table.createdAt)),
+  ],
+);
+
+// Favorite Events Table (Audit Log)
+// This table is insert-only, no updates or deletes allowed
+export const favoriteEvents = pgTable(
+  'favorite_event',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    favoriteId: uuid('favorite_id')
+      .notNull()
+      .references(() => favorites.id, { onDelete: 'cascade' }),
+    eventType: text('event_type').notNull(), // e.g., 'added_to_favorites', 'email_sent'
+    createdBy: text('created_by')
+      .notNull()
+      .references(() => users.id),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+  },
+  (table) => [
+    index('idx_favorite_event_favorite_id').on(table.favoriteId),
+    index('idx_favorite_event_created_at').on(desc(table.createdAt)),
   ],
 );
 

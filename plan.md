@@ -1,21 +1,22 @@
 Lundi 15
+Samedi
+- [ ] rename address fields into streetAddress & handle as such
 
+Dimanche
 - map bounds on search
+- map should not move on item clicked
 - [ ] recherche dans un rayon autour de moi ou d'un code postal
-- [ ] search UI refactor
-    - filters as aside w/ backdrop, triggered by btn in header
-    - map/list/cards from header
-- [ ] succession, mémorisation si email envoyé (handle via status)
 
-- [ ] remove re-exporting types file
-    - api
-    - app
+Lundi
 - [ ] authentification (fermée)
 - [ ] addresse mairie zipcode cedex
 - [ ] deploy sur staging.linkinvests.com
 - [ ] CI/CD
-- [ ] rename address fields into streetAddress & handle as such
 
+- [X] succession, mémorisation si email envoyé (handle via status)
+- [X] search UI refactor
+    - filters as aside w/ backdrop, triggered by btn in header
+    - map/list/cards from header
 - [X] recherche sur plusieurs types d'opportunités
 - [X] periode depuis, jusqu'à
 - [X] sauvegarde recherches
@@ -44,6 +45,7 @@ Later
 - [ ] statuts : courrier envoyé, relance 1, relance 2, contacter vendeur, visite prévue, visite ok, rejeté, offre ok, offre acceptée, offre refusée, contre-offre, 
 - [ ] courrier avec La Poste (annonces, successions)
 - [ ] créer corps du msg pour email mairie
+- [ ] address refinment opti
 
 
 
@@ -78,3 +80,9 @@ BUG CAROLE
 
     - when clicking on type, type de biens, type de vendeur modif, deconnecter
     - when deconnecting
+
+
+On map view mode, we should remove pagination and limit the requests to 500 items. if count is > 500, a disclaimer should be displayed
+
+    We should now setup search within a radius around the user's location or a given zip code. There should be a new icon button in the header, dedicated to radius search. when clicked, a modal opens, allow the user to pick a radius and input a zip code or trigger geolocation.
+    then, the radius should be applied to search filters

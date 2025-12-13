@@ -21,9 +21,14 @@ export const checkBatchFavoritesSchema = z.object({
   opportunityType: z.enum(OpportunityType),
 });
 
+export const markEmailSentSchema = z.object({
+  favoriteId: z.uuid(),
+});
+
 export type AddFavoriteRequest = z.infer<typeof addFavoriteSchema>;
 export type RemoveFavoriteRequest = z.infer<typeof removeFavoriteSchema>;
 export type CheckFavoriteRequest = z.infer<typeof checkFavoriteSchema>;
 export type CheckBatchFavoritesRequest = z.infer<
   typeof checkBatchFavoritesSchema
 >;
+export type MarkEmailSentRequest = z.infer<typeof markEmailSentSchema>;

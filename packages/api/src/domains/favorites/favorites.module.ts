@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import {
   FavoriteAuctionRepository,
   FavoriteEnergyDiagnosticsRepository,
+  FavoriteEventRepository,
   FavoriteLiquidationRepository,
   FavoriteListingRepository,
   FavoriteRepository,
@@ -11,6 +12,7 @@ import {
 import {
   FavoriteAuctionRepositoryImpl,
   FavoriteEnergyDiagnosticsRepositoryImpl,
+  FavoriteEventRepositoryImpl,
   FavoriteLiquidationRepositoryImpl,
   FavoriteListingRepositoryImpl,
   FavoriteRepositoryImpl,
@@ -25,6 +27,10 @@ import { FavoritesController } from './favorites.controller';
     {
       provide: FavoriteRepository,
       useClass: FavoriteRepositoryImpl,
+    },
+    {
+      provide: FavoriteEventRepository,
+      useClass: FavoriteEventRepositoryImpl,
     },
     {
       provide: FavoriteAuctionRepository,

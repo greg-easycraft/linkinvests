@@ -52,3 +52,10 @@ export async function checkBatchFavorites(
   )
   return response.favoriteIds
 }
+
+export async function markEmailSent(favoriteId: string): Promise<void> {
+  await apiRequest<{ success: boolean }>('/favorites/mark-email-sent', {
+    method: 'POST',
+    body: { favoriteId },
+  })
+}

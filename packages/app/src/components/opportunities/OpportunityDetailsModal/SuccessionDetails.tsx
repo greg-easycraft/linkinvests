@@ -1,7 +1,6 @@
 import { Building, Clock, Globe, Mail, MapPin, Phone, User } from 'lucide-react'
 import type { Succession } from '@linkinvests/shared'
 import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 
 interface SuccessionDetailsProps {
   opportunity: Succession
@@ -74,12 +73,9 @@ export function SuccessionDetails({
           {opportunity.mairieContact.email && (
             <div className="flex items-center gap-2">
               <Mail className="h-4 w-4 text-muted-foreground" />
-              <a
-                href={`mailto:${opportunity.mairieContact.email}`}
-                className="text-primary hover:underline"
-              >
+              <span className="text-muted-foreground">
                 {opportunity.mairieContact.email}
-              </a>
+              </span>
             </div>
           )}
 
@@ -105,18 +101,6 @@ export function SuccessionDetails({
               </div>
             </div>
           )}
-
-          {/* Contact Mairie Button */}
-          <div className="pt-2">
-            <Button variant="outline" className="w-full" asChild>
-              <a
-                href={`mailto:${opportunity.mairieContact.email ?? ''}?subject=Demande d'information - Succession ${opportunity.lastName}`}
-              >
-                <Mail className="h-4 w-4 mr-2" />
-                Contacter la mairie
-              </a>
-            </Button>
-          </div>
         </div>
       </Card>
 

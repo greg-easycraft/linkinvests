@@ -12,6 +12,7 @@ import type {
 } from '@linkinvests/shared'
 import type { SortOption } from '@/constants/sort-options'
 import type { ViewMode } from '@/components/filters/ViewToggleGroup'
+import type { MapBounds } from '@/schemas/filters.schema'
 import { useDelayedSkeleton } from '@/hooks'
 import {
   Sheet,
@@ -30,6 +31,7 @@ interface OpportunitiesPageProps<T extends BaseOpportunity> {
   FiltersComponent: React.ReactNode
   viewMode?: ViewMode
   onViewChange?: (view: ViewMode) => void
+  onBoundsChange?: (bounds: MapBounds) => void
   onExport?: (format: 'csv' | 'xlsx') => void
   sortOptions?: Array<SortOption>
   currentSortBy?: string
@@ -39,6 +41,7 @@ interface OpportunitiesPageProps<T extends BaseOpportunity> {
   pageSize?: number
   onPageChange?: (page: number) => void
   onPageSizeChange?: (pageSize: number) => void
+  mapViewLimit?: number
 }
 
 export function OpportunitiesPage<T extends BaseOpportunity>({
@@ -50,6 +53,7 @@ export function OpportunitiesPage<T extends BaseOpportunity>({
   FiltersComponent,
   viewMode = 'list',
   onViewChange,
+  onBoundsChange,
   onExport,
   sortOptions,
   currentSortBy,
@@ -59,6 +63,7 @@ export function OpportunitiesPage<T extends BaseOpportunity>({
   pageSize,
   onPageChange,
   onPageSizeChange,
+  mapViewLimit,
 }: OpportunitiesPageProps<T>): React.ReactElement {
   // Use delayed skeleton to prevent flashing when data loads quickly
   const showSkeleton = useDelayedSkeleton(isLoading)
@@ -102,6 +107,7 @@ export function OpportunitiesPage<T extends BaseOpportunity>({
             isLoading={showSkeleton}
             selectedId={selectedOpportunity?.id}
             onSelect={handleSelectOpportunity}
+            onBoundsChange={onBoundsChange}
           />
         )
       default:
@@ -138,6 +144,7 @@ export function OpportunitiesPage<T extends BaseOpportunity>({
           viewMode={viewMode}
           onViewChange={onViewChange}
           onOpenFilters={() => setIsFiltersOpen(true)}
+          mapViewLimit={mapViewLimit}
         />
       </div>
 

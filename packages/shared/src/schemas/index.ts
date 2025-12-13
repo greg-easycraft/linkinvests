@@ -8,8 +8,10 @@ export {
   removeFavoriteSchema,
   checkFavoriteSchema,
   checkBatchFavoritesSchema,
+  markEmailSentSchema,
   type AddFavoriteRequest,
   type RemoveFavoriteRequest,
   type CheckFavoriteRequest,
   type CheckBatchFavoritesRequest,
+  type MarkEmailSentRequest,
 } from './favorite.schema.js';

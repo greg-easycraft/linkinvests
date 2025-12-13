@@ -1,18 +1,30 @@
-import { OpportunityType } from '@linkinvests/shared'
+import { OpportunityType, type Auction } from '@linkinvests/shared'
 import {
-  ActionsCell,
   AddressCell,
   DateCell,
   EnergyCell,
   LabelCell,
   PriceCell,
+  StatusCell,
   SurfaceCell,
 } from './shared'
-import type { Auction } from '@linkinvests/shared'
+import { QuickActionsDropdown } from './QuickActionsDropdown'
 
 import type { Column } from './types'
 
-export function getAuctionColumns(): Array<Column<Auction>> {
+// Extended type for auction with favorite info
+type AuctionWithFavorite = Auction & {
+  favoriteId: string
+  status: string
+}
+
+export interface AuctionColumnsOptions {
+  onViewDetails?: (item: AuctionWithFavorite) => void
+}
+
+export function getAuctionColumns(
+  options?: AuctionColumnsOptions,
+): Array<Column<AuctionWithFavorite>> {
   return [
     {
       key: 'label',
@@ -54,13 +66,18 @@ export function getAuctionColumns(): Array<Column<Auction>> {
       cell: (auction) => <EnergyCell energyClass={auction.energyClass} />,
     },
     {
+      key: 'status',
+      header: 'Statut',
+      cell: (auction) => <StatusCell status={auction.status} />,
+    },
+    {
       key: 'actions',
       header: '',
       cell: (auction) => (
-        <ActionsCell
-          opportunityId={auction.id}
+        <QuickActionsDropdown
           opportunityType={OpportunityType.AUCTION}
-          url={auction.url}
+          onViewDetails={() => options?.onViewDetails?.(auction)}
+          externalUrl={auction.url}
         />
       ),
       className: 'text-right',

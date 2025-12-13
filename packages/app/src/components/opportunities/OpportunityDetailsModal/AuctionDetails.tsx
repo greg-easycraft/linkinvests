@@ -166,12 +166,9 @@ export function AuctionDetails({
             {opportunity.auctionHouseContact.email && (
               <div className="flex items-center gap-2">
                 <Mail className="h-4 w-4 text-muted-foreground" />
-                <a
-                  href={`mailto:${opportunity.auctionHouseContact.email}`}
-                  className="text-primary hover:underline"
-                >
+                <span className="text-muted-foreground">
                   {opportunity.auctionHouseContact.email}
-                </a>
+                </span>
               </div>
             )}
             {opportunity.auctionHouseContact.depositAmount !== undefined && (

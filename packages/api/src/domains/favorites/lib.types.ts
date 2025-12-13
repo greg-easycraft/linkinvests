@@ -2,6 +2,7 @@ import type {
   Auction,
   EnergyDiagnostic,
   Favorite,
+  FavoriteEvent,
   Liquidation,
   Listing,
   OpportunityType,
@@ -39,6 +40,21 @@ export abstract class FavoriteRepository {
     opportunityIds: string[],
     opportunityType: OpportunityType,
   ): Promise<Set<string>>;
+
+  abstract findById(id: string): Promise<Favorite | null>;
+
+  abstract updateStatus(id: string, status: string): Promise<Favorite | null>;
+}
+
+// Favorite Event Repository (audit log - insert only)
+export abstract class FavoriteEventRepository {
+  abstract create(
+    favoriteId: string,
+    eventType: string,
+    createdBy: string,
+  ): Promise<FavoriteEvent>;
+
+  abstract findByFavoriteId(favoriteId: string): Promise<FavoriteEvent[]>;
 }
 
 // Opportunity repository abstractions for favorites domain

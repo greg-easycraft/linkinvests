@@ -83,11 +83,21 @@ interface UseUnifiedOpportunityDataOptions {
  * - Handles pagination via API
  * - Provides loading and error states
  */
+// Maximum items to fetch in map view (no pagination)
+const MAP_VIEW_PAGE_SIZE = 500
+
 export function useUnifiedOpportunityData({
   filters,
 }: UseUnifiedOpportunityDataOptions) {
   // Remove view from filters for query key (it doesn't affect data)
   const { view, types, ...baseFiltersForQuery } = filters
+
+  const isMapView = view === 'map'
+
+  // In map view, override pagination to fetch up to 500 items
+  const filtersForQuery = isMapView
+    ? { ...baseFiltersForQuery, page: 1, pageSize: MAP_VIEW_PAGE_SIZE }
+    : baseFiltersForQuery
 
   const selectedTypes = types ?? []
   const isSingleType = selectedTypes.length === 1
@@ -96,13 +106,14 @@ export function useUnifiedOpportunityData({
     ? (selectedTypes[0] as SupportedOpportunityType)
     : null
 
-  // Build query key
+  // Build query key (include view to differentiate map vs list queries)
   const queryKey = isSingleType
-    ? [singleType?.toLowerCase(), 'search', baseFiltersForQuery]
+    ? [singleType?.toLowerCase(), 'search', filtersForQuery, view]
     : [
         'all-opportunities',
         'search',
-        { types: selectedTypes, ...baseFiltersForQuery },
+        { types: selectedTypes, ...filtersForQuery },
+        view,
       ]
 
   const countQueryKey = isSingleType
@@ -122,7 +133,7 @@ export function useUnifiedOpportunityData({
       if (isSingleType && singleType) {
         // Query single type API
         const apiFunctions = SINGLE_TYPE_API[singleType]
-        const response = await apiFunctions.search(baseFiltersForQuery as never)
+        const response = await apiFunctions.search(filtersForQuery as never)
         return {
           opportunities: response.opportunities,
           total: response.opportunities.length,
@@ -130,7 +141,7 @@ export function useUnifiedOpportunityData({
       } else {
         // Query unified API
         const apiFilters = {
-          ...baseFiltersForQuery,
+          ...filtersForQuery,
           types: selectedTypes.length > 0 ? selectedTypes : undefined,
         } as IAllOpportunitiesFilters
         const response = await searchAllOpportunities(apiFilters)
@@ -170,6 +181,8 @@ export function useUnifiedOpportunityData({
     error: dataQuery.error || countQuery.error,
     isSingleType,
     selectedTypes,
+    isMapView,
+    mapViewPageSize: MAP_VIEW_PAGE_SIZE,
     refetch: () => {
       dataQuery.refetch()
       countQuery.refetch()

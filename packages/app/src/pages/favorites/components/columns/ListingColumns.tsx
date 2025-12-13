@@ -1,18 +1,30 @@
-import { OpportunityType } from '@linkinvests/shared'
+import { OpportunityType, type Listing } from '@linkinvests/shared'
 import {
-  ActionsCell,
   AddressCell,
   DateCell,
   EnergyCell,
   LabelCell,
   PriceCell,
+  StatusCell,
   SurfaceCell,
 } from './shared'
-import type { Listing } from '@linkinvests/shared'
+import { QuickActionsDropdown } from './QuickActionsDropdown'
 
 import type { Column } from './types'
 
-export function getListingColumns(): Array<Column<Listing>> {
+// Extended type for listing with favorite info
+type ListingWithFavorite = Listing & {
+  favoriteId: string
+  status: string
+}
+
+export interface ListingColumnsOptions {
+  onViewDetails?: (item: ListingWithFavorite) => void
+}
+
+export function getListingColumns(
+  options?: ListingColumnsOptions,
+): Array<Column<ListingWithFavorite>> {
   return [
     {
       key: 'label',
@@ -50,13 +62,18 @@ export function getListingColumns(): Array<Column<Listing>> {
       cell: (listing) => <EnergyCell energyClass={listing.energyClass} />,
     },
     {
+      key: 'status',
+      header: 'Statut',
+      cell: (listing) => <StatusCell status={listing.status} />,
+    },
+    {
       key: 'actions',
       header: '',
       cell: (listing) => (
-        <ActionsCell
-          opportunityId={listing.id}
+        <QuickActionsDropdown
           opportunityType={OpportunityType.REAL_ESTATE_LISTING}
-          url={listing.url}
+          onViewDetails={() => options?.onViewDetails?.(listing)}
+          externalUrl={listing.url}
         />
       ),
       className: 'text-right',

@@ -1,13 +1,13 @@
 import { useNavigate, useSearch } from '@tanstack/react-router'
 import { useCallback, useMemo } from 'react'
-import type { UnifiedSearchFilters } from '@/schemas/filters.schema'
+import { OpportunityType } from '@linkinvests/shared'
 import type { AllOpportunity, BaseOpportunity } from '@linkinvests/shared'
+import type { MapBounds, UnifiedSearchFilters } from '@/schemas/filters.schema'
 import type { SortOption } from '@/constants/sort-options'
 import type { ViewMode } from '@/components/filters/ViewToggleGroup'
 import { OpportunitiesPage } from '@/components/opportunities/OpportunitiesPage'
 import { UnifiedFilters } from '@/components/opportunities/OpportunityFilters'
 import { useUnifiedOpportunityData } from '@/hooks'
-import { OpportunityType } from '@linkinvests/shared'
 import {
   AUCTION_SORT_OPTIONS,
   DEFAULT_SORT_OPTIONS,
@@ -47,6 +47,7 @@ export function UnifiedSearchPage(): React.ReactElement {
     isCountLoading,
     isSingleType,
     selectedTypes,
+    mapViewPageSize,
   } = useUnifiedOpportunityData({
     filters,
   })
@@ -97,7 +98,21 @@ export function UnifiedSearchPage(): React.ReactElement {
 
   const handleViewChange = useCallback(
     (view: ViewMode) => {
-      handleFiltersChange({ ...filters, view })
+      // Clear bounds when switching away from map view
+      if (view !== 'map' && filters.bounds) {
+        handleFiltersChange({ ...filters, view, bounds: undefined })
+        return
+      }
+        handleFiltersChange({ ...filters, view })
+    },
+    [filters, handleFiltersChange],
+  )
+
+  const handleBoundsChange = useCallback(
+    (bounds: MapBounds) => {
+      // Only update if we're in map view
+      if (filters.view !== 'map') return;
+      handleFiltersChange({ ...filters, bounds, page: 1 })
     },
     [filters, handleFiltersChange],
   )
@@ -111,6 +126,7 @@ export function UnifiedSearchPage(): React.ReactElement {
       opportunityType={displayType}
       viewMode={filters.view ?? 'list'}
       onViewChange={handleViewChange}
+      onBoundsChange={handleBoundsChange}
       onExport={handleExport}
       sortOptions={sortOptions}
       currentSortBy={filters.sortBy}
@@ -120,6 +136,7 @@ export function UnifiedSearchPage(): React.ReactElement {
       pageSize={filters.pageSize ?? DEFAULT_PAGE_SIZE}
       onPageChange={handlePageChange}
       onPageSizeChange={handlePageSizeChange}
+      mapViewLimit={mapViewPageSize}
       FiltersComponent={
         <UnifiedFilters
           filters={filters}

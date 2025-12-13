@@ -1,12 +1,41 @@
-import { Calendar, ExternalLink, MapPin } from 'lucide-react'
-
-import type { OpportunityType } from '@linkinvests/shared'
+import { Calendar, MapPin } from 'lucide-react'
 
 import type { EnergyClassType } from '@linkinvests/shared'
-import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { EnergyClassBadge } from '@/components/ui/energy-class-badge'
-import { FavoriteButton } from '@/components/ui/favorite-button'
 import { formatPrice, formatShortDate, formatSiret } from '@/lib/format'
+
+interface StatusConfig {
+  label: string
+  className: string
+}
+
+const STATUS_CONFIG: Record<string, StatusConfig> = {
+  added_to_favorites: {
+    label: 'Ajouté',
+    className: 'bg-slate-100 text-slate-700 border-slate-200',
+  },
+  email_sent: {
+    label: 'Email envoyé',
+    className: 'bg-green-100 text-green-700 border-green-200',
+  },
+}
+
+interface StatusCellProps {
+  status: string
+}
+
+export function StatusCell({ status }: StatusCellProps): React.ReactElement {
+  const config = STATUS_CONFIG[status] ?? {
+    label: status,
+    className: 'bg-slate-100 text-slate-700 border-slate-200',
+  }
+  return (
+    <Badge variant="outline" className={config.className}>
+      {config.label}
+    </Badge>
+  )
+}
 
 interface AddressCellProps {
   address?: string
@@ -110,41 +139,3 @@ export function SiretCell({ siret }: SiretCellProps): React.ReactElement {
   return <span className="font-mono text-sm">{formatSiret(siret)}</span>
 }
 
-interface ActionsCellProps {
-  opportunityId: string
-  opportunityType: OpportunityType
-  url?: string
-}
-
-export function ActionsCell({
-  opportunityId,
-  opportunityType,
-  url,
-}: ActionsCellProps): React.ReactElement {
-  const handleExternalClick = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    if (url) {
-      window.open(url, '_blank', 'noopener,noreferrer')
-    }
-  }
-
-  return (
-    <div className="flex items-center justify-end gap-1">
-      {url && (
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          className="rounded-full"
-          onClick={handleExternalClick}
-          title="Voir sur le site externe"
-        >
-          <ExternalLink className="h-4 w-4" />
-        </Button>
-      )}
-      <FavoriteButton
-        opportunityId={opportunityId}
-        opportunityType={opportunityType}
-      />
-    </div>
-  )
-}

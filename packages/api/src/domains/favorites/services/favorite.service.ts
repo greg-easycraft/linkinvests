@@ -1,6 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 
-import { OpportunityType, type GroupedFavorites } from '@linkinvests/shared';
+import {
+  OpportunityType,
+  SuccessionFavoriteStatus,
+  type GroupedFavorites,
+} from '@linkinvests/shared';
 
 import {
   type OperationResult,
@@ -11,6 +15,7 @@ import {
 import {
   FavoriteAuctionRepository,
   FavoriteEnergyDiagnosticsRepository,
+  FavoriteEventRepository,
   FavoriteLiquidationRepository,
   FavoriteListingRepository,
   FavoriteRepository,
@@ -20,6 +25,10 @@ import {
 export enum FavoriteServiceErrorReason {
   ALREADY_EXISTS = 'ALREADY_EXISTS',
   NOT_FOUND = 'NOT_FOUND',
+  EMAIL_ALREADY_SENT = 'EMAIL_ALREADY_SENT',
+  NOT_SUCCESSION_TYPE = 'NOT_SUCCESSION_TYPE',
+  NO_MAIRIE_EMAIL = 'NO_MAIRIE_EMAIL',
+  EMAIL_SEND_FAILED = 'EMAIL_SEND_FAILED',
   UNKNOWN_ERROR = 'UNKNOWN_ERROR',
 }
 
@@ -29,6 +38,7 @@ export class FavoriteService {
 
   constructor(
     private readonly favoriteRepository: FavoriteRepository,
+    private readonly favoriteEventRepository: FavoriteEventRepository,
     private readonly auctionRepository: FavoriteAuctionRepository,
     private readonly listingRepository: FavoriteListingRepository,
     private readonly successionRepository: FavoriteSuccessionRepository,
@@ -53,7 +63,19 @@ export class FavoriteService {
         return refuse(FavoriteServiceErrorReason.ALREADY_EXISTS);
       }
 
-      await this.favoriteRepository.add(userId, opportunityId, opportunityType);
+      const favorite = await this.favoriteRepository.add(
+        userId,
+        opportunityId,
+        opportunityType,
+      );
+
+      // Create initial event for audit log
+      await this.favoriteEventRepository.create(
+        favorite.id,
+        'added_to_favorites',
+        userId,
+      );
+
       return succeed(undefined);
     } catch (error) {
       this.logger.error('Failed to add favorite', error);
@@ -120,11 +142,61 @@ export class FavoriteService {
     }
   }
 
+  async markEmailSent(
+    userId: string,
+    favoriteId: string,
+  ): Promise<OperationResult<void, FavoriteServiceErrorReason>> {
+    try {
+      // 1. Fetch the favorite
+      const favorite = await this.favoriteRepository.findById(favoriteId);
+      if (!favorite) {
+        return refuse(FavoriteServiceErrorReason.NOT_FOUND);
+      }
+
+      // 2. Verify ownership
+      if (favorite.userId !== userId) {
+        return refuse(FavoriteServiceErrorReason.NOT_FOUND);
+      }
+
+      // 3. Verify it's a succession type
+      if (favorite.opportunityType !== OpportunityType.SUCCESSION) {
+        return refuse(FavoriteServiceErrorReason.NOT_SUCCESSION_TYPE);
+      }
+
+      // 4. Check if email already sent
+      if (favorite.status === SuccessionFavoriteStatus.EMAIL_SENT) {
+        return refuse(FavoriteServiceErrorReason.EMAIL_ALREADY_SENT);
+      }
+
+      // 5. Update favorite status
+      await this.favoriteRepository.updateStatus(
+        favoriteId,
+        SuccessionFavoriteStatus.EMAIL_SENT,
+      );
+
+      // 6. Create event for audit log
+      await this.favoriteEventRepository.create(favoriteId, 'email_sent', userId);
+
+      return succeed(undefined);
+    } catch (error) {
+      this.logger.error('Failed to mark email as sent', error);
+      return refuse(FavoriteServiceErrorReason.UNKNOWN_ERROR);
+    }
+  }
+
   async getUserFavoritesGrouped(
     userId: string,
   ): Promise<OperationResult<GroupedFavorites, FavoriteServiceErrorReason>> {
     try {
       const allFavorites = await this.favoriteRepository.findByUser(userId);
+
+      // Create a map from opportunityId to favorite info
+      const favoriteMap = new Map(
+        allFavorites.map((fav) => [
+          fav.opportunityId,
+          { favoriteId: fav.id, status: fav.status },
+        ]),
+      );
 
       // Group favorites by type
       const groupedIds = {
@@ -165,12 +237,25 @@ export class FavoriteService {
           this.fetchEnergySieves(groupedIds.energySieves),
         ]);
 
+      // Merge favorite info with opportunity data
+      const mergeWithFavoriteInfo = <T extends { id: string }>(
+        items: T[],
+      ): (T & { favoriteId: string; status: string })[] =>
+        items.map((item) => {
+          const favInfo = favoriteMap.get(item.id);
+          return {
+            ...item,
+            favoriteId: favInfo?.favoriteId ?? '',
+            status: favInfo?.status ?? 'added_to_favorites',
+          };
+        });
+
       return succeed({
-        auctions,
-        listings,
-        successions,
-        liquidations,
-        energySieves,
+        auctions: mergeWithFavoriteInfo(auctions),
+        listings: mergeWithFavoriteInfo(listings),
+        successions: mergeWithFavoriteInfo(successions),
+        liquidations: mergeWithFavoriteInfo(liquidations),
+        energySieves: mergeWithFavoriteInfo(energySieves),
       });
     } catch (error) {
       this.logger.error('Failed to get user favorites grouped', error);
